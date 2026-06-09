@@ -79,7 +79,7 @@
   .tcard{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:rgba(255,255,255,.2);text-decoration:none;color:inherit;display:block;transition:.35s}
   a.tcard:hover{border-color:var(--gold);transform:translateY(-3px)}
   .tcard .photo{position:relative;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 20%, #2A251D, #14110D);color:var(--gold-bright);font-family:var(--serif);font-size:2.4rem;letter-spacing:.04em}
-  .tcard .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .tcard .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1}
   .tcard .t-body{padding:18px 20px}
   .tcard h4{font-family:var(--serif);font-weight:500;font-size:1.22rem;margin-bottom:3px}
   .tcard .role{font-size:.78rem;letter-spacing:.04em;color:var(--muted)}
@@ -152,6 +152,12 @@
   .player:hover .play{background:var(--gold);transform:scale(1.06)}
   .player:hover .play:before{border-left-color:var(--ink)}
   .player-label{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-bright);font-weight:500}
+  .player.empty{cursor:default}
+  .player.empty:hover{border-color:var(--line)}
+  .player.empty .play{border-color:var(--muted);background:transparent;opacity:.5}
+  .player.empty:hover .play{background:transparent;transform:none}
+  .player.empty .play:before{border-left-color:var(--muted)}
+  .player.empty .player-label{color:var(--muted)}
 
   .fit{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:10px}
   .fit h4{font-family:var(--serif);font-style:italic;font-size:1.3rem;margin-bottom:18px;color:var(--gold)}
@@ -308,14 +314,14 @@
     </div>
     <p style="margin-top:34px">A selection of our talent — <a href="#" data-open-roster style="color:var(--gold);text-decoration:underline;text-underline-offset:3px">tap any name to open the full network</a>:</p>
     <div class="talent">
-      <a class="tcard" href="https://www.instagram.com/naomi" target="_blank" rel="noopener"><div class="photo">NC</div><div class="t-body"><h4>Naomi Campbell</h4><div class="role">Global icon · Supermodel</div><div class="handle">@naomi</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/idriselba" target="_blank" rel="noopener"><div class="photo">IE</div><div class="t-body"><h4>Idris Elba</h4><div class="role">Global icon · Actor</div><div class="handle">@idriselba</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/asakemusic" target="_blank" rel="noopener"><div class="photo">AS</div><div class="t-body"><h4>Asake</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@asakemusic</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/kidimusic" target="_blank" rel="noopener"><div class="photo">KD</div><div class="t-body"><h4>KiDi</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@kidimusic</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/michaeldapaah" target="_blank" rel="noopener"><div class="photo">MD</div><div class="t-body"><h4>Michael Dapaah</h4><div class="role">Creative · Entertainment</div><div class="handle">@michaeldapaah</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/demarai" target="_blank" rel="noopener"><div class="photo">DG</div><div class="t-body"><h4>Demarai Gray</h4><div class="role">Professional footballer</div><div class="handle">@demarai</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/iamkingpromise" target="_blank" rel="noopener"><div class="photo">KP</div><div class="t-body"><h4>King Promise</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@iamkingpromise</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/olaaina" target="_blank" rel="noopener"><div class="photo">OA</div><div class="t-body"><h4>Ola Aina</h4><div class="role">Professional footballer</div><div class="handle">@olaaina</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/naomi" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/naomi?fallback=false" alt="Naomi Campbell" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">NC</div><div class="t-body"><h4>Naomi Campbell</h4><div class="role">Global icon · Supermodel</div><div class="handle">@naomi</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/idriselba" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/idriselba?fallback=false" alt="Idris Elba" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">IE</div><div class="t-body"><h4>Idris Elba</h4><div class="role">Global icon · Actor</div><div class="handle">@idriselba</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/asakemusic" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/asakemusic?fallback=false" alt="Asake" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">AS</div><div class="t-body"><h4>Asake</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@asakemusic</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/kidimusic" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/kidimusic?fallback=false" alt="KiDi" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">KD</div><div class="t-body"><h4>KiDi</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@kidimusic</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/michaeldapaah" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/michaeldapaah?fallback=false" alt="Michael Dapaah" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MD</div><div class="t-body"><h4>Michael Dapaah</h4><div class="role">Creative · Entertainment</div><div class="handle">@michaeldapaah</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/demarai" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/demarai?fallback=false" alt="Demarai Gray" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">DG</div><div class="t-body"><h4>Demarai Gray</h4><div class="role">Professional footballer</div><div class="handle">@demarai</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/iamkingpromise" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/iamkingpromise?fallback=false" alt="King Promise" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">KP</div><div class="t-body"><h4>King Promise</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@iamkingpromise</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/olaaina" target="_blank" rel="noopener"><div class="photo"><img src="https://unavatar.io/instagram/olaaina?fallback=false" alt="Ola Aina" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">OA</div><div class="t-body"><h4>Ola Aina</h4><div class="role">Professional footballer</div><div class="handle">@olaaina</div></div></a>
       <button class="tcard more" type="button" data-open-roster aria-haspopup="dialog" aria-controls="rosterModal"><span>And many more →</span></button>
     </div>
     <p style="margin-top:40px">In their words:</p>
@@ -400,15 +406,21 @@
     <span class="label">Answers</span>
     <h2>Questions, answered on camera</h2>
     <p>Tap a question to watch the answer.</p>
-    <!-- Swap each .player for <div class="player"><iframe src="https://www.youtube.com/embed/ID" allowfullscreen></iframe></div> -->
+    <!--
+      VIDEOS: each answer has a player below. To go live, paste the YouTube
+      video ID into its data-yt="" attribute (the part after watch?v= or youtu.be/).
+      Example:  data-yt="dQw4w9WgXcQ"
+      A filled player turns gold-ready and plays inline on click. While data-yt
+      is empty it shows a tasteful "Filming soon" placeholder and does nothing.
+    -->
     <div class="faq">
-      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How do we start? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How do we start? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
     </div>
   </div>
 </section>
@@ -479,52 +491,52 @@
       <div class="mcat">
         <div class="mcat-label">Global Icons</div>
         <div class="mgrid">
-          <a class="mcard" href="https://www.instagram.com/naomi" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>NC</div><div class="t-body"><h4>Naomi Campbell</h4><div class="handle">@naomi</div><div class="followers"><b>15.8M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/idriselba" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>IE</div><div class="t-body"><h4>Idris Elba</h4><div class="handle">@idriselba</div><div class="followers"><b>6.7M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/naomi" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/naomi?fallback=false" alt="Naomi Campbell" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">NC</div><div class="t-body"><h4>Naomi Campbell</h4><div class="handle">@naomi</div><div class="followers"><b>15.8M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/idriselba" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/idriselba?fallback=false" alt="Idris Elba" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">IE</div><div class="t-body"><h4>Idris Elba</h4><div class="handle">@idriselba</div><div class="followers"><b>6.7M</b> followers</div></div></a>
         </div>
       </div>
 
       <div class="mcat">
         <div class="mcat-label">Music</div>
         <div class="mgrid">
-          <a class="mcard" href="https://www.instagram.com/asakemusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>A</div><div class="t-body"><h4>Asake</h4><div class="handle">@asakemusic</div><div class="followers"><b>4.9M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/kidimusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>K</div><div class="t-body"><h4>KiDi</h4><div class="handle">@kidimusic</div><div class="followers"><b>2.6M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/spinall" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>S</div><div class="t-body"><h4>Spinall</h4><div class="handle">@spinall</div><div class="followers"><b>2.2M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/iamkingpromise" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>KP</div><div class="t-body"><h4>King Promise</h4><div class="handle">@iamkingpromise</div><div class="followers"><b>1.9M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/odumodublvck" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>OB</div><div class="t-body"><h4>Odumodu Blvck</h4><div class="handle">@odumodublvck</div><div class="followers"><b>1.8M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/direalshaggy" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>S</div><div class="t-body"><h4>Shaggy</h4><div class="handle">@direalshaggy</div><div class="followers"><b>1.6M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/jeleeeel" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>J</div><div class="t-body"><h4>JELEEL!</h4><div class="handle">@jeleeeel</div><div class="followers"><b>1.1M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/pheelzgood" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>P</div><div class="t-body"><h4>Pheelz</h4><div class="handle">@pheelzgood</div><div class="followers"><b>626K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/eugyofficial" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>E</div><div class="t-body"><h4>Eugy</h4><div class="handle">@eugyofficial</div><div class="followers"><b>404K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/sophiecastillomusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>SC</div><div class="t-body"><h4>Sophie Castillo</h4><div class="handle">@sophiecastillomusic</div><div class="followers"><b>153K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/youngtandbugsey" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>YB</div><div class="t-body"><h4>Young T &amp; Bugsey</h4><div class="handle">@youngtandbugsey</div><div class="followers"><b>149.8K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/timduzit1" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>TD</div><div class="t-body"><h4>Tim Duzit</h4><div class="handle">@timduzit1</div><div class="followers"><b>14K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/asakemusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/asakemusic?fallback=false" alt="Asake" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">A</div><div class="t-body"><h4>Asake</h4><div class="handle">@asakemusic</div><div class="followers"><b>4.9M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/kidimusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/kidimusic?fallback=false" alt="KiDi" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">K</div><div class="t-body"><h4>KiDi</h4><div class="handle">@kidimusic</div><div class="followers"><b>2.6M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/spinall" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/spinall?fallback=false" alt="Spinall" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">S</div><div class="t-body"><h4>Spinall</h4><div class="handle">@spinall</div><div class="followers"><b>2.2M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/iamkingpromise" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/iamkingpromise?fallback=false" alt="King Promise" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">KP</div><div class="t-body"><h4>King Promise</h4><div class="handle">@iamkingpromise</div><div class="followers"><b>1.9M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/odumodublvck" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/odumodublvck?fallback=false" alt="Odumodu Blvck" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">OB</div><div class="t-body"><h4>Odumodu Blvck</h4><div class="handle">@odumodublvck</div><div class="followers"><b>1.8M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/direalshaggy" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/direalshaggy?fallback=false" alt="Shaggy" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">S</div><div class="t-body"><h4>Shaggy</h4><div class="handle">@direalshaggy</div><div class="followers"><b>1.6M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/jeleeeel" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/jeleeeel?fallback=false" alt="JELEEL!" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">J</div><div class="t-body"><h4>JELEEL!</h4><div class="handle">@jeleeeel</div><div class="followers"><b>1.1M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/pheelzgood" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/pheelzgood?fallback=false" alt="Pheelz" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">P</div><div class="t-body"><h4>Pheelz</h4><div class="handle">@pheelzgood</div><div class="followers"><b>626K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/eugyofficial" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/eugyofficial?fallback=false" alt="Eugy" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">E</div><div class="t-body"><h4>Eugy</h4><div class="handle">@eugyofficial</div><div class="followers"><b>404K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/sophiecastillomusic" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/sophiecastillomusic?fallback=false" alt="Sophie Castillo" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">SC</div><div class="t-body"><h4>Sophie Castillo</h4><div class="handle">@sophiecastillomusic</div><div class="followers"><b>153K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/youngtandbugsey" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/youngtandbugsey?fallback=false" alt="Young T and Bugsey" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">YB</div><div class="t-body"><h4>Young T &amp; Bugsey</h4><div class="handle">@youngtandbugsey</div><div class="followers"><b>149.8K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/timduzit1" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/timduzit1?fallback=false" alt="Tim Duzit" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">TD</div><div class="t-body"><h4>Tim Duzit</h4><div class="handle">@timduzit1</div><div class="followers"><b>14K</b> followers</div></div></a>
         </div>
       </div>
 
       <div class="mcat">
         <div class="mcat-label">Sport</div>
         <div class="mgrid">
-          <a class="mcard" href="https://www.instagram.com/olaaina" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>OA</div><div class="t-body"><h4>Ola Aina</h4><div class="handle">@olaaina</div><div class="followers"><b>505K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/demarai" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>DG</div><div class="t-body"><h4>Demarai Gray</h4><div class="handle">@demarai</div><div class="followers"><b>312K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/olaaina" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/olaaina?fallback=false" alt="Ola Aina" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">OA</div><div class="t-body"><h4>Ola Aina</h4><div class="handle">@olaaina</div><div class="followers"><b>505K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/demarai" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/demarai?fallback=false" alt="Demarai Gray" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">DG</div><div class="t-body"><h4>Demarai Gray</h4><div class="handle">@demarai</div><div class="followers"><b>312K</b> followers</div></div></a>
         </div>
       </div>
 
       <div class="mcat">
         <div class="mcat-label">Fashion &amp; Lifestyle</div>
         <div class="mgrid">
-          <a class="mcard" href="https://www.instagram.com/evssofficial" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>EA</div><div class="t-body"><h4>Eva Apio</h4><div class="handle">@evssofficial</div><div class="followers"><b>857K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/sheggzolusemo" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>S</div><div class="t-body"><h4>Sheggz</h4><div class="handle">@sheggzolusemo</div><div class="followers"><b>644K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/fuseodg" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>F</div><div class="t-body"><h4>Fuse ODG</h4><div class="handle">@fuseodg</div><div class="followers"><b>406K</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/shaunokojie" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>SO</div><div class="t-body"><h4>Shaun Okojie</h4><div class="handle">@shaunokojie</div><div class="followers"><b>302K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/evssofficial" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/evssofficial?fallback=false" alt="Eva Apio" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">EA</div><div class="t-body"><h4>Eva Apio</h4><div class="handle">@evssofficial</div><div class="followers"><b>857K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/sheggzolusemo" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/sheggzolusemo?fallback=false" alt="Sheggz" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">S</div><div class="t-body"><h4>Sheggz</h4><div class="handle">@sheggzolusemo</div><div class="followers"><b>644K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/fuseodg" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/fuseodg?fallback=false" alt="Fuse ODG" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">F</div><div class="t-body"><h4>Fuse ODG</h4><div class="handle">@fuseodg</div><div class="followers"><b>406K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/shaunokojie" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/shaunokojie?fallback=false" alt="Shaun Okojie" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">SO</div><div class="t-body"><h4>Shaun Okojie</h4><div class="handle">@shaunokojie</div><div class="followers"><b>302K</b> followers</div></div></a>
         </div>
       </div>
 
       <div class="mcat">
         <div class="mcat-label">Creatives &amp; Entertainment</div>
         <div class="mgrid">
-          <a class="mcard" href="https://www.instagram.com/michaeldapaah" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>MD</div><div class="t-body"><h4>Michael Dapaah</h4><div class="handle">@michaeldapaah</div><div class="followers"><b>1.4M</b> followers</div></div></a>
-          <a class="mcard" href="https://www.instagram.com/jae5" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span>J5</div><div class="t-body"><h4>JAE5</h4><div class="handle">@jae5</div><div class="followers"><b>205K</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/michaeldapaah" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/michaeldapaah?fallback=false" alt="Michael Dapaah" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MD</div><div class="t-body"><h4>Michael Dapaah</h4><div class="handle">@michaeldapaah</div><div class="followers"><b>1.4M</b> followers</div></div></a>
+          <a class="mcard" href="https://www.instagram.com/jae5" target="_blank" rel="noopener"><div class="photo"><span class="ig"></span><img src="https://unavatar.io/instagram/jae5?fallback=false" alt="JAE5" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">J5</div><div class="t-body"><h4>JAE5</h4><div class="handle">@jae5</div><div class="followers"><b>205K</b> followers</div></div></a>
         </div>
       </div>
 
@@ -540,6 +552,26 @@
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.16});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const item=q.closest('.faq-item');const open=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!open)item.classList.add('open')})});
+
+  /* ===== FAQ video players ===== */
+  document.querySelectorAll('.player').forEach(p=>{
+    const id=(p.getAttribute('data-yt')||'').trim();
+    if(!id){
+      p.classList.add('empty');
+      const lbl=p.querySelector('.player-label');
+      if(lbl)lbl.textContent='Filming soon';
+      return;
+    }
+    p.addEventListener('click',()=>{
+      if(p.querySelector('iframe'))return;
+      const f=document.createElement('iframe');
+      f.src='https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
+      f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.setAttribute('allowfullscreen','');
+      p.innerHTML='';
+      p.appendChild(f);
+    });
+  });
 
   /* ===== Talent roster modal ===== */
   (function(){
