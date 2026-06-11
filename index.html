@@ -52,6 +52,12 @@
   .scrollcue .chev{display:block;margin:10px auto 0;width:10px;height:10px;border-right:1px solid var(--gold);border-bottom:1px solid var(--gold);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(45deg)}50%{transform:translateY(5px) rotate(45deg)}}
 
+  /* ===== welcome video ===== */
+  .welcome{margin:34px auto 6px;max-width:560px}
+  .welcome .eyebrow{margin-bottom:14px}
+  .video-frame{position:relative;aspect-ratio:16/9;border:1px solid var(--gold);border-radius:6px;overflow:hidden;background:radial-gradient(120% 120% at 50% 30%, #221c14, #14110D);box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .video-frame video,.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border:0;background:#14110D}
+
   /* ===== shared body ===== */
   section{padding:74px 0}
   .label{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:1.05rem;letter-spacing:.04em;display:block;margin-bottom:18px}
@@ -254,6 +260,20 @@
     <p class="lead">Keep your phone close. A member of our team is calling you in the next <b>5 to 10 minutes</b>.</p>
     <p class="note">The call may come from an international number, so please pick up. A calendar invite for your main call is already on its way to your inbox.</p>
 
+    <!-- ===== WELCOME VIDEO =====
+         TO ADD YOUR VIDEO: drop your file at  media/welcome.mp4  (optionally replace media/welcome-poster.jpg).
+         Prefer YouTube/Vimeo instead? Replace the whole <video>...</video> block below with:
+         <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+    <div class="welcome">
+      <p class="eyebrow">A quick hello before we call</p>
+      <div class="video-frame">
+        <video controls playsinline preload="metadata" poster="media/welcome-poster.jpg">
+          <source src="media/welcome.mp4" type="video/mp4">
+          Your browser doesn&rsquo;t support embedded video.
+        </video>
+      </div>
+    </div>
+
     <div class="rule"></div>
 
     <div class="bgrid">
@@ -318,10 +338,11 @@
       <a class="tcard" href="https://www.instagram.com/idriselba" target="_blank" rel="noopener"><div class="photo"><img src="talent/idriselba.jpg" alt="Idris Elba" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">IE</div><div class="t-body"><h4>Idris Elba</h4><div class="role">Global icon · Actor</div><div class="handle">@idriselba</div></div></a>
       <a class="tcard" href="https://www.instagram.com/asakemusic" target="_blank" rel="noopener"><div class="photo"><img src="talent/asakemusic.jpg" alt="Asake" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">AS</div><div class="t-body"><h4>Asake</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@asakemusic</div></div></a>
       <a class="tcard" href="https://www.instagram.com/kidimusic" target="_blank" rel="noopener"><div class="photo"><img src="talent/kidimusic.jpg" alt="KiDi" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">KD</div><div class="t-body"><h4>KiDi</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@kidimusic</div></div></a>
-      <a class="tcard" href="https://www.instagram.com/michaeldapaah" target="_blank" rel="noopener"><div class="photo"><img src="talent/michaeldapaah.jpg" alt="Michael Dapaah" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">MD</div><div class="t-body"><h4>Michael Dapaah</h4><div class="role">Creative · Entertainment</div><div class="handle">@michaeldapaah</div></div></a>
       <a class="tcard" href="https://www.instagram.com/demarai" target="_blank" rel="noopener"><div class="photo"><img src="talent/demarai.jpg" alt="Demarai Gray" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">DG</div><div class="t-body"><h4>Demarai Gray</h4><div class="role">Professional footballer</div><div class="handle">@demarai</div></div></a>
       <a class="tcard" href="https://www.instagram.com/iamkingpromise" target="_blank" rel="noopener"><div class="photo"><img src="talent/iamkingpromise.jpg" alt="King Promise" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">KP</div><div class="t-body"><h4>King Promise</h4><div class="role">Recording artist · Afrobeats</div><div class="handle">@iamkingpromise</div></div></a>
       <a class="tcard" href="https://www.instagram.com/olaaina" target="_blank" rel="noopener"><div class="photo"><img src="talent/olaaina.jpg" alt="Ola Aina" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">OA</div><div class="t-body"><h4>Ola Aina</h4><div class="role">Professional footballer</div><div class="handle">@olaaina</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/sil_labae" target="_blank" rel="noopener"><div class="photo"><img src="talent/sil_labae.jpg" alt="Priscilla Donkoh" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">PD</div><div class="t-body"><h4>Priscilla Donkoh</h4><div class="role">Creator · Fashion &amp; Beauty</div><div class="handle">@sil_labae</div></div></a>
+      <a class="tcard" href="https://www.instagram.com/lavbbe" target="_blank" rel="noopener"><div class="photo"><img src="talent/lavbbe.jpg" alt="Lavinia Calin" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">LC</div><div class="t-body"><h4>Lavinia Calin</h4><div class="role">Artist · Music &amp; Beauty</div><div class="handle">@lavbbe</div></div></a>
       <button class="tcard more" type="button" data-open-roster aria-haspopup="dialog" aria-controls="rosterModal"><span>And many more →</span></button>
     </div>
     <p style="margin-top:40px">In their words:</p>
