@@ -146,7 +146,10 @@
   .faq-item.open .faq-q .pl{transform:rotate(45deg)}
   .faq-a{max-height:0;overflow:hidden;transition:max-height .45s ease}
   .faq-item.open .faq-a{max-height:640px}
+  .faq-item.deck.open .faq-a{max-height:none}
   .faq-a .inner{padding:0 0 28px}
+  .faq-deck-intro{margin:0 0 30px!important}
+  .faq-item.deck .cs-summary{margin-top:6px}
 
   .player{position:relative;aspect-ratio:16/9;width:100%;max-width:560px;border-radius:4px;overflow:hidden;border:1px solid var(--line);cursor:pointer;
     background:radial-gradient(120% 140% at 50% 0%, rgba(168,138,79,.18), transparent 60%),linear-gradient(160deg,#1c1813,#14110D 70%);
@@ -250,9 +253,9 @@
   .faq-a .inner p{margin:0;font-size:1.02rem;line-height:1.65;color:var(--ink-soft);max-width:64ch}
 
   /* ===== Case studies ===== */
-  #case-studies .prepared{display:none;font-family:var(--sans);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
-  #case-studies .prepared.show{display:block}
-  #case-studies .prepared b{color:var(--gold-bright);font-weight:700}
+  #faq .prepared{display:none;font-family:var(--sans);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+  #faq .prepared.show{display:block}
+  #faq .prepared b{color:var(--gold-bright);font-weight:700}
 
   .cs-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:16px 0 32px}
   .cs-sum{padding:26px 12px;text-align:center;border-right:1px solid var(--line)}
@@ -516,43 +519,6 @@
   </div>
 </section>
 
-<section id="case-studies">
-  <div class="wrap reveal">
-    <p class="prepared" id="preparedFor"></p>
-    <span class="label">Case studies</span>
-    <h2>The work, in <em>numbers</em></h2>
-    <p>Real campaigns, real dashboards. Filter by what you're building, and run your own spend through the math.</p>
-
-    <div class="cs-summary" id="csSummary"></div>
-
-    <div class="cs-reach reveal">
-      <h4>Distributed everywhere your audience already is</h4>
-      <div class="rsub">One campaign, live across every major platform at once.</div>
-      <div class="cs-map" id="csMap"></div>
-    </div>
-
-    <div class="cs-filters" id="csFilters"></div>
-    <div class="cs-grid" id="csGrid"></div>
-
-    <div class="cs-cpm reveal">
-      <h4>Run the math on your own spend</h4>
-      <div class="csub">See the reach the same budget buys through paid ads versus our distribution.</div>
-      <label for="csSpend">Monthly budget</label>
-      <div class="cs-input"><span>$</span><input id="csSpend" type="number" min="0" step="100" value="10000" inputmode="numeric" aria-label="Monthly budget in dollars"></div>
-      <div class="cs-bars">
-        <div class="cs-bar ads">
-          <div class="cs-bar-top"><span class="cs-bar-name">Paid ads · $15 CPM (estimate)</span><span class="cs-bar-val" id="csAdsVal">0</span></div>
-          <div class="cs-bar-track"><div class="cs-bar-fill" id="csAdsFill"></div></div>
-        </div>
-        <div class="cs-bar us">
-          <div class="cs-bar-top"><span class="cs-bar-name">Our distribution · $1.30 CPM</span><span class="cs-bar-val" id="csUsVal">0</span></div>
-          <div class="cs-bar-track"><div class="cs-bar-fill" id="csUsFill"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <div class="cs-lb" id="csLightbox" aria-hidden="true">
   <div class="cs-lb-inner"><button class="cs-lb-close" data-cs-lb-close aria-label="Close">&times;</button><div id="csLbHolder"></div></div>
 </div>
@@ -575,7 +541,34 @@
       <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>Pricing has two parts. A retainer covers the work we run on our side. A separate clipping budget pays for the views themselves, priced on cost per thousand views. On the clipping budget there are two models. Mass clipping uses a large pool of creators for high volume and saturation: launches, music, big moments. An in-house clipper team is smaller and managed, built for conversion when you want measurable action. Either way we set a rate per thousand views and cap the payout per clip, so spend stays predictable. You only pay for views that clear review. We size the retainer and the budget to your goal on the call.</p></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>A campaign runs in two phases. Within the first 72 hours, clips are live and views are moving. Then come the weeks after, where the real value sits, because clips don't expire. They keep getting found, so reach compounds long after launch. Most clients run a defined pilot first, long enough to read the numbers honestly, then decide whether to scale. We'll tell you straight what length fits your goal.</p></div></div></div>
-      <div class="faq-item txt"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>Two sides: distribution and talent. On distribution: the Paul American launch passed 11 million views. Iman Gadzhi, 42 million across a 90-day amplification. Luke Belmar's Capital Club, 200 million a month. On the music side, Kojo Blak and Fantana at a $1.30 cost per thousand. On talent, we work across a network spanning music, sport, fashion and culture. On the call we'll show you the names relevant to what you're building.</p></div></div></div>
+      <div class="faq-item deck"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner">
+        <p class="faq-deck-intro">Two sides: distribution and talent. On distribution, the Paul American launch passed 11M views, Iman Gadzhi did 42M across a 90-day amplification, and Luke Belmar's Capital Club runs 200M a month. On music, Kojo Blak and Fantana at a $1.30 CPM — plus brand work like Walmart. On talent, we span music, sport, fashion and culture. Here's the work in numbers — filter by what you're building, and run your own spend through the math.</p>
+        <p class="prepared" id="preparedFor"></p>
+        <div class="cs-summary" id="csSummary"></div>
+        <div class="cs-reach reveal">
+          <h4>Distributed everywhere your audience already is</h4>
+          <div class="rsub">One campaign, live across every major platform at once.</div>
+          <div class="cs-map" id="csMap"></div>
+        </div>
+        <div class="cs-filters" id="csFilters"></div>
+        <div class="cs-grid" id="csGrid"></div>
+        <div class="cs-cpm reveal">
+          <h4>Run the math on your own spend</h4>
+          <div class="csub">See the reach the same budget buys through paid ads versus our distribution.</div>
+          <label for="csSpend">Monthly budget</label>
+          <div class="cs-input"><span>$</span><input id="csSpend" type="number" min="0" step="100" value="10000" inputmode="numeric" aria-label="Monthly budget in dollars"></div>
+          <div class="cs-bars">
+            <div class="cs-bar ads">
+              <div class="cs-bar-top"><span class="cs-bar-name">Paid ads · $15 CPM (estimate)</span><span class="cs-bar-val" id="csAdsVal">0</span></div>
+              <div class="cs-bar-track"><div class="cs-bar-fill" id="csAdsFill"></div></div>
+            </div>
+            <div class="cs-bar us">
+              <div class="cs-bar-top"><span class="cs-bar-name">Our distribution · $1.30 CPM</span><span class="cs-bar-val" id="csUsVal">0</span></div>
+              <div class="cs-bar-track"><div class="cs-bar-fill" id="csUsFill"></div></div>
+            </div>
+          </div>
+        </div>
+      </div></div></div>
       <div class="faq-item txt"><button class="faq-q">How do we start? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>It begins with the two calls you've already started. This first one is short, to confirm fit. Your main call goes deep on strategy. After that you get a tailored proposal in writing: exactly what your budget delivers, no surprises. If it's a yes, a deposit lands, we send your intake form, and within 72 hours your first clips are live.</p></div></div></div>
     </div>
   </div>
@@ -711,7 +704,18 @@
 <script>
   const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.16});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const item=q.closest('.faq-item');const open=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!open)item.classList.add('open')})});
+  document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{
+    const item=q.closest('.faq-item');
+    const open=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!open){
+      item.classList.add('open');
+      if(item.classList.contains('deck')){
+        item.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+        if(window.__deckKick)window.__deckKick();
+      }
+    }
+  })});
 
   /* ===== FAQ video players ===== */
   document.querySelectorAll('.player').forEach(p=>{
@@ -797,10 +801,10 @@
         subMetrics:[{value:0.40,display:"$0.40",label:"Effective CPM"},{value:1900000,display:"1.9M",label:"Approved"},{value:39,display:"39%",label:"Approval Rate"},{value:776.24,display:"$776.24",label:"Paid Out"}],
         overview:"Content rewards campaign for Mannywellz featuring Wale. Real client dashboard, reported exactly as the client sees it.",
         dashboardUrl:"", clips:[] },
-      { id:"walmart", client:"Walmart", subtitle:"", vertical:"Retail",
+      { id:"walmart", client:"Walmart", subtitle:"Retail Creator Campaign", vertical:"Retail",
         headline:{value:0,display:"",label:""},
         subMetrics:[],
-        overview:"",
+        overview:"Creator-led campaign produced for Walmart. Full performance numbers are landing soon — tap below to watch the campaign in action.",
         dashboardUrl:"", clips:[{url:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
     ];
 
@@ -973,6 +977,13 @@
     spend.addEventListener('input',calc);
     const cpmIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){calc();cpmIO.unobserve(e.target);}})},{threshold:0.3});
     cpmIO.observe(document.querySelector('.cs-cpm'));
+
+    /* ---- kick animations when the deck reveals inside the FAQ accordion ---- */
+    window.__deckKick=function(){
+      document.querySelectorAll('#csSummary .count, #csGrid .count').forEach(animateCount);
+      map.querySelectorAll('.pin').forEach((pn,i)=>setTimeout(()=>pn.classList.add('lit'),i*180));
+      calc();
+    };
   })();
 </script>
 </body>
