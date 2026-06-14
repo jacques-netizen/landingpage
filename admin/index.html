@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison d'Élites · Video Upload</title>
+<style>
+  :root{--ink:#1a140d;--cream:#f7f2e9;--gold:#c7a867;--gold-bright:#e6c984;--line:rgba(199,168,103,.28);--ok:#5fb87a;--bad:#d2766a}
+  *{box-sizing:border-box}
+  body{margin:0;background:#0e0b07;color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:640px;margin:0 auto;padding:40px 20px 80px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}
+  h1{font-size:1.5rem;margin:0;letter-spacing:.01em}
+  .eyebrow{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .muted{color:#b9b09f;font-size:.92rem}
+  a.logout{color:var(--gold);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line)}
+  .card{background:#161109;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px}
+  .gate{max-width:380px;margin:14vh auto 0}
+  label{display:block;font-size:.85rem;color:#cfc6b3;margin-bottom:6px}
+  input[type=password]{width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:#0e0b07;color:var(--cream);font-size:1rem}
+  button{cursor:pointer;border:0;border-radius:10px;font-weight:600;font-size:.95rem;padding:12px 18px;background:var(--gold);color:#241a0c;transition:.15s}
+  button:hover{background:var(--gold-bright)}
+  button.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+  button.danger{background:transparent;color:var(--bad);border:1px solid var(--bad);padding:10px 14px;font-size:.85rem}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .slot h3{margin:0 0 2px;font-size:1.02rem}
+  .slot .key{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;color:var(--gold)}
+  .status{font-size:.85rem;margin:8px 0 12px}
+  .status.has{color:var(--ok)}
+  .status.empty{color:#9a917f}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  input[type=file]{font-size:.85rem;color:#cfc6b3;max-width:100%}
+  .bar{height:8px;border-radius:6px;background:#0e0b07;border:1px solid var(--line);overflow:hidden;margin-top:12px;display:none}
+  .bar.show{display:block}
+  .bar > i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+  .msg{font-size:.85rem;margin-top:8px;min-height:1.1em}
+  .msg.ok{color:var(--ok)} .msg.err{color:var(--bad)}
+  .hint{font-size:.8rem;color:#8c8474;margin-top:6px}
+  .topnote{font-size:.85rem;color:#b9b09f;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Password gate -->
+  <div id="gate" class="gate card" style="display:none">
+    <div class="eyebrow">Maison d'Élites</div>
+    <h1 style="margin:4px 0 14px">Video upload</h1>
+    <label for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••••">
+    <div class="msg err" id="gateMsg"></div>
+    <button id="gateBtn" style="width:100%;margin-top:12px">Unlock</button>
+    <p class="hint">Your password is kept only in this browser tab and sent over HTTPS. Close the tab to forget it.</p>
+  </div>
+
+  <!-- Console -->
+  <div id="app" style="display:none">
+    <header>
+      <div>
+        <div class="eyebrow">Maison d'Élites</div>
+        <h1>Video upload</h1>
+      </div>
+      <a href="#" class="logout" id="logout">Lock</a>
+    </header>
+    <p class="topnote">Pick a slot, choose a video from your phone, and tap Upload. Any size works — it's sent in chunks. The site turns the player on automatically once it's done.</p>
+    <div id="slots"></div>
+  </div>
+
+</div>
+
+<script>
+const CHUNK = 50 * 1024 * 1024; // 50MB per part
+const $ = (s, r = document) => r.querySelector(s);
+
+function pw(){ return sessionStorage.getItem('mde_pw') || ''; }
+function setPw(v){ sessionStorage.setItem('mde_pw', v); }
+function clearPw(){ sessionStorage.removeItem('mde_pw'); }
+function auth(extra){ return Object.assign({ 'Authorization': 'Bearer ' + pw() }, extra || {}); }
+
+function fmtSize(n){
+  if(n >= 1e9) return (n/1e9).toFixed(2) + ' GB';
+  if(n >= 1e6) return (n/1e6).toFixed(1) + ' MB';
+  if(n >= 1e3) return Math.round(n/1e3) + ' KB';
+  return n + ' B';
+}
+function fmtDate(s){ try { return new Date(s).toLocaleString(); } catch(e){ return ''; } }
+
+function showGate(msg){
+  $('#app').style.display = 'none';
+  $('#gate').style.display = 'block';
+  $('#gateMsg').textContent = msg || '';
+  $('#pw').focus();
+}
+
+async function load(){
+  if(!pw()){ showGate(); return; }
+  let res;
+  try { res = await fetch('/api/list', { headers: auth() }); }
+  catch(e){ showGate('Network error — is the site running on Cloudflare Pages?'); return; }
+  if(res.status === 401){ clearPw(); showGate('Wrong password.'); return; }
+  if(!res.ok){
+    let t = await res.text();
+    $('#gate').style.display='none'; $('#app').style.display='block';
+    $('#slots').innerHTML = '<div class="card msg err">Server error: ' + t + '</div>';
+    return;
+  }
+  const data = await res.json();
+  $('#gate').style.display = 'none';
+  $('#app').style.display = 'block';
+  render(data.slots || []);
+}
+
+function render(slots){
+  const root = $('#slots');
+  root.innerHTML = '';
+  slots.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'card slot';
+    card.innerHTML =
+      '<h3>' + s.label + '</h3>' +
+      '<div class="key">/v/' + s.key + '</div>' +
+      '<div class="status ' + (s.exists ? 'has' : 'empty') + '">' +
+        (s.exists ? '● Live — ' + fmtSize(s.size) + (s.uploaded ? ' · ' + fmtDate(s.uploaded) : '')
+                  : '○ No video yet') + '</div>' +
+      '<div class="row">' +
+        '<input type="file" accept="video/*" />' +
+        '<button class="up">Upload</button>' +
+        (s.exists ? '<button class="danger del">Remove</button>' : '') +
+      '</div>' +
+      '<div class="bar"><i></i></div>' +
+      '<div class="msg"></div>';
+
+    const fileEl = $('input[type=file]', card);
+    const upBtn  = $('.up', card);
+    const delBtn = $('.del', card);
+    const bar    = $('.bar', card);
+    const fill   = $('.bar > i', card);
+    const msg    = $('.msg', card);
+
+    upBtn.addEventListener('click', async () => {
+      const file = fileEl.files[0];
+      if(!file){ msg.className='msg err'; msg.textContent='Choose a video first.'; return; }
+      upBtn.disabled = true; if(delBtn) delBtn.disabled = true;
+      bar.classList.add('show'); fill.style.width='0%';
+      msg.className='msg'; msg.textContent='Starting…';
+      try {
+        await uploadFile(s.key, file, (p) => {
+          fill.style.width = Math.round(p*100) + '%';
+          msg.textContent = 'Uploading… ' + Math.round(p*100) + '%';
+        });
+        msg.className='msg ok'; msg.textContent='Done — it is live on the site.';
+        setTimeout(load, 600);
+      } catch(err){
+        msg.className='msg err'; msg.textContent = 'Failed: ' + (err && err.message ? err.message : err);
+        upBtn.disabled = false; if(delBtn) delBtn.disabled = false;
+      }
+    });
+
+    if(delBtn){
+      delBtn.addEventListener('click', async () => {
+        if(!confirm('Remove this video from the site?')) return;
+        delBtn.disabled = true;
+        const r = await fetch('/api/upload?slot=' + encodeURIComponent(s.key), { method:'DELETE', headers: auth() });
+        if(r.ok){ load(); } else { delBtn.disabled = false; msg.className='msg err'; msg.textContent='Could not remove.'; }
+      });
+    }
+
+    root.appendChild(card);
+  });
+}
+
+async function uploadFile(slot, file, onProgress){
+  const ct = file.type || 'video/mp4';
+  // 1. create multipart upload
+  const cr = await fetch('/api/upload?slot=' + encodeURIComponent(slot) + '&action=create',
+    { method:'POST', headers: auth({ 'x-file-type': ct }) });
+  if(!cr.ok) throw new Error('could not start upload (' + cr.status + ')');
+  const { uploadId } = await cr.json();
+
+  // 2. upload parts
+  const parts = [];
+  const total = file.size || 1;
+  let sent = 0, part = 1;
+  for(let pos = 0; pos < file.size; pos += CHUNK){
+    const blob = file.slice(pos, pos + CHUNK);
+    const r = await fetch('/api/upload?slot=' + encodeURIComponent(slot) +
+      '&action=part&uploadId=' + encodeURIComponent(uploadId) + '&part=' + part,
+      { method:'POST', headers: auth(), body: blob });
+    if(!r.ok){
+      await fetch('/api/upload?slot=' + encodeURIComponent(slot) + '&action=abort&uploadId=' + encodeURIComponent(uploadId),
+        { method:'POST', headers: auth() }).catch(()=>{});
+      throw new Error('chunk ' + part + ' failed (' + r.status + ')');
+    }
+    const pj = await r.json();
+    parts.push({ partNumber: pj.partNumber, etag: pj.etag });
+    sent += blob.size; part++;
+    onProgress(Math.min(0.99, sent / total));
+  }
+
+  // 3. complete
+  const cc = await fetch('/api/upload?slot=' + encodeURIComponent(slot) +
+    '&action=complete&uploadId=' + encodeURIComponent(uploadId),
+    { method:'POST', headers: auth({ 'content-type':'application/json' }), body: JSON.stringify({ parts }) });
+  if(!cc.ok) throw new Error('could not finalize upload (' + cc.status + ')');
+  onProgress(1);
+  return cc.json();
+}
+
+// Gate handlers
+$('#gateBtn').addEventListener('click', () => {
+  const v = $('#pw').value.trim();
+  if(!v) return;
+  setPw(v); $('#pw').value=''; load();
+});
+$('#pw').addEventListener('keydown', e => { if(e.key === 'Enter') $('#gateBtn').click(); });
+$('#logout').addEventListener('click', e => { e.preventDefault(); clearPw(); showGate('Locked.'); });
+
+load();
+</script>
+</body>
+</html>

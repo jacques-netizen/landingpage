@@ -529,23 +529,18 @@
     <h2>Questions, answered on camera</h2>
     <p>Tap a question to watch the answer.</p>
     <!--
-      VIDEOS — upload straight from your phone, no code needed:
-        1. Record the answer on your phone.
-        2. Open this repo in the GitHub app (or github.com -> Add file ->
-           Upload files), go into the /media folder.
-        3. Upload the clip named EXACTLY:
-              media/faq-1.mp4  -> "What is content distribution..."
-              media/faq-2.mp4  -> "How is this different from paid ads?"
-              media/faq-3.mp4  -> "How do you make sure the views are real?"
-        4. Commit. Within a minute the player turns on automatically.
-      Until a file is uploaded the player shows a tasteful "Filming soon"
-      placeholder. Keep each file under 100MB (GitHub's per-file limit) — if
-      it's bigger, trim or compress it on your phone first. .mp4 works best.
+      VIDEOS — upload straight from your phone, no code, no size limit:
+        1. Go to  yoursite.com/admin  on your phone and enter the password.
+        2. Pick the slot (faq-1 / faq-2 / faq-3), choose the video, tap Upload.
+        3. The player below turns on automatically once the upload finishes.
+      Players stream from /v/<slot> (Cloudflare R2). Until a slot has a video
+      it shows a tasteful "Filming soon" placeholder. See DEPLOY.md for the
+      one-time Cloudflare setup that powers /admin.
     -->
     <div class="faq">
-      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-1.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-2.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-3.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-1"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-2"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-3"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>Pricing has two parts. A retainer covers the work we run on our side. A separate clipping budget pays for the views themselves, priced on cost per thousand views. On the clipping budget there are two models. Mass clipping uses a large pool of creators for high volume and saturation: launches, music, big moments. An in-house clipper team is smaller and managed, built for conversion when you want measurable action. Either way we set a rate per thousand views and cap the payout per clip, so spend stays predictable. You only pay for views that clear review. We size the retainer and the budget to your goal on the call.</p></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>A campaign runs in two phases. Within the first 72 hours, clips are live and views are moving. Then come the weeks after, where the real value sits, because clips don't expire. They keep getting found, so reach compounds long after launch. Most clients run a defined pilot first, long enough to read the numbers honestly, then decide whether to scale. We'll tell you straight what length fits your goal.</p></div></div></div>
       <div class="faq-item deck"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner">
@@ -833,7 +828,7 @@
         headline:{value:0,display:"",label:""},
         subMetrics:[],
         overview:"Creator-led campaign produced for Walmart. Full performance numbers are landing soon — tap below to watch the campaign in action.",
-        dashboardUrl:"", clips:[{url:"media/walmart.mp4",fallback:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
+        dashboardUrl:"", clips:[{url:"/v/walmart",fallback:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
     ];
 
     const summary=[

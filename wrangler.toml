@@ -1,0 +1,20 @@
+# Cloudflare Pages config.
+#
+# In production the bindings below are set in the Cloudflare dashboard
+# (Pages project -> Settings), so you do NOT have to edit this file to go live.
+# This file mainly documents the bindings and enables local testing with:
+#
+#   npm i -g wrangler
+#   wrangler pages dev . --r2 MEDIA
+#
+# (then open http://localhost:8788/admin ; for local dev set ADMIN_PASSWORD in
+#  a .dev.vars file:  ADMIN_PASSWORD = "test123")
+
+name = "maison-delites"
+pages_build_output_dir = "."
+compatibility_date = "2024-09-01"
+
+# R2 bucket binding used by the upload + media-serving functions.
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "maison-delites-media"
