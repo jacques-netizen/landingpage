@@ -529,16 +529,23 @@
     <h2>Questions, answered on camera</h2>
     <p>Tap a question to watch the answer.</p>
     <!--
-      VIDEOS: each answer has a player below. To go live, paste the YouTube
-      video ID into its data-yt="" attribute (the part after watch?v= or youtu.be/).
-      Example:  data-yt="dQw4w9WgXcQ"
-      A filled player turns gold-ready and plays inline on click. While data-yt
-      is empty it shows a tasteful "Filming soon" placeholder and does nothing.
+      VIDEOS — upload straight from your phone, no code needed:
+        1. Record the answer on your phone.
+        2. Open this repo in the GitHub app (or github.com -> Add file ->
+           Upload files), go into the /media folder.
+        3. Upload the clip named EXACTLY:
+              media/faq-1.mp4  -> "What is content distribution..."
+              media/faq-2.mp4  -> "How is this different from paid ads?"
+              media/faq-3.mp4  -> "How do you make sure the views are real?"
+        4. Commit. Within a minute the player turns on automatically.
+      Until a file is uploaded the player shows a tasteful "Filming soon"
+      placeholder. Keep each file under 100MB (GitHub's per-file limit) — if
+      it's bigger, trim or compress it on your phone first. .mp4 works best.
     -->
     <div class="faq">
-      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-1.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-2.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="media/faq-3.mp4"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>Pricing has two parts. A retainer covers the work we run on our side. A separate clipping budget pays for the views themselves, priced on cost per thousand views. On the clipping budget there are two models. Mass clipping uses a large pool of creators for high volume and saturation: launches, music, big moments. An in-house clipper team is smaller and managed, built for conversion when you want measurable action. Either way we set a rate per thousand views and cap the payout per clip, so spend stays predictable. You only pay for views that clear review. We size the retainer and the budget to your goal on the call.</p></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>A campaign runs in two phases. Within the first 72 hours, clips are live and views are moving. Then come the weeks after, where the real value sits, because clips don't expire. They keep getting found, so reach compounds long after launch. Most clients run a defined pilot first, long enough to read the numbers honestly, then decide whether to scale. We'll tell you straight what length fits your goal.</p></div></div></div>
       <div class="faq-item deck"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner">
@@ -717,24 +724,45 @@
     }
   })});
 
-  /* ===== FAQ video players ===== */
+  /* ===== FAQ video players =====
+     Each player can play a self-hosted file or a YouTube video.
+       data-src="media/faq-1.mp4"  -> upload that file to the repo and it plays
+       data-yt="VIDEO_ID"          -> optional YouTube fallback
+     A player with a self-hosted file stays in "Filming soon" until the file
+     actually exists in the repo, then turns on automatically on next visit. */
   document.querySelectorAll('.player').forEach(p=>{
+    const src=(p.getAttribute('data-src')||'').trim();
     const id=(p.getAttribute('data-yt')||'').trim();
-    if(!id){
-      p.classList.add('empty');
-      const lbl=p.querySelector('.player-label');
-      if(lbl)lbl.textContent='Filming soon';
-      return;
+    const lbl=p.querySelector('.player-label');
+    function setEmpty(){p.classList.add('empty');if(lbl)lbl.textContent='Filming soon';}
+    function setReady(){p.classList.remove('empty');if(lbl)lbl.textContent='Watch the answer';}
+    function playFile(){
+      if(p.querySelector('video,iframe'))return;
+      const v=document.createElement('video');
+      v.src=src;v.controls=true;v.autoplay=true;v.playsInline=true;v.setAttribute('playsinline','');
+      p.innerHTML='';p.appendChild(v);
     }
-    p.addEventListener('click',()=>{
-      if(p.querySelector('iframe'))return;
+    function playYt(){
+      if(p.querySelector('video,iframe'))return;
       const f=document.createElement('iframe');
       f.src='https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0';
       f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
       f.setAttribute('allowfullscreen','');
-      p.innerHTML='';
-      p.appendChild(f);
-    });
+      p.innerHTML='';p.appendChild(f);
+    }
+    if(src){
+      /* probe the repo: only switch the player on once the file is uploaded */
+      fetch(src,{method:'HEAD'}).then(r=>{
+        if(r.ok){setReady();p.addEventListener('click',playFile);}
+        else if(id){setReady();p.addEventListener('click',playYt);}
+        else{setEmpty();}
+      }).catch(()=>{
+        if(id){setReady();p.addEventListener('click',playYt);}else{setEmpty();}
+      });
+      return;
+    }
+    if(id){p.addEventListener('click',playYt);return;}
+    setEmpty();
   });
 
   /* ===== Talent roster modal ===== */
@@ -805,7 +833,7 @@
         headline:{value:0,display:"",label:""},
         subMetrics:[],
         overview:"Creator-led campaign produced for Walmart. Full performance numbers are landing soon — tap below to watch the campaign in action.",
-        dashboardUrl:"", clips:[{url:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
+        dashboardUrl:"", clips:[{url:"media/walmart.mp4",fallback:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
     ];
 
     const summary=[
@@ -931,8 +959,12 @@
         const cs=caseStudies.find(c=>c.id===card.dataset.id);
         if(holder.classList.contains('open')){holder.classList.remove('open');cbtn.textContent='Watch clips ('+cs.clips.length+')';return;}
         if(!holder.dataset.built){
-          holder.innerHTML=cs.clips.map(c=>{const url=typeof c==='string'?c:c.url;const thumb=(c&&c.thumb)?'<img src="'+esc(c.thumb)+'" alt="">':'';return '<div class="cs-clip" data-url="'+esc(url)+'">'+thumb+'<span class="play"></span></div>';}).join('');
+          holder.innerHTML=cs.clips.map(c=>{const url=typeof c==='string'?c:c.url;const fb=(c&&c.fallback)?c.fallback:'';const thumb=(c&&c.thumb)?'<img src="'+esc(c.thumb)+'" alt="">':'';return '<div class="cs-clip" data-url="'+esc(url)+'"'+(fb?' data-fallback="'+esc(fb)+'"':'')+'>'+thumb+'<span class="play"></span></div>';}).join('');
           holder.dataset.built='1';
+          /* if a self-hosted clip isn't uploaded yet, fall back to its backup link */
+          holder.querySelectorAll('.cs-clip[data-fallback]').forEach(el=>{
+            fetch(el.dataset.url,{method:'HEAD'}).then(r=>{if(!r.ok)el.dataset.url=el.dataset.fallback;}).catch(()=>{el.dataset.url=el.dataset.fallback;});
+          });
         }
         holder.classList.add('open');cbtn.textContent='Hide clips';return;
       }
