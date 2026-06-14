@@ -801,7 +801,7 @@
         headline:{value:0,display:"",label:""},
         subMetrics:[],
         overview:"",
-        dashboardUrl:"", clips:[] }
+        dashboardUrl:"", clips:[{url:"https://drive.google.com/file/d/1VokNjTLeT7TbSu6ajt59x5LYRgzHWAUp/view",label:"Walmart campaign"}] }
     ];
 
     const summary=[
@@ -903,11 +903,14 @@
     /* ---- dashboard + clips (delegated) ---- */
     const lb=document.getElementById('csLightbox'), lbHolder=document.getElementById('csLbHolder');
     function ytId(url){const m=String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);return m?m[1]:null;}
+    function driveId(url){const m=String(url).match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);return m?m[1]:null;}
     function openLightbox(url){
       if(!url)return;
-      const id=ytId(url);
-      lbHolder.innerHTML=id
-        ? '<iframe src="https://www.youtube.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
+      const yt=ytId(url), dr=driveId(url);
+      lbHolder.innerHTML=yt
+        ? '<iframe src="https://www.youtube.com/embed/'+yt+'?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
+        : dr
+        ? '<iframe src="https://drive.google.com/file/d/'+dr+'/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>'
         : '<video src="'+esc(url)+'" controls autoplay playsinline></video>';
       lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
     }
