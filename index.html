@@ -358,14 +358,13 @@
     <p class="note">The call may come from an international number, so please pick up. A calendar invite for your main call is already on its way to your inbox.</p>
 
     <!-- ===== WELCOME VIDEO =====
-         TO ADD YOUR VIDEO: drop your file at  media/welcome.mp4  (optionally replace media/welcome-poster.jpg).
-         Prefer YouTube/Vimeo instead? Replace the whole <video>...</video> block below with:
-         <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+         Upload this from the /admin page (slot "welcome"). It streams from R2
+         at /v/welcome. The poster image below shows until a video is uploaded. -->
     <div class="welcome">
       <p class="eyebrow">A quick hello before we call</p>
       <div class="video-frame">
         <video controls playsinline preload="metadata" poster="media/welcome-poster.jpg">
-          <source src="media/welcome.mp4" type="video/mp4">
+          <source src="/v/welcome">
           Your browser doesn&rsquo;t support embedded video.
         </video>
       </div>

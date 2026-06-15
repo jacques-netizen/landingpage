@@ -70,7 +70,7 @@
 </div>
 
 <script>
-const CHUNK = 50 * 1024 * 1024; // 50MB per part
+const CHUNK = 10 * 1024 * 1024; // 10MB per part (R2 requires >=5MiB per part)
 const $ = (s, r = document) => r.querySelector(s);
 
 function pw(){ return sessionStorage.getItem('mde_pw') || ''; }
@@ -170,39 +170,62 @@ function render(slots){
   });
 }
 
+// Upload one chunk via XHR so we get real byte-level progress.
+function putChunk(url, blob, headers, onChunkProgress){
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    for(const k in headers) xhr.setRequestHeader(k, headers[k]);
+    xhr.upload.onprogress = (e) => { if(e.lengthComputable) onChunkProgress(e.loaded); };
+    xhr.onload = () => {
+      if(xhr.status >= 200 && xhr.status < 300){
+        try { resolve(JSON.parse(xhr.responseText)); } catch(e){ resolve({}); }
+      } else {
+        reject(new Error('HTTP ' + xhr.status + ' — ' + (xhr.responseText || '').slice(0,140)));
+      }
+    };
+    xhr.onerror = () => reject(new Error('network error during upload'));
+    xhr.ontimeout = () => reject(new Error('upload timed out'));
+    xhr.send(blob);
+  });
+}
+
 async function uploadFile(slot, file, onProgress){
   const ct = file.type || 'video/mp4';
   // 1. create multipart upload
   const cr = await fetch('/api/upload?slot=' + encodeURIComponent(slot) + '&action=create',
     { method:'POST', headers: auth({ 'x-file-type': ct }) });
-  if(!cr.ok) throw new Error('could not start upload (' + cr.status + ')');
+  if(!cr.ok) throw new Error('could not start (' + cr.status + '): ' + (await cr.text()).slice(0,140));
   const { uploadId } = await cr.json();
 
-  // 2. upload parts
+  // 2. upload parts with live progress
   const parts = [];
   const total = file.size || 1;
-  let sent = 0, part = 1;
+  let completed = 0, part = 1;
   for(let pos = 0; pos < file.size; pos += CHUNK){
     const blob = file.slice(pos, pos + CHUNK);
-    const r = await fetch('/api/upload?slot=' + encodeURIComponent(slot) +
-      '&action=part&uploadId=' + encodeURIComponent(uploadId) + '&part=' + part,
-      { method:'POST', headers: auth(), body: blob });
-    if(!r.ok){
+    const url = '/api/upload?slot=' + encodeURIComponent(slot) +
+      '&action=part&uploadId=' + encodeURIComponent(uploadId) + '&part=' + part;
+    let pj;
+    try {
+      pj = await putChunk(url, blob, auth(), (loaded) => {
+        onProgress(Math.min(0.99, (completed + loaded) / total));
+      });
+    } catch(err){
       await fetch('/api/upload?slot=' + encodeURIComponent(slot) + '&action=abort&uploadId=' + encodeURIComponent(uploadId),
         { method:'POST', headers: auth() }).catch(()=>{});
-      throw new Error('chunk ' + part + ' failed (' + r.status + ')');
+      throw new Error('chunk ' + part + ' failed: ' + err.message);
     }
-    const pj = await r.json();
     parts.push({ partNumber: pj.partNumber, etag: pj.etag });
-    sent += blob.size; part++;
-    onProgress(Math.min(0.99, sent / total));
+    completed += blob.size; part++;
+    onProgress(Math.min(0.99, completed / total));
   }
 
   // 3. complete
   const cc = await fetch('/api/upload?slot=' + encodeURIComponent(slot) +
     '&action=complete&uploadId=' + encodeURIComponent(uploadId),
     { method:'POST', headers: auth({ 'content-type':'application/json' }), body: JSON.stringify({ parts }) });
-  if(!cc.ok) throw new Error('could not finalize upload (' + cc.status + ')');
+  if(!cc.ok) throw new Error('could not finalize (' + cc.status + '): ' + (await cc.text()).slice(0,140));
   onProgress(1);
   return cc.json();
 }
