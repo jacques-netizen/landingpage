@@ -45,8 +45,19 @@
       return e && e.origin && e.origin.indexOf('calendly.com') > -1
         && e.data && typeof e.data.event === 'string';
     }
+    function notifyBooking(){
+      try {
+        var body = JSON.stringify({ note: '' });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/notify', new Blob([body], { type: 'application/json' }));
+        } else {
+          fetch('/api/notify', { method:'POST', headers:{'content-type':'application/json'}, body: body, keepalive: true }).catch(function(){});
+        }
+      } catch (e) { /* never block the redirect */ }
+    }
     window.addEventListener('message', function(e){
       if (isCalendlyEvent(e) && e.data.event === 'calendly.event_scheduled') {
+        notifyBooking();
         // small delay so Calendly finishes its own confirmation step cleanly
         setTimeout(function(){ window.location.href = '/'; }, 600);
       }
