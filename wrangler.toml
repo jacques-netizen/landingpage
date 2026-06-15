@@ -1,20 +1,28 @@
-# Cloudflare Pages config.
+# Cloudflare Worker config (static site + upload API).
 #
-# In production the bindings below are set in the Cloudflare dashboard
-# (Pages project -> Settings), so you do NOT have to edit this file to go live.
-# This file mainly documents the bindings and enables local testing with:
+# Deployed as a Worker with static assets. The Worker runs only for /api/* and
+# /v/*; every other path is served from the repo files as a static site.
 #
+# Bindings:
+#   - ASSETS : the static site files (configured below)
+#   - MEDIA  : R2 bucket for uploaded videos (also added in the dashboard)
+# Secret (set in the dashboard, NOT here):
+#   - ADMIN_PASSWORD : password for the /admin upload page
+#
+# Local testing:
 #   npm i -g wrangler
-#   wrangler pages dev . --r2 MEDIA
-#
-# (then open http://localhost:8788/admin ; for local dev set ADMIN_PASSWORD in
-#  a .dev.vars file:  ADMIN_PASSWORD = "test123")
+#   echo 'ADMIN_PASSWORD = "test123"' > .dev.vars
+#   wrangler dev --r2 MEDIA
+#   open http://localhost:8787/admin
 
-name = "maison-delites"
-pages_build_output_dir = "."
+name = "landingpage"
+main = "worker.js"
 compatibility_date = "2024-09-01"
 
-# R2 bucket binding used by the upload + media-serving functions.
+[assets]
+directory = "."
+binding = "ASSETS"
+
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "maison-delites-media"

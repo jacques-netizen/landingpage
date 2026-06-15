@@ -1,0 +1,11 @@
+# Files in the repo that should NOT be served as part of the public site.
+.git
+.gitignore
+.claude
+.assetsignore
+.dev.vars
+wrangler.toml
+worker.js
+lib
+functions
+*.md
