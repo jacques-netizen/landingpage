@@ -357,16 +357,12 @@
     <p class="lead">Keep your phone close. A member of our team is calling you in the next <b>5 to 10 minutes</b>.</p>
     <p class="note">The call may come from an international number, so please pick up. A calendar invite for your main call is already on its way to your inbox.</p>
 
-    <!-- ===== WELCOME VIDEO =====
-         Upload this from the /admin page (slot "welcome"). It streams from R2
-         at /v/welcome. The poster image below shows until a video is uploaded. -->
+    <!-- ===== WELCOME VIDEO ===== plays an unlisted YouTube video.
+         To change it, swap the embed/ID below. -->
     <div class="welcome">
       <p class="eyebrow">A quick hello before we call</p>
       <div class="video-frame">
-        <video controls playsinline preload="metadata" poster="media/welcome-poster.jpg">
-          <source src="/v/welcome">
-          Your browser doesn&rsquo;t support embedded video.
-        </video>
+        <iframe src="https://www.youtube.com/embed/oSAzj0RcyZM?rel=0&playsinline=1" title="A quick hello before we call" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
 
@@ -528,18 +524,15 @@
     <h2>Questions, answered on camera</h2>
     <p>Tap a question to watch the answer.</p>
     <!--
-      VIDEOS — upload straight from your phone, no code, no size limit:
-        1. Go to  yoursite.com/admin  on your phone and enter the password.
-        2. Pick the slot (faq-1 / faq-2 / faq-3), choose the video, tap Upload.
-        3. The player below turns on automatically once the upload finishes.
-      Players stream from /v/<slot> (Cloudflare R2). Until a slot has a video
-      it shows a tasteful "Filming soon" placeholder. See DEPLOY.md for the
-      one-time Cloudflare setup that powers /admin.
+      VIDEOS: each answer plays an unlisted YouTube video. To set or change one,
+      paste the video ID into its data-yt="" below (the part after youtu.be/ ,
+      watch?v= , or /shorts/ ). An empty data-yt="" shows a tasteful
+      "Filming soon" placeholder.
     -->
     <div class="faq">
-      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-1"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-2"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
-      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-src="/v/faq-3"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">What is content distribution and how does clipping work? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt="CTiERFdqprA"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How is this different from paid ads? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt="Wg-HH8PTjHw"><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
+      <div class="faq-item"><button class="faq-q">How do you make sure the views are real, not bots? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><div class="player" data-yt=""><span class="play"></span><span class="player-label">Watch the answer</span></div></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How is pricing structured? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>Pricing has two parts. A retainer covers the work we run on our side. A separate clipping budget pays for the views themselves, priced on cost per thousand views. On the clipping budget there are two models. Mass clipping uses a large pool of creators for high volume and saturation: launches, music, big moments. An in-house clipper team is smaller and managed, built for conversion when you want measurable action. Either way we set a rate per thousand views and cap the payout per clip, so spend stays predictable. You only pay for views that clear review. We size the retainer and the budget to your goal on the call.</p></div></div></div>
       <div class="faq-item txt"><button class="faq-q">How long does a campaign last? <span class="pl">+</span></button><div class="faq-a"><div class="inner"><p>A campaign runs in two phases. Within the first 72 hours, clips are live and views are moving. Then come the weeks after, where the real value sits, because clips don't expire. They keep getting found, so reach compounds long after launch. Most clients run a defined pilot first, long enough to read the numbers honestly, then decide whether to scale. We'll tell you straight what length fits your goal.</p></div></div></div>
       <div class="faq-item deck"><button class="faq-q">Who have you worked with? <span class="pl">+</span></button><div class="faq-a"><div class="inner">
