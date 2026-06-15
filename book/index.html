@@ -80,17 +80,28 @@
   .fallback{margin-top:20px;font-size:.84rem;color:#8c8474;text-align:center}
   .fallback a{color:var(--gold);text-underline-offset:3px}
 
+  /* post-booking banner */
+  #postbanner{margin:-6px 0 26px;animation:rise .5s ease both}
+  .booked{font-family:Georgia,'Times New Roman',serif;font-size:1.5rem;color:var(--gold-bright);margin:0 0 6px;text-align:center}
+  .bookedsub{color:#cfc6b3;font-size:.96rem;margin:0;text-align:center}
+
   @media (max-width:420px){ .q{font-size:1.42rem} .choices{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
   <div class="wrap">
     <p class="eyebrow">Maison d'Élites</p>
-    <p class="sub" id="sub">A few quick questions, then pick your time.</p>
+    <p class="sub" id="sub">A couple of quick questions, then pick your time.</p>
 
     <div class="progress"><i id="bar"></i></div>
 
-    <!-- INTERVIEW -->
+    <!-- post-booking success banner -->
+    <div id="postbanner" hidden>
+      <p class="booked">✅ You're booked!</p>
+      <p class="bookedsub">Last thing — a few details so our team can prepare for your call.</p>
+    </div>
+
+    <!-- INTERVIEW (used for both the pre-questions and the post-booking questions) -->
     <div id="quiz">
       <div class="stage" id="stage"></div>
       <div class="nav" id="nav">
@@ -118,58 +129,75 @@
   (function(){
     var CALENDLY = "https://calendly.com/jacques-maisondelitesagency/discovery-call";
 
-    // ---- The questions (mirrors the Calendly questionnaire) ----
-    var STEPS = [
-      {key:'name',     type:'text',     label:'Name',
+    // Questions asked BEFORE the calendar: minimal entry + one fit-gate (budget).
+    var PRE = [
+      {key:'name',   type:'text',   label:'Name',
         q:"First — who am I <em>speaking with</em>?", ph:'Your full name', req:true},
-      {key:'email',    type:'email',    label:'Email',
+      {key:'email',  type:'email',  label:'Email',
         q:"Where should we send your <em>confirmation</em>?", ph:'you@email.com', req:true},
+      {key:'budget', type:'choice', label:'Budget',
+        q:"What's your <em>budget range</em> for this?",
+        opts:['Under €2K','€2K–€5K','€5K–€20K','€25K–€50K','€100K–€250K','€500K+'], req:true}
+    ];
+
+    // Questions asked AFTER the time is locked (commitment made → low friction).
+    var POST = [
       {key:'phone',    type:'tel',      label:'Phone',
         q:"Best <em>number</em> to reach you on?", ph:'+32 …', req:true,
-        hint:"Our team gives you a quick call to lock in your strategy session."},
+        hint:"Our team gives you a quick call to confirm your strategy session."},
       {key:'business', type:'text',     label:'Business',
         q:"What's your <em>brand or business</em>?", ph:'Brand name', req:true},
       {key:'link',     type:'text',     label:'IG / Website',
-        q:"Your <em>Instagram</em> or website?", ph:'@handle or yoursite.com', req:true},
+        q:"Your <em>Instagram</em> or website?", ph:'@handle or yoursite.com', req:false},
       {key:'goal',     type:'text',     label:'6-month goal',
-        q:"What do you want to achieve in the <em>next 6 months</em>?", ph:'e.g. scale to €50k/mo', req:true},
+        q:"What do you want to achieve in the <em>next 6 months</em>?", ph:'e.g. scale to €50k/mo', req:false},
       {key:'invested', type:'choice',   label:'Invested before',
         q:"Invested in <em>marketing or influencer</em> campaigns before?",
-        opts:['Yes — a lot','Yes — a little','Not yet'], req:true},
-      {key:'budget',   type:'choice',   label:'Budget',
-        q:"What's your <em>budget range</em> for this?",
-        opts:['Under €2K','€2K–€5K','€5K–€20K','€25K–€50K','€100K–€250K','€500K+'], req:true},
+        opts:['Yes — a lot','Yes — a little','Not yet'], req:false},
       {key:'timing',   type:'choice',   label:'Timeline',
         q:"How <em>soon</em> are you looking to start?",
-        opts:['ASAP','Within a month','1–3 months','Just exploring'], req:true},
+        opts:['ASAP','Within a month','1–3 months','Just exploring'], req:false},
       {key:'notes',    type:'textarea', label:'Notes',
         q:"Anything else that helps us <em>prepare</em>?", ph:'Optional — skip if nothing comes to mind', req:false}
     ];
 
     var answers = {};
-    var i = 0;
+    var phase = 'pre';      // 'pre' | 'post'
+    var i = 0;              // index within the current phase
+    var booked = false;     // Calendly confirmed a booking
+    var notifySent = false; // the full Discord ping has fired
+
     var stage = document.getElementById('stage');
     var bar = document.getElementById('bar');
     var nextBtn = document.getElementById('next');
     var backBtn = document.getElementById('back');
     var enterHint = document.getElementById('enterhint');
 
+    function steps(){ return phase === 'pre' ? PRE : POST; }
     function firstName(){
       var n = (answers.name||'').trim().split(/\s+/)[0];
       return n ? n.replace(/[<>]/g,'') : '';
     }
+    function progress(){
+      // pre 0–30%, calendar ~35%, post 50–100%
+      if (phase === 'pre') return (i / PRE.length) * 30;
+      return 50 + (i / POST.length) * 50;
+    }
 
     function render(){
-      var s = STEPS[i];
+      var list = steps();
+      var s = list[i];
       var fn = firstName();
-      // build step element
       var el = document.createElement('div');
       el.className = 'step';
-      var head = '<p class="qcount">Question ' + (i+1) + ' of ' + STEPS.length + '</p>';
+
+      var counter = phase === 'pre'
+        ? ('Step ' + (i+1) + ' of ' + PRE.length)
+        : ('Almost done · ' + (i+1) + ' of ' + POST.length);
       var qtext = s.q;
-      // personalise a couple of questions once we know the name
-      if (fn && s.key === 'business') qtext = "Lovely to meet you, <em>"+fn+"</em>. What's your brand or business?";
-      var inner = head + '<p class="q">' + qtext + '</p>';
+      if (fn && s.key === 'business') qtext = "Lovely, <em>"+fn+"</em> — what's your brand or business?";
+
+      var inner = '<p class="qcount">' + counter + '</p><p class="q">' + qtext + '</p>';
       if (s.hint) inner += '<p class="qhint">' + s.hint + '</p>';
 
       if (s.type === 'choice'){
@@ -192,10 +220,11 @@
       stage.appendChild(el);
       requestAnimationFrame(function(){ el.classList.add('active'); });
 
-      // progress + nav
-      bar.style.width = (i/STEPS.length*100) + '%';
+      bar.style.width = progress() + '%';
       backBtn.hidden = i === 0;
-      nextBtn.textContent = (i === STEPS.length-1) ? 'See the calendar' : 'Continue';
+      var last = i === list.length - 1;
+      if (phase === 'pre') nextBtn.textContent = last ? 'See the calendar' : 'Continue';
+      else nextBtn.textContent = last ? 'Finish & send' : (s.req ? 'Continue' : 'Continue / skip');
 
       if (s.type === 'choice'){
         enterHint.style.visibility = 'hidden';
@@ -205,7 +234,7 @@
             answers[s.key] = this.getAttribute('data-v');
             cs.forEach(function(x){x.classList.remove('sel');});
             this.classList.add('sel');
-            setTimeout(go, 220); // auto-advance after a beat
+            setTimeout(go, 220);
           });
         });
       } else {
@@ -220,8 +249,14 @@
       }
     }
 
+    function flushField(){
+      var fld = document.getElementById('fld');
+      var s = steps()[i];
+      if (fld && s && s.type !== 'choice') answers[s.key] = (fld.value||'').trim();
+    }
+
     function validate(){
-      var s = STEPS[i];
+      var s = steps()[i];
       var errEl = document.getElementById('err');
       if (s.type !== 'choice'){
         var v = (document.getElementById('fld').value || '').trim();
@@ -236,17 +271,19 @@
 
     function go(){
       if (!validate()) return;
-      if (i < STEPS.length-1){ i++; render(); }
-      else { finish(); }
+      var list = steps();
+      if (i < list.length - 1){ i++; render(); return; }
+      if (phase === 'pre') showCalendar();
+      else finishPost();
     }
 
     nextBtn.addEventListener('click', go);
-    backBtn.addEventListener('click', function(){ if(i>0){ i--; render(); } });
+    backBtn.addEventListener('click', function(){ if(i>0){ flushField(); i--; render(); } });
 
-    function finish(){
-      bar.style.width = '100%';
+    function showCalendar(){
       document.getElementById('quiz').style.display = 'none';
       document.getElementById('sub').style.display = 'none';
+      bar.style.width = '35%';
       var fn = firstName();
       if (fn) document.getElementById('calhead').innerHTML = 'Perfect, <em>'+fn+'</em> — pick your time';
 
@@ -255,46 +292,77 @@
 
       var url = CALENDLY + '?hide_gdpr_banner=1&primary_color=c7a867';
       var parent = document.getElementById('calembed');
-
-      // The Calendly script loads async — wait until it's ready, then init
-      // the inline widget with name + email pre-filled so they don't retype.
       var tries = 0;
       (function initCal(){
         if (window.Calendly && Calendly.initInlineWidget){
           Calendly.initInlineWidget({
-            url: url,
-            parentElement: parent,
+            url: url, parentElement: parent,
             prefill: { name: answers.name || '', email: answers.email || '' }
           });
-        } else if (tries++ < 60){
-          setTimeout(initCal, 200);
-        }
+        } else if (tries++ < 60){ setTimeout(initCal, 200); }
       })();
 
       cal.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
+    function startPostQuestions(){
+      document.getElementById('cal').classList.remove('show');
+      document.getElementById('postbanner').hidden = false;
+      var fn = firstName();
+      if (fn) document.querySelector('#postbanner .booked').innerHTML = "✅ You're booked, " + fn + "!";
+      document.getElementById('quiz').style.display = '';
+      phase = 'post'; i = 0;
+      render();
+      document.getElementById('postbanner').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function finishPost(){
+      flushField();
+      sendNotify(false);
+      bar.style.width = '100%';
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('postbanner').hidden = true;
+      stage.innerHTML = '<p class="q" style="text-align:center">Thank you — we\'ll see you on the call. 🎉</p>';
+      stage.style.minHeight = '0';
+      setTimeout(function(){ window.location.href = '/'; }, 1400);
+    }
+
     render();
 
-    // ---- Notify Discord on booking, then send them home ----
-    function isCalendlyEvent(e){
-      return e && e.origin && e.origin.indexOf('calendly.com') > -1
-        && e.data && typeof e.data.event === 'string';
-    }
-    function notifyBooking(){
+    // ---- Discord notification ----
+    function sendNotify(incomplete){
+      if (notifySent) return;
+      notifySent = true;
       try {
-        var body = JSON.stringify({ lead: answers });
+        var body = JSON.stringify({ lead: answers, incomplete: !!incomplete });
         if (navigator.sendBeacon){
           navigator.sendBeacon('/api/notify', new Blob([body], { type:'application/json' }));
         } else {
           fetch('/api/notify', { method:'POST', headers:{'content-type':'application/json'}, body:body, keepalive:true }).catch(function(){});
         }
-      } catch(e){ /* never block the redirect */ }
+      } catch(e){ /* never block */ }
+    }
+
+    // Safety net: if they booked but leave before finishing the details,
+    // still ping Discord with whatever we have (flagged incomplete) so no lead is lost.
+    function safetyFlush(){
+      if (booked && !notifySent){ flushField(); sendNotify(true); }
+    }
+    window.addEventListener('pagehide', safetyFlush);
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') safetyFlush();
+    });
+
+    // ---- Calendly booking event ----
+    function isCalendlyEvent(e){
+      return e && e.origin && e.origin.indexOf('calendly.com') > -1
+        && e.data && typeof e.data.event === 'string';
     }
     window.addEventListener('message', function(e){
       if (isCalendlyEvent(e) && e.data.event === 'calendly.event_scheduled'){
-        notifyBooking();
-        setTimeout(function(){ window.location.href = '/'; }, 900);
+        if (booked) return;
+        booked = true;
+        startPostQuestions();
       }
     });
   })();
