@@ -5,63 +5,293 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book your discovery call · Maison d'Élites</title>
 <style>
-  :root{--ink:#1a140d;--cream:#f7f2e9;--gold:#c7a867;--gold-bright:#e6c984;--line:rgba(199,168,103,.28)}
+  :root{
+    --ink:#1a140d;--cream:#f7f2e9;--gold:#c7a867;--gold-bright:#e6c984;
+    --line:rgba(199,168,103,.28);--card:#16110a;--card-hi:#1f1810;
+  }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{background:#0e0b07;color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:760px;margin:0 auto;padding:40px 18px 56px;text-align:center}
-  .eyebrow{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 14px}
-  h1{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:2rem;line-height:1.15;margin:0 0 12px}
+  body{
+    background:#0e0b07;color:var(--cream);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;min-height:100vh;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:34px 18px 64px}
+  .eyebrow{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 6px;text-align:center}
+  .sub{color:#8c8474;font-size:.9rem;text-align:center;margin:0 0 26px}
+
+  /* progress */
+  .progress{height:4px;background:rgba(199,168,103,.14);border-radius:99px;overflow:hidden;margin:0 0 36px}
+  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-bright));border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+  /* the interview */
+  .stage{position:relative;min-height:260px}
+  .step{position:absolute;inset:0;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .35s ease,transform .35s ease}
+  .step.active{opacity:1;transform:none;pointer-events:auto;position:relative}
+  .qcount{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 10px}
+  .q{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:1.62rem;line-height:1.22;margin:0 0 6px}
+  .q em{color:var(--gold-bright);font-style:italic}
+  .qhint{color:#9a9183;font-size:.92rem;margin:6px 0 20px}
+
+  input,textarea{
+    width:100%;background:var(--card);border:1px solid var(--line);color:var(--cream);
+    border-radius:12px;padding:16px 16px;font-size:1.05rem;font-family:inherit;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  textarea{min-height:110px;resize:vertical}
+  input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,168,103,.16)}
+  input::placeholder,textarea::placeholder{color:#6f685b}
+  .err{color:#e6896f;font-size:.85rem;margin:10px 2px 0;min-height:1em}
+
+  /* choice cards */
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--cream);
+    padding:16px 16px;font-size:1rem;font-family:inherit;text-align:left;cursor:pointer;
+    transition:transform .12s ease,border-color .2s,background .2s,box-shadow .2s;
+  }
+  .choice:hover{border-color:var(--gold);background:var(--card-hi)}
+  .choice:active{transform:scale(.98)}
+  .choice.sel{border-color:var(--gold);background:var(--card-hi);box-shadow:0 0 0 3px rgba(199,168,103,.18)}
+
+  /* nav */
+  .nav{display:flex;align-items:center;gap:14px;margin-top:26px}
+  .btn{
+    appearance:none;border:0;cursor:pointer;font-family:inherit;font-weight:700;
+    background:linear-gradient(90deg,var(--gold),var(--gold-bright));color:#1a140d;
+    padding:14px 28px;border-radius:99px;font-size:1rem;
+    transition:transform .12s ease,opacity .2s;
+  }
+  .btn:active{transform:translateY(1px) scale(.99)}
+  .btn:disabled{opacity:.45;cursor:default}
+  .back{background:none;border:0;color:#8c8474;cursor:pointer;font-family:inherit;font-size:.92rem;padding:8px}
+  .back:hover{color:var(--cream)}
+  .enterhint{color:#6f685b;font-size:.8rem;margin-left:auto}
+
+  /* calendar reveal */
+  #cal{display:none}
+  #cal.show{display:block;animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  h1{font-family:Georgia,'Times New Roman',serif;font-weight:500;font-size:1.9rem;line-height:1.15;margin:0 0 8px;text-align:center}
   h1 em{color:var(--gold-bright);font-style:italic}
-  .lead{color:#cfc6b3;max-width:480px;margin:0 auto 28px;font-size:1.02rem;line-height:1.6}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 24px 70px -30px rgba(0,0,0,.7)}
-  .calendly-inline-widget{min-width:320px;height:780px}
-  .fallback{margin-top:22px;font-size:.86rem;color:#8c8474}
+  .lead{color:#cfc6b3;max-width:480px;margin:0 auto 22px;font-size:1rem;line-height:1.6;text-align:center}
+  .card-cal{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 24px 70px -30px rgba(0,0,0,.7)}
+  .calendly-inline-widget{min-width:320px;height:760px}
+  .fallback{margin-top:20px;font-size:.84rem;color:#8c8474;text-align:center}
   .fallback a{color:var(--gold);text-underline-offset:3px}
+
+  @media (max-width:420px){ .q{font-size:1.42rem} .choices{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
   <div class="wrap">
     <p class="eyebrow">Maison d'Élites</p>
-    <h1>Book your <em>discovery call</em></h1>
-    <p class="lead">Pick a time that works for you. It's a short call to confirm we're the right fit before your main strategy session.</p>
+    <p class="sub" id="sub">A few quick questions, then pick your time.</p>
 
-    <div class="card">
-      <!-- Calendly inline embed -->
-      <div class="calendly-inline-widget"
-           data-url="https://calendly.com/jacques-maisondelitesagency/discovery-call?hide_gdpr_banner=1&primary_color=c7a867"></div>
+    <div class="progress"><i id="bar"></i></div>
+
+    <!-- INTERVIEW -->
+    <div id="quiz">
+      <div class="stage" id="stage"></div>
+      <div class="nav" id="nav">
+        <button class="back" id="back" type="button" hidden>&larr; Back</button>
+        <button class="btn" id="next" type="button">Continue</button>
+        <span class="enterhint" id="enterhint">press <b>Enter</b> ↵</span>
+      </div>
     </div>
 
-    <p class="fallback">Trouble with the calendar above?
-      <a href="https://calendly.com/jacques-maisondelitesagency/discovery-call" target="_blank" rel="noopener">Open it directly &rarr;</a>
-    </p>
+    <!-- CALENDAR -->
+    <div id="cal">
+      <h1 id="calhead">Perfect — pick your <em>time</em></h1>
+      <p class="lead">A short call to confirm we're the right fit before your main strategy session.</p>
+      <div class="card-cal">
+        <div class="calendly-inline-widget" id="calembed"></div>
+      </div>
+      <p class="fallback">Trouble with the calendar?
+        <a href="https://calendly.com/jacques-maisondelitesagency/discovery-call" target="_blank" rel="noopener">Open it directly &rarr;</a>
+      </p>
+    </div>
   </div>
 
   <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
   <script>
-    // When the visitor finishes booking, Calendly posts a message to this page.
-    // We listen for it and send them straight to the landing page.
+  (function(){
+    var CALENDLY = "https://calendly.com/jacques-maisondelitesagency/discovery-call";
+
+    // ---- The questions (mirrors the Calendly questionnaire) ----
+    var STEPS = [
+      {key:'name',     type:'text',     label:'Name',
+        q:"First — who am I <em>speaking with</em>?", ph:'Your full name', req:true},
+      {key:'email',    type:'email',    label:'Email',
+        q:"Where should we send your <em>confirmation</em>?", ph:'you@email.com', req:true},
+      {key:'phone',    type:'tel',      label:'Phone',
+        q:"Best <em>number</em> to reach you on?", ph:'+32 …', req:true,
+        hint:"Our team gives you a quick call to lock in your strategy session."},
+      {key:'business', type:'text',     label:'Business',
+        q:"What's your <em>brand or business</em>?", ph:'Brand name', req:true},
+      {key:'link',     type:'text',     label:'IG / Website',
+        q:"Your <em>Instagram</em> or website?", ph:'@handle or yoursite.com', req:true},
+      {key:'goal',     type:'text',     label:'6-month goal',
+        q:"What do you want to achieve in the <em>next 6 months</em>?", ph:'e.g. scale to €50k/mo', req:true},
+      {key:'invested', type:'choice',   label:'Invested before',
+        q:"Invested in <em>marketing or influencer</em> campaigns before?",
+        opts:['Yes — a lot','Yes — a little','Not yet'], req:true},
+      {key:'budget',   type:'choice',   label:'Budget',
+        q:"What's your <em>budget range</em> for this?",
+        opts:['Under €2K','€2K–€5K','€5K–€20K','€25K–€50K','€100K–€250K','€500K+'], req:true},
+      {key:'timing',   type:'choice',   label:'Timeline',
+        q:"How <em>soon</em> are you looking to start?",
+        opts:['ASAP','Within a month','1–3 months','Just exploring'], req:true},
+      {key:'notes',    type:'textarea', label:'Notes',
+        q:"Anything else that helps us <em>prepare</em>?", ph:'Optional — skip if nothing comes to mind', req:false}
+    ];
+
+    var answers = {};
+    var i = 0;
+    var stage = document.getElementById('stage');
+    var bar = document.getElementById('bar');
+    var nextBtn = document.getElementById('next');
+    var backBtn = document.getElementById('back');
+    var enterHint = document.getElementById('enterhint');
+
+    function firstName(){
+      var n = (answers.name||'').trim().split(/\s+/)[0];
+      return n ? n.replace(/[<>]/g,'') : '';
+    }
+
+    function render(){
+      var s = STEPS[i];
+      var fn = firstName();
+      // build step element
+      var el = document.createElement('div');
+      el.className = 'step';
+      var head = '<p class="qcount">Question ' + (i+1) + ' of ' + STEPS.length + '</p>';
+      var qtext = s.q;
+      // personalise a couple of questions once we know the name
+      if (fn && s.key === 'business') qtext = "Lovely to meet you, <em>"+fn+"</em>. What's your brand or business?";
+      var inner = head + '<p class="q">' + qtext + '</p>';
+      if (s.hint) inner += '<p class="qhint">' + s.hint + '</p>';
+
+      if (s.type === 'choice'){
+        inner += '<div class="choices">';
+        for (var k=0;k<s.opts.length;k++){
+          var sel = answers[s.key] === s.opts[k] ? ' sel' : '';
+          inner += '<button type="button" class="choice'+sel+'" data-v="'+s.opts[k].replace(/"/g,'&quot;')+'">'+s.opts[k]+'</button>';
+        }
+        inner += '</div>';
+      } else if (s.type === 'textarea'){
+        inner += '<textarea id="fld" placeholder="'+(s.ph||'')+'">'+(answers[s.key]||'')+'</textarea>';
+      } else {
+        var it = s.type === 'email' ? 'email' : (s.type === 'tel' ? 'tel' : 'text');
+        inner += '<input id="fld" type="'+it+'" placeholder="'+(s.ph||'')+'" value="'+(answers[s.key]||'').replace(/"/g,'&quot;')+'" autocomplete="'+(s.type==='email'?'email':s.type==='tel'?'tel':'on')+'">';
+      }
+      inner += '<p class="err" id="err"></p>';
+      el.innerHTML = inner;
+
+      stage.innerHTML = '';
+      stage.appendChild(el);
+      requestAnimationFrame(function(){ el.classList.add('active'); });
+
+      // progress + nav
+      bar.style.width = (i/STEPS.length*100) + '%';
+      backBtn.hidden = i === 0;
+      nextBtn.textContent = (i === STEPS.length-1) ? 'See the calendar' : 'Continue';
+
+      if (s.type === 'choice'){
+        enterHint.style.visibility = 'hidden';
+        var cs = el.querySelectorAll('.choice');
+        cs.forEach(function(c){
+          c.addEventListener('click', function(){
+            answers[s.key] = this.getAttribute('data-v');
+            cs.forEach(function(x){x.classList.remove('sel');});
+            this.classList.add('sel');
+            setTimeout(go, 220); // auto-advance after a beat
+          });
+        });
+      } else {
+        enterHint.style.visibility = s.req ? 'visible' : 'hidden';
+        var fld = el.querySelector('#fld');
+        if (fld){
+          setTimeout(function(){ fld.focus(); }, 60);
+          if (s.type !== 'textarea'){
+            fld.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+          }
+        }
+      }
+    }
+
+    function validate(){
+      var s = STEPS[i];
+      var errEl = document.getElementById('err');
+      if (s.type !== 'choice'){
+        var v = (document.getElementById('fld').value || '').trim();
+        answers[s.key] = v;
+        if (s.req && !v){ if(errEl) errEl.textContent = 'This one’s required.'; return false; }
+        if (s.type === 'email' && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ if(errEl) errEl.textContent = 'That email looks off.'; return false; }
+      } else {
+        if (s.req && !answers[s.key]){ if(errEl) errEl.textContent = 'Pick one to continue.'; return false; }
+      }
+      return true;
+    }
+
+    function go(){
+      if (!validate()) return;
+      if (i < STEPS.length-1){ i++; render(); }
+      else { finish(); }
+    }
+
+    nextBtn.addEventListener('click', go);
+    backBtn.addEventListener('click', function(){ if(i>0){ i--; render(); } });
+
+    function finish(){
+      bar.style.width = '100%';
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('sub').style.display = 'none';
+      var fn = firstName();
+      if (fn) document.getElementById('calhead').innerHTML = 'Perfect, <em>'+fn+'</em> — pick your time';
+
+      var cal = document.getElementById('cal');
+      cal.classList.add('show');
+
+      var url = CALENDLY + '?hide_gdpr_banner=1&primary_color=c7a867'
+        + '&name=' + encodeURIComponent(answers.name||'')
+        + '&email=' + encodeURIComponent(answers.email||'');
+      try {
+        if (window.Calendly && Calendly.initInlineWidget){
+          Calendly.initInlineWidget({ url: url, parentElement: document.getElementById('calembed') });
+        } else {
+          document.getElementById('calembed').setAttribute('data-url', url);
+        }
+      } catch(e){
+        document.getElementById('calembed').setAttribute('data-url', url);
+      }
+      cal.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    render();
+
+    // ---- Notify Discord on booking, then send them home ----
     function isCalendlyEvent(e){
       return e && e.origin && e.origin.indexOf('calendly.com') > -1
         && e.data && typeof e.data.event === 'string';
     }
     function notifyBooking(){
       try {
-        var body = JSON.stringify({ note: '' });
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/notify', new Blob([body], { type: 'application/json' }));
+        var body = JSON.stringify({ lead: answers });
+        if (navigator.sendBeacon){
+          navigator.sendBeacon('/api/notify', new Blob([body], { type:'application/json' }));
         } else {
-          fetch('/api/notify', { method:'POST', headers:{'content-type':'application/json'}, body: body, keepalive: true }).catch(function(){});
+          fetch('/api/notify', { method:'POST', headers:{'content-type':'application/json'}, body:body, keepalive:true }).catch(function(){});
         }
-      } catch (e) { /* never block the redirect */ }
+      } catch(e){ /* never block the redirect */ }
     }
     window.addEventListener('message', function(e){
-      if (isCalendlyEvent(e) && e.data.event === 'calendly.event_scheduled') {
+      if (isCalendlyEvent(e) && e.data.event === 'calendly.event_scheduled'){
         notifyBooking();
-        // small delay so Calendly finishes its own confirmation step cleanly
-        setTimeout(function(){ window.location.href = '/'; }, 600);
+        setTimeout(function(){ window.location.href = '/'; }, 900);
       }
     });
+  })();
   </script>
 </body>
 </html>
