@@ -251,20 +251,26 @@
       if (fn) document.getElementById('calhead').innerHTML = 'Perfect, <em>'+fn+'</em> — pick your time';
 
       var cal = document.getElementById('cal');
-      cal.classList.add('show');
+      cal.classList.add('show'); // must be visible before Calendly measures it
 
-      var url = CALENDLY + '?hide_gdpr_banner=1&primary_color=c7a867'
-        + '&name=' + encodeURIComponent(answers.name||'')
-        + '&email=' + encodeURIComponent(answers.email||'');
-      try {
+      var url = CALENDLY + '?hide_gdpr_banner=1&primary_color=c7a867';
+      var parent = document.getElementById('calembed');
+
+      // The Calendly script loads async — wait until it's ready, then init
+      // the inline widget with name + email pre-filled so they don't retype.
+      var tries = 0;
+      (function initCal(){
         if (window.Calendly && Calendly.initInlineWidget){
-          Calendly.initInlineWidget({ url: url, parentElement: document.getElementById('calembed') });
-        } else {
-          document.getElementById('calembed').setAttribute('data-url', url);
+          Calendly.initInlineWidget({
+            url: url,
+            parentElement: parent,
+            prefill: { name: answers.name || '', email: answers.email || '' }
+          });
+        } else if (tries++ < 60){
+          setTimeout(initCal, 200);
         }
-      } catch(e){
-        document.getElementById('calembed').setAttribute('data-url', url);
-      }
+      })();
+
       cal.scrollIntoView({ behavior:'smooth', block:'start' });
     }
 
