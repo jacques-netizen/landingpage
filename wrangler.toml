@@ -6,8 +6,10 @@
 # Bindings:
 #   - ASSETS : the static site files (configured below)
 #   - MEDIA  : R2 bucket for uploaded videos (also added in the dashboard)
-# Secret (set in the dashboard, NOT here):
-#   - ADMIN_PASSWORD : password for the /admin upload page
+# Secrets (set in the dashboard, NOT here):
+#   - ADMIN_PASSWORD          : password for the /admin upload page
+#   - MANYCHAT_WEBHOOK_SECRET : random token; paste the same value into the
+#                               ManyChat External Request URL (?secret=...)
 #
 # Local testing:
 #   npm i -g wrangler
