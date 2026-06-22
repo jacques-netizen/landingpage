@@ -33,6 +33,22 @@ are stored in Cloudflare R2, so there is no file-size limit.
 6. **Redeploy** so bindings/secret attach: push any commit, or Deployments →
    latest → Retry. The repo is Git-connected, so pushes auto-deploy.
 
+## Custom domain
+
+The funnel is served at **`book.maisondelites.com`** (a subdomain of
+`maisondelites.com`, registered via Cloudflare Registrar in the same account as
+the Worker). To connect it:
+
+1. Register `maisondelites.com` — dashboard → **Domain Registration → Register
+   Domains**. It auto-lands on Cloudflare DNS in this account.
+2. Worker → **Settings → Domains & Routes** → **Add → Custom Domain** →
+   `book.maisondelites.com`. Cloudflare creates the DNS record and SSL cert
+   automatically (live in a few minutes).
+
+The site is domain-agnostic — all internal links/API calls are relative, so no
+code changes are needed when the domain changes. Email lives on a separate
+domain (`maisondelitesagency.com` at Google Workspace) and is unaffected.
+
 ## Using it
 
 Open **`https://<your-worker-url>/admin`**, enter the password, pick a slot,
