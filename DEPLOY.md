@@ -33,21 +33,25 @@ are stored in Cloudflare R2, so there is no file-size limit.
 6. **Redeploy** so bindings/secret attach: push any commit, or Deployments →
    latest → Retry. The repo is Git-connected, so pushes auto-deploy.
 
-## Custom domain
+## Custom domains
 
-The funnel is served at **`book.maisondelites.com`** (a subdomain of
-`maisondelites.com`, registered via Cloudflare Registrar in the same account as
-the Worker). To connect it:
+One Worker serves the whole funnel across two subdomains of `maisondelites.com`
+(registered via Cloudflare Registrar in the same account as the Worker):
 
-1. Register `maisondelites.com` — dashboard → **Domain Registration → Register
-   Domains**. It auto-lands on Cloudflare DNS in this account.
-2. Worker → **Settings → Domains & Routes** → **Add → Custom Domain** →
-   `book.maisondelites.com`. Cloudflare creates the DNS record and SSL cert
-   automatically (live in a few minutes).
+| URL | Serves |
+|-----|--------|
+| `hello.maisondelites.com/` | Clean **landing page** (`index.html`) |
+| `book.maisondelites.com/`  | **Booking calendar** — the Worker rewrites `/` → `/book` on any `book.*` host (see `worker.js`) |
+| `book.maisondelites.com/booked` | "You're booked" **confirmation** (where the calendar redirects after a booking) |
 
-The site is domain-agnostic — all internal links/API calls are relative, so no
-code changes are needed when the domain changes. Email lives on a separate
-domain (`maisondelitesagency.com` at Google Workspace) and is unaffected.
+To connect a subdomain: Worker → **Settings → Domains & Routes** → **Add →
+Custom Domain** → e.g. `hello.maisondelites.com`. Cloudflare creates the DNS
+record and SSL cert automatically (live in a few minutes).
+
+Routing notes: paths are otherwise host-agnostic (`/book` and `/booked` work on
+any host). The landing page's "Book a discovery call" buttons link to
+`https://book.maisondelites.com`. Email lives on a separate domain
+(`maisondelitesagency.com` at Google Workspace) and is unaffected.
 
 ## Using it
 

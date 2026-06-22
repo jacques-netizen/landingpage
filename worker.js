@@ -12,6 +12,13 @@ export default {
     if (path === '/api/notify') return handleNotify(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
 
+    // On the booking subdomain (book.*), the root IS the calendar.
+    if (url.hostname.startsWith('book.') && path === '/') {
+      const calendarUrl = new URL(request.url);
+      calendarUrl.pathname = '/book';
+      return env.ASSETS.fetch(new Request(calendarUrl, request));
+    }
+
     // Static site (served by the assets binding).
     return env.ASSETS.fetch(request);
   },
