@@ -1,7 +1,8 @@
 # Cloudflare Worker config (static site + upload API).
 #
-# Deployed as a Worker with static assets. The Worker runs only for /api/* and
-# /v/*; every other path is served from the repo files as a static site.
+# Deployed as a Worker with static assets. The Worker runs first on every
+# request (run_worker_first) so host-based routing works; /api/* and /v/* are
+# handled in code, and every other path is served from the repo static files.
 #
 # Bindings:
 #   - ASSETS : the static site files (configured below)
@@ -22,6 +23,9 @@ compatibility_date = "2024-09-01"
 [assets]
 directory = "."
 binding = "ASSETS"
+# Run the Worker before static assets so host-based routing (book.* root ->
+# calendar) applies even on paths that match a static file (like "/").
+run_worker_first = true
 
 [[r2_buckets]]
 binding = "MEDIA"

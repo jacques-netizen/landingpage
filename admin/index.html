@@ -63,7 +63,7 @@
       </div>
       <a href="#" class="logout" id="logout">Lock</a>
     </header>
-    <p class="topnote">Pick a slot, choose a video from your phone, and tap Upload. Any size works — it's sent in chunks. The site turns the player on automatically once it's done.</p>
+    <p class="topnote">Pick a slot, choose a video from your phone, and tap Upload. Any size works. It's sent in chunks. The site turns the player on automatically once it's done.</p>
     <div id="slots"></div>
   </div>
 
@@ -97,7 +97,7 @@ async function load(){
   if(!pw()){ showGate(); return; }
   let res;
   try { res = await fetch('/api/list', { headers: auth() }); }
-  catch(e){ showGate('Network error — is the site running on Cloudflare Pages?'); return; }
+  catch(e){ showGate('Network error. Is the site running on Cloudflare Pages?'); return; }
   if(res.status === 401){ clearPw(); showGate('Wrong password.'); return; }
   if(!res.ok){
     let t = await res.text();
@@ -121,7 +121,7 @@ function render(slots){
       '<h3>' + s.label + '</h3>' +
       '<div class="key">/v/' + s.key + '</div>' +
       '<div class="status ' + (s.exists ? 'has' : 'empty') + '">' +
-        (s.exists ? '● Live — ' + fmtSize(s.size) + (s.uploaded ? ' · ' + fmtDate(s.uploaded) : '')
+        (s.exists ? '● Live · ' + fmtSize(s.size) + (s.uploaded ? ' · ' + fmtDate(s.uploaded) : '')
                   : '○ No video yet') + '</div>' +
       '<div class="row">' +
         '<input type="file" accept="video/*" />' +
@@ -149,7 +149,7 @@ function render(slots){
           fill.style.width = Math.round(p*100) + '%';
           msg.textContent = 'Uploading… ' + Math.round(p*100) + '%';
         });
-        msg.className='msg ok'; msg.textContent='Done — it is live on the site.';
+        msg.className='msg ok'; msg.textContent='Done. It is live on the site.';
         setTimeout(load, 600);
       } catch(err){
         msg.className='msg err'; msg.textContent = 'Failed: ' + (err && err.message ? err.message : err);
@@ -181,7 +181,7 @@ function putChunk(url, blob, headers, onChunkProgress){
       if(xhr.status >= 200 && xhr.status < 300){
         try { resolve(JSON.parse(xhr.responseText)); } catch(e){ resolve({}); }
       } else {
-        reject(new Error('HTTP ' + xhr.status + ' — ' + (xhr.responseText || '').slice(0,140)));
+        reject(new Error('HTTP ' + xhr.status + ': ' + (xhr.responseText || '').slice(0,140)));
       }
     };
     xhr.onerror = () => reject(new Error('network error during upload'));
