@@ -181,7 +181,8 @@ create table order_items (
   discount_pct numeric(5,2) not null default 0,
   is_custom_order boolean not null default false,
   supplier_id uuid references suppliers(id),
-  expected_arrival date
+  expected_arrival date,
+  created_at timestamptz default now()
 );
 
 -- =============================================
@@ -278,7 +279,7 @@ create trigger payments_update_invoice
   for each row execute procedure update_invoice_on_payment();
 
 -- =============================================
--- HELPER RPC: sales total for dashboard
+-- HELPER RPCs for dashboard & reports
 -- =============================================
 create or replace function get_sales_total(from_date date, to_date date)
 returns numeric language sql as $$
@@ -286,6 +287,32 @@ returns numeric language sql as $$
   from invoices
   where status in ('paid', 'partially_paid')
     and created_at::date between from_date and to_date;
+$$;
+
+-- Daily revenue for bar chart (reports page)
+create or replace function get_daily_revenue(from_ts timestamptz, to_ts timestamptz)
+returns table(date text, revenue numeric) language sql as $$
+  select
+    created_at::date::text as date,
+    coalesce(sum(amount_paid), 0) as revenue
+  from invoices
+  where status in ('paid', 'partially_paid')
+    and created_at between from_ts and to_ts
+  group by created_at::date
+  order by created_at::date;
+$$;
+
+-- Monthly revenue for bar chart (longer periods)
+create or replace function get_monthly_revenue(from_ts timestamptz, to_ts timestamptz)
+returns table(month text, revenue numeric) language sql as $$
+  select
+    to_char(created_at, 'YYYY-MM') as month,
+    coalesce(sum(amount_paid), 0) as revenue
+  from invoices
+  where status in ('paid', 'partially_paid')
+    and created_at between from_ts and to_ts
+  group by to_char(created_at, 'YYYY-MM')
+  order by month;
 $$;
 
 -- =============================================
