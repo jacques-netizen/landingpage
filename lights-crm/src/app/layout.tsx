@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lights CRM",
-  description: "CRM & POS for lighting business",
+  title: "17 Prime Home",
+  description: "CRM & POS — 17 Prime Home",
 };
 
 export default function RootLayout({
