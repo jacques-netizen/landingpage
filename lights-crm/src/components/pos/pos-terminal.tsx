@@ -28,7 +28,7 @@ interface POSTerminalProps {
   userId: string;
 }
 
-const TAX_RATE = 21;
+const TAX_RATE = 12.5;
 
 export function POSTerminal({ products, userId }: POSTerminalProps) {
   const router = useRouter();

@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/sidebar";
+import { Topbar } from "@/components/layout/topbar";
 import { UserRole } from "@/types";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -23,9 +24,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         userRole={(profile?.role ?? "sales") as UserRole}
         userName={profile?.full_name ?? user.email ?? ""}
       />
-      <main className="flex-1 overflow-y-auto bg-background p-6">
-        {children}
-      </main>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Topbar />
+        <main className="flex-1 overflow-y-auto bg-background p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

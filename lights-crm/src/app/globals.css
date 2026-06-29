@@ -1,24 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0c0c0c;
-  --foreground: #F5F0EB;
-  --card: #161616;
-  --card-foreground: #F5F0EB;
-  --primary: #DC2626;
+  --background: #F4F0E8;
+  --foreground: #1B1714;
+  --card: #ffffff;
+  --card-foreground: #1B1714;
+  --primary: #E01622;
   --primary-foreground: #ffffff;
-  --secondary: #1f1f1f;
-  --secondary-foreground: #F5F0EB;
-  --muted: #1a1a1a;
-  --muted-foreground: #888888;
-  --accent: #222222;
-  --accent-foreground: #F5F0EB;
-  --destructive: #ef4444;
+  --secondary: #F4F0E8;
+  --secondary-foreground: #1B1714;
+  --muted: #FAF7F2;
+  --muted-foreground: #8A8076;
+  --accent: #F0EAE0;
+  --accent-foreground: #1B1714;
+  --destructive: #D9442B;
   --destructive-foreground: #ffffff;
-  --border: #2a2a2a;
-  --input: #1f1f1f;
-  --ring: #DC2626;
-  --radius: 0.5rem;
+  --border: #EDE6DA;
+  --input: #ffffff;
+  --ring: #E01622;
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -39,8 +39,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --font-label: var(--font-oswald), Arial, sans-serif;
 }
 
 * {
@@ -50,7 +51,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
 ::-webkit-scrollbar {
@@ -63,10 +64,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: #C8BFB4;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: #A89F95;
 }
