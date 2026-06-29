@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/inventory/product-form";
 import { StockAdjustDialog } from "@/components/inventory/stock-adjust-dialog";
 import { ReceiveStockDialog } from "@/components/inventory/receive-stock-dialog";
+import { TransferStockDialog } from "@/components/inventory/transfer-stock-dialog";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
@@ -29,17 +30,29 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         <div>
           <h1 className="text-2xl font-semibold">{product.name}</h1>
           <p className="text-sm text-muted-foreground font-mono">{product.sku}</p>
+          <div className="mt-2 flex gap-4 text-sm">
+            <span><span className="text-muted-foreground">Showroom</span> <span className="font-semibold">{product.stock_qty}</span></span>
+            <span><span className="text-muted-foreground">Warehouse</span> <span className="font-semibold">{product.warehouse_qty ?? 0}</span></span>
+            <span><span className="text-muted-foreground">On hand</span> <span className="font-semibold">{product.stock_qty + (product.warehouse_qty ?? 0)}</span></span>
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <StockAdjustDialog
             productId={product.id}
             productName={product.name}
             currentStock={product.stock_qty}
           />
+          <TransferStockDialog
+            productId={product.id}
+            productName={product.name}
+            showroomQty={product.stock_qty}
+            warehouseQty={product.warehouse_qty ?? 0}
+          />
           <ReceiveStockDialog
             productId={product.id}
             productName={product.name}
             currentStock={product.stock_qty}
+            warehouseQty={product.warehouse_qty ?? 0}
             currentCost={product.cost_price ?? 0}
           />
         </div>

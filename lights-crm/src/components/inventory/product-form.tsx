@@ -25,6 +25,7 @@ interface ProductFormProps {
     unit_price: number;
     cost_price?: number;
     stock_qty: number;
+    warehouse_qty?: number;
     low_stock_threshold: number;
     is_custom_order: boolean;
   };
@@ -48,6 +49,7 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
     unit_price: product?.unit_price?.toString() ?? "",
     cost_price: product?.cost_price?.toString() ?? "",
     stock_qty: product?.stock_qty?.toString() ?? "0",
+    warehouse_qty: product?.warehouse_qty?.toString() ?? "0",
     low_stock_threshold: product?.low_stock_threshold?.toString() ?? "5",
     is_custom_order: product?.is_custom_order ?? false,
   });
@@ -83,6 +85,7 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
       unit_price: parseFloat(form.unit_price) || 0,
       cost_price: parseFloat(form.cost_price) || 0,
       stock_qty: parseInt(form.stock_qty) || 0,
+      warehouse_qty: parseInt(form.warehouse_qty) || 0,
       low_stock_threshold: parseInt(form.low_stock_threshold) || 5,
       is_custom_order: form.is_custom_order,
     };
@@ -148,16 +151,21 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="space-y-1.5">
-          <Label htmlFor="stock_qty">Stock Qty</Label>
+          <Label htmlFor="stock_qty">Showroom Qty</Label>
           <Input id="stock_qty" type="number" min="0" value={form.stock_qty} onChange={(e) => set("stock_qty", e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="warehouse_qty">Warehouse Qty</Label>
+          <Input id="warehouse_qty" type="number" min="0" value={form.warehouse_qty} onChange={(e) => set("warehouse_qty", e.target.value)} />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="low_stock_threshold">Low Stock Alert At</Label>
           <Input id="low_stock_threshold" type="number" min="0" value={form.low_stock_threshold} onChange={(e) => set("low_stock_threshold", e.target.value)} />
         </div>
       </div>
+      <p className="text-xs text-muted-foreground -mt-3">Low-stock alerts fire on total on-hand (showroom + warehouse). The POS sells from showroom stock.</p>
 
       <div className="space-y-1.5">
         <Label>Supplier</Label>

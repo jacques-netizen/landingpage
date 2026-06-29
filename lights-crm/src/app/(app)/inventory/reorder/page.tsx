@@ -10,13 +10,13 @@ export default async function ReorderPage() {
 
   const { data: products } = await supabase
     .from("products")
-    .select("id, name, sku, stock_qty, low_stock_threshold, is_custom_order, suppliers(name, phone)")
+    .select("id, name, sku, stock_qty, warehouse_qty, low_stock_threshold, is_custom_order, suppliers(name, phone)")
     .eq("is_custom_order", false)
     .order("stock_qty");
 
-  // Items at or below their per-SKU reorder point.
+  // Items at or below their per-SKU reorder point (total on-hand).
   const reorder = (products ?? []).filter(
-    (p: any) => p.stock_qty <= p.low_stock_threshold
+    (p: any) => p.stock_qty + (p.warehouse_qty ?? 0) <= p.low_stock_threshold
   );
 
   return (
@@ -48,7 +48,7 @@ export default async function ReorderPage() {
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">SKU</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Supplier</th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">In stock</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">On hand</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Reorder at</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
                 <th className="px-4 py-3"></th>
@@ -56,7 +56,8 @@ export default async function ReorderPage() {
             </thead>
             <tbody>
               {reorder.map((p: any) => {
-                const isOut = p.stock_qty <= 0;
+                const onHand = p.stock_qty + (p.warehouse_qty ?? 0);
+                const isOut = onHand <= 0;
                 const supplier = p.suppliers as any;
                 return (
                   <tr key={p.id} className="border-b last:border-0 hover:bg-muted/40">
@@ -66,7 +67,7 @@ export default async function ReorderPage() {
                       {supplier?.name ?? "—"}
                       {supplier?.phone && <div className="text-xs">{supplier.phone}</div>}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium">{p.stock_qty}</td>
+                    <td className="px-4 py-3 text-right font-medium">{onHand}</td>
                     <td className="px-4 py-3 text-right text-muted-foreground">{p.low_stock_threshold}</td>
                     <td className="px-4 py-3">
                       {isOut ? <Badge variant="destructive">Out of stock</Badge> : <Badge variant="warning">Low</Badge>}

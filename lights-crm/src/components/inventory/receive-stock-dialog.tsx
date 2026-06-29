@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { PackagePlus } from "lucide-react";
 
@@ -13,20 +14,25 @@ interface ReceiveStockDialogProps {
   productId: string;
   productName: string;
   currentStock: number;
+  warehouseQty: number;
   currentCost: number;
 }
 
-export function ReceiveStockDialog({ productId, productName, currentStock, currentCost }: ReceiveStockDialogProps) {
+type Destination = "showroom" | "warehouse";
+
+export function ReceiveStockDialog({ productId, productName, currentStock, warehouseQty, currentCost }: ReceiveStockDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [qty, setQty] = useState("");
+  const [destination, setDestination] = useState<Destination>("warehouse");
   const [landedCost, setLandedCost] = useState(currentCost ? String(currentCost) : "");
   const [reference, setReference] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const qtyNum = parseInt(qty) || 0;
-  const newStock = currentStock + qtyNum;
+  const base = destination === "showroom" ? currentStock : warehouseQty;
+  const newQty = base + qtyNum;
   const costNum = parseFloat(landedCost);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -41,12 +47,13 @@ export function ReceiveStockDialog({ productId, productName, currentStock, curre
     const { error: adjErr } = await supabase.from("stock_adjustments").insert({
       product_id: productId,
       qty_change: qtyNum,
-      reason: `Goods received${reference.trim() ? `: ${reference.trim()}` : ""}`,
+      reason: `Goods received → ${destination}${reference.trim() ? `: ${reference.trim()}` : ""}`,
       adjusted_by: user!.id,
     });
     if (adjErr) { setError(adjErr.message); setSaving(false); return; }
 
-    const update: { stock_qty: number; cost_price?: number } = { stock_qty: newStock };
+    const update: { stock_qty?: number; warehouse_qty?: number; cost_price?: number } =
+      destination === "showroom" ? { stock_qty: newQty } : { warehouse_qty: newQty };
     if (landedCost !== "" && !Number.isNaN(costNum)) update.cost_price = costNum;
 
     const { error: prodErr } = await supabase.from("products").update(update).eq("id", productId);
@@ -73,12 +80,14 @@ export function ReceiveStockDialog({ productId, productName, currentStock, curre
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-center gap-4 rounded-lg bg-muted p-3 text-sm">
-            <span className="text-muted-foreground">In stock:</span>
+            <span className="text-muted-foreground">Showroom:</span>
             <span className="font-semibold">{currentStock}</span>
+            <span className="text-muted-foreground">Warehouse:</span>
+            <span className="font-semibold">{warehouseQty}</span>
             {qtyNum > 0 && (
               <>
-                <span className="text-muted-foreground">→ After:</span>
-                <span className="font-semibold text-green-600">{newStock}</span>
+                <span className="text-muted-foreground">→ {destination}:</span>
+                <span className="font-semibold text-green-600">{newQty}</span>
               </>
             )}
           </div>
@@ -89,9 +98,20 @@ export function ReceiveStockDialog({ productId, productName, currentStock, curre
               <Input id="recv-qty" type="number" min="1" value={qty} onChange={(e) => setQty(e.target.value)} placeholder="e.g. 50" required />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="recv-cost">Landed cost / unit (GH₵)</Label>
-              <Input id="recv-cost" type="number" min="0" step="0.01" value={landedCost} onChange={(e) => setLandedCost(e.target.value)} placeholder="0.00" />
+              <Label>Receive into</Label>
+              <Select value={destination} onValueChange={(v) => setDestination(v as Destination)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="warehouse">Warehouse</SelectItem>
+                  <SelectItem value="showroom">Showroom</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="recv-cost">Landed cost / unit (GH₵)</Label>
+            <Input id="recv-cost" type="number" min="0" step="0.01" value={landedCost} onChange={(e) => setLandedCost(e.target.value)} placeholder="0.00" />
           </div>
           <p className="text-xs text-muted-foreground -mt-2">
             Landed cost = supplier price + freight + Tema duty/VAT/levies, per unit. Updating it here updates the product&apos;s cost.

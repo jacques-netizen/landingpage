@@ -15,7 +15,7 @@ export default async function InventoryPage() {
     .order("name");
 
   const reorderCount = (products ?? []).filter(
-    (p: any) => !p.is_custom_order && p.stock_qty <= p.low_stock_threshold
+    (p: any) => !p.is_custom_order && p.stock_qty + (p.warehouse_qty ?? 0) <= p.low_stock_threshold
   ).length;
 
   return (
@@ -62,15 +62,18 @@ export default async function InventoryPage() {
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Cost</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Price</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Margin</th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Stock</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Showroom</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Warehouse</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {products.map((product: any) => {
-                const isLow = product.stock_qty <= product.low_stock_threshold;
-                const isOut = product.stock_qty === 0;
+                const warehouseQty = product.warehouse_qty ?? 0;
+                const onHand = product.stock_qty + warehouseQty;
+                const isLow = onHand <= product.low_stock_threshold;
+                const isOut = onHand === 0;
                 const cost = product.cost_price ?? 0;
                 const profit = product.unit_price - cost;
                 const marginPct = product.unit_price > 0 && cost > 0 ? (profit / product.unit_price) * 100 : null;
@@ -94,13 +97,14 @@ export default async function InventoryPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">{product.stock_qty}</td>
+                    <td className="px-4 py-3 text-right text-muted-foreground">{warehouseQty}</td>
                     <td className="px-4 py-3">
-                      {isOut ? (
+                      {product.is_custom_order ? (
+                        <Badge variant="secondary">Custom order</Badge>
+                      ) : isOut ? (
                         <Badge variant="destructive">Out of stock</Badge>
                       ) : isLow ? (
                         <Badge variant="warning">Low stock</Badge>
-                      ) : product.is_custom_order ? (
-                        <Badge variant="secondary">Custom order</Badge>
                       ) : (
                         <Badge variant="success">In stock</Badge>
                       )}
