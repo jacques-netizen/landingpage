@@ -40,6 +40,7 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
   const [customerSearch, setCustomerSearch] = useState("");
   const [channel, setChannel] = useState<SaleChannel>("walk_in");
   const [expectedDelivery, setExpectedDelivery] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [lines, setLines] = useState<OrderLine[]>([]);
   const [saving, setSaving] = useState(false);
@@ -94,6 +95,7 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
         status: "pending",
         notes: notes || null,
         expected_delivery: expectedDelivery || null,
+        delivery_address: deliveryAddress || null,
         created_by: userId,
       })
       .select("id, order_number")
@@ -163,9 +165,15 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="expected_delivery">Expected Delivery Date</Label>
-        <Input id="expected_delivery" type="date" value={expectedDelivery} onChange={(e) => setExpectedDelivery(e.target.value)} className="w-48" />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="expected_delivery">Expected Delivery Date</Label>
+          <Input id="expected_delivery" type="date" value={expectedDelivery} onChange={(e) => setExpectedDelivery(e.target.value)} />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="delivery_address">Delivery Address</Label>
+          <Input id="delivery_address" value={deliveryAddress} onChange={(e) => setDeliveryAddress(e.target.value)} placeholder="Where to deliver (optional)" />
+        </div>
       </div>
 
       {/* Product picker */}

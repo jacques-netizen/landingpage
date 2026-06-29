@@ -7,9 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { OrderStatusStepper } from "@/components/orders/order-status-stepper";
 import { CancelOrderButton } from "@/components/orders/cancel-order-button";
+import { RecordDeliveryDialog } from "@/components/orders/record-delivery-dialog";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { OrderStatus, SaleChannel } from "@/types";
-import { ArrowLeft, FileText, User, Calendar, MessageSquare } from "lucide-react";
+import { ArrowLeft, FileText, User, Calendar, MessageSquare, Truck } from "lucide-react";
 
 const channelLabel: Record<SaleChannel, string> = {
   walk_in: "Walk-in", phone: "Phone", whatsapp: "WhatsApp", b2b: "B2B",
@@ -84,11 +85,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </Button>
           )}
           {order.status !== "cancelled" && (
-            <CancelOrderButton
-              orderId={order.id}
-              orderNumber={order.order_number}
-              hasInvoice={!!linkedInvoice}
-            />
+            <>
+              <RecordDeliveryDialog
+                orderId={order.id}
+                orderNumber={order.order_number}
+                alreadyDelivered={!!order.delivered_at}
+              />
+              <CancelOrderButton
+                orderId={order.id}
+                orderNumber={order.order_number}
+                hasInvoice={!!linkedInvoice}
+              />
+            </>
           )}
         </div>
       </div>
@@ -146,6 +154,38 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </CardContent>
         </Card>
       </div>
+
+      {/* Delivery */}
+      {(order.delivered_at || order.delivery_address) && (
+        <Card>
+          <CardContent className="p-4 space-y-2 text-sm">
+            <div className="flex items-center gap-2 text-muted-foreground font-medium text-xs uppercase tracking-wide mb-2">
+              <Truck className="h-3.5 w-3.5" />Delivery
+            </div>
+            {order.delivery_address && (
+              <div className="flex justify-between gap-4">
+                <span className="text-muted-foreground">Address</span>
+                <span className="text-right whitespace-pre-line">{order.delivery_address}</span>
+              </div>
+            )}
+            {order.delivered_at && (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Delivered on</span>
+                  <span>{formatDate(order.delivered_at)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Received by</span>
+                  <span className="font-medium">{order.received_by ?? "—"}</span>
+                </div>
+              </>
+            )}
+            {order.delivery_note && (
+              <div className="pt-1 text-muted-foreground whitespace-pre-wrap">{order.delivery_note}</div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Items */}
       <div>
