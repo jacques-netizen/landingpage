@@ -7,7 +7,7 @@ export default async function NewOrderPage() {
 
   const [{ data: customers }, { data: products }] = await Promise.all([
     supabase.from("customers").select("id, name, company_name").order("name"),
-    supabase.from("products").select("id, name, unit_price, is_custom_order").order("name"),
+    supabase.from("products").select("id, name, unit_price, cost_price, is_custom_order").order("name"),
   ]);
 
   return (

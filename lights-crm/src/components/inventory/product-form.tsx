@@ -23,6 +23,7 @@ interface ProductFormProps {
     supplier_id?: string;
     brand?: string;
     unit_price: number;
+    cost_price?: number;
     stock_qty: number;
     low_stock_threshold: number;
     is_custom_order: boolean;
@@ -45,6 +46,7 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
     supplier_id: product?.supplier_id ?? "",
     brand: product?.brand ?? "",
     unit_price: product?.unit_price?.toString() ?? "",
+    cost_price: product?.cost_price?.toString() ?? "",
     stock_qty: product?.stock_qty?.toString() ?? "0",
     low_stock_threshold: product?.low_stock_threshold?.toString() ?? "5",
     is_custom_order: product?.is_custom_order ?? false,
@@ -52,6 +54,18 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const marginHint = (() => {
+    const price = parseFloat(form.unit_price);
+    const cost = parseFloat(form.cost_price);
+    if (!price || !cost || cost <= 0) return null;
+    const profit = price - cost;
+    const pct = (profit / price) * 100;
+    return {
+      negative: profit < 0,
+      text: `Margin: GH₵ ${profit.toFixed(2)} (${pct.toFixed(1)}%)`,
+    };
+  })();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,6 +81,7 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
       supplier_id: form.supplier_id || null,
       brand: form.brand || null,
       unit_price: parseFloat(form.unit_price) || 0,
+      cost_price: parseFloat(form.cost_price) || 0,
       stock_qty: parseInt(form.stock_qty) || 0,
       low_stock_threshold: parseInt(form.low_stock_threshold) || 5,
       is_custom_order: form.is_custom_order,
@@ -120,11 +135,20 @@ export function ProductForm({ categories, suppliers, product }: ProductFormProps
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label htmlFor="unit_price">Unit Price (€) *</Label>
-          <Input id="unit_price" type="number" min="0" step="0.01" value={form.unit_price} onChange={(e) => set("unit_price", e.target.value)} required placeholder="0.00" />
+          <Label htmlFor="cost_price">Landed Cost (GH₵)</Label>
+          <Input id="cost_price" type="number" min="0" step="0.01" value={form.cost_price} onChange={(e) => set("cost_price", e.target.value)} placeholder="0.00" />
+          <p className="text-xs text-muted-foreground">True per-unit cost: supplier + freight + Tema duty/VAT/levies.</p>
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="unit_price">Selling Price (GH₵) *</Label>
+          <Input id="unit_price" type="number" min="0" step="0.01" value={form.unit_price} onChange={(e) => set("unit_price", e.target.value)} required placeholder="0.00" />
+          {marginHint && <p className={`text-xs ${marginHint.negative ? "text-destructive" : "text-muted-foreground"}`}>{marginHint.text}</p>}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label htmlFor="stock_qty">Stock Qty</Label>
           <Input id="stock_qty" type="number" min="0" value={form.stock_qty} onChange={(e) => set("stock_qty", e.target.value)} />

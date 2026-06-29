@@ -19,6 +19,7 @@ interface Product {
   sku: string;
   name: string;
   unit_price: number;
+  cost_price?: number;
   stock_qty: number;
   is_custom_order: boolean;
   categories?: { name: string } | null;
@@ -142,6 +143,7 @@ export function POSTerminal({ products, customers, userId }: POSTerminalProps) {
           product_id: i.product.id,
           qty: i.qty,
           unit_price: i.unit_price,
+          cost_price: (i.product as any).cost_price ?? 0,
           discount_pct: i.discount_pct,
           is_custom_order: false,
         }))

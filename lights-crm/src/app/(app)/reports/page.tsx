@@ -45,7 +45,7 @@ function buildDailyBuckets(from: Date, to: Date, rows: { date: string; revenue: 
   const cur = new Date(from);
   while (cur <= to) {
     const key = cur.toISOString().split("T")[0];
-    const label = cur.toLocaleDateString("fr-BE", { month: "short", day: "numeric" });
+    const label = cur.toLocaleDateString("en-GH", { month: "short", day: "numeric" });
     result.push({ label, revenue: map.get(key) ?? 0 });
     cur.setDate(cur.getDate() + 1);
   }
@@ -58,7 +58,7 @@ function buildMonthlyBuckets(from: Date, to: Date, rows: { month: string; revenu
   const cur = new Date(from.getFullYear(), from.getMonth(), 1);
   while (cur <= to) {
     const key = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}`;
-    const label = cur.toLocaleDateString("fr-BE", { month: "short", year: "2-digit" });
+    const label = cur.toLocaleDateString("en-GH", { month: "short", year: "2-digit" });
     result.push({ label, revenue: map.get(key) ?? 0 });
     cur.setMonth(cur.getMonth() + 1);
   }
@@ -139,6 +139,16 @@ export default async function ReportsPage({
       .in("status", ["paid", "partially_paid"]),
   ]);
 
+  // Margin by channel: order items with cost snapshot, joined to orders.
+  // Builder typed as any — the joined-column filters exceed the typed builder's inference depth.
+  const marginQuery: any = supabase
+    .from("order_items")
+    .select("qty, unit_price, discount_pct, cost_price, orders!inner(channel, status, created_at)");
+  const { data: marginRows } = (await marginQuery
+    .gte("orders.created_at", fromStr)
+    .lte("orders.created_at", toStr)
+    .neq("orders.status", "cancelled")) as { data: any[] | null };
+
   // Build chart data
   const revenueData = groupBy === "day"
     ? buildDailyBuckets(from, to, (revenueRows ?? []) as any)
@@ -181,6 +191,34 @@ export default async function ReportsPage({
 
   const periodRevenue = (totalPaid ?? []).reduce((s: number, inv: any) => s + (inv.amount_paid ?? 0), 0);
   const overdueTotal = (overdueInvoices ?? []).reduce((s: number, inv: any) => s + Math.max(0, inv.total - inv.amount_paid), 0);
+
+  // Margin by channel (revenue − cost of goods sold, using the cost snapshot)
+  const channelLabels: Record<string, string> = {
+    walk_in: "Walk-in", phone: "Phone", whatsapp: "WhatsApp", b2b: "B2B",
+  };
+  const marginMap = new Map<string, { revenue: number; cost: number }>();
+  for (const row of (marginRows ?? [])) {
+    const r = row as any;
+    const ch = r.orders?.channel as string;
+    if (!ch) continue;
+    const revenue = r.qty * r.unit_price * (1 - r.discount_pct / 100);
+    const cost = r.qty * (r.cost_price ?? 0);
+    const existing = marginMap.get(ch) ?? { revenue: 0, cost: 0 };
+    marginMap.set(ch, { revenue: existing.revenue + revenue, cost: existing.cost + cost });
+  }
+  const marginByChannel = Array.from(marginMap.entries())
+    .map(([channel, v]) => ({
+      channel: channelLabels[channel] ?? channel,
+      revenue: v.revenue,
+      cost: v.cost,
+      profit: v.revenue - v.cost,
+      marginPct: v.revenue > 0 ? ((v.revenue - v.cost) / v.revenue) * 100 : 0,
+    }))
+    .sort((a, b) => b.profit - a.profit);
+  const grossRevenue = marginByChannel.reduce((s, m) => s + m.revenue, 0);
+  const grossCost = marginByChannel.reduce((s, m) => s + m.cost, 0);
+  const grossProfit = grossRevenue - grossCost;
+  const grossMarginPct = grossRevenue > 0 ? (grossProfit / grossRevenue) * 100 : 0;
 
   const periods: Period[] = ["week", "month", "3months", "year"];
 
@@ -282,6 +320,52 @@ export default async function ReportsPage({
           </CardContent>
         </Card>
       </div>
+
+      {/* Gross margin by channel */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <CardTitle className="text-base">Gross Margin by Channel</CardTitle>
+            <div className="text-right">
+              <span className="text-sm text-muted-foreground mr-2">Total gross profit</span>
+              <span className="text-lg font-semibold">{formatCurrency(grossProfit)}</span>
+              <span className="text-sm text-muted-foreground ml-2">({grossMarginPct.toFixed(1)}%)</span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {!marginByChannel.length ? (
+            <p className="text-sm text-muted-foreground px-6 pb-4">
+              No sales in this period. Margin appears once products have a landed cost and are sold.
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="px-4 py-2 text-left font-medium text-muted-foreground">Channel</th>
+                  <th className="px-4 py-2 text-right font-medium text-muted-foreground">Revenue</th>
+                  <th className="px-4 py-2 text-right font-medium text-muted-foreground">Cost</th>
+                  <th className="px-4 py-2 text-right font-medium text-muted-foreground">Profit</th>
+                  <th className="px-4 py-2 text-right font-medium text-muted-foreground">Margin</th>
+                </tr>
+              </thead>
+              <tbody>
+                {marginByChannel.map((m, i) => (
+                  <tr key={i} className="border-b last:border-0">
+                    <td className="px-4 py-2 font-medium">{m.channel}</td>
+                    <td className="px-4 py-2 text-right">{formatCurrency(m.revenue)}</td>
+                    <td className="px-4 py-2 text-right text-muted-foreground">{formatCurrency(m.cost)}</td>
+                    <td className="px-4 py-2 text-right font-medium">{formatCurrency(m.profit)}</td>
+                    <td className={`px-4 py-2 text-right font-medium ${m.profit < 0 ? "text-destructive" : "text-green-600"}`}>
+                      {m.marginPct.toFixed(1)}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Tables */}
       <div className="grid gap-4 lg:grid-cols-2">

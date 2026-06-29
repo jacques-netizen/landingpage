@@ -18,12 +18,13 @@ interface OrderLine {
   product_name: string;
   qty: number;
   unit_price: number;
+  cost_price: number;
   discount_pct: number;
   is_custom_order: boolean;
 }
 
 interface Customer { id: string; name: string; company_name?: string; }
-interface Product { id: string; name: string; unit_price: number; is_custom_order: boolean; }
+interface Product { id: string; name: string; unit_price: number; cost_price?: number; is_custom_order: boolean; }
 
 interface OrderFormProps {
   customers: Customer[];
@@ -60,6 +61,7 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
         product_name: product.name,
         qty: 1,
         unit_price: product.unit_price,
+        cost_price: product.cost_price ?? 0,
         discount_pct: 0,
         is_custom_order: product.is_custom_order,
       }]);
@@ -105,6 +107,7 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
         product_id: l.product_id,
         qty: l.qty,
         unit_price: l.unit_price,
+        cost_price: l.cost_price,
         discount_pct: l.discount_pct,
         is_custom_order: l.is_custom_order,
       }))
@@ -198,7 +201,7 @@ export function OrderForm({ customers, products, userId }: OrderFormProps) {
               <tr>
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Product</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground w-20">Qty</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground w-24">Unit €</th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground w-24">Unit</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground w-16">Disc%</th>
                 <th className="px-3 py-2 text-right font-medium text-muted-foreground w-24">Total</th>
                 <th className="px-3 py-2 w-8"></th>

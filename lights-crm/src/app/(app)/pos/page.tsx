@@ -8,7 +8,7 @@ export default async function POSPage() {
 
   const { data: allProducts } = await supabase
     .from("products")
-    .select("id, sku, name, unit_price, stock_qty, is_custom_order")
+    .select("id, sku, name, unit_price, cost_price, stock_qty, is_custom_order")
     .order("name");
 
   const { data: allCustomers } = await supabase

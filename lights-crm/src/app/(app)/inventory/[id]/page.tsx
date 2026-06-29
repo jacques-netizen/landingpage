@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProductForm } from "@/components/inventory/product-form";
 import { StockAdjustDialog } from "@/components/inventory/stock-adjust-dialog";
+import { ReceiveStockDialog } from "@/components/inventory/receive-stock-dialog";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
@@ -29,11 +30,19 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <h1 className="text-2xl font-semibold">{product.name}</h1>
           <p className="text-sm text-muted-foreground font-mono">{product.sku}</p>
         </div>
-        <StockAdjustDialog
-          productId={product.id}
-          productName={product.name}
-          currentStock={product.stock_qty}
-        />
+        <div className="flex gap-2">
+          <StockAdjustDialog
+            productId={product.id}
+            productName={product.name}
+            currentStock={product.stock_qty}
+          />
+          <ReceiveStockDialog
+            productId={product.id}
+            productName={product.name}
+            currentStock={product.stock_qty}
+            currentCost={product.cost_price ?? 0}
+          />
+        </div>
       </div>
 
       <ProductForm categories={categories ?? []} suppliers={suppliers ?? []} product={product} />

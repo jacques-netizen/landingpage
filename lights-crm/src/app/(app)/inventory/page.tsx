@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { Plus, Package } from "lucide-react";
+import { Plus, Package, AlertTriangle } from "lucide-react";
 
 export default async function InventoryPage() {
   const supabase = await createClient();
@@ -14,6 +14,10 @@ export default async function InventoryPage() {
     .select("*, categories(name), suppliers(name)")
     .order("name");
 
+  const reorderCount = (products ?? []).filter(
+    (p: any) => !p.is_custom_order && p.stock_qty <= p.low_stock_threshold
+  ).length;
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
@@ -21,12 +25,20 @@ export default async function InventoryPage() {
           <h1 className="text-2xl font-semibold">Inventory</h1>
           <p className="text-sm text-muted-foreground">{products?.length ?? 0} products</p>
         </div>
-        <Button asChild>
-          <Link href="/inventory/new">
-            <Plus className="h-4 w-4" />
-            Add Product
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/inventory/reorder">
+              <AlertTriangle className={`h-4 w-4 ${reorderCount > 0 ? "text-amber-500" : ""}`} />
+              Reorder list{reorderCount > 0 ? ` (${reorderCount})` : ""}
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/inventory/new">
+              <Plus className="h-4 w-4" />
+              Add Product
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {!products?.length ? (
@@ -47,7 +59,9 @@ export default async function InventoryPage() {
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">SKU</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Category</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Cost</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Price</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Margin</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Stock</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
                 <th className="px-4 py-3"></th>
@@ -57,6 +71,9 @@ export default async function InventoryPage() {
               {products.map((product: any) => {
                 const isLow = product.stock_qty <= product.low_stock_threshold;
                 const isOut = product.stock_qty === 0;
+                const cost = product.cost_price ?? 0;
+                const profit = product.unit_price - cost;
+                const marginPct = product.unit_price > 0 && cost > 0 ? (profit / product.unit_price) * 100 : null;
                 return (
                   <tr key={product.id} className="border-b last:border-0 hover:bg-muted/40">
                     <td className="px-4 py-3">
@@ -65,7 +82,17 @@ export default async function InventoryPage() {
                     </td>
                     <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{product.sku}</td>
                     <td className="px-4 py-3 text-muted-foreground">{product.categories?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-right text-muted-foreground">{cost > 0 ? formatCurrency(cost) : "—"}</td>
                     <td className="px-4 py-3 text-right font-medium">{formatCurrency(product.unit_price)}</td>
+                    <td className="px-4 py-3 text-right">
+                      {marginPct === null ? (
+                        <span className="text-muted-foreground">—</span>
+                      ) : (
+                        <span className={profit < 0 ? "text-destructive font-medium" : "text-green-600 font-medium"}>
+                          {marginPct.toFixed(0)}%
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-right">{product.stock_qty}</td>
                     <td className="px-4 py-3">
                       {isOut ? (
