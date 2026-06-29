@@ -73,6 +73,24 @@ Defined in `lib/slots.js`:
 To add a slot: add it to `lib/slots.js` and point a player at `/v/<key>` in
 `index.html`.
 
+## Client campaign dashboard
+
+A live, client-facing campaign report with content tiles. Two pages plus a feed:
+
+| URL | Who | What |
+|-----|-----|------|
+| `/dashboard` | The client (share the link) | Live report — headline views/clips/creators/CPM, guarantee + budget progress, platform split, content tiles (the actual clips), creator leaderboard. Auto-refreshes every ~20s, no reload needed. |
+| `/campaign-admin` | You (password-gated) | Editor to update the numbers and clips. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/api/campaign` | — | JSON feed. Public `GET`; authed `POST` writes it. Data is one JSON object in the same R2 bucket (`campaign-data.json`). |
+
+How to run it: open `/campaign-admin`, unlock, fill in the client name, budget
+and guarantee, then add a row per clip (paste the post link — YouTube
+thumbnails are automatic; for TikTok/Instagram add a thumbnail image URL). Hit
+**Recalculate from clips** to auto-fill total views, clip count, platform split
+and the creator leaderboard, then **Save**. Any open client dashboard updates
+within seconds. Before any data is saved the dashboard shows a tasteful empty
+state, so the link is always safe to share.
+
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the
   `functions/` folder) if you ever switch — same handlers power both.

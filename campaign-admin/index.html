@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison d'Élites · Campaign Editor</title>
+<style>
+  :root{--ink:#0e0b07;--cream:#f7f2e9;--gold:#c7a867;--gold-bright:#e6c984;--line:rgba(199,168,103,.28);--ok:#5fb87a;--bad:#d2766a}
+  *{box-sizing:border-box}
+  body{margin:0;background:#0e0b07;color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:36px 18px 90px}
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  h1{font-size:1.5rem;margin:0;letter-spacing:.01em}
+  .eyebrow{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .muted{color:#b9b09f;font-size:.9rem}
+  a.link{color:var(--gold);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line)}
+  .card{background:#161109;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px}
+  .gate{max-width:380px;margin:13vh auto 0}
+  h2{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
+  label{display:block;font-size:.78rem;color:#cfc6b3;margin:10px 0 5px}
+  input,select{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0e0b07;color:var(--cream);font-size:.95rem;font-family:inherit}
+  input[type=checkbox]{width:auto}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .gridrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  button{cursor:pointer;border:0;border-radius:9px;font-weight:600;font-size:.92rem;padding:11px 16px;background:var(--gold);color:#241a0c;transition:.15s}
+  button:hover{background:var(--gold-bright)}
+  button.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+  button.small{padding:7px 11px;font-size:.8rem}
+  button.danger{background:transparent;color:var(--bad);border:1px solid var(--bad);padding:6px 10px;font-size:.78rem}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .row-item{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:#120d06;position:relative}
+  .row-item .rm{position:absolute;top:8px;right:8px}
+  .savebar{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(14,11,7,0) 0%,#0e0b07 40%);padding:18px 0 6px;margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .msg{font-size:.85rem;min-height:1.1em}
+  .msg.ok{color:var(--ok)} .msg.err{color:var(--bad)}
+  .hint{font-size:.78rem;color:#8c8474;margin-top:6px}
+  .addbtn{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- gate -->
+  <div id="gate" class="gate card" style="display:none">
+    <div class="eyebrow">Maison d'Élites</div>
+    <h1 style="margin:4px 0 14px">Campaign editor</h1>
+    <label for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••••">
+    <div class="msg err" id="gateMsg"></div>
+    <button id="gateBtn" style="width:100%;margin-top:12px">Unlock</button>
+    <p class="hint">Same password as the video upload tool. Kept only in this tab.</p>
+  </div>
+
+  <!-- app -->
+  <div id="app" style="display:none">
+    <header>
+      <div>
+        <div class="eyebrow">Maison d'Élites</div>
+        <h1>Campaign editor</h1>
+      </div>
+      <div style="text-align:right">
+        <a class="link" href="/dashboard" target="_blank">Open live dashboard ↗</a><br>
+        <a class="link" href="#" id="logout" style="margin-top:6px;display:inline-block">Lock</a>
+      </div>
+    </header>
+    <p class="muted">Update the numbers and clips below, then Save. The client's dashboard updates within seconds, no reload needed.</p>
+
+    <div class="card">
+      <h2>Campaign</h2>
+      <div class="grid2">
+        <div><label>Client name</label><input id="f-client" placeholder="e.g. Acme Studios"></div>
+        <div><label>Campaign title</label><input id="f-campaign" placeholder="e.g. Launch Distribution"></div>
+      </div>
+      <label>Tagline (one line, shown under the title)</label>
+      <input id="f-tagline" placeholder="e.g. Live distribution across our network">
+    </div>
+
+    <div class="card">
+      <h2>Headline numbers</h2>
+      <div class="grid3">
+        <div><label>Total views</label><input id="f-views" type="number" min="0" placeholder="0"></div>
+        <div><label>Clips live</label><input id="f-clips" type="number" min="0" placeholder="0"></div>
+        <div><label>Creators</label><input id="f-creators" type="number" min="0" placeholder="0"></div>
+        <div><label>Budget total ($)</label><input id="f-budgetTotal" type="number" min="0" placeholder="5000"></div>
+        <div><label>Budget spent ($)</label><input id="f-budgetSpent" type="number" min="0" placeholder="0"></div>
+        <div><label>Guaranteed floor (views)</label><input id="f-guaranteeFloor" type="number" min="0" placeholder="4500000"></div>
+      </div>
+      <p class="hint">Tip: add clips below, then hit “Recalculate from clips” to fill views, clip count, platform split and creators automatically.</p>
+      <button class="ghost small" id="recalc" style="margin-top:8px">↻ Recalculate from clips</button>
+    </div>
+
+    <div class="card">
+      <h2>Platform split</h2>
+      <div id="platforms"></div>
+      <button class="ghost small addbtn" data-add="platform">+ Add platform</button>
+    </div>
+
+    <div class="card">
+      <h2>Clips · the content tiles</h2>
+      <p class="hint" style="margin-top:0">Each clip becomes a tile on the dashboard. Paste the post link; YouTube thumbnails are automatic, otherwise add a thumbnail image URL.</p>
+      <div id="clips"></div>
+      <button class="ghost small addbtn" data-add="clip">+ Add clip</button>
+    </div>
+
+    <div class="card">
+      <h2>Creator leaderboard <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">(optional — auto-filled by recalculate)</span></h2>
+      <div id="creators"></div>
+      <button class="ghost small addbtn" data-add="creator">+ Add creator</button>
+    </div>
+
+    <div class="savebar">
+      <button id="save">Save &amp; publish</button>
+      <button class="ghost" id="reload">Reload current</button>
+      <span class="msg" id="msg"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+function pw(){ return sessionStorage.getItem('mde_pw') || ''; }
+function setPw(v){ sessionStorage.setItem('mde_pw', v); }
+function clearPw(){ sessionStorage.removeItem('mde_pw'); }
+function auth(extra){ return Object.assign({ 'Authorization':'Bearer '+pw() }, extra||{}); }
+
+function showGate(m){ $('#app').style.display='none'; $('#gate').style.display='block'; $('#gateMsg').textContent=m||''; $('#pw').focus(); }
+
+const PLATFORMS = ['tiktok','instagram','youtube','reels','shorts','other'];
+
+function platformRow(p){
+  p = p || {name:'',views:0};
+  const el = document.createElement('div');
+  el.className='row-item';
+  el.innerHTML =
+    '<button class="danger rm">Remove</button>' +
+    '<div class="gridrow" style="margin-right:80px">' +
+      '<div><label>Platform</label><input class="p-name" value="'+escAttr(p.name)+'" placeholder="TikTok"></div>' +
+      '<div><label>Views</label><input class="p-views" type="number" min="0" value="'+(p.views||0)+'"></div>' +
+    '</div>';
+  el.querySelector('.rm').onclick=()=>el.remove();
+  return el;
+}
+
+function clipRow(c){
+  c = c || {title:'',creator:'',platform:'tiktok',url:'',thumb:'',views:0,posted:'',featured:false};
+  const el = document.createElement('div');
+  el.className='row-item';
+  const opts = PLATFORMS.map(p=>'<option value="'+p+'"'+(c.platform===p?' selected':'')+'>'+p+'</option>').join('');
+  el.innerHTML =
+    '<button class="danger rm">Remove</button>' +
+    '<div class="grid2" style="margin-right:80px">' +
+      '<div><label>Post link (URL)</label><input class="c-url" value="'+escAttr(c.url)+'" placeholder="https://"></div>' +
+      '<div><label>Creator handle</label><input class="c-creator" value="'+escAttr(c.creator)+'" placeholder="@handle"></div>' +
+    '</div>' +
+    '<label>Title / caption</label><input class="c-title" value="'+escAttr(c.title)+'" placeholder="Short description of the clip">' +
+    '<div class="grid3">' +
+      '<div><label>Platform</label><select class="c-platform">'+opts+'</select></div>' +
+      '<div><label>Views</label><input class="c-views" type="number" min="0" value="'+(c.views||0)+'"></div>' +
+      '<div><label>Posted (date)</label><input class="c-posted" value="'+escAttr(c.posted)+'" placeholder="2026-06-29"></div>' +
+    '</div>' +
+    '<label>Thumbnail image URL (optional — leave blank for YouTube)</label><input class="c-thumb" value="'+escAttr(c.thumb)+'" placeholder="https://…/thumb.jpg">' +
+    '<label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input type="checkbox" class="c-featured"'+(c.featured?' checked':'')+'> Mark as a “Top” clip (highlighted)</label>';
+  el.querySelector('.rm').onclick=()=>el.remove();
+  return el;
+}
+
+function creatorRow(c){
+  c = c || {handle:'',views:0,clips:0};
+  const el = document.createElement('div');
+  el.className='row-item';
+  el.innerHTML =
+    '<button class="danger rm">Remove</button>' +
+    '<div class="grid3" style="margin-right:80px">' +
+      '<div><label>Handle</label><input class="cr-handle" value="'+escAttr(c.handle)+'" placeholder="@creator"></div>' +
+      '<div><label>Views</label><input class="cr-views" type="number" min="0" value="'+(c.views||0)+'"></div>' +
+      '<div><label>Clips</label><input class="cr-clips" type="number" min="0" value="'+(c.clips||0)+'"></div>' +
+    '</div>';
+  el.querySelector('.rm').onclick=()=>el.remove();
+  return el;
+}
+
+function escAttr(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function fill(d){
+  d = d || {}; const s = d.summary || {};
+  $('#f-client').value = d.client && d.client!=='Client' && d.client!=='Client Name' ? d.client : '';
+  $('#f-campaign').value = d.campaign && d.campaign!=='Distribution Campaign' ? d.campaign : '';
+  $('#f-tagline').value = d.tagline || '';
+  $('#f-views').value = s.views||'';
+  $('#f-clips').value = s.clips||'';
+  $('#f-creators').value = s.creators||'';
+  $('#f-budgetTotal').value = s.budgetTotal||'';
+  $('#f-budgetSpent').value = s.budgetSpent||'';
+  $('#f-guaranteeFloor').value = s.guaranteeFloor||'';
+  const pr = $('#platforms'); pr.innerHTML='';
+  (d.platforms && d.platforms.length ? d.platforms : []).forEach(p=>pr.appendChild(platformRow(p)));
+  const cl = $('#clips'); cl.innerHTML='';
+  (d.clips||[]).forEach(c=>cl.appendChild(clipRow(c)));
+  const cr = $('#creators'); cr.innerHTML='';
+  (d.creators||[]).forEach(c=>cr.appendChild(creatorRow(c)));
+}
+
+function collect(){
+  const num = id => Number($(id).value)||0;
+  const platforms = $$('#platforms .row-item').map(el=>({
+    name: el.querySelector('.p-name').value.trim(),
+    views: Number(el.querySelector('.p-views').value)||0,
+  })).filter(p=>p.name);
+  const clips = $$('#clips .row-item').map(el=>({
+    title: el.querySelector('.c-title').value.trim(),
+    creator: el.querySelector('.c-creator').value.trim(),
+    platform: el.querySelector('.c-platform').value,
+    url: el.querySelector('.c-url').value.trim(),
+    thumb: el.querySelector('.c-thumb').value.trim(),
+    views: Number(el.querySelector('.c-views').value)||0,
+    posted: el.querySelector('.c-posted').value.trim(),
+    featured: el.querySelector('.c-featured').checked,
+  })).filter(c=>c.url||c.title||c.views);
+  const creators = $$('#creators .row-item').map(el=>({
+    handle: el.querySelector('.cr-handle').value.trim(),
+    views: Number(el.querySelector('.cr-views').value)||0,
+    clips: Number(el.querySelector('.cr-clips').value)||0,
+  })).filter(c=>c.handle);
+  return {
+    client: $('#f-client').value.trim() || 'Client',
+    campaign: $('#f-campaign').value.trim() || 'Distribution Campaign',
+    tagline: $('#f-tagline').value.trim(),
+    summary: {
+      views: num('#f-views'), clips: num('#f-clips'), creators: num('#f-creators'),
+      budgetTotal: num('#f-budgetTotal'), budgetSpent: num('#f-budgetSpent'),
+      guaranteeFloor: num('#f-guaranteeFloor'),
+    },
+    platforms, clips, creators,
+  };
+}
+
+// Derive totals + platform split + creator leaderboard from the clip rows.
+function recalc(){
+  const d = collect();
+  const clips = d.clips;
+  let totalViews = 0; const byPlat = {}; const byCreator = {};
+  clips.forEach(c=>{
+    totalViews += c.views;
+    const p = (c.platform||'other'); byPlat[p] = (byPlat[p]||0) + c.views;
+    if(c.creator){ const k=c.creator; (byCreator[k] = byCreator[k] || {handle:k,views:0,clips:0}); byCreator[k].views+=c.views; byCreator[k].clips+=1; }
+  });
+  $('#f-views').value = totalViews;
+  $('#f-clips').value = clips.length;
+  const creators = Object.values(byCreator);
+  $('#f-creators').value = creators.length;
+  // platforms
+  const pr = $('#platforms'); pr.innerHTML='';
+  Object.keys(byPlat).sort((a,b)=>byPlat[b]-byPlat[a]).forEach(name=>{
+    const label = name.charAt(0).toUpperCase()+name.slice(1);
+    pr.appendChild(platformRow({name:label, views:byPlat[name]}));
+  });
+  // creators
+  const cr = $('#creators'); cr.innerHTML='';
+  creators.sort((a,b)=>b.views-a.views).forEach(c=>cr.appendChild(creatorRow(c)));
+  flash('ok','Recalculated from '+clips.length+' clips. Review, then Save.');
+}
+
+function flash(kind,text){ const m=$('#msg'); m.className='msg '+kind; m.textContent=text; }
+
+async function loadData(){
+  if(!pw()){ showGate(); return; }
+  let res;
+  try{ res = await fetch('/api/campaign', { headers: auth(), cache:'no-store' }); }
+  catch(e){ showGate('Network error.'); return; }
+  if(res.status===401){ clearPw(); showGate('Wrong password.'); return; }
+  const d = await res.json();
+  $('#gate').style.display='none'; $('#app').style.display='block';
+  fill(d);
+}
+
+async function save(){
+  $('#save').disabled=true; flash('','Saving…');
+  const body = collect();
+  try{
+    const res = await fetch('/api/campaign', { method:'POST', headers: auth({'content-type':'application/json'}), body: JSON.stringify(body) });
+    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
+    if(!res.ok){ flash('err','Save failed: '+(await res.text()).slice(0,120)); return; }
+    const j = await res.json();
+    flash('ok','Saved. Live dashboard is updated. ('+new Date(j.updated).toLocaleTimeString()+')');
+  }catch(e){ flash('err','Save failed: '+(e.message||e)); }
+  finally{ $('#save').disabled=false; }
+}
+
+// wiring
+$('#gateBtn').onclick = ()=>{ const v=$('#pw').value.trim(); if(!v) return; setPw(v); $('#pw').value=''; loadData(); };
+$('#pw').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#gateBtn').click(); });
+$('#logout').onclick = e=>{ e.preventDefault(); clearPw(); showGate('Locked.'); };
+$('#save').onclick = save;
+$('#reload').onclick = loadData;
+$('#recalc').onclick = recalc;
+document.body.addEventListener('click', e=>{
+  const add = e.target.getAttribute && e.target.getAttribute('data-add');
+  if(add==='platform') $('#platforms').appendChild(platformRow());
+  if(add==='clip') $('#clips').appendChild(clipRow());
+  if(add==='creator') $('#creators').appendChild(creatorRow());
+});
+
+loadData();
+</script>
+</body>
+</html>
