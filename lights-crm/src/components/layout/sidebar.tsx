@@ -12,6 +12,7 @@ import {
   BarChart2,
   Settings,
   Truck,
+  FileSpreadsheet,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const operationsItems = [
   { href: "/inventory", label: "Inventory", icon: Package, roles: ["admin", "sales", "warehouse"] },
   { href: "/customers", label: "Customers", icon: Users, roles: ["admin", "sales", "accountant"] },
   { href: "/orders", label: "Orders", icon: ClipboardList, roles: ["admin", "sales", "warehouse"] },
+  { href: "/quotes", label: "Quotes", icon: FileSpreadsheet, roles: ["admin", "sales"] },
   { href: "/purchase-orders", label: "Purchasing", icon: Truck, roles: ["admin", "warehouse"] },
   { href: "/invoices", label: "Invoices", icon: FileText, roles: ["admin", "sales", "accountant"] },
   { href: "/settings", label: "Settings", icon: Settings, roles: ["admin"] },

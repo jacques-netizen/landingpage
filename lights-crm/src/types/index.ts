@@ -10,6 +10,8 @@ export type PaymentMethod = "cash" | "card" | "bank_transfer";
 
 export type PurchaseOrderStatus = "draft" | "ordered" | "in_transit" | "received" | "cancelled";
 
+export type QuoteStatus = "draft" | "sent" | "accepted" | "declined" | "expired" | "converted";
+
 export type SaleChannel = "walk_in" | "phone" | "whatsapp" | "b2b";
 
 export interface Profile {
