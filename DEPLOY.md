@@ -80,16 +80,44 @@ A live, client-facing campaign report with content tiles. Two pages plus a feed:
 | URL | Who | What |
 |-----|-----|------|
 | `/dashboard` | The client (share the link) | Live report — headline views/clips/creators/CPM, guarantee + budget progress, platform split, content tiles (the actual clips), creator leaderboard. Auto-refreshes every ~20s, no reload needed. |
-| `/campaign-admin` | You (password-gated) | Editor to update the numbers and clips. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/campaign-admin` | You (password-gated) | Editor to update the numbers and clips, plus the CSV importer. Same `ADMIN_PASSWORD` as `/admin`. |
 | `/api/campaign` | — | JSON feed. Public `GET`; authed `POST` writes it. Data is one JSON object in the same R2 bucket (`campaign-data.json`). |
+| `/api/campaign/import` | You / automations | Authed `POST` of a CSV → parses clips, recomputes totals, saves. `?dryRun=1` returns the parse without saving (the editor uses this for review-before-publish). |
 
-How to run it: open `/campaign-admin`, unlock, fill in the client name, budget
-and guarantee, then add a row per clip (paste the post link — YouTube
-thumbnails are automatic; for TikTok/Instagram add a thumbnail image URL). Hit
-**Recalculate from clips** to auto-fill total views, clip count, platform split
-and the creator leaderboard, then **Save**. Any open client dashboard updates
-within seconds. Before any data is saved the dashboard shows a tasteful empty
-state, so the link is always safe to share.
+**Manual (works immediately):** open `/campaign-admin`, unlock, set the client
+name, budget and guarantee once, then either add clip rows by hand or — faster —
+paste a CSV into the importer and hit **Import & preview**. Review, then
+**Save**. Any open client dashboard updates within seconds. Before any data is
+saved the dashboard shows a tasteful empty state, so the link is always safe to
+share.
+
+**CSV format:** a header row matched by name. Include at least `url` and
+`views`; optional `creator`, `platform`, `title`, `posted`, `thumb`,
+`featured`, `status`. View counts may be written `980K` / `1.2M` / `1,200,000`.
+Rows whose `status` is rejected/flagged are skipped. Platform is inferred from
+the link if the column is blank. The CSV defines the **content and reach**; the
+client name, budget and guarantee stay under your control in the form.
+
+### Automating the updates (CSV pipeline)
+
+The same parser powers three levels of automation — pick one:
+
+1. **Paste** a CSV in the editor (above). Manual but instant.
+2. **Push** from a tool/script (Zapier, Make, a cron job): `POST` the CSV to
+   `/api/campaign/import` with header `Authorization: Bearer <ADMIN_PASSWORD>`.
+   Each push updates the live dashboard immediately.
+3. **Auto-sync from a sheet (fully hands-off):** keep a Google Sheet with the
+   columns above → *File → Share → Publish to web → CSV* → copy that link → in
+   the Worker set a **plaintext variable** `CAMPAIGN_CSV_URL` to it (Settings →
+   Variables and Secrets). A **cron trigger** (declared in `wrangler.toml`,
+   every 15 min) fetches the sheet and refreshes the dashboard automatically.
+   Fill the sheet however you like — paste your tracker's export, or point a
+   scraper/automation at it. The cron is a harmless no-op until that variable
+   is set.
+
+> Note: cron triggers run on the **Worker** deployment (this repo's default). A
+> Pages deployment would need a separate Cron-trigger Worker or scheduled action
+> to drive `pullCampaignCSV`.
 
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the

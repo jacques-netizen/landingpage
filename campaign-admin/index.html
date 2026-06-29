@@ -19,7 +19,9 @@
   .gate{max-width:380px;margin:13vh auto 0}
   h2{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
   label{display:block;font-size:.78rem;color:#cfc6b3;margin:10px 0 5px}
-  input,select{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0e0b07;color:var(--cream);font-size:.95rem;font-family:inherit}
+  input,select,textarea{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0e0b07;color:var(--cream);font-size:.95rem;font-family:inherit}
+  textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;line-height:1.5;resize:vertical}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:var(--gold-bright);background:#0e0b07;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
   input[type=checkbox]{width:auto}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -66,6 +68,25 @@
       </div>
     </header>
     <p class="muted">Update the numbers and clips below, then Save. The client's dashboard updates within seconds, no reload needed.</p>
+
+    <div class="card">
+      <h2>Import from spreadsheet · the fast way</h2>
+      <p class="hint" style="margin-top:0">Paste a CSV (a copy from your tracker, or a Google Sheet). Columns are matched by name — include at least <code>url</code> and <code>views</code>. Optional: <code>creator</code>, <code>platform</code>, <code>title</code>, <code>posted</code>, <code>thumb</code>, <code>featured</code>, <code>status</code> (rejected/flagged rows are skipped). It fills the clips and recalculates totals; review below, then Save.</p>
+      <textarea id="csv" rows="6" placeholder="url,creator,platform,views,title
+https://www.tiktok.com/@x/video/1,@clipper_one,tiktok,980K,The drop sold out
+https://youtu.be/abc123,@yt_creator,youtube,420000,Full breakdown"></textarea>
+      <div style="display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap">
+        <button class="ghost small" id="importBtn">Import &amp; preview</button>
+        <span class="msg" id="csvMsg"></span>
+      </div>
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;color:var(--gold);font-size:.85rem;font-weight:600">Automate it — no manual paste</summary>
+        <div class="hint" style="margin-top:8px;line-height:1.7">
+          <b style="color:#cfc6b3">Auto-sync from a Google Sheet (fully hands-off):</b> keep a sheet with those columns → <i>File → Share → Publish to web → CSV</i> → copy the link → in Cloudflare set a Worker variable <code>CAMPAIGN_CSV_URL</code> to it. The dashboard then refreshes from the sheet every 15 minutes on its own. Fill the sheet however you like (paste from your tracker, or point a scraper/automation at it).<br><br>
+          <b style="color:#cfc6b3">Push from a script or automation (Zapier, Make, cron):</b> send the CSV as a <code>POST</code> to <code>/api/campaign/import</code> with header <code>Authorization: Bearer &lt;password&gt;</code>. Each push updates the live dashboard immediately.
+        </div>
+      </details>
+    </div>
 
     <div class="card">
       <h2>Campaign</h2>
@@ -265,6 +286,35 @@ function recalc(){
 }
 
 function flash(kind,text){ const m=$('#msg'); m.className='msg '+kind; m.textContent=text; }
+function csvFlash(kind,text){ const m=$('#csvMsg'); m.className='msg '+kind; m.textContent=text; }
+
+function fmtN(n){ n=Number(n)||0; if(n>=1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M'; if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K'; return String(n); }
+
+// Apply imported clips: replace the content-derived fields, leave the user's
+// campaign identity, budget and guarantee numbers exactly as they are.
+function applyImported(d){
+  const cl=$('#clips'); cl.innerHTML=''; (d.clips||[]).forEach(c=>cl.appendChild(clipRow(c)));
+  const pr=$('#platforms'); pr.innerHTML=''; (d.platforms||[]).forEach(p=>pr.appendChild(platformRow(p)));
+  const cr=$('#creators'); cr.innerHTML=''; (d.creators||[]).forEach(c=>cr.appendChild(creatorRow(c)));
+  const s=d.summary||{};
+  $('#f-views').value=s.views||0; $('#f-clips').value=s.clips||0; $('#f-creators').value=s.creators||0;
+}
+
+async function importCSV(){
+  const csv=$('#csv').value.trim();
+  if(!csv){ csvFlash('err','Paste a CSV first.'); return; }
+  $('#importBtn').disabled=true; csvFlash('','Parsing…');
+  try{
+    const res=await fetch('/api/campaign/import?dryRun=1',{ method:'POST', headers: auth({'content-type':'text/csv'}), body: csv });
+    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
+    if(!res.ok){ csvFlash('err','Import failed: '+(await res.text()).slice(0,160)); return; }
+    const j=await res.json();
+    applyImported(j.campaign);
+    const s=j.campaign.summary||{};
+    csvFlash('ok','Imported '+(s.clips||0)+' clips · '+fmtN(s.views)+' views. Review below, then Save.');
+  }catch(e){ csvFlash('err','Import failed: '+(e.message||e)); }
+  finally{ $('#importBtn').disabled=false; }
+}
 
 async function loadData(){
   if(!pw()){ showGate(); return; }
@@ -297,6 +347,7 @@ $('#logout').onclick = e=>{ e.preventDefault(); clearPw(); showGate('Locked.'); 
 $('#save').onclick = save;
 $('#reload').onclick = loadData;
 $('#recalc').onclick = recalc;
+$('#importBtn').onclick = importCSV;
 document.body.addEventListener('click', e=>{
   const add = e.target.getAttribute && e.target.getAttribute('data-add');
   if(add==='platform') $('#platforms').appendChild(platformRow());
