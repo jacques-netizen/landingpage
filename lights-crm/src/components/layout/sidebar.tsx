@@ -11,6 +11,7 @@ import {
   ClipboardList,
   BarChart2,
   Settings,
+  Truck,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const operationsItems = [
   { href: "/inventory", label: "Inventory", icon: Package, roles: ["admin", "sales", "warehouse"] },
   { href: "/customers", label: "Customers", icon: Users, roles: ["admin", "sales", "accountant"] },
   { href: "/orders", label: "Orders", icon: ClipboardList, roles: ["admin", "sales", "warehouse"] },
+  { href: "/purchase-orders", label: "Purchasing", icon: Truck, roles: ["admin", "warehouse"] },
   { href: "/invoices", label: "Invoices", icon: FileText, roles: ["admin", "sales", "accountant"] },
   { href: "/settings", label: "Settings", icon: Settings, roles: ["admin"] },
 ];

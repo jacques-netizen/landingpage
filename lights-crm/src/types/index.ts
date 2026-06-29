@@ -8,6 +8,8 @@ export type InvoiceStatus = "draft" | "sent" | "partially_paid" | "paid" | "over
 
 export type PaymentMethod = "cash" | "card" | "bank_transfer";
 
+export type PurchaseOrderStatus = "draft" | "ordered" | "in_transit" | "received" | "cancelled";
+
 export type SaleChannel = "walk_in" | "phone" | "whatsapp" | "b2b";
 
 export interface Profile {
