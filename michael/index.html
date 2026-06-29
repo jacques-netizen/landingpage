@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison d'Élites · Growth Proposal · Dr. Michael Bruce-de-Rouche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0f;
+    --ink-soft:#16161a;
+    --cream:#f4f1ea;
+    --cream-deep:#ece7db;
+    --gold:#a88a4f;
+    --gold-light:#b89968;
+    --text-dark:#23211c;
+    --text-mute:#6f6a5e;
+    --text-cream:#e8e3d6;
+    --text-cream-mute:#9b9484;
+    --hair-dark:rgba(35,33,28,0.16);
+    --hair-cream:rgba(232,227,214,0.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:var(--cream);
+    color:var(--text-dark);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .display{font-family:'EB Garamond',serif;font-weight:400;letter-spacing:-0.01em}
+  .eyebrow{
+    font-family:'Archivo',sans-serif;font-weight:500;font-size:0.72rem;
+    letter-spacing:0.32em;text-transform:uppercase;color:var(--gold);
+  }
+  .section{padding:clamp(4.5rem,11vh,9rem) clamp(1.5rem,7vw,8rem);position:relative}
+  .wrap{max-width:1080px;margin:0 auto}
+  .hair{height:1px;background:var(--hair-dark);border:0;margin:0}
+
+  .rv{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* ---------- COVER ---------- */
+  .cover{
+    background:var(--ink);color:var(--text-cream);
+    min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;
+    padding:clamp(2.2rem,5vw,3.6rem) clamp(1.5rem,7vw,8rem);
+  }
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.15rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-light);font-weight:500}
+  .cover-doc{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-cream-mute)}
+  .cover-mid{max-width:880px}
+  .cover-mid .eyebrow{margin-bottom:1.6rem;display:block}
+  .cover h1{
+    font-family:'EB Garamond',serif;font-weight:400;
+    font-size:clamp(2.6rem,6.6vw,5.4rem);line-height:1.02;letter-spacing:-0.02em;
+  }
+  .cover h1 i{font-style:italic;color:var(--gold-light)}
+  .cover-sub{
+    margin-top:2rem;font-size:clamp(1rem,1.7vw,1.2rem);color:var(--text-cream-mute);
+    max-width:540px;font-weight:300;line-height:1.55;
+  }
+  .cover-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .cover-for{font-size:0.95rem;color:var(--text-cream);font-weight:400}
+  .cover-for span{display:block;color:var(--text-cream-mute);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.35rem}
+  .scrollcue{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* ---------- shared headings ---------- */
+  .lead{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.1;letter-spacing:-0.015em;max-width:18ch}
+  .lead.wide{max-width:24ch}
+  .lead i{font-style:italic;color:var(--gold)}
+  .kicker{display:block;margin-bottom:1.5rem}
+  .body-lg{font-size:clamp(1.02rem,1.4vw,1.18rem);color:var(--text-mute);max-width:62ch;font-weight:300;line-height:1.7}
+  .body-lg + .body-lg{margin-top:1.2rem}
+  .body-lg b{color:var(--text-dark);font-weight:500}
+
+  .cream{background:var(--cream)}
+  .cream-deep{background:var(--cream-deep)}
+
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);margin-top:3rem}
+  .pillar .p-eye{font-family:'Archivo';font-weight:600;font-size:0.74rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);padding-bottom:1rem;border-bottom:1px solid var(--hair-dark);margin-bottom:1.4rem;display:block}
+  .pillar h3{font-family:'EB Garamond',serif;font-weight:400;font-size:1.6rem;line-height:1.15;margin-bottom:0.9rem}
+  .pillar p{font-size:0.98rem;color:var(--text-mute);font-weight:300;line-height:1.65}
+
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-dark);margin-top:3rem;border-top:1px solid var(--hair-dark);border-left:1px solid var(--hair-dark)}
+  .proof{background:var(--cream);padding:clamp(1.8rem,3vw,2.6rem)}
+  .proof .name{font-family:'EB Garamond',serif;font-size:1.45rem;margin-bottom:0.4rem}
+  .proof .role{font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600}
+  .proof p{font-size:0.95rem;color:var(--text-mute);font-weight:300;line-height:1.6}
+
+  .band{background:var(--ink);color:var(--text-cream)}
+  .band .eyebrow{color:var(--gold-light)}
+  .band .lead i{color:var(--gold-light)}
+  .band .body-lg{color:var(--text-cream-mute)}
+  .band .body-lg b{color:var(--text-cream)}
+
+  /* offer blocks */
+  .offer{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+  .offer + .offer{margin-top:clamp(3.5rem,7vh,6rem);padding-top:clamp(3.5rem,7vh,6rem);border-top:1px solid var(--hair-dark)}
+  .offer-head .o-tag{display:inline-block;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;color:var(--ink);background:var(--gold-light);padding:0.4rem 0.8rem;margin-bottom:1.4rem}
+  .offer-head h3{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1;letter-spacing:-0.01em}
+  .offer-head .o-note{margin-top:1.1rem;font-size:0.98rem;color:var(--text-mute);font-weight:300;line-height:1.6;max-width:34ch}
+  .deliver{list-style:none}
+  .deliver li{padding:1rem 0;border-bottom:1px solid var(--hair-dark);display:flex;gap:1rem;align-items:baseline}
+  .deliver li:first-child{border-top:1px solid var(--hair-dark)}
+  .deliver .dlabel{font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-dark);flex:1}
+  .deliver .dsub{font-size:0.84rem;color:var(--text-mute);font-weight:300}
+  .priceline{display:flex;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-top:1.8rem}
+  .price{font-family:'EB Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--gold)}
+  .price-sub{font-size:0.84rem;color:var(--text-mute);letter-spacing:0.04em}
+  .guarantee{margin-top:1rem;font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-dark)}
+  .guarantee b{color:var(--gold);font-weight:500}
+  .spec{font-family:'Archivo';font-weight:600;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.9rem;display:block}
+
+  /* four feature */
+  .four{background:var(--cream-deep);padding:1.6rem 1.8rem;border-left:2px solid var(--gold);margin-bottom:1.8rem}
+  .four .ftitle{font-family:'EB Garamond',serif;font-size:1.25rem;margin-bottom:0.3rem}
+  .four .fmeta{font-size:0.74rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.7rem}
+  .four p{font-size:0.92rem;color:var(--text-mute);font-weight:300;line-height:1.55}
+
+  /* brand profile block */
+  .brandblock{margin-top:clamp(3.5rem,7vh,6rem);padding-top:clamp(3.5rem,7vh,6rem);border-top:1px solid var(--hair-dark)}
+  .fourprofile{display:grid;grid-template-columns:auto 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center;background:var(--cream-deep);padding:clamp(1.6rem,3vw,2.4rem);border-left:3px solid var(--gold)}
+  .fp-photo{width:clamp(110px,16vw,180px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--ink-soft);position:relative;flex-shrink:0}
+  .fp-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .fp-photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:0.64rem;line-height:1.4;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold-light)}
+  .fp-name{font-family:'EB Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.1}
+  .fp-handle{color:var(--gold);font-size:0.88rem;letter-spacing:0.06em;margin:0.3rem 0 1.2rem}
+  .fp-stats{display:flex;gap:2.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+  .fp-stat .num{font-family:'EB Garamond',serif;font-size:1.9rem;color:var(--gold);line-height:1}
+  .fp-stat .lab{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mute);margin-top:0.3rem}
+  .fp-bio{font-size:0.95rem;color:var(--text-mute);font-weight:300;line-height:1.6;max-width:54ch}
+  .brand-deliver{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(2rem,4vw,3.5rem);align-items:start;margin-top:2rem}
+
+  /* video media */
+  .media-grid{display:grid;grid-template-columns:0.5fr 1fr;gap:1.4rem;margin-top:1rem;align-items:start}
+  .media-label{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.6rem;display:block}
+  .vidcard{position:relative;display:block;overflow:hidden;border:1px solid var(--hair-dark);text-decoration:none;background:var(--ink-soft)}
+  .vidcard.portrait{aspect-ratio:9/16}
+  .vidcard img{width:100%;height:100%;object-fit:cover;display:block}
+  .vidcard .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.12);transition:background .3s}
+  .vidcard:hover .play{background:rgba(0,0,0,0.3)}
+  .vidcard .play span{width:52px;height:52px;border-radius:50%;background:rgba(168,138,79,0.95);color:#0d0d0f;display:flex;align-items:center;justify-content:center;font-size:0.95rem;padding-left:3px}
+  .ytwrap{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--hair-dark);background:#000;overflow:hidden}
+  .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .vid-note{font-size:0.88rem;color:var(--text-mute);font-weight:300;line-height:1.55;margin-top:0.8rem}
+
+  /* receipts stat band */
+  .bigstats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark);margin:2.6rem 0 0.6rem}
+  .bigstat{background:var(--ink);padding:1.6rem 1rem;text-align:center}
+  .bs-num{font-family:'EB Garamond',serif;font-size:clamp(1.7rem,3.4vw,2.5rem);color:var(--gold-light);line-height:1}
+  .bs-lab{font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-cream-mute);margin-top:0.55rem}
+
+  /* targeting tiers */
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.6rem}
+  .tier{border:1px solid var(--hair-dark);padding:1.2rem 1.3rem}
+  .tier .tnum{font-family:'EB Garamond',serif;font-size:0.9rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.4rem}
+  .tier .tname{font-family:'EB Garamond',serif;font-size:1.3rem;margin-bottom:0.3rem}
+  .tier .tdesc{font-size:0.85rem;color:var(--text-mute);font-weight:300}
+
+  /* loop / roadmap */
+  .loop-row{display:flex;align-items:center;justify-content:center;gap:clamp(1rem,3vw,2.4rem);margin-top:3.2rem;flex-wrap:wrap}
+  .loop-node{text-align:center;max-width:200px}
+  .loop-node .ln-t{font-family:'EB Garamond',serif;font-size:1.25rem;color:var(--text-cream);margin-bottom:0.35rem}
+  .loop-node .ln-d{font-size:0.82rem;color:var(--text-cream-mute);font-weight:300;line-height:1.5}
+  .loop-arrow{font-size:1.6rem;color:var(--gold-light);font-family:'EB Garamond',serif}
+
+  /* roadmap */
+  .roadmap-row{display:flex;align-items:flex-start;justify-content:center;gap:0;margin-top:3rem;flex-wrap:nowrap;overflow-x:auto}
+  .rm-node{flex:1;min-width:140px;max-width:200px;text-align:center;padding:0 0.5rem;position:relative}
+  .rm-node:not(:last-child)::after{content:"";position:absolute;top:18px;right:-1px;width:calc(100% - 28px);left:50%;height:1px;background:var(--gold-light);opacity:0.4;z-index:0}
+  .rm-dot{width:36px;height:36px;border-radius:50%;border:1px solid var(--gold-light);background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;position:relative;z-index:1}
+  .rm-dot span{font-family:'EB Garamond',serif;font-style:italic;color:var(--gold-light);font-size:0.9rem}
+  .rm-label{font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-cream);margin-bottom:0.4rem;line-height:1.2}
+  .rm-desc{font-size:0.78rem;color:var(--text-cream-mute);font-weight:300;line-height:1.45}
+
+  /* cta */
+  .cta{background:var(--ink);color:var(--text-cream);text-align:left}
+  .cta .lead{max-width:20ch}
+  .cta .lead i{color:var(--gold-light)}
+  .cta-paths{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-top:2.8rem}
+  .cta-path{border:1px solid var(--hair-cream);padding:1.6rem 1.7rem}
+  .cta-path .cp-t{font-family:'EB Garamond',serif;font-size:1.3rem;color:var(--gold-light);margin-bottom:0.6rem}
+  .cta-path .cp-d{font-size:0.9rem;color:var(--text-cream-mute);font-weight:300;line-height:1.6}
+  .signoff{margin-top:3.4rem;padding-top:2rem;border-top:1px solid var(--hair-cream);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-light);font-weight:500}
+  .signoff .s-name{font-size:0.85rem;color:var(--text-cream-mute);text-align:right;line-height:1.5}
+
+  @media(max-width:760px){
+    .twoup,.proof-grid,.offer,.tiers,.fourprofile,.brand-deliver,.media-grid{grid-template-columns:1fr}
+    .cta-paths{grid-template-columns:1fr}
+    .bigstats{grid-template-columns:1fr 1fr}
+    .roadmap-row{flex-wrap:wrap;gap:2rem}
+    .rm-node:not(:last-child)::after{display:none}
+    .fourprofile{justify-items:center;text-align:center}
+    .fp-stats{justify-content:center}
+    .offer{gap:1.6rem}
+    .loop-arrow{transform:rotate(90deg)}
+    .cover-mid h1{font-size:2.5rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d'Élites</b></div>
+    <div class="cover-doc">Growth Proposal · Private &amp; Confidential</div>
+  </div>
+
+  <div class="cover-mid">
+    <span class="eyebrow rv">For Dr. Michael Bruce-de-Rouche</span>
+    <h1 class="rv d1">The platform is built.<br>Now the world needs<br>to find <i>you</i>.</h1>
+    <p class="cover-sub rv d2">Africa and the Caribbean produce the world's most gifted athletes. Most never get found. You built the system to change that. This is how we make sure athletes, investors and the industry know it exists.</p>
+  </div>
+
+  <div class="cover-bot">
+    <div class="cover-for rv d3">
+      <span>Prepared for</span>
+      Dr. Michael Bruce-de-Rouche · Cognitive Psychologist &amp; Founder
+    </div>
+    <div class="scrollcue">Scroll ↓</div>
+  </div>
+</header>
+
+<!-- WHERE YOU STAND -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">The honest starting point</span>
+    <h2 class="lead rv d1">You solved the hard part. The <i>visibility</i> is what's missing.</h2>
+    <div style="margin-top:2.4rem">
+      <p class="body-lg rv d2">You are a Cognitive Psychologist who built a three-part ecosystem to find and develop Africa and the Caribbean's most gifted athletes. The App discovers them. The Engine scores their potential using cognitive performance modelling. The Training converts raw talent into market-ready professionals.</p>
+      <p class="body-lg rv d2">That is the part almost nobody has built. But here is the honest truth: <b>a platform nobody knows about cannot recruit the athletes it was built to find, and a founder nobody has heard of cannot raise the capital needed to scale it.</b> Both problems have the same solution — and that is exactly what this proposal is built around.</p>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- WHY A BRAND FOR YOU -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Why this, for you specifically</span>
+    <h2 class="lead wide rv d1">For a mission this size, visibility is not a nice-to-have. It is the <i>engine</i>.</h2>
+    <div class="twoup">
+      <div class="pillar rv d2">
+        <span class="p-eye">Athlete Acquisition</span>
+        <h3>Reach the athletes before they disappear</h3>
+        <p>The athletes you are looking for are on TikTok, Reels and Shorts right now. Creator content in football, basketball, track and boxing reaches them where they already scroll — at a cost per sign-up that paid ads cannot touch. This is your top-of-funnel.</p>
+      </div>
+      <div class="pillar rv d3">
+        <span class="p-eye">Investor &amp; Partner Pipeline</span>
+        <h3>The name that makes investors say yes</h3>
+        <p>Sports investors, club owners, athlete managers and sports-tech funds back people, not decks. A personal brand positions you as the global authority on African and Caribbean athletic development. LinkedIn outreach converts that authority into qualified conversations — and conversations into capital.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- PROOF -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">The playbook, proven</span>
+    <h2 class="lead wide rv d1">The founders who built missions into movements ran this exact play.</h2>
+    <div class="proof-grid">
+      <div class="proof rv d1">
+        <div class="name">Gary Vaynerchuk</div>
+        <div class="role">Document, don't create</div>
+        <p>One keynote or session becomes dozens of clips across every platform. He scaled by distributing the same content harder, not by making more of it. Your mission gives you more to say than most founders ever have.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Alex Hormozi</div>
+        <div class="role">Give away the value, keep the equity</div>
+        <p>Acquisition.com gives away frameworks in long-form, clips it everywhere, and the brand becomes the deal-flow engine. Businesses come to him. Investors reach out first. The authority compounds.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="name">Grant Cardone</div>
+        <div class="role">The brand raises the capital</div>
+        <p>His personal brand raises capital for his real estate funds. People back the deals because they know him first. The most direct proof that a brand pays for itself in the fundraising room.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Huda &amp; Mona Kattan</div>
+        <div class="role">Mission-led, founder-built</div>
+        <p>They turned a founder-led brand into a global category from Dubai, with their personal presence as the engine the company rode on. A mission with the right voice behind it travels further than any ad campaign.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MDE RECEIPTS -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Our receipts</span>
+    <h2 class="lead wide rv d1">We have already done this, at <i>scale</i>.</h2>
+    <div class="bigstats rv d2">
+      <div class="bigstat"><div class="bs-num">300M+</div><div class="bs-lab">Views generated</div></div>
+      <div class="bigstat"><div class="bs-num">45K+</div><div class="bs-lab">Page network</div></div>
+      <div class="bigstat"><div class="bs-num">$1.30</div><div class="bs-lab">Average CPM</div></div>
+      <div class="bigstat"><div class="bs-num">94%+</div><div class="bs-lab">Non-follower reach</div></div>
+    </div>
+    <div class="proof-grid">
+      <div class="proof rv d1">
+        <div class="name">Iman Gadzhi</div>
+        <div class="role">Founder brand · 90 days</div>
+        <p>42.2M views and 13.1M accounts reached amplifying a founder's personal brand through our network, with 94.1% of that reach from non-followers. This is your exact play.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Luke Belmar</div>
+        <div class="role">Entrepreneur</div>
+        <p>200M views a month driving discovery and referrals for his entrepreneurial community. Reach turned directly into pipeline — the same mechanic that turns your content into athlete sign-ups.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="name">Logan &amp; Jake Paul</div>
+        <div class="role">Personal brand launch</div>
+        <p>11.2M views across four platforms for the Paul American launch, from 216 approved creators at a $1.78 CPM. Proof of what a coordinated creator push looks like at launch scale.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Kojo Blak &times; Fantana</div>
+        <div class="role">Music release</div>
+        <p>1.9M views at a $1.30 CPM with the full budget deployed. Proof the model performs even on a single focused push with a tight brief.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE MECHANIC -->
+<section class="section band">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">How the three engines connect</span>
+    <h2 class="lead wide rv d1">Each one works alone. Together, they <i>compound</i>.</h2>
+    <div style="margin-top:2.4rem">
+      <p class="body-lg rv d2">Here is the honest mechanic. Creator content brings athletes into the platform. Athletes give the platform a story worth telling. That story gives the personal brand something to prove. And a personal brand with proof behind it is what makes a serious investor say yes.</p>
+      <p class="body-lg rv d2"><b>The three offers below are designed to run in parallel from day one.</b> The UGC campaign fills the top of your athlete funnel. The personal brand builds the authority that makes investors take the call. The LinkedIn engine makes sure those investors are hearing from you directly, every week.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">What we propose</span>
+
+    <!-- OFFER 1: UGC CAMPAIGN -->
+    <div class="offer">
+      <div class="offer-head rv d1">
+        <span class="o-tag">Starts immediately</span>
+        <h3>UGC Athlete Acquisition Campaign</h3>
+        <p class="o-note">Daily creator content targeting athletes in your key sports, live across TikTok, Reels and Shorts from week one.</p>
+      </div>
+      <div class="rv d2">
+        <span class="spec">What runs every day</span>
+        <ul class="deliver">
+          <li><span class="dlabel">Daily creator content</span><span class="dsub">Football, basketball, track and boxing creators posting about the platform and the opportunity it represents to undiscovered athletes.</span></li>
+          <li><span class="dlabel">Curated creator roster</span><span class="dsub">Sport-native accounts who already have the attention of the exact athletes you want to find. No lifestyle mismatch.</span></li>
+          <li><span class="dlabel">TikTok · Reels · Shorts</span><span class="dsub">All three platforms simultaneously. The algorithm does the targeting — creators do the convincing.</span></li>
+          <li><span class="dlabel">Creative direction &amp; owned network</span><span class="dsub">Brief, hooks and distribution through our 45,000-page network for additional amplification above the creator layer.</span></li>
+          <li><span class="dlabel">Weekly performance reporting</span><span class="dsub">Views, click-through, sign-up signals. One clear number each week.</span></li>
+        </ul>
+
+        <span class="spec" style="margin-top:1.8rem">Who we put you in front of</span>
+        <div class="tiers">
+          <div class="tier">
+            <div class="tnum">Tier 1</div>
+            <div class="tname">Africa &amp; the Caribbean</div>
+            <div class="tdesc">Your home market. The athletes the platform was built for.</div>
+          </div>
+          <div class="tier">
+            <div class="tnum">Tier 2</div>
+            <div class="tname">UK &amp; United States</div>
+            <div class="tdesc">The diaspora audience and the investor community watching from abroad.</div>
+          </div>
+        </div>
+
+        <div class="priceline">
+          <span class="price">$5,000</span>
+          <span class="price-sub">campaign budget</span>
+          <span class="price">+ management</span>
+        </div>
+        <p class="guarantee">Guaranteed floor: <b>2,500,000 views</b>.</p>
+      </div>
+    </div>
+
+    <!-- OFFER 2: LINKEDIN -->
+    <div class="offer">
+      <div class="offer-head rv d1">
+        <span class="o-tag">Runs in parallel</span>
+        <h3>LinkedIn Investor Engine</h3>
+        <p class="o-note">Personalised outreach to the people who fund sports ecosystems — while the brand and the UGC build the name they'll Google before replying.</p>
+      </div>
+      <div class="rv d2">
+        <span class="spec">Who we reach</span>
+        <ul class="deliver">
+          <li><span class="dlabel">Sports investors &amp; family offices</span><span class="dsub">The capital that backs athlete development, sports-tech and content plays.</span></li>
+          <li><span class="dlabel">Club owners &amp; sporting directors</span><span class="dsub">The operators who see athlete pipeline as a competitive advantage.</span></li>
+          <li><span class="dlabel">Athlete managers &amp; agencies</span><span class="dsub">The intermediaries who bring talent to platforms like yours.</span></li>
+          <li><span class="dlabel">Sports-tech VCs &amp; corporate sponsors</span><span class="dsub">Investors and brands already allocating to the space you operate in.</span></li>
+          <li><span class="dlabel">Weekly pipeline reporting</span><span class="dsub">Conversations opened, replies received, discovery calls booked. No vanity metrics.</span></li>
+        </ul>
+
+        <div class="priceline">
+          <span class="price">$500</span>
+          <span class="price-sub">per month</span>
+        </div>
+        <p class="guarantee">Measured in <b>qualified conversations</b>, not connection requests.</p>
+      </div>
+    </div>
+
+    <!-- OFFER 3: PERSONAL BRAND (with Four) -->
+    <div class="brandblock">
+      <div class="offer-head rv d1" style="margin-bottom:2.2rem">
+        <span class="o-tag">Builds the authority</span>
+        <h3>Personal Brand Build</h3>
+        <p class="o-note">Position Dr. Bruce-de-Rouche as the global voice on African and Caribbean athletic development. The brand that makes every other engine more powerful.</p>
+      </div>
+
+      <span class="spec rv d1">Your appointed brand specialist</span>
+      <div class="fourprofile rv d2">
+        <div class="fp-photo">
+          <img src="../four-photo.jpg" alt="Four Tanwongsa">
+        </div>
+        <div class="fp-meta">
+          <div class="fp-name">Four Tanwongsa</div>
+          <div class="fp-handle">@realfourz · Entrepreneur &amp; brand builder</div>
+          <div class="fp-stats">
+            <div class="fp-stat"><div class="num">410K</div><div class="lab">Followers</div></div>
+            <div class="fp-stat"><div class="num">2.8M</div><div class="lab">Top video views</div></div>
+            <div class="fp-stat"><div class="num">$1M+</div><div class="lab">Generated for students</div></div>
+          </div>
+          <p class="fp-bio">Four built a 410,000-strong following turning expertise into reach, and has generated over a million dollars for the people he coaches. He leads your positioning, your story and the content system end to end — building the archive and the authority that turns your name into a category.</p>
+        </div>
+      </div>
+
+      <span class="spec rv d2" style="margin-top:2.2rem">See it for yourself</span>
+      <div class="media-grid rv d3">
+        <div>
+          <span class="media-label">Most viral · 2.8M views</span>
+          <a class="vidcard portrait" href="https://www.instagram.com/reel/DSCov7IExoO/" target="_blank" rel="noopener">
+            <img src="../four-viral.jpg" alt="Four's most viral reel, 2.8 million views">
+            <div class="play"><span>&#9654;</span></div>
+          </a>
+        </div>
+        <div>
+          <span class="media-label">Case study film</span>
+          <div class="ytwrap"><iframe src="https://www.youtube.com/embed/ww7a10VAVXY" title="Four Tanwongsa case study" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+          <p class="vid-note">A full breakdown of how Four builds and grows a personal brand. The same method, applied to your account and your mission.</p>
+        </div>
+      </div>
+
+      <div class="brand-deliver rv d3">
+        <div>
+          <span class="spec">Every month, you receive</span>
+          <ul class="deliver">
+            <li><span class="dlabel">Brand strategy document</span><span class="dsub">Your positioning, your story, your angles — locked in before a single frame is shot.</span></li>
+            <li><span class="dlabel">20 short-form videos</span><span class="dsub">Scripted hooks, produced and edited. Ready to post.</span></li>
+            <li><span class="dlabel">4 long-form videos</span><span class="dsub">Podcast or sit-down format. The well every short clip is cut from.</span></li>
+            <li><span class="dlabel">Profile optimisation</span><span class="dsub">Bio, highlights, pinned content — set up so first impressions convert.</span></li>
+            <li><span class="dlabel">Community management</span><span class="dsub">Replies, DMs, momentum maintained between posts.</span></li>
+            <li><span class="dlabel">90-day content calendar</span><span class="dsub">Planned in advance. No blank weeks, no last-minute scrambles.</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="priceline">
+            <span class="price">$2,500</span>
+            <span class="price-sub">for 90 days</span>
+          </div>
+          <p class="guarantee">Then <b>$750 / month</b> retainer.</p>
+          <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-mute);font-weight:300;line-height:1.6">The 90-day window is where the foundation is built. The retainer is where it compounds. Month one is the heaviest build — everything after runs on the engine we install.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE LOOP -->
+<section class="section band">
+  <div class="wrap" style="text-align:center">
+    <span class="eyebrow kicker rv">Where it compounds</span>
+    <h2 class="lead wide rv d1" style="margin:0 auto">Three engines. One <i>mission</i>.</h2>
+    <div class="loop-row">
+      <div class="loop-node rv d1"><div class="ln-t">UGC brings athletes</div><div class="ln-d">Creators drive sign-ups in football, basketball, track and boxing.</div></div>
+      <div class="loop-arrow rv d2">→</div>
+      <div class="loop-node rv d2"><div class="ln-t">Brand builds authority</div><div class="ln-d">Four makes you the global voice on African and Caribbean athletic development.</div></div>
+      <div class="loop-arrow rv d3">→</div>
+      <div class="loop-node rv d3"><div class="ln-t">LinkedIn closes investors</div><div class="ln-d">Authority converts to warm pipeline. Investors reply to names they already recognise.</div></div>
+    </div>
+    <p class="body-lg rv d4" style="margin:3rem auto 0;text-align:center">Athletes prove the platform works. The platform gives the brand a story. The brand makes investors take the call. Run all three from day one, and each one makes the other more powerful every month.</p>
+  </div>
+</section>
+
+<!-- 90-DAY ROADMAP -->
+<section class="section band" style="padding-top:0">
+  <div class="wrap" style="text-align:center">
+    <span class="eyebrow kicker rv">The 90-day roadmap</span>
+    <h2 class="lead wide rv d1" style="margin:0 auto">What the first three months <i>look like</i>.</h2>
+    <div class="roadmap-row rv d2">
+      <div class="rm-node">
+        <div class="rm-dot"><span>1</span></div>
+        <div class="rm-label">Week 1</div>
+        <div class="rm-desc">Strategy lock. Positioning, story, creator brief and LinkedIn targets confirmed.</div>
+      </div>
+      <div class="rm-node">
+        <div class="rm-dot"><span>2</span></div>
+        <div class="rm-label">Week 2</div>
+        <div class="rm-desc">All three engines live. UGC posts, LinkedIn outreach active, brand content rolling.</div>
+      </div>
+      <div class="rm-node">
+        <div class="rm-dot"><span>3</span></div>
+        <div class="rm-label">Week 3</div>
+        <div class="rm-desc">First signals. Views tracked, sign-ups monitored, investor replies logged.</div>
+      </div>
+      <div class="rm-node">
+        <div class="rm-dot"><span>4</span></div>
+        <div class="rm-label">Month 2</div>
+        <div class="rm-desc">Optimise. Best-performing angles scaled, weakest swapped out, investor conversations deepened.</div>
+      </div>
+      <div class="rm-node">
+        <div class="rm-dot"><span>5</span></div>
+        <div class="rm-label">Month 3</div>
+        <div class="rm-desc">Scale review. Numbers on the table, retainer confirmed, next phase decided together.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">The recommendation</span>
+    <h2 class="lead rv d1">Three engines. <i>Day one.</i></h2>
+    <p class="body-lg rv d2" style="color:var(--text-cream-mute);max-width:58ch">Not three options to weigh up. Three parts of one machine — and here is exactly why none of them works as well without the others.</p>
+    <div class="cta-paths">
+      <div class="cta-path rv d2">
+        <div class="cp-t">UGC brings the athletes</div>
+        <div class="cp-d">Creators reach the athletes you were built for, at a cost per sign-up that paid ads cannot match. Without this, the platform waits for athletes to find it on their own.</div>
+      </div>
+      <div class="cta-path rv d3">
+        <div class="cp-t">Brand builds the name</div>
+        <div class="cp-d">Investors and partners Google you before replying to anything. A personal brand is what they find. Without it, even the best LinkedIn outreach lands cold.</div>
+      </div>
+      <div class="cta-path rv d4">
+        <div class="cp-t">LinkedIn closes the capital</div>
+        <div class="cp-d">The outreach gets in front of the right people every week. Without it, the brand builds a name that never gets monetised through direct investor conversations.</div>
+      </div>
+    </div>
+    <p class="body-lg rv d4" style="color:var(--text-cream);max-width:64ch;margin-top:2.4rem"><b>Together, from the first month, they compound.</b> Athletes give the brand a story. The brand gives the LinkedIn outreach credibility. The outreach closes the capital that lets you find more athletes. That loop does not start until all three engines are running.</p>
+    <div class="signoff rv d4">
+      <div class="s-mark">Maison <b>d'Élites</b></div>
+      <div class="s-name">Jacques<br>Founder, Maison d'Élites</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
