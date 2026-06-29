@@ -89,6 +89,17 @@ https://youtu.be/abc123,@yt_creator,youtube,420000,Full breakdown"></textarea>
     </div>
 
     <div class="card">
+      <h2>Hands-off auto-sync · connection test</h2>
+      <p class="hint" style="margin-top:0">For a fully automatic feed from a source behind a login, add your platform <b>API key</b> in Cloudflare as a secret named <code>WHOP_API_KEY</code> (Worker → Settings → Variables and Secrets → Add → Secret), then redeploy. Click below to check whether your campaign data is reachable through it — no code needed.</p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="ghost small" id="whopTest">Test hands-off connection</button>
+        <span class="msg" id="whopMsg"></span>
+      </div>
+      <pre id="whopOut" style="display:none;margin-top:10px;max-height:260px;overflow:auto;background:#0e0b07;border:1px solid var(--line);border-radius:9px;padding:12px;font-size:.74rem;color:#cfc6b3;white-space:pre-wrap;word-break:break-word"></pre>
+      <p class="hint" id="whopHint" style="display:none">Copy this and send it to me — I'll wire the automatic sync from it. If it says the data isn't exposed, I'll set up the login-scraper path instead.</p>
+    </div>
+
+    <div class="card">
       <h2>Campaign</h2>
       <div class="grid2">
         <div><label>Client name</label><input id="f-client" placeholder="e.g. Acme Studios"></div>
@@ -300,6 +311,29 @@ function applyImported(d){
   $('#f-views').value=s.views||0; $('#f-clips').value=s.clips||0; $('#f-creators').value=s.creators||0;
 }
 
+async function whopTest(){
+  $('#whopTest').disabled=true;
+  const msg=$('#whopMsg'); msg.className='msg'; msg.textContent='Checking…';
+  const out=$('#whopOut'), hint=$('#whopHint');
+  try{
+    const res=await fetch('/api/campaign/whop', { headers: auth(), cache:'no-store' });
+    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
+    const j=await res.json();
+    out.style.display='block'; out.textContent=JSON.stringify(j, null, 2);
+    if(res.status===400 && /WHOP_API_KEY/.test(j.error||'')){
+      msg.className='msg err'; msg.textContent='No API key set yet — add the WHOP_API_KEY secret in Cloudflare, then retry.';
+      hint.style.display='none';
+    } else if(j.candidateFields && j.candidateFields.length){
+      msg.className='msg ok'; msg.textContent='Found '+j.candidateFields.length+' candidate data field(s). Looks promising.';
+      hint.style.display='block';
+    } else {
+      msg.className='msg'; msg.textContent='Connected. Review the output below.';
+      hint.style.display='block';
+    }
+  }catch(e){ msg.className='msg err'; msg.textContent='Test failed: '+(e.message||e); }
+  finally{ $('#whopTest').disabled=false; }
+}
+
 async function importCSV(){
   const csv=$('#csv').value.trim();
   if(!csv){ csvFlash('err','Paste a CSV first.'); return; }
@@ -348,6 +382,7 @@ $('#save').onclick = save;
 $('#reload').onclick = loadData;
 $('#recalc').onclick = recalc;
 $('#importBtn').onclick = importCSV;
+$('#whopTest').onclick = whopTest;
 document.body.addEventListener('click', e=>{
   const add = e.target.getAttribute && e.target.getAttribute('data-add');
   if(add==='platform') $('#platforms').appendChild(platformRow());
