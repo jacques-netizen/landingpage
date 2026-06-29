@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
-import { Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle2, Printer } from "lucide-react";
-import { CartItem, PaymentMethod, SaleChannel } from "@/types";
+import { Search, Plus, Minus, Trash2, ShoppingCart, CheckCircle2, Printer, User, X, UserPlus } from "lucide-react";
+import { CartItem, PaymentMethod, SaleChannel, CustomerType } from "@/types";
 
 interface Product {
   id: string;
@@ -23,26 +24,52 @@ interface Product {
   categories?: { name: string } | null;
 }
 
+interface POSCustomer {
+  id: string;
+  name: string;
+  company_name?: string | null;
+  type: CustomerType;
+  phone?: string | null;
+}
+
 interface POSTerminalProps {
   products: Product[];
+  customers: POSCustomer[];
   userId: string;
 }
 
 const TAX_RATE = 12.5;
 
-export function POSTerminal({ products, userId }: POSTerminalProps) {
+export function POSTerminal({ products, customers, userId }: POSTerminalProps) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [channel, setChannel] = useState<SaleChannel>("walk_in");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
   const [amountTendered, setAmountTendered] = useState("");
+  const [customerList, setCustomerList] = useState<POSCustomer[]>(customers);
   const [customerSearch, setCustomerSearch] = useState("");
-  const [customerId, setCustomerId] = useState<string | null>(null);
-  const [customerName, setCustomerName] = useState("");
+  const [customerOpen, setCustomerOpen] = useState(false);
+  const [customer, setCustomer] = useState<POSCustomer | null>(null);
+  const [newCustomerOpen, setNewCustomerOpen] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
-  const [receipt, setReceipt] = useState<{ orderNumber: string; invoiceNumber: string } | null>(null);
+  const [receipt, setReceipt] = useState<{ orderNumber: string; invoiceNumber: string; invoiceId: string; customerName: string } | null>(null);
+
+  const customerId = customer?.id ?? null;
+
+  const customerMatches = useMemo(() => {
+    const q = customerSearch.toLowerCase().trim();
+    if (!q) return customerList.slice(0, 8);
+    return customerList
+      .filter(
+        (c) =>
+          c.name.toLowerCase().includes(q) ||
+          (c.company_name ?? "").toLowerCase().includes(q) ||
+          (c.phone ?? "").toLowerCase().includes(q)
+      )
+      .slice(0, 8);
+  }, [customerList, customerSearch]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -94,10 +121,16 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
     const supabase = createClient();
 
     try {
-      // Create order
+      // Resolve the customer for this sale (selected, or fall back to a shared Walk-in record)
+      const saleCustomerId = customerId ?? (await ensureWalkInCustomer(supabase));
+      const saleCustomerName = customer
+        ? customer.company_name || customer.name
+        : "Walk-in Customer";
+
+      // Create order — flag stock_deducted so a later cancellation knows to restock
       const { data: order, error: orderErr } = await supabase
         .from("orders")
-        .insert({ customer_id: customerId, channel, status: "delivered", created_by: userId })
+        .insert({ customer_id: saleCustomerId, channel, status: "delivered", created_by: userId, stock_deducted: true })
         .select("id, order_number")
         .single();
       if (orderErr) throw orderErr;
@@ -120,7 +153,7 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
         .from("invoices")
         .insert({
           order_id: order.id,
-          customer_id: customerId ?? (await ensureWalkInCustomer(supabase)),
+          customer_id: saleCustomerId,
           status: "paid",
           subtotal,
           discount_total: discountTotal,
@@ -154,14 +187,25 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
         recorded_by: userId,
       });
 
-      // Reduce stock
+      // Reduce stock + log a stock adjustment per item so the ledger balances with cancellations
       for (const item of cart) {
         await supabase.from("products").update({
           stock_qty: item.product.stock_qty - item.qty,
         }).eq("id", item.product.id);
+        await supabase.from("stock_adjustments").insert({
+          product_id: item.product.id,
+          qty_change: -item.qty,
+          reason: `Sale ${order.order_number} (${invoice.invoice_number})`,
+          adjusted_by: userId,
+        });
       }
 
-      setReceipt({ orderNumber: order.order_number, invoiceNumber: invoice.invoice_number });
+      setReceipt({
+        orderNumber: order.order_number,
+        invoiceNumber: invoice.invoice_number,
+        invoiceId: invoice.id,
+        customerName: saleCustomerName,
+      });
     } catch (err: any) {
       setError(err.message ?? "Something went wrong.");
       setProcessing(false);
@@ -169,10 +213,29 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
   }
 
   async function ensureWalkInCustomer(supabase: any) {
-    const { data } = await supabase.from("customers").select("id").eq("name", "Walk-in Customer").single();
+    const { data } = await supabase.from("customers").select("id").eq("name", "Walk-in Customer").maybeSingle();
     if (data) return data.id;
     const { data: created } = await supabase.from("customers").insert({ name: "Walk-in Customer", type: "retail" }).select("id").single();
     return created.id;
+  }
+
+  async function createCustomer(form: { type: CustomerType; name: string; phone: string; whatsapp: string; email: string }) {
+    const supabase = createClient();
+    const { data, error: createErr } = await supabase
+      .from("customers")
+      .insert({
+        type: form.type,
+        name: form.name.trim(),
+        phone: form.phone.trim() || null,
+        whatsapp: form.whatsapp.trim() || null,
+        email: form.email.trim() || null,
+      })
+      .select("id, name, company_name, type, phone")
+      .single();
+    if (createErr) throw createErr;
+    setCustomerList((prev) => [data as POSCustomer, ...prev]);
+    setCustomer(data as POSCustomer);
+    setNewCustomerOpen(false);
   }
 
   function resetTerminal() {
@@ -181,9 +244,9 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
     setChannel("walk_in");
     setPaymentMethod("cash");
     setAmountTendered("");
-    setCustomerId(null);
-    setCustomerName("");
+    setCustomer(null);
     setCustomerSearch("");
+    setCustomerOpen(false);
     setReceipt(null);
     setProcessing(false);
     setError("");
@@ -305,6 +368,69 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
         </div>
 
         <div className="border-t p-3 space-y-3">
+          {/* Customer */}
+          <div className="relative">
+            {customer ? (
+              <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2">
+                <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{customer.company_name || customer.name}</div>
+                  <div className="truncate text-xs text-muted-foreground">
+                    {customer.type === "b2b" ? "B2B" : "Retail"}
+                    {customer.phone ? ` · ${customer.phone}` : ""}
+                  </div>
+                </div>
+                <button
+                  onClick={() => { setCustomer(null); setCustomerSearch(""); }}
+                  className="text-muted-foreground hover:text-destructive shrink-0"
+                  aria-label="Remove customer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={customerSearch}
+                    onChange={(e) => { setCustomerSearch(e.target.value); setCustomerOpen(true); }}
+                    onFocus={() => setCustomerOpen(true)}
+                    placeholder="Walk-in — search customer…"
+                    className="h-9 pl-9 text-sm"
+                  />
+                </div>
+                {customerOpen && (
+                  <div className="absolute bottom-full z-20 mb-1 w-full overflow-hidden rounded-lg border bg-card shadow-lg">
+                    <div className="max-h-52 overflow-y-auto">
+                      {customerMatches.map((c) => (
+                        <button
+                          key={c.id}
+                          onClick={() => { setCustomer(c); setCustomerOpen(false); setCustomerSearch(""); }}
+                          className="flex w-full flex-col items-start px-3 py-2 text-left hover:bg-accent"
+                        >
+                          <span className="text-sm font-medium">{c.company_name || c.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {c.type === "b2b" ? "B2B" : "Retail"}{c.phone ? ` · ${c.phone}` : ""}
+                          </span>
+                        </button>
+                      ))}
+                      {!customerMatches.length && (
+                        <p className="px-3 py-2 text-xs text-muted-foreground">No matches.</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => { setNewCustomerOpen(true); setCustomerOpen(false); }}
+                      className="flex w-full items-center gap-2 border-t px-3 py-2 text-left text-sm font-medium text-primary hover:bg-accent"
+                    >
+                      <UserPlus className="h-4 w-4" /> New customer
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           {/* Channel */}
           <Select value={channel} onValueChange={(v) => setChannel(v as SaleChannel)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
@@ -387,6 +513,10 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
             <div className="space-y-3 text-sm">
               <div className="rounded-lg bg-muted p-3 space-y-1">
                 <div className="flex justify-between">
+                  <span className="text-muted-foreground">Customer</span>
+                  <span className="font-medium">{receipt.customerName}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-muted-foreground">Order</span>
                   <span className="font-mono font-medium">{receipt.orderNumber}</span>
                 </div>
@@ -405,17 +535,103 @@ export function POSTerminal({ products, userId }: POSTerminalProps) {
                   </div>
                 )}
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" onClick={() => window.print()}>
-                  <Printer className="h-4 w-4" />
-                  Print
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" className="w-full" asChild>
+                  <a href={`/invoices/${receipt.invoiceId}`} target="_blank" rel="noopener noreferrer">
+                    <Printer className="h-4 w-4" />
+                    View / Download Invoice
+                  </a>
                 </Button>
-                <Button className="flex-1" onClick={resetTerminal}>New Sale</Button>
+                <Button className="w-full" onClick={resetTerminal}>New Sale</Button>
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      {/* New customer dialog */}
+      <NewCustomerDialog
+        open={newCustomerOpen}
+        onOpenChange={setNewCustomerOpen}
+        onSubmit={createCustomer}
+      />
     </div>
+  );
+}
+
+function NewCustomerDialog({
+  open,
+  onOpenChange,
+  onSubmit,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSubmit: (form: { type: CustomerType; name: string; phone: string; whatsapp: string; email: string }) => Promise<void>;
+}) {
+  const [type, setType] = useState<CustomerType>("retail");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState("");
+
+  async function handleSave() {
+    if (!name.trim()) { setErr("Name is required."); return; }
+    setSaving(true);
+    setErr("");
+    try {
+      await onSubmit({ type, name, phone, whatsapp, email });
+      setType("retail"); setName(""); setPhone(""); setWhatsapp(""); setEmail("");
+    } catch (e: any) {
+      setErr(e.message ?? "Could not create customer.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>New customer</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label>Type</Label>
+            <Select value={type} onValueChange={(v) => setType(v as CustomerType)}>
+              <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="retail">Retail</SelectItem>
+                <SelectItem value="b2b">B2B / Trade</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="nc-name">Name {type === "b2b" ? "/ Company" : ""}</Label>
+            <Input id="nc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Customer name" />
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="nc-phone">Phone</Label>
+              <Input id="nc-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="nc-wa">WhatsApp</Label>
+              <Input id="nc-wa" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="WhatsApp" />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="nc-email">Email</Label>
+            <Input id="nc-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (optional)" />
+          </div>
+          {err && <p className="text-xs text-destructive">{err}</p>}
+          <div className="flex gap-2 pt-1">
+            <Button variant="outline" className="flex-1" onClick={() => onOpenChange(false)} disabled={saving}>Cancel</Button>
+            <Button className="flex-1" onClick={handleSave} disabled={saving}>{saving ? "Saving…" : "Add customer"}</Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

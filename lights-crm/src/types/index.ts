@@ -4,7 +4,7 @@ export type CustomerType = "retail" | "b2b";
 
 export type OrderStatus = "pending" | "confirmed" | "in_progress" | "ready" | "delivered" | "cancelled";
 
-export type InvoiceStatus = "draft" | "sent" | "partially_paid" | "paid" | "overdue";
+export type InvoiceStatus = "draft" | "sent" | "partially_paid" | "paid" | "overdue" | "void";
 
 export type PaymentMethod = "cash" | "card" | "bank_transfer";
 

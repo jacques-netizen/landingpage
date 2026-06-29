@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RecordPaymentDialog } from "@/components/invoices/record-payment-dialog";
+import { InvoicePdfDownload } from "@/components/invoices/invoice-pdf-download";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { InvoiceStatus } from "@/types";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const statusVariant: Record<InvoiceStatus, "default" | "secondary" | "outline" | "destructive" | "success" | "warning"> = {
-  draft: "secondary", sent: "outline", partially_paid: "warning", paid: "success", overdue: "destructive",
+  draft: "secondary", sent: "outline", partially_paid: "warning", paid: "success", overdue: "destructive", void: "secondary",
 };
 
 const paymentMethodLabel: Record<string, string> = {
@@ -59,10 +60,36 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           <p className="text-sm text-muted-foreground">{formatDate(invoice.created_at)}</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => {}} className="print:hidden">
-            <Printer className="h-4 w-4" />
-            Print
-          </Button>
+          <InvoicePdfDownload
+            data={{
+              invoiceNumber: invoice.invoice_number,
+              createdAt: invoice.created_at,
+              dueDate: invoice.due_date,
+              status: invoice.status,
+              customer: customer
+                ? {
+                    name: customer.name,
+                    company_name: customer.company_name,
+                    email: customer.email,
+                    phone: customer.phone,
+                    address: customer.address,
+                  }
+                : null,
+              items: (invoice.invoice_items as any[]).map((i) => ({
+                description: i.description,
+                qty: i.qty,
+                unit_price: i.unit_price,
+                discount_pct: i.discount_pct,
+                line_total: i.line_total,
+              })),
+              subtotal: invoice.subtotal,
+              discount_total: invoice.discount_total,
+              tax_rate: invoice.tax_rate,
+              tax_total: invoice.tax_total,
+              total: invoice.total,
+              amount_paid: invoice.amount_paid,
+            }}
+          />
           {outstanding > 0 && (
             <RecordPaymentDialog invoiceId={invoice.id} outstanding={outstanding} userId={user!.id} />
           )}
@@ -100,7 +127,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
               <tr className="border-b">
                 <th className="py-2 text-left font-medium text-muted-foreground">Description</th>
                 <th className="py-2 text-right font-medium text-muted-foreground w-16">Qty</th>
-                <th className="py-2 text-right font-medium text-muted-foreground w-24">Unit €</th>
+                <th className="py-2 text-right font-medium text-muted-foreground w-24">Unit</th>
                 <th className="py-2 text-right font-medium text-muted-foreground w-16">Disc%</th>
                 <th className="py-2 text-right font-medium text-muted-foreground w-24">Total</th>
               </tr>

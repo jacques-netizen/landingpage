@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { OrderStatusStepper } from "@/components/orders/order-status-stepper";
+import { CancelOrderButton } from "@/components/orders/cancel-order-button";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { OrderStatus, SaleChannel } from "@/types";
 import { ArrowLeft, FileText, User, Calendar, MessageSquare } from "lucide-react";
@@ -66,7 +67,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">{formatDate(order.created_at)}</p>
         </div>
-        <div>
+        <div className="flex flex-col items-end gap-2">
           {linkedInvoice ? (
             <Button variant="outline" size="sm" asChild>
               <Link href={`/invoices/${linkedInvoice.id}`}>
@@ -81,6 +82,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 Create Invoice
               </Link>
             </Button>
+          )}
+          {order.status !== "cancelled" && (
+            <CancelOrderButton
+              orderId={order.id}
+              orderNumber={order.order_number}
+              hasInvoice={!!linkedInvoice}
+            />
           )}
         </div>
       </div>
@@ -149,7 +157,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">SKU</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Qty</th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Unit €</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">Unit</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Disc%</th>
                 <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total</th>
               </tr>

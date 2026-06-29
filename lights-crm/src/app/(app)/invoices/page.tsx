@@ -13,6 +13,7 @@ const statusVariant: Record<InvoiceStatus, "default" | "secondary" | "outline" |
   partially_paid: "warning",
   paid: "success",
   overdue: "destructive",
+  void: "secondary",
 };
 
 const statusLabel: Record<InvoiceStatus, string> = {
@@ -21,6 +22,7 @@ const statusLabel: Record<InvoiceStatus, string> = {
   partially_paid: "Partial",
   paid: "Paid",
   overdue: "Overdue",
+  void: "Void",
 };
 
 export default async function InvoicesPage() {

@@ -11,9 +11,15 @@ export default async function POSPage() {
     .select("id, sku, name, unit_price, stock_qty, is_custom_order")
     .order("name");
 
+  const { data: allCustomers } = await supabase
+    .from("customers")
+    .select("id, name, company_name, type, phone")
+    .order("name");
+
   return (
     <POSTerminal
       products={(allProducts ?? []) as any[]}
+      customers={(allCustomers ?? []) as any[]}
       userId={user!.id}
     />
   );

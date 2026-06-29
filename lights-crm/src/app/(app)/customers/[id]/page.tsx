@@ -10,7 +10,7 @@ import { Phone, MessageCircle, Mail, MapPin, Edit, Tag } from "lucide-react";
 import { InvoiceStatus } from "@/types";
 
 const statusVariant: Record<InvoiceStatus, "default" | "secondary" | "outline" | "destructive" | "success" | "warning"> = {
-  draft: "secondary", sent: "outline", partially_paid: "warning", paid: "success", overdue: "destructive",
+  draft: "secondary", sent: "outline", partially_paid: "warning", paid: "success", overdue: "destructive", void: "secondary",
 };
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
