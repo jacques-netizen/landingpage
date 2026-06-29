@@ -119,6 +119,24 @@ The same parser powers three levels of automation — pick one:
 > Pages deployment would need a separate Cron-trigger Worker or scheduled action
 > to drive `pullCampaignCSV`.
 
+### Fully hands-off (private source behind login)
+
+If the source data lives behind a login (so a plain CSV URL can't reach it), the
+automation needs a credential. Preferred: a long-lived **API key** from the
+source platform. Set it on the Worker as a secret `WHOP_API_KEY` (and optionally
+`WHOP_COMPANY_ID`), then hit the authed probe to see whether the data is exposed
+and to iterate on the exact query:
+
+- `GET /api/campaign/whop` (with `Authorization: Bearer <ADMIN_PASSWORD>`) —
+  introspects the API and lists campaign-relevant query fields.
+- `POST /api/campaign/whop` with `{ "query": "...", "variables": {} }` — runs a
+  GraphQL query through the stored key (used to nail down the right query before
+  wiring it into the scheduled sync).
+
+Once the right query is known, it gets baked into the cron sync alongside the
+CSV path. If the API does not expose the data, the fallback is a scheduled
+headless-login scraper that POSTs to `/api/campaign/import`.
+
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the
   `functions/` folder) if you ever switch — same handlers power both.

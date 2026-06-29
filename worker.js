@@ -1,6 +1,6 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
-import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV } from './lib/handlers.js';
+import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV, handleWhopProbe } from './lib/handlers.js';
 
 export default {
   async fetch(request, env) {
@@ -12,6 +12,7 @@ export default {
     if (path === '/api/notify') return handleNotify(request, env);
     if (path === '/api/campaign') return handleCampaign(request, env);
     if (path === '/api/campaign/import') return handleCampaignImport(request, env);
+    if (path === '/api/campaign/whop') return handleWhopProbe(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
 
     // On the booking subdomain (book.*), the root IS the calendar.
