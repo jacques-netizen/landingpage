@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison d'Élites · Growth Proposal · Dr Michael Bruce-de-Rouche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0f;
+    --ink-soft:#16161a;
+    --cream:#f4f1ea;
+    --cream-deep:#ece7db;
+    --gold:#a88a4f;
+    --gold-light:#b89968;
+    --text-dark:#23211c;
+    --text-mute:#6f6a5e;
+    --text-cream:#e8e3d6;
+    --text-cream-mute:#9b9484;
+    --hair-dark:rgba(35,33,28,0.16);
+    --hair-cream:rgba(232,227,214,0.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:var(--cream);
+    color:var(--text-dark);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* film grain */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .display{font-family:'EB Garamond',serif;font-weight:400;letter-spacing:-0.01em}
+  .eyebrow{
+    font-family:'Archivo',sans-serif;font-weight:500;font-size:0.72rem;
+    letter-spacing:0.32em;text-transform:uppercase;color:var(--gold);
+  }
+  .section{padding:clamp(4.5rem,11vh,9rem) clamp(1.5rem,7vw,8rem);position:relative}
+  .wrap{max-width:1080px;margin:0 auto}
+  .hair{height:1px;background:var(--hair-dark);border:0;margin:0}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* ---------- COVER ---------- */
+  .cover{
+    background:var(--ink);color:var(--text-cream);
+    min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;
+    padding:clamp(2.2rem,5vw,3.6rem) clamp(1.5rem,7vw,8rem);
+  }
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.15rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-light);font-weight:500}
+  .cover-doc{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-cream-mute)}
+  .cover-mid{max-width:880px}
+  .cover-mid .eyebrow{margin-bottom:1.6rem;display:block}
+  .cover h1{
+    font-family:'EB Garamond',serif;font-weight:400;
+    font-size:clamp(2.6rem,6.6vw,5.4rem);line-height:1.02;letter-spacing:-0.02em;
+  }
+  .cover h1 i{font-style:italic;color:var(--gold-light)}
+  .cover-sub{
+    margin-top:2rem;font-size:clamp(1rem,1.7vw,1.2rem);color:var(--text-cream-mute);
+    max-width:560px;font-weight:300;line-height:1.55;
+  }
+  .cover-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .cover-for{font-size:0.95rem;color:var(--text-cream);font-weight:400}
+  .cover-for span{display:block;color:var(--text-cream-mute);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.35rem}
+  .scrollcue{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* ---------- shared headings ---------- */
+  .lead{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4vw,3.1rem);line-height:1.1;letter-spacing:-0.015em;max-width:18ch}
+  .lead.wide{max-width:24ch}
+  .lead i{font-style:italic;color:var(--gold)}
+  .kicker{display:block;margin-bottom:1.5rem}
+  .body-lg{font-size:clamp(1.02rem,1.4vw,1.18rem);color:var(--text-mute);max-width:62ch;font-weight:300;line-height:1.7}
+  .body-lg + .body-lg{margin-top:1.2rem}
+  .body-lg b{color:var(--text-dark);font-weight:500}
+
+  /* ---------- cream section default ---------- */
+  .cream{background:var(--cream)}
+  .cream-deep{background:var(--cream-deep)}
+
+  /* two-up columns */
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);margin-top:3rem}
+  .pillar .p-eye{font-family:'Archivo';font-weight:600;font-size:0.74rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);padding-bottom:1rem;border-bottom:1px solid var(--hair-dark);margin-bottom:1.4rem;display:block}
+  .pillar h3{font-family:'EB Garamond',serif;font-weight:400;font-size:1.6rem;line-height:1.15;margin-bottom:0.9rem}
+  .pillar p{font-size:0.98rem;color:var(--text-mute);font-weight:300;line-height:1.65}
+  .pillar .tag{font-size:0.76rem;letter-spacing:0.1em;color:var(--text-mute);margin-top:0.5rem;font-style:italic;font-family:'EB Garamond',serif}
+
+  /* proof cards */
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-dark);margin-top:3rem;border-top:1px solid var(--hair-dark);border-left:1px solid var(--hair-dark)}
+  .proof{background:var(--cream);padding:clamp(1.8rem,3vw,2.6rem)}
+  .proof .name{font-family:'EB Garamond',serif;font-size:1.45rem;margin-bottom:0.4rem}
+  .proof .role{font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600}
+  .proof p{font-size:0.95rem;color:var(--text-mute);font-weight:300;line-height:1.6}
+
+  /* mechanic band (ink) */
+  .band{background:var(--ink);color:var(--text-cream)}
+  .band .eyebrow{color:var(--gold-light)}
+  .band .lead i{color:var(--gold-light)}
+  .band .body-lg{color:var(--text-cream-mute)}
+  .band .body-lg b{color:var(--text-cream)}
+
+  /* offer blocks */
+  .offer{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+  .offer + .offer{margin-top:clamp(3.5rem,7vh,6rem);padding-top:clamp(3.5rem,7vh,6rem);border-top:1px solid var(--hair-dark)}
+  .offer-head .o-tag{display:inline-block;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;color:var(--ink);background:var(--gold-light);padding:0.4rem 0.8rem;margin-bottom:1.4rem}
+  .offer-head h3{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.1;letter-spacing:-0.01em}
+  .offer-head .o-note{margin-top:1.1rem;font-size:0.98rem;color:var(--text-mute);font-weight:300;line-height:1.6;max-width:34ch}
+  .deliver{list-style:none}
+  .deliver li{padding:1rem 0;border-bottom:1px solid var(--hair-dark);display:flex;gap:1rem;align-items:baseline}
+  .deliver li:first-child{border-top:1px solid var(--hair-dark)}
+  .deliver .dlabel{font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-dark);flex:1}
+  .deliver .dsub{font-size:0.84rem;color:var(--text-mute);font-weight:300}
+  .priceline{display:flex;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-top:1.8rem}
+  .price{font-family:'EB Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--gold)}
+  .price-sub{font-size:0.84rem;color:var(--text-mute);letter-spacing:0.04em}
+  .guarantee{margin-top:1rem;font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-dark)}
+  .guarantee b{color:var(--gold);font-weight:500}
+  .spec{font-family:'Archivo';font-weight:600;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.9rem;display:block}
+
+  /* four profile feature */
+  .brandblock{margin-top:clamp(3.5rem,7vh,6rem);padding-top:clamp(3.5rem,7vh,6rem);border-top:1px solid var(--hair-dark)}
+  .fourprofile{display:grid;grid-template-columns:auto 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center;background:var(--cream-deep);padding:clamp(1.6rem,3vw,2.4rem);border-left:3px solid var(--gold)}
+  .fp-photo{width:clamp(110px,16vw,180px);aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--ink-soft);position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .fp-photo img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+  .fp-photo .ph{text-align:center;font-family:'EB Garamond',serif;letter-spacing:0.08em;color:var(--gold-light)}
+  .fp-name{font-family:'EB Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.1}
+  .fp-handle{color:var(--gold);font-size:0.88rem;letter-spacing:0.06em;margin:0.3rem 0 1.2rem}
+  .fp-stats{display:flex;gap:2.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+  .fp-stat .num{font-family:'EB Garamond',serif;font-size:1.9rem;color:var(--gold);line-height:1}
+  .fp-stat .lab{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mute);margin-top:0.3rem}
+  .fp-bio{font-size:0.95rem;color:var(--text-mute);font-weight:300;line-height:1.6;max-width:54ch}
+  .brand-deliver{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(2rem,4vw,3.5rem);align-items:start;margin-top:2rem}
+
+  /* four video media */
+  .media-grid{display:grid;grid-template-columns:0.5fr 1fr;gap:1.4rem;margin-top:1rem;align-items:start}
+  .media-label{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.6rem;display:block}
+  .vidcard{position:relative;display:block;overflow:hidden;border:1px solid var(--hair-dark);text-decoration:none;background:var(--ink-soft)}
+  .vidcard.portrait{aspect-ratio:9/16}
+  .vidcard img{width:100%;height:100%;object-fit:cover;display:block}
+  .vidcard .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.12);transition:background .3s}
+  .vidcard:hover .play{background:rgba(0,0,0,0.3)}
+  .vidcard .play span{width:52px;height:52px;border-radius:50%;background:rgba(168,138,79,0.95);color:#0d0d0f;display:flex;align-items:center;justify-content:center;font-size:0.95rem;padding-left:3px}
+  .ytwrap{position:relative;width:100%;aspect-ratio:16/9;border:1px solid var(--hair-dark);background:#000;overflow:hidden}
+  .ytwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .vid-note{font-size:0.88rem;color:var(--text-mute);font-weight:300;line-height:1.55;margin-top:0.8rem}
+
+  /* receipts stat band */
+  .bigstats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark);margin:2.6rem 0 0.6rem}
+  .bigstat{background:var(--ink);padding:1.6rem 1rem;text-align:center}
+  .bs-num{font-family:'EB Garamond',serif;font-size:clamp(1.7rem,3.4vw,2.5rem);color:var(--gold-light);line-height:1}
+  .bs-lab{font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-cream-mute);margin-top:0.55rem}
+
+  /* targeting */
+  .tiers{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.6rem}
+  .tier{border:1px solid var(--hair-dark);padding:1.2rem 1.3rem}
+  .tier .tnum{font-family:'EB Garamond',serif;font-size:0.9rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.4rem}
+  .tier .tname{font-family:'EB Garamond',serif;font-size:1.3rem;margin-bottom:0.3rem}
+  .tier .tdesc{font-size:0.85rem;color:var(--text-mute);font-weight:300}
+
+  /* ---- live calculator ---- */
+  .calc{background:var(--cream-deep);border-left:3px solid var(--gold);padding:clamp(1.6rem,3vw,2.4rem);margin-top:1.8rem}
+  .calc-q{font-size:0.82rem;letter-spacing:0.04em;color:var(--text-mute);font-weight:400;margin-bottom:0.4rem}
+  .calc-input{display:flex;align-items:center;gap:0.6rem;border:1px solid var(--hair-dark);background:rgba(255,255,255,0.55);padding:0.7rem 1.1rem;max-width:300px}
+  .calc-input span{font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--gold)}
+  .calc-input input{border:0;background:none;font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--text-dark);width:100%;outline:none}
+  .calc-range{display:flex;gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark);margin-top:1.6rem}
+  .calc-cell{background:var(--cream);padding:1.5rem 1.2rem;flex:1;text-align:center}
+  .calc-cell .cv{font-family:'EB Garamond',serif;font-size:clamp(1.7rem,3.6vw,2.6rem);color:var(--gold);line-height:1}
+  .calc-cell .cl{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mute);margin-top:0.55rem;font-weight:600}
+  .calc-plats{display:flex;flex-wrap:wrap;gap:0.55rem;margin-top:1.6rem}
+  .plat{font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--text-mute);border:1px solid var(--hair-dark);border-radius:999px;padding:0.5rem 1rem;opacity:0.4;transition:.3s}
+  .plat.on{opacity:1;color:var(--ink);border-color:var(--gold);background:rgba(168,138,79,0.14)}
+  .calc-note{font-size:0.8rem;color:var(--text-mute);font-weight:300;margin-top:1.2rem;line-height:1.5}
+
+  /* ---- interactive credentials ---- */
+  .creds{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:1.4rem}
+  .cred{display:block;text-decoration:none;color:inherit;border:1px solid var(--hair-dark);padding:1.1rem 1.2rem;transition:.3s;background:rgba(255,255,255,0.3)}
+  .cred:hover{border-color:var(--gold);transform:translateY(-3px);background:rgba(255,255,255,0.55)}
+  .cred .ct{font-family:'EB Garamond',serif;font-size:1.18rem;color:var(--text-dark);margin-bottom:0.25rem}
+  .cred .cd{font-size:0.83rem;color:var(--text-mute);font-weight:300;line-height:1.45}
+  .cred .cgo{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-top:0.7rem;display:inline-block}
+
+  /* cta */
+  .cta{background:var(--ink);color:var(--text-cream);text-align:left}
+  .cta .lead{max-width:22ch}
+  .cta .lead i{color:var(--gold-light)}
+  .cta .body-lg{color:var(--text-cream-mute)}
+  .cta .body-lg b{color:var(--gold-light)}
+  .cta-paths{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.8rem}
+  .cta-path{border:1px solid var(--hair-cream);padding:1.6rem 1.7rem;display:flex;flex-direction:column}
+  .cta-path .cp-t{font-family:'EB Garamond',serif;font-size:1.3rem;color:var(--gold-light);margin-bottom:0.6rem}
+  .cta-path .cp-d{font-size:0.9rem;color:var(--text-cream-mute);font-weight:300;line-height:1.6;flex:1}
+  .cta-path .cp-p{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--hair-cream);font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--text-cream)}
+  .cta-path .cp-p span{display:block;font-family:'Archivo';font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-cream-mute);margin-top:0.2rem;font-weight:500}
+  .signoff{margin-top:3.4rem;padding-top:2rem;border-top:1px solid var(--hair-cream);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-light);font-weight:500}
+  .signoff .s-name{font-size:0.85rem;color:var(--text-cream-mute);text-align:right;line-height:1.5}
+
+  @media(max-width:760px){
+    .twoup,.proof-grid,.offer,.tiers,.cta-paths,.fourprofile,.brand-deliver,.media-grid,.creds{grid-template-columns:1fr}
+    .bigstats{grid-template-columns:1fr 1fr}
+    .calc-range{flex-direction:column}
+    .fourprofile{justify-items:center;text-align:center}
+    .fp-stats{justify-content:center}
+    .offer{gap:1.6rem}
+    .cover-mid h1{font-size:2.5rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d'Élites</b></div>
+    <div class="cover-doc">Growth Proposal · Private &amp; Confidential</div>
+  </div>
+
+  <div class="cover-mid">
+    <span class="eyebrow rv">For Dr Michael Bruce-de-Rouche</span>
+    <h1 class="rv d1">The authority is<br>earned. The <i>reach</i> is<br>what's missing.</h1>
+    <p class="cover-sub rv d2">Three decades at the top of elite performance, and a name the right rooms already respect. This is how we turn that authority into reach, and reach into athletes, partners and legacy.</p>
+  </div>
+
+  <div class="cover-bot">
+    <div class="cover-for rv d3">
+      <span>Prepared for</span>
+      Dr Michael Bruce-de-Rouche · Bruce-de-Rouche Group
+    </div>
+    <div class="scrollcue">Scroll ↓</div>
+  </div>
+</header>
+
+<!-- WHERE YOU STAND -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">The honest starting point</span>
+    <h2 class="lead rv d1">You have the <i>rarest</i> part already.</h2>
+    <div style="margin-top:2.4rem">
+      <p class="body-lg rv d2">An ex-international athlete, a cognitive psychologist, and an elite speed and performance coach with three decades inside the game, including work alongside Chelsea and Arsenal. On top of that, a genuinely original body of thinking in cognitive sensing and performance, and a pioneering voice in African and Caribbean athletic development. That is the part most people never reach: real expertise, real results, and real authority in the rooms that matter.</p>
+      <p class="body-lg rv d2"><b>What you do not yet have is the distribution.</b> The work, the method and the story largely live in person, in sessions and in rooms, not in the feeds where the next generation of athletes, clubs and sponsors actually spend their attention. That gap is not a weakness. It is the single biggest unused asset you own, and everything below is built to switch it on.</p>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- WHY A BRAND FOR YOU -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Why a brand, for you specifically</span>
+    <h2 class="lead wide rv d1">For an expert and a coach, a brand is not content. It is an <i>acquisition channel</i>.</h2>
+    <div class="twoup">
+      <div class="pillar rv d2">
+        <span class="p-eye">Athletes &amp; clients</span>
+        <h3>Demand for the work</h3>
+        <p>A public name pulls in the people you are built to help: athletes, academies and clubs who already feel the gap you close. Instead of chasing introductions, the right profiles arrive warm, having already watched you explain exactly how you think.</p>
+      </div>
+      <div class="pillar rv d3">
+        <span class="p-eye">Authority, sponsors &amp; legacy</span>
+        <h3>Capital and recognition</h3>
+        <p>For sponsors, investors and partners, a visible authority is leverage. The people who write cheques into athlete development and sports tech back names they already trust. The brand becomes the top of the funnel for partnerships, speaking and a legacy that outlasts any single season.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- PROOF -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">The playbook, proven</span>
+    <h2 class="lead wide rv d1">You would be running the same play the best already run.</h2>
+    <div class="proof-grid">
+      <div class="proof rv d1">
+        <div class="name">Gary Vaynerchuk</div>
+        <div class="role">Document, don't create</div>
+        <p>One keynote or podcast becomes dozens of clips across every platform. He scaled by distributing the same content harder, not by making more of it. That is precisely this engine.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Alex Hormozi</div>
+        <div class="role">An expert, not an entertainer</div>
+        <p>He gives away genuine expertise in long-form, it gets clipped everywhere, and the brand becomes the deal-flow engine. People come to him. This is your model, almost exactly.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="name">Andrew Huberman</div>
+        <div class="role">The authority play</div>
+        <p>A working scientist turned his methods into clips and long-form, and became the default name in his field. Deep expertise, distributed simply, builds an audience that trusts the source first.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Jake &amp; Logan Paul</div>
+        <div class="role">Sport &amp; personal brand</div>
+        <p>Personal brands turned directly into ventures, audiences and demand across sport and business. Proof that a name, distributed at scale, becomes its own asset.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MDE RECEIPTS -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Our receipts</span>
+    <h2 class="lead wide rv d1">We have already done this, at <i>scale</i>.</h2>
+    <div class="bigstats rv d2">
+      <div class="bigstat"><div class="bs-num">300M+</div><div class="bs-lab">Views generated</div></div>
+      <div class="bigstat"><div class="bs-num">45K+</div><div class="bs-lab">Page network</div></div>
+      <div class="bigstat"><div class="bs-num">$1.30</div><div class="bs-lab">Average CPM</div></div>
+      <div class="bigstat"><div class="bs-num">94%+</div><div class="bs-lab">Non-follower reach</div></div>
+    </div>
+    <div class="proof-grid">
+      <div class="proof rv d1">
+        <div class="name">Iman Gadzhi</div>
+        <div class="role">Founder brand · 90 days</div>
+        <p>42.2M views and 13.1M accounts reached amplifying a founder's personal brand through our network, with 94.1% of that reach from non-followers. This is your exact play.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Luke Belmar</div>
+        <div class="role">Entrepreneur</div>
+        <p>200M views a month driving discovery and referrals for his community. Reach turned directly into pipeline.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="name">Logan &amp; Jake Paul</div>
+        <div class="role">Personal brand launch</div>
+        <p>11.2M views across four platforms for the Paul American launch, from 216 approved creators at a $1.78 CPM.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="name">Kojo Blak &times; Fantana</div>
+        <div class="role">Release campaign</div>
+        <p>1.9M views at a $1.30 CPM with the full budget deployed. Proof the model performs even on a single focused push.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE OFFERS -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">What we propose</span>
+    <h2 class="lead wide rv d1">Three engines. Each one stands <i>alone</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.6rem">Three separate ways to grow the brand. Take one, take two, or run all three together. There is no required bundle and no wrong combination, only the mix that fits where you want to move first. Here is exactly what each one is.</p>
+
+    <!-- OFFER 1: CLIPPING -->
+    <div class="brandblock">
+      <div class="offer">
+        <div class="offer-head rv d1">
+          <span class="o-tag">Engine 01 · Distribution</span>
+          <h3>Clipping Campaign</h3>
+          <p class="o-note">A budget you set, distributed at scale. The fastest way to put your name in front of millions.</p>
+        </div>
+        <div class="rv d2">
+          <span class="spec">How it works</span>
+          <ul class="deliver">
+            <li><span class="dlabel">You set the budget</span><span class="dsub">Priced at $1 to $2 per thousand views. You decide the spend; we turn it into reach.</span></li>
+            <li><span class="dlabel">Redistribution across platforms</span><span class="dsub">Native clips pushed across Instagram, TikTok, YouTube, Facebook and X. The bigger the budget, the more platforms we run at once.</span></li>
+            <li><span class="dlabel">Our 45,000-page network</span><span class="dsub">Reposted across a network of sport, performance and culture accounts, in front of audiences you would never reach organically.</span></li>
+          </ul>
+
+          <span class="spec" style="margin-top:1.8rem">Estimate your reach</span>
+          <div class="calc">
+            <div class="calc-q">Enter a monthly distribution budget:</div>
+            <div class="calc-input"><span>$</span><input id="mBudget" type="number" min="0" step="500" value="5000" inputmode="numeric" aria-label="Monthly distribution budget"></div>
+            <div class="calc-range">
+              <div class="calc-cell"><div class="cv" id="mViewsLo">0</div><div class="cl">Guaranteed floor · $2 CPM</div></div>
+              <div class="calc-cell"><div class="cv" id="mViewsHi">0</div><div class="cl">Target reach · $1 CPM</div></div>
+            </div>
+            <div class="calc-plats" id="mPlats">
+              <span class="plat" data-min="0">Instagram</span>
+              <span class="plat" data-min="0">TikTok</span>
+              <span class="plat" data-min="3000">YouTube</span>
+              <span class="plat" data-min="7000">Facebook</span>
+              <span class="plat" data-min="15000">X</span>
+            </div>
+            <p class="calc-note">Platforms scale with budget; thresholds shown are indicative and finalised on a call. Views are estimates based on our average delivery, not a promise of virality.</p>
+          </div>
+
+          <div class="priceline">
+            <span class="price">Your budget</span>
+            <span class="price-sub">$1–2 CPM</span>
+            <span class="price">+ $1,000</span>
+            <span class="price-sub">monthly management</span>
+          </div>
+          <p class="guarantee">Conservative floor: <b>500,000 views per $1,000</b> of budget.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFER 2: PERSONAL BRAND PARTNERSHIP (FOUR) -->
+    <div class="brandblock">
+      <div class="offer-head rv d1" style="margin-bottom:2.2rem">
+        <span class="o-tag">Engine 02 · Content</span>
+        <h3>Personal Brand Partnership</h3>
+        <p class="o-note">The content engine. A full short and long-form system, built and run for you every month.</p>
+      </div>
+
+      <span class="spec rv d1">Your appointed brand specialist</span>
+      <div class="fourprofile rv d2">
+        <div class="fp-photo">
+          <span class="ph" style="font-size:2.2rem">FT</span>
+          <img src="four-photo.jpg" alt="Four Tanwongsa" style="object-position:center 30%" onerror="this.remove()">
+        </div>
+        <div class="fp-meta">
+          <div class="fp-name">Four Tanwongsa</div>
+          <div class="fp-handle">@realfourz · Entrepreneur &amp; brand builder</div>
+          <div class="fp-stats">
+            <div class="fp-stat"><div class="num">410K</div><div class="lab">Followers</div></div>
+            <div class="fp-stat"><div class="num">2.8M</div><div class="lab">Top video views</div></div>
+            <div class="fp-stat"><div class="num">$1M+</div><div class="lab">Generated for students</div></div>
+          </div>
+          <p class="fp-bio">Four built a 410,000-strong following turning expertise into reach, and has generated over a million dollars for the people he coaches. He leads your positioning, your story and the content system end to end.</p>
+        </div>
+      </div>
+
+      <span class="spec rv d2" style="margin-top:2.2rem">See it for yourself</span>
+      <div class="media-grid rv d3">
+        <div>
+          <span class="media-label">Most viral · 2.8M views</span>
+          <a class="vidcard portrait" href="https://www.instagram.com/reel/DSCov7IExoO/" target="_blank" rel="noopener">
+            <img src="four-viral.jpg" alt="Four's most viral reel: pov you retired your mom at 17, 2.8 million views">
+            <div class="play"><span>&#9654;</span></div>
+          </a>
+        </div>
+        <div>
+          <span class="media-label">Case study film</span>
+          <div class="ytwrap"><iframe src="https://www.youtube.com/embed/ww7a10VAVXY" title="Four Tanwongsa case study" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+          <p class="vid-note">A full breakdown of how Four builds and grows a personal brand. The same method we apply to your account.</p>
+        </div>
+      </div>
+
+      <div class="brand-deliver rv d3">
+        <div>
+          <span class="spec">Every month, you receive</span>
+          <ul class="deliver">
+            <li><span class="dlabel">20 short-form videos</span></li>
+            <li><span class="dlabel">4 long-form videos</span><span class="dsub">Podcast or sit-down sessions. The well every clip is cut from.</span></li>
+            <li><span class="dlabel">Positioning &amp; story direction</span><span class="dsub">Led personally by Four.</span></li>
+            <li><span class="dlabel">Scripts, content ideas, managed calendar</span></li>
+            <li><span class="dlabel">Editors on call</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="priceline">
+            <span class="price">$7,000</span>
+            <span class="price-sub">per month · three-month minimum</span>
+          </div>
+          <p class="guarantee">Month one is the heaviest build. The engine needs runway to prove itself.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFER 3: LINKEDIN AUTHORITY -->
+    <div class="brandblock">
+      <div class="offer-head rv d1" style="margin-bottom:2.2rem">
+        <span class="o-tag">Engine 03 · Authority</span>
+        <h3>LinkedIn Authority</h3>
+        <p class="o-note">Where the decision-makers are. Positioned as the authority in your field, run by Jacques and Gordon Glenister.</p>
+      </div>
+
+      <span class="spec rv d1">Co-led by</span>
+      <div class="fourprofile rv d2">
+        <div class="fp-photo">
+          <span class="ph" style="font-size:2.2rem">GG</span>
+          <img src="gordon.jpg" alt="Gordon Glenister" onerror="this.remove()">
+        </div>
+        <div class="fp-meta">
+          <div class="fp-name">Gordon Glenister</div>
+          <div class="fp-handle">Influencer marketing &amp; personal-branding authority</div>
+          <div class="fp-stats">
+            <div class="fp-stat"><div class="num">300+</div><div class="lab">Stages &amp; events</div></div>
+            <div class="fp-stat"><div class="num">11 yrs</div><div class="lab">Industry-body CEO</div></div>
+            <div class="fp-stat"><div class="num">Global</div><div class="lab">BCMA influencer head</div></div>
+          </div>
+          <p class="fp-bio">One of the most recognised voices in influencer marketing and personal branding. Gordon shapes the authority positioning and strategy; Jacques and the team run the day-to-day execution on your profile.</p>
+        </div>
+      </div>
+
+      <span class="spec rv d2" style="margin-top:2.2rem">The credentials behind it</span>
+      <div class="creds rv d3">
+        <a class="cred" href="https://www.amazon.com/Influencer-Marketing-Strategy-Influencers-Business/dp/1398615234" target="_blank" rel="noopener">
+          <div class="ct">Published author</div>
+          <div class="cd"><i>Influencer Marketing Strategy</i> (Kogan Page), now in its second edition.</div>
+          <span class="cgo">View the book &rarr;</span>
+        </a>
+        <a class="cred" href="https://gordonglenister.com/" target="_blank" rel="noopener">
+          <div class="ct">Host of <i>Influence</i></div>
+          <div class="cd">The global podcast spotlighting influencer marketing and personal branding.</div>
+          <span class="cgo">Listen &rarr;</span>
+        </a>
+        <a class="cred" href="https://www.bcma.info/" target="_blank" rel="noopener">
+          <div class="ct">Global Head, BCMA</div>
+          <div class="cd">Global Head of Influencer Marketing at the Branded Content Marketing Association.</div>
+          <span class="cgo">About the BCMA &rarr;</span>
+        </a>
+        <a class="cred" href="https://uk.linkedin.com/in/gordonmichaelglenister" target="_blank" rel="noopener">
+          <div class="ct">300+ events &amp; counting</div>
+          <div class="cd">International speaker and moderator; ex-CEO of a UK trade association for 11 years.</div>
+          <span class="cgo">Connect on LinkedIn &rarr;</span>
+        </a>
+      </div>
+
+      <div class="brand-deliver rv d3">
+        <div>
+          <span class="spec">Every month, you receive</span>
+          <ul class="deliver">
+            <li><span class="dlabel">5 LinkedIn posts per week</span><span class="dsub">Written, designed and scheduled for you.</span></li>
+            <li><span class="dlabel">Profile &amp; brand optimization</span><span class="dsub">Headline, banner, about and featured, built to convert visits into authority.</span></li>
+            <li><span class="dlabel">Proprietary positioning frameworks</span><span class="dsub">Our system for establishing you as the authority in your field.</span></li>
+            <li><span class="dlabel">Strategy from Gordon Glenister</span><span class="dsub">Direction from a recognised authority in the space.</span></li>
+            <li><span class="dlabel">Posting, scheduling &amp; community management</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="priceline">
+            <span class="price">$4,000</span>
+            <span class="price-sub">per month · three-month minimum</span>
+          </div>
+          <p class="guarantee">Built to put you in front of the people who write the cheques.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Your call</span>
+    <h2 class="lead rv d1">Pick the engines that fit.</h2>
+    <p class="body-lg rv d2">Three standalone offers. Run one to start, pair two, or build all three together. Whatever you choose, here is what sits on the table.</p>
+    <div class="cta-paths">
+      <div class="cta-path rv d2">
+        <div class="cp-t">Clipping Campaign</div>
+        <div class="cp-d">Your budget turned into millions of native views across the major platforms, scaled to whatever you put in.</div>
+        <div class="cp-p">Your budget · $1–2 CPM<span>+ $1,000 / mo management</span></div>
+      </div>
+      <div class="cta-path rv d3">
+        <div class="cp-t">Personal Brand Partnership</div>
+        <div class="cp-d">The full content engine with Four: 20 short-form and 4 long-form videos a month, positioning, scripts and editors.</div>
+        <div class="cp-p">$7,000 / month<span>three-month minimum</span></div>
+      </div>
+      <div class="cta-path rv d4">
+        <div class="cp-t">LinkedIn Authority</div>
+        <div class="cp-d">5 posts a week, brand optimization and our positioning frameworks, co-led by Gordon Glenister.</div>
+        <div class="cp-p">$4,000 / month<span>three-month minimum</span></div>
+      </div>
+    </div>
+    <p class="body-lg rv d4" style="color:var(--text-cream);margin-top:2.4rem">Tell us which engines you want to start with and we will map the first 30 days. <b>No bundle is required, and there is no wrong combination.</b></p>
+    <div class="signoff rv d4">
+      <div class="s-mark">Maison <b>d'Élites</b></div>
+      <div class="s-name">Jacques<br>Founder, Maison d'Élites</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* live clipping calculator */
+  (function(){
+    const inp=document.getElementById('mBudget');
+    const lo=document.getElementById('mViewsLo'), hi=document.getElementById('mViewsHi');
+    const plats=Array.prototype.slice.call(document.querySelectorAll('#mPlats .plat'));
+    function fmt(n){
+      if(n>=1e6) return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';
+      if(n>=1e3) return Math.round(n/1e3)+'K';
+      return String(Math.round(n));
+    }
+    function calc(){
+      let b=parseFloat(inp.value); if(isNaN(b)||b<0)b=0;
+      lo.textContent=fmt(b/2*1000);   // $2 CPM floor
+      hi.textContent=fmt(b/1*1000);   // $1 CPM target
+      plats.forEach(p=>{ p.classList.toggle('on', b>=parseFloat(p.dataset.min||'0')); });
+    }
+    if(inp){ inp.addEventListener('input',calc); calc(); }
+  })();
+</script>
+</body>
+</html>
