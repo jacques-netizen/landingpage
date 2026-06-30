@@ -140,7 +140,8 @@ details[open] summary::after{transform:rotate(90deg)}
           <div class="sf"><label>Artist / client</label><input id="sClient" type="text" value="Itzdanielmichael"></div>
           <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" value="Need You · Please Stay"></div>
           <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" value="1000"></div>
-          <div class="sf"><label>Budget spent ($)</label><input id="sSpent" type="number" min="0" placeholder="0"></div>
+          <div class="sf"><label>Payout rate ($ / 1k views)</label><input id="sRate" type="number" min="0" step="0.01" value="0.50"></div>
+          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is taken from a reward/earnings column in your CSV if it has one; otherwise it’s views × this rate.</div>
         </div>
       </details>
 
@@ -177,10 +178,11 @@ function meta(){
     client: $('#sClient').value.trim() || 'Itzdanielmichael',
     campaign: $('#sCampaign').value.trim() || 'Need You · Please Stay',
     budgetTotal: Number($('#sBudget').value) || 1000,
-    budgetSpent: Number($('#sSpent').value) || 0,
+    rate: Number($('#sRate').value) || 0,
     tagline: 'Live distribution across our creator network',
   };
 }
+function money(n){ return '$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
 // --- thumbnail resolution for the preview (client side) ---
 function ytId(u){ const m=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{6,})/); return m?m[1]:null; }
@@ -246,7 +248,7 @@ async function parseFile(file){
     const camp=j.campaign||{}; const clips=camp.clips||[]; const s=camp.summary||{};
     const linked=clips.filter(c=>c.url).length;
     setBanner('ok','✓','Parsed '+clips.length+' clips · '+fmt(s.views||0)+' views',
-      linked+' of '+clips.length+' have links · review the preview, then publish');
+      linked+' of '+clips.length+' have links · spend '+money(s.budgetSpent||0)+' of '+money(s.budgetTotal||0)+' · review, then publish');
     renderPreview(clips);
     $('#pvActions').style.display='';
   }catch(e){ setBanner('bad','✕','Upload failed', String(e.message||e)); }
