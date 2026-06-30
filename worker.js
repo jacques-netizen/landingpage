@@ -3,7 +3,7 @@
 import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV, handleWhopProbe } from './lib/handlers.js';
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
 
@@ -11,7 +11,7 @@ export default {
     if (path === '/api/list') return handleList(request, env);
     if (path === '/api/notify') return handleNotify(request, env);
     if (path === '/api/campaign') return handleCampaign(request, env);
-    if (path === '/api/campaign/import') return handleCampaignImport(request, env);
+    if (path === '/api/campaign/import') return handleCampaignImport(request, env, ctx);
     if (path === '/api/campaign/whop') return handleWhopProbe(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
 
