@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Maison d'Élites · Campaign Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0f;
+    --ink-soft:#16161a;
+    --ink-card:#141318;
+    --cream:#f4f1ea;
+    --gold:#a88a4f;
+    --gold-light:#c7a867;
+    --gold-bright:#e6c984;
+    --text-cream:#e8e3d6;
+    --text-mute:#9b9484;
+    --text-dim:#6f6a5e;
+    --hair:rgba(232,227,214,0.12);
+    --hair-strong:rgba(232,227,214,0.2);
+    --ok:#6fb98a;
+    --tiktok:#26f4ee;
+    --instagram:#e1306c;
+    --youtube:#ff4d4d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:var(--ink);
+    color:var(--text-cream);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.03;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .display{font-family:'EB Garamond',serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.6rem)}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(13,13,15,0.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--hair);
+  }
+  .topbar-in{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:0.03em}
+  .mark b{color:var(--gold-light);font-weight:500}
+  .live{display:flex;align-items:center;gap:0.55rem;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-mute)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(111,185,138,0.6);animation:pulse 2s infinite}
+  .dot.stale{background:var(--gold);animation:none}
+  .dot.err{background:var(--youtube);animation:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(111,185,138,0.5)}70%{box-shadow:0 0 0 9px rgba(111,185,138,0)}100%{box-shadow:0 0 0 0 rgba(111,185,138,0)}}
+  .live b{color:var(--text-cream);font-weight:600}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(2.4rem,6vw,4.2rem) 0 clamp(1.4rem,3vw,2rem)}
+  .eyebrow{font-weight:600;font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .hero h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(2.1rem,5.5vw,3.7rem);line-height:1.04;letter-spacing:-0.02em;margin:0.9rem 0 0.6rem}
+  .hero h1 i{font-style:italic;color:var(--gold-light)}
+  .hero-sub{color:var(--text-mute);font-weight:300;font-size:clamp(0.96rem,1.6vw,1.1rem);max-width:60ch}
+  .hero-for{margin-top:1rem;font-size:0.8rem;letter-spacing:0.06em;color:var(--text-dim)}
+  .hero-for b{color:var(--text-cream);font-weight:500}
+
+  /* ---------- headline stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:1.6rem}
+  .stat{background:var(--ink-card);padding:clamp(1.3rem,2.6vw,2rem) clamp(1.1rem,2vw,1.6rem)}
+  .stat .s-num{font-family:'EB Garamond',serif;font-size:clamp(1.9rem,4.2vw,3.1rem);line-height:1;color:var(--gold-light);font-weight:500;letter-spacing:-0.01em}
+  .stat .s-lab{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-mute);margin-top:0.7rem}
+  .stat .s-sub{font-size:0.78rem;color:var(--text-dim);margin-top:0.25rem;font-weight:300}
+  .stat.flash .s-num{animation:flash 1.1s ease}
+  @keyframes flash{0%{color:var(--gold-bright);text-shadow:0 0 18px rgba(230,201,132,0.5)}100%{color:var(--gold-light);text-shadow:none}}
+
+  /* ---------- section ---------- */
+  .section{padding:clamp(1.6rem,4vw,2.6rem) 0}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.3rem;flex-wrap:wrap}
+  .sec-head h2{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-0.01em}
+  .sec-head .h-note{font-size:0.8rem;color:var(--text-dim);letter-spacing:0.04em}
+
+  /* progress + budget row */
+  .panels{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem}
+  .panel{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:clamp(1.3rem,2.5vw,1.8rem)}
+  .panel .p-top{display:flex;align-items:baseline;justify-content:space-between;gap:0.8rem;margin-bottom:1rem;flex-wrap:wrap}
+  .panel .p-title{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+  .panel .p-big{font-family:'EB Garamond',serif;font-size:1.4rem;color:var(--text-cream)}
+  .panel .p-big b{color:var(--gold-light);font-weight:500}
+  .track{height:12px;border-radius:8px;background:#0a0a0c;border:1px solid var(--hair);overflow:hidden}
+  .track > i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+  .track-meta{display:flex;justify-content:space-between;font-size:0.76rem;color:var(--text-mute);margin-top:0.6rem;font-weight:300}
+  .track-meta b{color:var(--text-cream);font-weight:600}
+  .mini{display:flex;flex-direction:column;gap:0.85rem;margin-top:0.4rem}
+  .mini-row{display:flex;align-items:center;gap:0.7rem}
+  .mini-row .m-name{width:84px;font-size:0.8rem;color:var(--text-mute);flex-shrink:0}
+  .mini-row .m-track{flex:1;height:8px;border-radius:6px;background:#0a0a0c;overflow:hidden}
+  .mini-row .m-track > i{display:block;height:100%;width:0;border-radius:6px;transition:width 1s ease}
+  .mini-row .m-val{width:62px;text-align:right;font-size:0.8rem;color:var(--text-cream);font-weight:500;flex-shrink:0}
+
+  /* ---------- content grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:1rem}
+  .clip{position:relative;display:block;text-decoration:none;border-radius:14px;overflow:hidden;background:var(--ink-soft);border:1px solid var(--hair);aspect-ratio:9/16;transition:transform .25s,border-color .25s,box-shadow .25s}
+  .clip:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 16px 40px rgba(0,0,0,0.5)}
+  .clip .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .clip .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 0%, #20202a 0%, #101015 70%)}
+  .clip .ph span{font-family:'EB Garamond',serif;font-size:2.4rem;color:var(--gold);opacity:0.5}
+  .clip .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0) 32%,rgba(0,0,0,0.18) 56%,rgba(0,0,0,0.86) 100%)}
+  .clip .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;background:rgba(168,138,79,0.92);color:#0d0d0f;display:flex;align-items:center;justify-content:center;font-size:0.9rem;padding-left:3px;opacity:0;transition:opacity .25s}
+  .clip:hover .play{opacity:1}
+  .clip .badge{position:absolute;top:0.6rem;left:0.6rem;display:flex;align-items:center;gap:0.32rem;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.5rem;border-radius:30px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);color:#fff}
+  .badge .pdot{width:7px;height:7px;border-radius:50%}
+  .clip .feat{position:absolute;top:0.6rem;right:0.6rem;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.46rem;border-radius:30px;background:var(--gold-bright);color:#0d0d0f}
+  .clip .meta{position:absolute;left:0;right:0;bottom:0;padding:0.85rem 0.8rem 0.8rem}
+  .clip .c-views{font-family:'EB Garamond',serif;font-size:1.45rem;color:#fff;line-height:1;font-weight:500}
+  .clip .c-views span{font-size:0.66rem;font-family:'Archivo';letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.72);margin-left:0.3rem;font-weight:600}
+  .clip .c-creator{font-size:0.74rem;color:rgba(255,255,255,0.82);margin-top:0.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:300}
+  .clip .c-title{font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:0.15rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:300}
+
+  /* ---------- leaderboard ---------- */
+  .board{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+  .lb-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;padding:0.95rem clamp(1rem,2vw,1.4rem);border-top:1px solid var(--hair)}
+  .lb-row:first-child{border-top:0}
+  .lb-rank{font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--text-dim);width:1.6rem;text-align:center}
+  .lb-row.top .lb-rank{color:var(--gold-bright)}
+  .lb-handle{font-size:0.92rem;color:var(--text-cream);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lb-clips{font-size:0.76rem;color:var(--text-dim);letter-spacing:0.04em}
+  .lb-views{font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--gold-light);min-width:74px;text-align:right}
+
+  /* empty / loading states */
+  .empty{text-align:center;padding:3rem 1rem;color:var(--text-dim);font-weight:300;border:1px dashed var(--hair);border-radius:14px}
+  .empty b{display:block;color:var(--text-mute);font-family:'EB Garamond',serif;font-size:1.2rem;font-weight:400;margin-bottom:0.4rem}
+  .skel{background:linear-gradient(90deg,#15151a 25%,#1c1c22 50%,#15151a 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:14px}
+  @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+  footer{padding:2.4rem 0 3rem;border-top:1px solid var(--hair);margin-top:1.6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  footer .s-mark{font-family:'EB Garamond',serif;font-size:1.15rem}
+  footer .s-mark b{color:var(--gold-light);font-weight:500}
+  footer .f-note{font-size:0.76rem;color:var(--text-dim);text-align:right}
+
+  @media(max-width:820px){
+    .stats{grid-template-columns:1fr 1fr}
+    .panels{grid-template-columns:1fr}
+  }
+  @media(max-width:460px){
+    .grid{grid-template-columns:1fr 1fr;gap:0.7rem}
+    .clip .c-views{font-size:1.2rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .dot{animation:none}.stat.flash .s-num{animation:none}.skel{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="mark">Maison <b>d'Élites</b></div>
+    <div class="live">
+      <span class="dot" id="dot"></span>
+      <span id="liveLabel">Connecting…</span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="eyebrow" id="campaignKicker">Live Campaign Report</span>
+    <h1 id="heroTitle">Your campaign, <i>live</i>.</h1>
+    <p class="hero-sub" id="heroSub">Every clip, every view, updated in real time as the distribution runs.</p>
+    <div class="hero-for" id="heroFor"></div>
+
+    <div class="stats" id="stats">
+      <div class="stat"><div class="s-num" data-k="views">—</div><div class="s-lab">Total views</div><div class="s-sub" id="viewsSub">across all platforms</div></div>
+      <div class="stat"><div class="s-num" data-k="clips">—</div><div class="s-lab">Clips live</div><div class="s-sub">posted &amp; distributing</div></div>
+      <div class="stat"><div class="s-num" data-k="creators">—</div><div class="s-lab">Creators</div><div class="s-sub">in the network</div></div>
+      <div class="stat"><div class="s-num" data-k="cpm">—</div><div class="s-lab">Avg CPM</div><div class="s-sub">cost per 1,000 views</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="panels">
+      <div class="panel">
+        <div class="p-top">
+          <div class="p-title">Guarantee progress</div>
+          <div class="p-big"><b id="gPct">0%</b> of floor</div>
+        </div>
+        <div class="track"><i id="gFill"></i></div>
+        <div class="track-meta">
+          <span><b id="gViews">0</b> delivered</span>
+          <span>Floor · <b id="gFloor">0</b></span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-top">
+          <div class="p-title">Budget deployed</div>
+          <div class="p-big"><b id="bSpent">$0</b></div>
+        </div>
+        <div class="track"><i id="bFill" style="background:linear-gradient(90deg,#6fb98a,#a88a4f)"></i></div>
+        <div class="track-meta">
+          <span><b id="bPct">0%</b> deployed</span>
+          <span><b id="bRemain">$0</b> remaining</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="platformSec" style="display:none">
+    <div class="panel">
+      <div class="p-top"><div class="p-title">Where the views are landing</div></div>
+      <div class="mini" id="platforms"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-head">
+      <h2>The content, working</h2>
+      <span class="h-note" id="clipNote"></span>
+    </div>
+    <div class="grid" id="clips">
+      <div class="clip skel"></div><div class="clip skel"></div><div class="clip skel"></div>
+      <div class="clip skel"></div><div class="clip skel"></div>
+    </div>
+  </section>
+
+  <section class="section" id="boardSec" style="display:none">
+    <div class="sec-head">
+      <h2>Top creators</h2>
+      <span class="h-note">Ranked by views delivered</span>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <footer>
+    <div class="s-mark">Maison <b>d'Élites</b></div>
+    <div class="f-note">Private campaign dashboard · Refreshes automatically<br><span id="updatedAt"></span></div>
+  </footer>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const POLL_MS = 20000;
+let prev = {};            // last-seen numeric values, for flash + count-up
+let lastUpdated = null;
+let firstPaint = true;
+
+const PLATFORM = {
+  tiktok:    { label:'TikTok',    color:'var(--tiktok)',    glyph:'♪' },
+  instagram: { label:'Instagram', color:'var(--instagram)', glyph:'◉' },
+  youtube:   { label:'YouTube',   color:'var(--youtube)',   glyph:'▶' },
+  shorts:    { label:'Shorts',    color:'var(--youtube)',   glyph:'▶' },
+  reels:     { label:'Reels',     color:'var(--instagram)', glyph:'◉' },
+};
+function plat(p){ return PLATFORM[(p||'').toLowerCase()] || { label:(p||'Clip'), color:'var(--gold)', glyph:'◈' }; }
+
+function fmt(n){
+  n = Number(n) || 0;
+  if(n >= 1e9) return (n/1e9).toFixed(n>=1e10?0:1).replace(/\.0$/,'') + 'B';
+  if(n >= 1e6) return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'') + 'M';
+  if(n >= 1e3) return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'') + 'K';
+  return String(Math.round(n));
+}
+function fmtFull(n){ return (Number(n)||0).toLocaleString('en-US'); }
+function money(n){ return '$' + (Number(n)||0).toLocaleString('en-US'); }
+
+// Smoothly count a stat element from its previous value to the new one.
+function countTo(el, to, render){
+  const from = Number(el.dataset.val || 0);
+  if(from === to){ el.textContent = render(to); return; }
+  el.dataset.val = to;
+  const dur = firstPaint ? 900 : 1100;
+  const t0 = performance.now();
+  function step(t){
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = render(from + (to - from) * e);
+    if(k < 1) requestAnimationFrame(step);
+    else el.textContent = render(to);
+  }
+  requestAnimationFrame(step);
+}
+
+function setStat(key, value, render){
+  const el = $('[data-k="'+key+'"]');
+  if(!el) return;
+  countTo(el, value, render);
+  if(!firstPaint && prev[key] !== undefined && value !== prev[key]){
+    const card = el.closest('.stat');
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+  }
+  prev[key] = value;
+}
+
+function ytId(url){
+  const m = String(url||'').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{6,})/);
+  return m ? m[1] : null;
+}
+function thumbFor(c){
+  if(c.thumb) return c.thumb;
+  const y = ytId(c.url);
+  if(y) return 'https://i.ytimg.com/vi/' + y + '/hqdefault.jpg';
+  return null;
+}
+
+function renderClips(clips){
+  const root = $('#clips');
+  if(!clips.length){
+    root.innerHTML = '<div class="empty" style="grid-column:1/-1"><b>The first clips are on their way</b>As creators post, every clip shows up here automatically.</div>';
+    $('#clipNote').textContent = '';
+    return;
+  }
+  const sorted = clips.slice().sort((a,b) => (b.featured?1:0)-(a.featured?1:0) || b.views - a.views);
+  $('#clipNote').textContent = clips.length + ' clip' + (clips.length>1?'s':'') + ' · sorted by reach';
+  root.innerHTML = sorted.map(c => {
+    const p = plat(c.platform);
+    const th = thumbFor(c);
+    const href = c.url ? ' href="'+esc(c.url)+'" target="_blank" rel="noopener"' : '';
+    const tag = c.url ? 'a' : 'div';
+    return '<'+tag+' class="clip"'+href+'>' +
+      (th ? '<img class="thumb" loading="lazy" src="'+esc(th)+'" alt="" onerror="this.remove()">' : '') +
+      '<div class="ph"><span>'+p.glyph+'</span></div>' +
+      '<div class="veil"></div>' +
+      (c.url ? '<div class="play">▶</div>' : '') +
+      '<div class="badge"><span class="pdot" style="background:'+p.color+'"></span>'+esc(p.label)+'</div>' +
+      (c.featured ? '<div class="feat">★ Top</div>' : '') +
+      '<div class="meta">' +
+        '<div class="c-views">'+fmt(c.views)+'<span>views</span></div>' +
+        (c.creator ? '<div class="c-creator">'+esc(c.creator)+'</div>' : '') +
+        (c.title ? '<div class="c-title">'+esc(c.title)+'</div>' : '') +
+      '</div>' +
+    '</'+tag+'>';
+  }).join('');
+}
+
+function renderPlatforms(platforms){
+  const sec = $('#platformSec');
+  const list = (platforms||[]).filter(p => p.views > 0).sort((a,b)=>b.views-a.views);
+  if(!list.length){ sec.style.display='none'; return; }
+  sec.style.display='';
+  const max = list[0].views || 1;
+  $('#platforms').innerHTML = list.map(p => {
+    const pl = plat(p.name);
+    return '<div class="mini-row">' +
+      '<div class="m-name">'+esc(p.name)+'</div>' +
+      '<div class="m-track"><i style="width:'+Math.max(3,(p.views/max*100))+'%;background:'+pl.color+'"></i></div>' +
+      '<div class="m-val">'+fmt(p.views)+'</div></div>';
+  }).join('');
+}
+
+function renderBoard(creators){
+  const sec = $('#boardSec');
+  const list = (creators||[]).filter(c=>c.handle).sort((a,b)=>b.views-a.views).slice(0,10);
+  if(!list.length){ sec.style.display='none'; return; }
+  sec.style.display='';
+  $('#board').innerHTML = list.map((c,i) =>
+    '<div class="lb-row'+(i<3?' top':'')+'">' +
+      '<div class="lb-rank">'+(i+1)+'</div>' +
+      '<div class="lb-handle">'+esc(c.handle)+'</div>' +
+      '<div class="lb-clips">'+(c.clips? c.clips+' clip'+(c.clips>1?'s':'') : '')+'</div>' +
+      '<div class="lb-views">'+fmt(c.views)+'</div>' +
+    '</div>').join('');
+}
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function paint(d){
+  const s = d.summary || {};
+  // brand text
+  if(d.campaign) $('#heroTitle').innerHTML = esc(d.campaign).replace(/&amp;/g,'&') + ' <i>·</i> live';
+  if(d.tagline) $('#heroSub').textContent = d.tagline;
+  $('#heroFor').innerHTML = d.client ? 'Prepared for <b>'+esc(d.client)+'</b>' : '';
+  document.title = "Maison d'Élites · " + (d.client || 'Campaign') + ' Dashboard';
+
+  // headline stats
+  const views = s.views || 0;
+  const cpm = views > 0 ? (s.budgetSpent || 0) / (views/1000) : 0;
+  setStat('views', views, fmt);
+  setStat('clips', s.clips || 0, v => fmt(v));
+  setStat('creators', s.creators || 0, v => Math.round(v));
+  setStat('cpm', cpm, v => '$' + (v).toFixed(2));
+  $('#viewsSub').textContent = fmtFull(views) + ' total';
+
+  // guarantee
+  const floor = s.guaranteeFloor || 0;
+  const pct = floor > 0 ? Math.min(100, views/floor*100) : 0;
+  $('#gFill').style.width = pct + '%';
+  $('#gPct').textContent = (floor>0 ? (pct>=100?'100':pct.toFixed(pct<10?1:0)) : '—') + '%';
+  $('#gViews').textContent = fmt(views);
+  $('#gFloor').textContent = floor>0 ? fmt(floor) : '—';
+
+  // budget
+  const total = s.budgetTotal || 0, spent = s.budgetSpent || 0;
+  const bpct = total>0 ? Math.min(100, spent/total*100) : 0;
+  $('#bFill').style.width = bpct + '%';
+  $('#bSpent').textContent = money(spent) + (total? ' / ' + money(total) : '');
+  $('#bPct').textContent = (total>0?Math.round(bpct):0) + '%';
+  $('#bRemain').textContent = money(Math.max(0, total - spent));
+
+  renderPlatforms(d.platforms);
+  renderClips(d.clips || []);
+  renderBoard(d.creators || []);
+
+  lastUpdated = d.updated ? new Date(d.updated) : new Date();
+  firstPaint = false;
+  setLive('ok');
+}
+
+function setLive(state){
+  const dot = $('#dot'), label = $('#liveLabel');
+  dot.className = 'dot' + (state==='err'?' err':state==='stale'?' stale':'');
+  if(state==='err'){ label.textContent = 'Reconnecting…'; return; }
+  tickAgo();
+}
+function tickAgo(){
+  if(!lastUpdated){ return; }
+  const sec = Math.max(0, Math.round((Date.now() - lastUpdated)/1000));
+  let t;
+  if(sec < 5) t = 'Live · just now';
+  else if(sec < 60) t = 'Live · ' + sec + 's ago';
+  else if(sec < 3600) t = 'Updated ' + Math.floor(sec/60) + 'm ago';
+  else t = 'Updated ' + Math.floor(sec/3600) + 'h ago';
+  $('#liveLabel').innerHTML = t.replace(/Live/, '<b>Live</b>');
+  $('#updatedAt').textContent = 'Last data update: ' + lastUpdated.toLocaleString();
+  const dot = $('#dot');
+  if(sec > 180 && !dot.classList.contains('err')) dot.classList.add('stale'); else if(sec<=180) dot.classList.remove('stale');
+}
+
+async function load(){
+  try{
+    const res = await fetch('/api/campaign', { cache:'no-store' });
+    if(!res.ok) throw new Error('http '+res.status);
+    const d = await res.json();
+    paint(d);
+  }catch(e){
+    setLive('err');
+    if(firstPaint){
+      $('#clips').innerHTML = '<div class="empty" style="grid-column:1/-1"><b>Loading the campaign…</b>Hang tight, fetching live numbers.</div>';
+    }
+  }
+}
+
+load();
+setInterval(load, POLL_MS);
+setInterval(tickAgo, 1000);
+// Refresh immediately when the client returns to the tab.
+document.addEventListener('visibilitychange', () => { if(!document.hidden) load(); });
+</script>
+</body>
+</html>

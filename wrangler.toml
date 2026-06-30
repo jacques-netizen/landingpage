@@ -30,3 +30,9 @@ run_worker_first = true
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "maison-delites-media"
+
+# Campaign dashboard auto-sync. Every 15 minutes the Worker pulls the CSV at
+# CAMPAIGN_CSV_URL (e.g. a published Google Sheet) and refreshes /dashboard.
+# Harmless no-op until you set that variable, so it is safe to leave enabled.
+[triggers]
+crons = ["*/15 * * * *"]
