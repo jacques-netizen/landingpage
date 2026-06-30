@@ -312,7 +312,7 @@ function renderClips(clips){
     const tag = c.url ? 'a' : 'div';
     const need = (!th && c.url) ? ' data-thumb-url="'+esc(c.url)+'" data-plat="'+esc((c.platform||'').toLowerCase())+'"' : '';
     return '<'+tag+' class="clip"'+href+need+'>' +
-      (th ? '<img class="thumb" loading="lazy" src="'+esc(th)+'" alt="" onerror="this.remove()">' : '') +
+      (th ? '<img class="thumb" loading="lazy" data-raw="'+esc(th)+'" alt="">' : '') +
       '<div class="ph"><span>'+p.glyph+'</span></div>' +
       '<div class="veil"></div>' +
       (c.url ? '<div class="play">▶</div>' : '') +
@@ -325,7 +325,24 @@ function renderClips(clips){
       '</div>' +
     '</'+tag+'>';
   }).join('');
+  $$('.thumb[data-raw]').forEach(wireThumb);
   enhanceThumbs();
+}
+
+// Load a thumbnail with graceful fallback: try the raw image first, then route
+// it through a hotlink-proof image proxy (defeats TikTok/Instagram referrer
+// blocks), then give up to the placeholder. Avoids broken-image tiles.
+function proxied(u){ return 'https://images.weserv.nl/?url=' + encodeURIComponent(u) + '&w=480&output=jpg&we'; }
+function wireThumb(img){
+  const raw = img.getAttribute('data-raw');
+  if(!raw){ return; }
+  let stage = 0;
+  img.onerror = () => {
+    stage++;
+    if(stage === 1){ img.src = proxied(raw); }
+    else { img.onerror = null; img.remove(); }
+  };
+  img.src = raw;
 }
 
 // Fallback: fetch a real preview image for any tile the server couldn't resolve.
@@ -336,10 +353,11 @@ function cacheThumb(url, img){ thumbCache[url] = img || ''; try{ sessionStorage.
 function injectThumb(tile, img){
   if(!img) return;
   const el = document.createElement('img');
-  el.className = 'thumb'; el.loading = 'lazy'; el.src = img; el.alt = '';
-  el.onerror = () => el.remove();
+  el.className = 'thumb'; el.loading = 'lazy'; el.alt = '';
+  el.setAttribute('data-raw', img);
   tile.insertBefore(el, tile.firstChild);
   tile.removeAttribute('data-thumb-url');
+  wireThumb(el);
 }
 async function enhanceThumbs(){
   const tiles = $$('.clip[data-thumb-url]');
