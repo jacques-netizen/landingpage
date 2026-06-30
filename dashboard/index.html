@@ -345,40 +345,44 @@ function wireThumb(img){
   img.src = raw;
 }
 
-// Fallback: fetch a real preview image for any tile the server couldn't resolve.
-// TikTok via its public (CORS-enabled) oEmbed; anything else via a keyless
-// preview service. Cached in sessionStorage so it only runs once per clip.
-const thumbCache = JSON.parse(sessionStorage.getItem('mde_thumbs') || '{}');
-function cacheThumb(url, img){ thumbCache[url] = img || ''; try{ sessionStorage.setItem('mde_thumbs', JSON.stringify(thumbCache)); }catch(e){} }
-function injectThumb(tile, img){
-  if(!img) return;
-  const el = document.createElement('img');
-  el.className = 'thumb'; el.loading = 'lazy'; el.alt = '';
-  el.setAttribute('data-raw', img);
-  tile.insertBefore(el, tile.firstChild);
-  tile.removeAttribute('data-thumb-url');
-  wireThumb(el);
+// Browser-side preview for tiles the server couldn't resolve. Instagram blocks
+// server-side (datacenter) fetches, but the viewer's browser is a normal
+// residential client, so a screenshot of the post's PUBLIC embed works here. We
+// use a free, keyless screenshot service and only replace the elegant
+// placeholder once a REAL screenshot is confirmed loaded (checked by aspect
+// ratio — the service's "generating" placeholder is landscape, the real shot is
+// portrait). If it never resolves, the tasteful placeholder simply stays.
+function shotTarget(url){
+  const ig = String(url).match(/instagram\.com\/(?:reel|reels|p|tv)\/([A-Za-z0-9_-]+)/i);
+  if(ig) return 'https://www.instagram.com/reel/' + ig[1] + '/embed/captioned/';
+  return url;
 }
-async function enhanceThumbs(){
+function shotUrl(url){ return 'https://s.wordpress.com/mshots/v1/' + encodeURIComponent(shotTarget(url)) + '?w=480&h=854'; }
+
+function enhanceThumbs(){
   const tiles = $$('.clip[data-thumb-url]');
-  for(const tile of tiles){
+  tiles.forEach((tile, i) => {
     const url = tile.getAttribute('data-thumb-url');
-    if(url in thumbCache){ injectThumb(tile, thumbCache[url]); continue; }
-    const platform = tile.getAttribute('data-plat') || '';
-    try{
-      let img = '';
-      if(platform === 'tiktok'){
-        const r = await fetch('https://www.tiktok.com/oembed?url=' + encodeURIComponent(url));
-        if(r.ok){ const d = await r.json(); img = d.thumbnail_url || ''; }
-      }
-      if(!img){
-        const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url) + '&meta=false');
-        if(r.ok){ const d = await r.json(); img = (d.data && ((d.data.image && d.data.image.url) || (d.data.logo && d.data.logo.url))) || ''; }
-      }
-      cacheThumb(url, img);
-      injectThumb(tile, img);
-    }catch(e){ /* leave placeholder */ }
-  }
+    tile.removeAttribute('data-thumb-url');
+    const src = shotUrl(url);
+    let tries = 0;
+    const attempt = () => {
+      tries++;
+      const probe = new Image();
+      probe.onload = () => {
+        const ratio = probe.naturalHeight / (probe.naturalWidth || 1);
+        if(ratio > 1.2 && probe.naturalWidth > 80){          // a real portrait screenshot
+          if(tile.querySelector('.thumb')) return;
+          const img = document.createElement('img');
+          img.className = 'thumb'; img.alt = ''; img.src = probe.src;
+          tile.insertBefore(img, tile.firstChild);
+        } else if(tries < 6){ setTimeout(attempt, 3500); }   // still generating — retry
+      };
+      probe.onerror = () => { if(tries < 6) setTimeout(attempt, 3500); };
+      probe.src = src;
+    };
+    setTimeout(attempt, Math.min(i, 10) * 250);              // light stagger to avoid a burst
+  });
 }
 
 function renderPlatforms(platforms){
