@@ -7,20 +7,21 @@
 <title>Campaign Editor · Maison d'Élites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0d0d0f;--ink-card:#141318;
+  --ink:#0d0d0f;--ink-card:#141318;--ink-soft:#1a1a20;
   --gold:#a88a4f;--gold-light:#c7a867;--gold-bright:#e6c984;
   --text-cream:#e8e3d6;--text-mute:#9b9484;--text-dim:#6f6a5e;
   --hair:rgba(232,227,214,0.12);--hair-mid:rgba(232,227,214,0.22);
   --ok:#6fb98a;--bad:#d2766a;
+  --tiktok:#26f4ee;--instagram:#e1306c;--youtube:#ff4d4d;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cream);-webkit-font-smoothing:antialiased;min-height:100vh}
-.wrap{max-width:560px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.wrap{max-width:600px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
 
-.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.6rem}
+.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.4rem}
 .topbar-in{display:flex;align-items:center;justify-content:space-between}
 .mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em}
 .mark b{color:var(--gold-light);font-weight:500}
@@ -28,45 +29,47 @@ body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cre
 .top-right a{color:var(--text-mute);text-decoration:none}
 .top-right a:hover{color:var(--gold-light)}
 
-/* gate */
 .gate{max-width:340px;margin:10vh auto 0;background:var(--ink-card);border:1px solid var(--hair);border-radius:16px;padding:2rem}
 .gate h2{font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1.4rem}
 input[type=password]{width:100%;padding:.75rem 1rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:9px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;transition:.15s border-color}
 input[type=password]:focus{border-color:var(--gold)}
 .err{font-size:.8rem;color:var(--bad);min-height:1.1em;margin-top:.4rem}
-.btn{display:block;width:100%;padding:.8rem;background:var(--gold);color:#1a1208;border:0;border-radius:9px;font-family:inherit;font-weight:600;font-size:.9rem;cursor:pointer;margin-top:1rem;transition:.15s}
-.btn:hover{background:var(--gold-bright)}
 
-/* app */
+.btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border:0;border-radius:10px;font-family:inherit;font-weight:600;font-size:.92rem;cursor:pointer;transition:.15s}
+.btn-gold{background:var(--gold);color:#1a1208}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-gold:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text-mute);border:1px solid var(--hair-mid)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light)}
+
 .stack{display:flex;flex-direction:column;gap:1.1rem;padding-bottom:3rem}
 
-/* zone */
-.zone{
-  border:2px dashed var(--hair-mid);border-radius:16px;
-  padding:3.6rem 2rem;text-align:center;cursor:pointer;
-  transition:.2s;position:relative;
-}
+.zone{border:2px dashed var(--hair-mid);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:.2s;position:relative}
 .zone:hover,.zone.over{border-color:var(--gold);background:rgba(168,138,79,.05)}
 .zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.zone-arrow{font-size:2rem;color:var(--gold);opacity:.7;margin-bottom:.9rem}
-.zone h2{font-family:'EB Garamond',serif;font-size:1.7rem;font-weight:400;margin-bottom:.35rem}
-.zone p{font-size:.83rem;color:var(--text-mute)}
-.zone-file{font-size:.82rem;color:var(--gold-light);margin-top:.65rem;font-weight:500;min-height:1.2em}
+.zone-arrow{font-size:1.9rem;color:var(--gold);opacity:.7;margin-bottom:.8rem}
+.zone h2{font-family:'EB Garamond',serif;font-size:1.6rem;font-weight:400;margin-bottom:.35rem}
+.zone p{font-size:.82rem;color:var(--text-mute)}
 
-/* result */
-.result{border-radius:12px;padding:1.2rem 1.4rem;display:none}
-.result.ok{background:rgba(111,185,138,.1);border:1px solid rgba(111,185,138,.28)}
-.result.err{background:rgba(210,118,106,.08);border:1px solid rgba(210,118,106,.28)}
-.result-title{font-size:.83rem;font-weight:600;margin-bottom:.3rem}
-.result.ok .result-title{color:var(--ok)}
-.result.err .result-title{color:var(--bad)}
-.result-body{font-size:.82rem;color:var(--text-mute)}
-.dash-link{display:inline-block;margin-top:.85rem;padding:.5rem 1.1rem;background:var(--gold);color:#1a1208;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none}
-.dash-link:hover{background:var(--gold-bright)}
+.card{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem}
+.banner{display:flex;align-items:center;gap:.6rem;font-size:.9rem;font-weight:600;margin-bottom:.35rem}
+.banner.ok{color:var(--ok)} .banner.bad{color:var(--bad)} .banner.work{color:var(--gold-light)}
+.sub{font-size:.82rem;color:var(--text-mute)}
+.filechip{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gold-light);margin-top:.5rem}
 
-/* settings */
+/* preview grid */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:.55rem;margin-top:1rem}
+.pcell{position:relative;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:var(--ink-soft);border:1px solid var(--hair)}
+.pcell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pcell .pph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);opacity:.5;background:radial-gradient(120% 120% at 50% 0,#23232c,#101015)}
+.pcell .pv{position:absolute;left:0;right:0;bottom:0;padding:.3rem .35rem;font-size:.64rem;font-weight:700;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.pcell .pd{position:absolute;top:.3rem;left:.3rem;width:7px;height:7px;border-radius:50%}
+.more{font-size:.78rem;color:var(--text-dim);margin-top:.7rem;text-align:center}
+
+.actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem}
+
 details{background:var(--ink-card);border:1px solid var(--hair);border-radius:12px}
-summary{padding:1rem 1.2rem;cursor:pointer;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary{padding:1rem 1.2rem;cursor:pointer;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
 summary::after{content:'›';font-size:1rem;color:var(--text-dim)}
 details[open] summary::after{transform:rotate(90deg)}
 .settings-body{padding:0 1.2rem 1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
@@ -75,6 +78,7 @@ details[open] summary::after{transform:rotate(90deg)}
 .sf label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
 .sf input{padding:.6rem .85rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:8px;color:var(--text-cream);font-size:.88rem;font-family:inherit;outline:none;transition:.15s}
 .sf input:focus{border-color:var(--gold)}
+.dash-link{display:block;text-align:center;margin-top:.4rem;padding:.7rem;background:rgba(111,185,138,.12);border:1px solid rgba(111,185,138,.3);border-radius:10px;color:var(--ok);font-size:.85rem;font-weight:600;text-decoration:none}
 
 @media(max-width:460px){.settings-body{grid-template-columns:1fr}}
 </style>
@@ -99,7 +103,7 @@ details[open] summary::after{transform:rotate(90deg)}
       <h2>Campaign editor</h2>
       <input id="pwInput" type="password" placeholder="Admin password" autocomplete="current-password">
       <div class="err" id="gateErr"></div>
-      <button class="btn" id="unlockBtn">Unlock</button>
+      <button class="btn btn-gold" id="unlockBtn" style="margin-top:1rem">Unlock</button>
     </div>
   </div>
 
@@ -107,46 +111,36 @@ details[open] summary::after{transform:rotate(90deg)}
   <div id="app" style="display:none">
     <div class="stack">
 
-      <!-- Upload zone -->
+      <!-- Step 1: upload -->
       <div class="zone" id="zone">
         <input type="file" id="fileInput" accept=".csv,text/csv,text/plain">
         <div class="zone-arrow">↑</div>
         <h2>Drop your CSV file here</h2>
         <p>or click to browse · any export format works</p>
-        <div class="zone-file" id="fileName"></div>
       </div>
 
-      <!-- Result -->
-      <div class="result" id="result">
-        <div class="result-title" id="rTitle"></div>
-        <div class="result-body" id="rBody"></div>
-        <a class="dash-link" href="/dashboard" target="_blank" id="rLink" style="display:none">View live dashboard ↗</a>
+      <!-- Step 2: preview + publish -->
+      <div class="card" id="previewCard" style="display:none">
+        <div class="banner work" id="pvBanner"><span id="pvIcon">⏳</span><span id="pvTitle">Reading file…</span></div>
+        <div class="sub" id="pvSub"></div>
+        <div class="filechip" id="pvFile" style="display:none"></div>
+        <div class="pgrid" id="pvGrid"></div>
+        <div class="more" id="pvMore"></div>
+        <div class="actions" id="pvActions" style="display:none">
+          <button class="btn btn-gold" id="publishBtn">Save &amp; publish to dashboard</button>
+          <button class="btn btn-ghost" id="resetBtn">Choose a different file</button>
+        </div>
+        <a class="dash-link" id="pvDash" href="/dashboard" target="_blank" style="display:none">✓ Published — view live dashboard ↗</a>
       </div>
 
-      <!-- Campaign settings (collapsed by default) -->
+      <!-- Settings -->
       <details>
         <summary>Campaign settings</summary>
         <div class="settings-body">
-          <div class="sf">
-            <label>Artist / client</label>
-            <input id="sClient" type="text" value="Itzdanielmichael">
-          </div>
-          <div class="sf">
-            <label>Campaign title</label>
-            <input id="sCampaign" type="text" value="Need You · Please Stay">
-          </div>
-          <div class="sf">
-            <label>Budget ($)</label>
-            <input id="sBudget" type="number" min="0" value="1000">
-          </div>
-          <div class="sf">
-            <label>Budget spent ($)</label>
-            <input id="sSpent" type="number" min="0" placeholder="0">
-          </div>
-          <div class="sf full">
-            <label>Guarantee floor (views · leave blank if none)</label>
-            <input id="sFloor" type="number" min="0" placeholder="e.g. 1500000">
-          </div>
+          <div class="sf"><label>Artist / client</label><input id="sClient" type="text" value="Itzdanielmichael"></div>
+          <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" value="Need You · Please Stay"></div>
+          <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" value="1000"></div>
+          <div class="sf"><label>Budget spent ($)</label><input id="sSpent" type="number" min="0" placeholder="0"></div>
         </div>
       </details>
 
@@ -157,9 +151,13 @@ details[open] summary::after{transform:rotate(90deg)}
 
 <script>
 const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
 const pw = () => sessionStorage.getItem('mde_pw') || '';
 const setPw = v => sessionStorage.setItem('mde_pw', v);
 const clrPw = () => sessionStorage.removeItem('mde_pw');
+const hdr = () => ({ 'Authorization': 'Bearer ' + pw(), 'content-type': 'application/json' });
+
+let pendingCSV = '';
 
 function fmt(n){
   n=Number(n)||0;
@@ -168,73 +166,132 @@ function fmt(n){
   if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
   return String(Math.round(n));
 }
+const PCOLOR = { tiktok:'var(--tiktok)', instagram:'var(--instagram)', youtube:'var(--youtube)' };
+const PGLYPH = { tiktok:'♪', instagram:'◉', youtube:'▶' };
 
-function showGate(msg){
-  $('#gate').style.display=''; $('#app').style.display='none';
-  $('#topRight').style.display='none';
-  $('#gateErr').textContent=msg||'';
-  setTimeout(()=>$('#pwInput').focus(),40);
-}
+function showGate(msg){ $('#gate').style.display=''; $('#app').style.display='none'; $('#topRight').style.display='none'; $('#gateErr').textContent=msg||''; setTimeout(()=>$('#pwInput').focus(),40); }
 function showApp(){ $('#gate').style.display='none'; $('#app').style.display=''; $('#topRight').style.display=''; }
 
-function setResult(kind, title, body, link){
-  const r=$('#result'); r.className='result '+kind; r.style.display='';
-  $('#rTitle').textContent=title; $('#rBody').textContent=body;
-  $('#rLink').style.display=link?'':'none';
-}
-
-async function upload(file){
-  if(!file) return;
-  $('#fileName').textContent=file.name;
-  setResult('ok','Uploading…','',false);
-
-  const csv = await file.text();
-  const body = {
-    csv,
-    client:  $('#sClient').value.trim()||'Itzdanielmichael',
-    campaign:$('#sCampaign').value.trim()||'Need You · Please Stay',
-    budgetTotal: Number($('#sBudget').value)||1000,
-    budgetSpent: Number($('#sSpent').value)||0,
-    guaranteeFloor: Number($('#sFloor').value)||0,
+function meta(){
+  return {
+    client: $('#sClient').value.trim() || 'Itzdanielmichael',
+    campaign: $('#sCampaign').value.trim() || 'Need You · Please Stay',
+    budgetTotal: Number($('#sBudget').value) || 1000,
+    budgetSpent: Number($('#sSpent').value) || 0,
     tagline: 'Live distribution across our creator network',
   };
-
-  try{
-    const r = await fetch('/api/campaign/import',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+pw(),'content-type':'application/json'},
-      body:JSON.stringify(body),
-    });
-    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
-    const j = await r.json();
-    if(!r.ok){ setResult('err','Upload failed',j.error||'Check your CSV and try again.',false); return; }
-    setResult('ok','✓ Dashboard updated',
-      (j.imported||0)+' clips · '+fmt(j.views||0)+' views',true);
-  }catch(e){
-    setResult('err','Upload failed',String(e.message||e),false);
-  }
 }
 
-$('#fileInput').addEventListener('change', e=>{ if(e.target.files[0]) upload(e.target.files[0]); });
+// --- thumbnail resolution for the preview (client side) ---
+function ytId(u){ const m=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{6,})/); return m?m[1]:null; }
+function proxied(u){ return 'https://images.weserv.nl/?url='+encodeURIComponent(u)+'&w=240&output=jpg&we'; }
+function wireImg(img, raw){
+  let stage=0;
+  img.onerror=()=>{ stage++; if(stage===1){ img.src=proxied(raw); } else { img.onerror=null; img.replaceWith(phEl(img.dataset.plat)); } };
+  img.src=raw;
+}
+function phEl(plat){ const d=document.createElement('div'); d.className='pph'; d.textContent=PGLYPH[plat]||'◈'; return d; }
+async function resolveThumb(c){
+  if(c.thumb) return c.thumb;
+  const y=ytId(c.url); if(y) return 'https://i.ytimg.com/vi/'+y+'/hqdefault.jpg';
+  if(!c.url) return '';
+  try{
+    if((c.platform||'')==='tiktok'){
+      const r=await fetch('https://www.tiktok.com/oembed?url='+encodeURIComponent(c.url));
+      if(r.ok){ const d=await r.json(); if(d.thumbnail_url) return d.thumbnail_url; }
+    }
+    const r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(c.url)+'&meta=false');
+    if(r.ok){ const d=await r.json(); const im=d.data&&((d.data.image&&d.data.image.url)||(d.data.logo&&d.data.logo.url)); if(im) return im; }
+  }catch(e){}
+  return '';
+}
 
+function renderPreview(clips){
+  const top = clips.slice().sort((a,b)=>b.views-a.views).slice(0,8);
+  $('#pvGrid').innerHTML = top.map((c,i)=>{
+    const plat=(c.platform||'').toLowerCase();
+    return '<div class="pcell" data-i="'+i+'">'+
+      '<div class="pph">'+(PGLYPH[plat]||'◈')+'</div>'+
+      '<div class="pd" style="background:'+(PCOLOR[plat]||'var(--gold)')+'"></div>'+
+      '<div class="pv">'+fmt(c.views)+'</div>'+
+    '</div>';
+  }).join('');
+  $('#pvMore').textContent = clips.length>8 ? '+ '+(clips.length-8)+' more clips' : '';
+  // resolve thumbnails into the cells
+  top.forEach(async (c,i)=>{
+    const cell=$('#pvGrid').querySelector('[data-i="'+i+'"]'); if(!cell) return;
+    const raw=await resolveThumb(c); if(!raw) return;
+    const img=document.createElement('img'); img.alt=''; img.dataset.plat=(c.platform||'').toLowerCase();
+    cell.querySelector('.pph')?.remove();
+    cell.insertBefore(img, cell.firstChild);
+    wireImg(img, raw);
+  });
+}
+
+async function parseFile(file){
+  if(!file) return;
+  pendingCSV = await file.text();
+  $('#previewCard').style.display='';
+  $('#pvActions').style.display='none';
+  $('#pvDash').style.display='none';
+  $('#pvGrid').innerHTML=''; $('#pvMore').textContent='';
+  $('#pvFile').style.display=''; $('#pvFile').innerHTML='📄 '+file.name;
+  setBanner('work','⏳','Reading your file…','');
+
+  try{
+    const r=await fetch('/api/campaign/import?dryRun=1',{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j=await r.json();
+    if(!r.ok){ setBanner('bad','✕','Couldn’t read that file',j.error||'Check the CSV and try again.'); return; }
+    const camp=j.campaign||{}; const clips=camp.clips||[]; const s=camp.summary||{};
+    const linked=clips.filter(c=>c.url).length;
+    setBanner('ok','✓','Parsed '+clips.length+' clips · '+fmt(s.views||0)+' views',
+      linked+' of '+clips.length+' have links · review the preview, then publish');
+    renderPreview(clips);
+    $('#pvActions').style.display='';
+  }catch(e){ setBanner('bad','✕','Upload failed', String(e.message||e)); }
+}
+
+function setBanner(kind,icon,title,sub){
+  const b=$('#pvBanner'); b.className='banner '+kind;
+  $('#pvIcon').textContent=icon; $('#pvTitle').textContent=title; $('#pvSub').textContent=sub||'';
+}
+
+async function publish(){
+  if(!pendingCSV) return;
+  const btn=$('#publishBtn'); btn.disabled=true; btn.textContent='Publishing…';
+  try{
+    const r=await fetch('/api/campaign/import',{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j=await r.json();
+    if(!r.ok){ setBanner('bad','✕','Publish failed', j.error||''); btn.disabled=false; btn.textContent='Save & publish to dashboard'; return; }
+    setBanner('ok','✓','Published to the live dashboard', (j.imported||0)+' clips · '+fmt(j.views||0)+' views are now live');
+    $('#pvActions').style.display='none';
+    $('#pvDash').style.display='';
+  }catch(e){ setBanner('bad','✕','Publish failed', String(e.message||e)); btn.disabled=false; btn.textContent='Save & publish to dashboard'; }
+}
+
+function resetUpload(){
+  pendingCSV=''; $('#previewCard').style.display='none'; $('#fileInput').value='';
+}
+
+// wire up
+$('#fileInput').addEventListener('change', e=>{ if(e.target.files[0]) parseFile(e.target.files[0]); });
 const zone=$('#zone');
 zone.addEventListener('dragover', e=>{e.preventDefault();zone.classList.add('over');});
 zone.addEventListener('dragleave', ()=>zone.classList.remove('over'));
-zone.addEventListener('drop', e=>{
-  e.preventDefault(); zone.classList.remove('over');
-  if(e.dataTransfer.files[0]) upload(e.dataTransfer.files[0]);
-});
+zone.addEventListener('drop', e=>{ e.preventDefault(); zone.classList.remove('over'); if(e.dataTransfer.files[0]) parseFile(e.dataTransfer.files[0]); });
+$('#publishBtn').addEventListener('click', publish);
+$('#resetBtn').addEventListener('click', resetUpload);
 
 $('#unlockBtn').addEventListener('click', async()=>{
   const v=$('#pwInput').value.trim(); if(!v) return;
   setPw(v); $('#pwInput').value='';
-  try{
-    const r=await fetch('/api/campaign',{headers:{'Authorization':'Bearer '+v},cache:'no-store'});
-    if(r.status===401){clrPw();showGate('Wrong password.');} else showApp();
-  }catch(e){showGate('Network error.');}
+  try{ const r=await fetch('/api/campaign',{headers:{'Authorization':'Bearer '+v},cache:'no-store'}); if(r.status===401){clrPw();showGate('Wrong password.');} else showApp(); }
+  catch(e){ showGate('Network error.'); }
 });
-$('#pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
-$('#lockBtn').addEventListener('click',e=>{ e.preventDefault(); clrPw(); showGate('Locked.'); });
+$('#pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
+$('#lockBtn').addEventListener('click', e=>{ e.preventDefault(); clrPw(); showGate('Locked.'); });
 
 if(pw()){
   fetch('/api/campaign',{headers:{'Authorization':'Bearer '+pw()},cache:'no-store'})
