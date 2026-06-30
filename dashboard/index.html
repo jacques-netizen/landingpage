@@ -122,23 +122,25 @@
   .clip .c-creator{font-size:0.74rem;color:rgba(255,255,255,0.82);margin-top:0.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:300}
   .clip .c-title{font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:0.15rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:300}
 
-  /* ---------- content embeds (the real posts) ---------- */
-  .embeds{column-width:300px;column-gap:1rem}
-  @media(max-width:560px){ .embeds{column-width:46vw;column-gap:0.7rem} }
-  .ecell{position:relative;break-inside:avoid;margin:0 0 1rem;border-radius:14px;overflow:hidden;border:1px solid var(--hair);background:var(--ink-soft);display:block;text-decoration:none;transition:border-color .25s,box-shadow .25s}
-  .ecell:hover{border-color:var(--gold);box-shadow:0 14px 36px rgba(0,0,0,0.45)}
-  .ecell.ig{background:#fff}
-  .eslot{display:block;width:100%;min-height:120px;background:radial-gradient(120% 120% at 50% 0%, #20202a 0%, #101015 70%)}
-  .eslot iframe{display:block;width:100%;border:0}
-  .eslot.ig-skel{background:linear-gradient(90deg,#15151a 25%,#1c1c22 50%,#15151a 75%);background-size:200% 100%;animation:sh 1.4s infinite;min-height:340px}
-  .ecell.ig .eslot{min-height:0}
-  .ecap{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.6rem 0.75rem;font-size:0.74rem;color:var(--text-mute);background:var(--ink-card);border-top:1px solid var(--hair)}
-  .ecap .ec-v b{color:var(--gold-light);font-family:'EB Garamond',serif;font-size:1.05rem;font-weight:500}
-  .ecap .ec-c{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52%;text-align:right}
-  .ecell.link{aspect-ratio:9/16}
-  .ecell.link .elink{height:calc(100% - 2.6rem);min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem}
-  .ecell.link .el-g{font-family:'EB Garamond',serif;font-size:2.4rem;color:var(--gold);opacity:0.55}
-  .ecell.link .elink small{font-size:0.72rem;letter-spacing:0.08em;color:var(--text-mute)}
+  /* ---------- content cards (monograms) ---------- */
+  .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem}
+  @media(max-width:460px){ .grid2{grid-template-columns:1fr 1fr;gap:0.7rem} }
+  .card{position:relative;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none;border-radius:16px;overflow:hidden;background:var(--ink-soft);border:1px solid var(--hair);aspect-ratio:9/16;transition:transform .25s,border-color .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 18px 44px rgba(0,0,0,0.55)}
+  .card .card-bg{position:absolute;inset:0;background:
+    radial-gradient(120% 80% at 50% 24%, color-mix(in srgb, var(--pc) 24%, transparent), transparent 60%),
+    radial-gradient(140% 120% at 50% 0%, #1d1d25 0%, #0d0d11 72%);}
+  .card .badge{position:absolute;top:0.6rem;left:0.6rem;z-index:3;display:flex;align-items:center;gap:0.32rem;font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.5rem;border-radius:30px;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);color:#fff}
+  .card .feat{position:absolute;top:0.6rem;right:0.6rem;z-index:3;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.46rem;border-radius:30px;background:var(--gold-bright);color:#0d0d0f}
+  .card .mono{position:absolute;left:0;right:0;top:0;bottom:30%;display:flex;align-items:center;justify-content:center;z-index:2}
+  .card .mono-ini{font-family:'EB Garamond',serif;font-size:2.3rem;letter-spacing:0.04em;color:var(--gold-light);width:92px;height:92px;border:1px solid rgba(199,168,103,0.45);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(13,13,15,0.32);box-shadow:0 0 0 7px rgba(199,168,103,0.05), inset 0 0 22px rgba(199,168,103,0.08);transition:.25s}
+  .card:hover .mono-ini{border-color:var(--gold-bright);color:var(--gold-bright);box-shadow:0 0 26px rgba(230,201,132,0.22), inset 0 0 22px rgba(199,168,103,0.12)}
+  .card .card-meta{position:relative;z-index:2;padding:0.9rem 0.85rem 0.95rem;background:linear-gradient(transparent, rgba(0,0,0,0.55))}
+  .card .c-views{font-family:'EB Garamond',serif;font-size:1.5rem;color:#fff;line-height:1;font-weight:500}
+  .card .c-views span{font-size:0.62rem;font-family:'Archivo';letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-left:0.3rem;font-weight:600}
+  .card .c-creator{font-size:0.8rem;color:var(--gold-light);margin-top:0.4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+  .card .c-open{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-top:0.5rem;opacity:0;transition:opacity .2s}
+  .card:hover .c-open{opacity:1;color:var(--gold-light)}
 
   /* ---------- leaderboard ---------- */
   .board{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
@@ -228,10 +230,9 @@
       <h2>The content, working</h2>
       <span class="h-note" id="clipNote"></span>
     </div>
-    <div class="embeds" id="clips">
-      <div class="ecell"><div class="eslot ig-skel"></div></div>
-      <div class="ecell"><div class="eslot ig-skel"></div></div>
-      <div class="ecell"><div class="eslot ig-skel"></div></div>
+    <div class="grid2" id="clips">
+      <div class="card skel"></div><div class="card skel"></div><div class="card skel"></div>
+      <div class="card skel"></div><div class="card skel"></div>
     </div>
   </section>
 
@@ -315,17 +316,17 @@ function thumbFor(c){
   return null;
 }
 
-// Work out how to embed a clip's actual post. Instagram and YouTube render as
-// the real, playable post; anything else becomes a tasteful click-through card.
-function igCode(url){ const m=String(url||'').match(/instagram\.com\/(?:reel|reels|p|tv)\/([A-Za-z0-9_-]+)/i); return m?m[1]:null; }
-function embedFor(c){
-  const y = ytId(c.url);
-  if(y) return { kind:'youtube', ytid:y, ratio: /shorts\//.test(c.url||'') ? '9 / 16' : '16 / 9' };
-  const code = igCode(c.url);
-  if(code) return { kind:'instagram', permalink:'https://www.instagram.com/reel/'+code+'/' };
-  return null;
+// Derive a 1–2 letter monogram from a creator name/handle.
+function initials(name){
+  const s = String(name||'').replace(/^@+/,'').trim();
+  if(!s) return '◈';
+  const parts = s.split(/[\s._\-]+/).filter(Boolean);
+  let ini = parts.length >= 2 ? (parts[0][0] + parts[parts.length-1][0]) : s.slice(0,2);
+  return ini.toUpperCase();
 }
 
+// Each clip is an elegant branded card — a gold monogram on a platform-tinted
+// gradient, with the view count and creator — that clicks through to the post.
 function renderClips(clips){
   const root = $('#clips');
   if(!clips.length){
@@ -335,62 +336,22 @@ function renderClips(clips){
   }
   const sorted = clips.slice().sort((a,b) => (b.featured?1:0)-(a.featured?1:0) || b.views - a.views);
   $('#clipNote').textContent = clips.length + ' clip' + (clips.length>1?'s':'') + ' · sorted by reach';
-  root.innerHTML = sorted.map((c,i) => {
+  root.innerHTML = sorted.map(c => {
     const p = plat(c.platform);
-    const e = embedFor(c);
-    const cap = '<div class="ecap">' +
-        '<span class="ec-v"><b>'+fmt(c.views)+'</b> views</span>' +
-        '<span class="ec-c">'+(c.creator?esc(c.creator):'')+(c.featured?' · ★':'')+'</span>' +
-      '</div>';
-    if(e && e.kind==='youtube'){
-      return '<div class="ecell" data-embed="youtube" data-yt="'+e.ytid+'" data-ratio="'+e.ratio+'">' +
-        '<div class="eslot" style="aspect-ratio:'+e.ratio+'"></div>'+cap+'</div>';
-    }
-    if(e && e.kind==='instagram'){
-      return '<div class="ecell ig" data-embed="instagram" data-permalink="'+esc(e.permalink)+'">' +
-        '<div class="eslot ig-skel"></div>'+cap+'</div>';
-    }
-    // Fallback: click-through card (e.g. TikTok short links)
     const href = c.url ? ' href="'+esc(c.url)+'" target="_blank" rel="noopener"' : '';
-    return '<a class="ecell link"'+href+'>' +
-      '<div class="elink"><span class="el-g">'+p.glyph+'</span><small>Open on '+esc(p.label)+'</small></div>'+cap+'</a>';
+    const tag = c.url ? 'a' : 'div';
+    return '<'+tag+' class="card" style="--pc:'+p.color+'"'+href+'>' +
+      '<div class="card-bg"></div>' +
+      '<div class="badge"><span class="pdot" style="background:'+p.color+'"></span>'+esc(p.label)+'</div>' +
+      (c.featured ? '<div class="feat">★ Top</div>' : '') +
+      '<div class="mono"><span class="mono-ini">'+esc(initials(c.creator))+'</span></div>' +
+      '<div class="card-meta">' +
+        '<div class="c-views">'+fmt(c.views)+'<span>views</span></div>' +
+        (c.creator ? '<div class="c-creator">'+esc(c.creator)+'</div>' : '') +
+        (c.url ? '<div class="c-open">View post →</div>' : '') +
+      '</div>' +
+    '</'+tag+'>';
   }).join('');
-  lazyEmbeds();
-}
-
-// Lazy-load the official embeds as they scroll into view (so we don't pull 40+
-// iframes at once). Instagram uses its embed.js (auto-sizes correctly).
-let _io, _igLoading;
-function ensureIG(cb){
-  if(window.instgrm && window.instgrm.Embeds){ cb(); return; }
-  if(!document.getElementById('ig-embed-js')){
-    const s=document.createElement('script'); s.id='ig-embed-js'; s.async=true; s.src='https://www.instagram.com/embed.js'; document.body.appendChild(s);
-  }
-  const iv=setInterval(()=>{ if(window.instgrm && window.instgrm.Embeds){ clearInterval(iv); cb(); } }, 250);
-  setTimeout(()=>clearInterval(iv), 10000);
-}
-function fillEmbed(cell){
-  const slot = cell.querySelector('.eslot'); if(!slot || slot.dataset.done) return;
-  slot.dataset.done='1';
-  const kind = cell.getAttribute('data-embed');
-  if(kind==='youtube'){
-    const f=document.createElement('iframe');
-    f.src='https://www.youtube.com/embed/'+cell.getAttribute('data-yt');
-    f.loading='lazy'; f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; f.allowFullscreen=true;
-    f.style.cssText='width:100%;height:100%;border:0;display:block';
-    slot.classList.remove('ig-skel'); slot.appendChild(f);
-  } else if(kind==='instagram'){
-    slot.innerHTML='<blockquote class="instagram-media" data-instgrm-permalink="'+slotPerma(cell)+'" data-instgrm-version="14" style="margin:0;width:100%;min-width:0;border:0;box-shadow:none"></blockquote>';
-    ensureIG(()=>{ try{ window.instgrm.Embeds.process(); }catch(e){} setTimeout(()=>slot.classList.remove('ig-skel'), 1200); });
-  }
-}
-function slotPerma(cell){ return (cell.getAttribute('data-permalink')||'').replace(/"/g,'&quot;'); }
-function lazyEmbeds(){
-  if(_io) _io.disconnect();
-  _io = new IntersectionObserver((ents)=>{
-    ents.forEach(en=>{ if(en.isIntersecting){ fillEmbed(en.target); _io.unobserve(en.target); } });
-  }, { rootMargin:'500px' });
-  $$('.ecell[data-embed]').forEach(c=>_io.observe(c));
 }
 
 function renderPlatforms(platforms){
