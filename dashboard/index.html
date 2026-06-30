@@ -184,29 +184,16 @@
     </div>
   </section>
 
-  <section class="section">
-    <div class="panels">
-      <div class="panel">
-        <div class="p-top">
-          <div class="p-title">Guarantee progress</div>
-          <div class="p-big"><b id="gPct">0%</b> of floor</div>
-        </div>
-        <div class="track"><i id="gFill"></i></div>
-        <div class="track-meta">
-          <span><b id="gViews">0</b> delivered</span>
-          <span>Floor · <b id="gFloor">0</b></span>
-        </div>
+  <section class="section" id="budgetSec" style="display:none">
+    <div class="panel">
+      <div class="p-top">
+        <div class="p-title">Budget deployed</div>
+        <div class="p-big"><b id="bSpent">$0</b></div>
       </div>
-      <div class="panel">
-        <div class="p-top">
-          <div class="p-title">Budget deployed</div>
-          <div class="p-big"><b id="bSpent">$0</b></div>
-        </div>
-        <div class="track"><i id="bFill" style="background:linear-gradient(90deg,#6fb98a,#a88a4f)"></i></div>
-        <div class="track-meta">
-          <span><b id="bPct">0%</b> deployed</span>
-          <span><b id="bRemain">$0</b> remaining</span>
-        </div>
+      <div class="track"><i id="bFill" style="background:linear-gradient(90deg,#6fb98a,#a88a4f)"></i></div>
+      <div class="track-meta">
+        <span><b id="bPct">0%</b> deployed</span>
+        <span><b id="bRemain">$0</b> remaining</span>
       </div>
     </div>
   </section>
@@ -323,7 +310,8 @@ function renderClips(clips){
     const th = thumbFor(c);
     const href = c.url ? ' href="'+esc(c.url)+'" target="_blank" rel="noopener"' : '';
     const tag = c.url ? 'a' : 'div';
-    return '<'+tag+' class="clip"'+href+'>' +
+    const need = (!th && c.url) ? ' data-thumb-url="'+esc(c.url)+'" data-plat="'+esc((c.platform||'').toLowerCase())+'"' : '';
+    return '<'+tag+' class="clip"'+href+need+'>' +
       (th ? '<img class="thumb" loading="lazy" src="'+esc(th)+'" alt="" onerror="this.remove()">' : '') +
       '<div class="ph"><span>'+p.glyph+'</span></div>' +
       '<div class="veil"></div>' +
@@ -337,6 +325,42 @@ function renderClips(clips){
       '</div>' +
     '</'+tag+'>';
   }).join('');
+  enhanceThumbs();
+}
+
+// Fallback: fetch a real preview image for any tile the server couldn't resolve.
+// TikTok via its public (CORS-enabled) oEmbed; anything else via a keyless
+// preview service. Cached in sessionStorage so it only runs once per clip.
+const thumbCache = JSON.parse(sessionStorage.getItem('mde_thumbs') || '{}');
+function cacheThumb(url, img){ thumbCache[url] = img || ''; try{ sessionStorage.setItem('mde_thumbs', JSON.stringify(thumbCache)); }catch(e){} }
+function injectThumb(tile, img){
+  if(!img) return;
+  const el = document.createElement('img');
+  el.className = 'thumb'; el.loading = 'lazy'; el.src = img; el.alt = '';
+  el.onerror = () => el.remove();
+  tile.insertBefore(el, tile.firstChild);
+  tile.removeAttribute('data-thumb-url');
+}
+async function enhanceThumbs(){
+  const tiles = $$('.clip[data-thumb-url]');
+  for(const tile of tiles){
+    const url = tile.getAttribute('data-thumb-url');
+    if(url in thumbCache){ injectThumb(tile, thumbCache[url]); continue; }
+    const platform = tile.getAttribute('data-plat') || '';
+    try{
+      let img = '';
+      if(platform === 'tiktok'){
+        const r = await fetch('https://www.tiktok.com/oembed?url=' + encodeURIComponent(url));
+        if(r.ok){ const d = await r.json(); img = d.thumbnail_url || ''; }
+      }
+      if(!img){
+        const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url) + '&meta=false');
+        if(r.ok){ const d = await r.json(); img = (d.data && ((d.data.image && d.data.image.url) || (d.data.logo && d.data.logo.url))) || ''; }
+      }
+      cacheThumb(url, img);
+      injectThumb(tile, img);
+    }catch(e){ /* leave placeholder */ }
+  }
 }
 
 function renderPlatforms(platforms){
@@ -387,21 +411,18 @@ function paint(d){
   setStat('cpm', cpm, v => '$' + (v).toFixed(2));
   $('#viewsSub').textContent = fmtFull(views) + ' total';
 
-  // guarantee
-  const floor = s.guaranteeFloor || 0;
-  const pct = floor > 0 ? Math.min(100, views/floor*100) : 0;
-  $('#gFill').style.width = pct + '%';
-  $('#gPct').textContent = (floor>0 ? (pct>=100?'100':pct.toFixed(pct<10?1:0)) : '—') + '%';
-  $('#gViews').textContent = fmt(views);
-  $('#gFloor').textContent = floor>0 ? fmt(floor) : '—';
-
-  // budget
+  // budget — only shown when there's a budget to report against
   const total = s.budgetTotal || 0, spent = s.budgetSpent || 0;
-  const bpct = total>0 ? Math.min(100, spent/total*100) : 0;
-  $('#bFill').style.width = bpct + '%';
-  $('#bSpent').textContent = money(spent) + (total? ' / ' + money(total) : '');
-  $('#bPct').textContent = (total>0?Math.round(bpct):0) + '%';
-  $('#bRemain').textContent = money(Math.max(0, total - spent));
+  if(total > 0){
+    $('#budgetSec').style.display = '';
+    const bpct = Math.min(100, spent/total*100);
+    $('#bFill').style.width = bpct + '%';
+    $('#bSpent').textContent = money(spent) + ' / ' + money(total);
+    $('#bPct').textContent = Math.round(bpct) + '%';
+    $('#bRemain').textContent = money(Math.max(0, total - spent));
+  } else {
+    $('#budgetSec').style.display = 'none';
+  }
 
   renderPlatforms(d.platforms);
   renderClips(d.clips || []);
