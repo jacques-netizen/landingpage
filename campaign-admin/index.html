@@ -151,6 +151,8 @@ details[open] summary::after{transform:rotate(90deg)}
           <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Paste any Instagram reel link from your campaign and run the test. It reports exactly what the server sees — whether the scraper key is active, the HTTP status, and whether an image was found. Paste the result back to me.</div>
           <div class="sf full"><input id="dgUrl" type="text" placeholder="https://www.instagram.com/reel/XXXXXXX/"></div>
           <button class="btn btn-ghost" id="dgBtn" type="button">Run diagnostic</button>
+          <div class="sf full" style="font-size:.72rem;color:var(--text-dim);margin-top:.6rem">Or resolve every clip's thumbnail right now (runs in batches — if it doesn't finish, just click again):</div>
+          <button class="btn btn-gold" id="dgResolve" type="button">Resolve all thumbnails now</button>
           <pre id="dgOut" style="display:none;white-space:pre-wrap;word-break:break-all;font-size:.7rem;background:#0a0a0c;border:1px solid var(--hair);border-radius:8px;padding:.8rem;color:var(--text-mute);max-height:320px;overflow:auto"></pre>
         </div>
       </details>
@@ -314,6 +316,17 @@ $('#dgBtn').addEventListener('click', async()=>{
     const j=await r.json();
     out.textContent=JSON.stringify(j,null,2);
   }catch(e){ out.textContent='Error: '+(e.message||e); }
+});
+
+$('#dgResolve').addEventListener('click', async()=>{
+  const out=$('#dgOut'); out.style.display=''; out.textContent='Resolving thumbnails… (this can take 20–40s, hang tight)';
+  const btn=$('#dgResolve'); btn.disabled=true;
+  try{
+    const r=await fetch('/api/campaign/resolve',{method:'POST',headers:hdr()});
+    const j=await r.json();
+    out.textContent=JSON.stringify(j,null,2)+'\n\nIf "withThumbnail" is less than "total", click again to continue. Then refresh the dashboard.';
+  }catch(e){ out.textContent='Error: '+(e.message||e); }
+  btn.disabled=false;
 });
 
 if(pw()){
