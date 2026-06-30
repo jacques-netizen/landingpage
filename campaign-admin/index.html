@@ -3,394 +3,303 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Maison d'Élites · Campaign Editor</title>
+<meta name="robots" content="noindex,nofollow">
+<title>Campaign Editor · Maison d'Élites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#0e0b07;--cream:#f7f2e9;--gold:#c7a867;--gold-bright:#e6c984;--line:rgba(199,168,103,.28);--ok:#5fb87a;--bad:#d2766a}
-  *{box-sizing:border-box}
-  body{margin:0;background:#0e0b07;color:var(--cream);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:860px;margin:0 auto;padding:36px 18px 90px}
-  header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap}
-  h1{font-size:1.5rem;margin:0;letter-spacing:.01em}
-  .eyebrow{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
-  .muted{color:#b9b09f;font-size:.9rem}
-  a.link{color:var(--gold);font-size:.85rem;text-decoration:none;border-bottom:1px solid var(--line)}
-  .card{background:#161109;border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px}
-  .gate{max-width:380px;margin:13vh auto 0}
-  h2{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 12px}
-  label{display:block;font-size:.78rem;color:#cfc6b3;margin:10px 0 5px}
-  input,select,textarea{width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#0e0b07;color:var(--cream);font-size:.95rem;font-family:inherit}
-  textarea{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;line-height:1.5;resize:vertical}
-  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem;color:var(--gold-bright);background:#0e0b07;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
-  input[type=checkbox]{width:auto}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  .gridrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  button{cursor:pointer;border:0;border-radius:9px;font-weight:600;font-size:.92rem;padding:11px 16px;background:var(--gold);color:#241a0c;transition:.15s}
-  button:hover{background:var(--gold-bright)}
-  button.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold)}
-  button.small{padding:7px 11px;font-size:.8rem}
-  button.danger{background:transparent;color:var(--bad);border:1px solid var(--bad);padding:6px 10px;font-size:.78rem}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  .row-item{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px;background:#120d06;position:relative}
-  .row-item .rm{position:absolute;top:8px;right:8px}
-  .savebar{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(14,11,7,0) 0%,#0e0b07 40%);padding:18px 0 6px;margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .msg{font-size:.85rem;min-height:1.1em}
-  .msg.ok{color:var(--ok)} .msg.err{color:var(--bad)}
-  .hint{font-size:.78rem;color:#8c8474;margin-top:6px}
-  .addbtn{margin-top:10px}
+:root{
+  --ink:#0d0d0f;
+  --ink-card:#141318;
+  --cream:#f4f1ea;
+  --gold:#a88a4f;
+  --gold-light:#c7a867;
+  --gold-bright:#e6c984;
+  --text-cream:#e8e3d6;
+  --text-mute:#9b9484;
+  --text-dim:#6f6a5e;
+  --hair:rgba(232,227,214,0.12);
+  --hair-mid:rgba(232,227,214,0.2);
+  --ok:#6fb98a;
+  --bad:#d2766a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Archivo',sans-serif;
+  background:var(--ink);
+  color:var(--text-cream);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.display{font-family:'EB Garamond',serif}
+.wrap{max-width:640px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem)}
+
+/* topbar */
+.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.4rem}
+.topbar-in{display:flex;align-items:center;justify-content:space-between}
+.mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em}
+.mark b{color:var(--gold-light);font-weight:500}
+.top-links{display:flex;gap:1.2rem;font-size:.78rem}
+.top-links a{color:var(--text-mute);text-decoration:none;letter-spacing:.04em}
+.top-links a:hover{color:var(--gold-light)}
+
+/* gate */
+.gate{max-width:360px;margin:12vh auto 0;background:var(--ink-card);border:1px solid var(--hair);border-radius:16px;padding:2rem}
+.gate-title{font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1.4rem}
+label{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute);margin-bottom:.4rem}
+input[type=password],input[type=text],input[type=number]{
+  width:100%;padding:.75rem 1rem;background:#0a0a0c;border:1px solid var(--hair-mid);
+  border-radius:9px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;
+  transition:.15s border-color;
+}
+input:focus{border-color:var(--gold)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  cursor:pointer;border:0;border-radius:9px;font-weight:600;font-size:.9rem;
+  padding:.8rem 1.4rem;background:var(--gold);color:#1a1208;
+  font-family:inherit;transition:.15s;width:100%;margin-top:1rem;
+}
+.btn:hover{background:var(--gold-bright)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--hair-mid)}
+.btn.ghost:hover{border-color:var(--gold)}
+.err-msg{font-size:.8rem;color:var(--bad);margin-top:.5rem;min-height:1.1em}
+
+/* settings card */
+.card{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.4rem}
+.card-title{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:1.1rem}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.field{display:flex;flex-direction:column;gap:.4rem}
+.field.full{grid-column:1/-1}
+.field label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute);margin:0}
+.field input{padding:.6rem .9rem;font-size:.88rem}
+
+/* upload zone */
+.zone{
+  border:2px dashed var(--hair-mid);border-radius:16px;
+  padding:3.5rem 2rem;text-align:center;cursor:pointer;
+  transition:.2s border-color,.2s background;
+  position:relative;
+}
+.zone:hover,.zone.over{border-color:var(--gold);background:rgba(168,138,79,.06)}
+.zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.zone-icon{font-size:2.2rem;margin-bottom:1rem;color:var(--gold);opacity:.7}
+.zone-head{font-family:'EB Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--text-cream);margin-bottom:.4rem}
+.zone-sub{font-size:.82rem;color:var(--text-mute);font-weight:300}
+.zone-name{font-size:.82rem;color:var(--gold-light);margin-top:.7rem;font-weight:500}
+
+/* status */
+.status{border-radius:14px;padding:1.4rem 1.6rem;display:none}
+.status.ok{background:rgba(111,185,138,.1);border:1px solid rgba(111,185,138,.3)}
+.status.err{background:rgba(210,118,106,.08);border:1px solid rgba(210,118,106,.3)}
+.status-head{font-size:.82rem;font-weight:600;margin-bottom:.5rem}
+.status.ok .status-head{color:var(--ok)}
+.status.err .status-head{color:var(--bad)}
+.status-body{font-size:.82rem;color:var(--text-mute);line-height:1.6}
+.view-link{display:inline-block;margin-top:.9rem;padding:.55rem 1.2rem;background:var(--gold);color:#1a1208;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none}
+.view-link:hover{background:var(--gold-bright)}
+
+.stack{display:flex;flex-direction:column;gap:1.2rem;padding-bottom:3rem}
+
+@media(max-width:480px){.fields{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="mark">Maison <b>d'Élites</b></div>
+    <div class="top-links" id="topLinks" style="display:none">
+      <a href="/dashboard" target="_blank">Live dashboard ↗</a>
+      <a href="#" id="lockBtn">Lock</a>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
 
-  <!-- gate -->
-  <div id="gate" class="gate card" style="display:none">
-    <div class="eyebrow">Maison d'Élites</div>
-    <h1 style="margin:4px 0 14px">Campaign editor</h1>
+  <!-- Auth gate -->
+  <div id="gate" class="gate" style="display:none">
+    <div class="gate-title display">Campaign editor</div>
     <label for="pw">Admin password</label>
-    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••••">
-    <div class="msg err" id="gateMsg"></div>
-    <button id="gateBtn" style="width:100%;margin-top:12px">Unlock</button>
-    <p class="hint">Same password as the video upload tool. Kept only in this tab.</p>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div class="err-msg" id="gateErr"></div>
+    <button class="btn" id="unlockBtn">Unlock</button>
   </div>
 
-  <!-- app -->
+  <!-- App -->
   <div id="app" style="display:none">
-    <header>
-      <div>
-        <div class="eyebrow">Maison d'Élites</div>
-        <h1>Campaign editor</h1>
-      </div>
-      <div style="text-align:right">
-        <a class="link" href="/dashboard" target="_blank">Open live dashboard ↗</a><br>
-        <a class="link" href="#" id="logout" style="margin-top:6px;display:inline-block">Lock</a>
-      </div>
-    </header>
-    <p class="muted">Update the numbers and clips below, then Save. The client's dashboard updates within seconds, no reload needed.</p>
+    <div class="stack">
 
-    <div class="card">
-      <h2>Import from spreadsheet · the fast way</h2>
-      <p class="hint" style="margin-top:0">Paste a CSV (a copy from your tracker, or a Google Sheet). Columns are matched by name — include at least <code>url</code> and <code>views</code>. Optional: <code>creator</code>, <code>platform</code>, <code>title</code>, <code>posted</code>, <code>thumb</code>, <code>featured</code>, <code>status</code> (rejected/flagged rows are skipped). It fills the clips and recalculates totals; review below, then Save.</p>
-      <textarea id="csv" rows="6" placeholder="url,creator,platform,views,title
-https://www.tiktok.com/@x/video/1,@clipper_one,tiktok,980K,The drop sold out
-https://youtu.be/abc123,@yt_creator,youtube,420000,Full breakdown"></textarea>
-      <div style="display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap">
-        <button class="ghost small" id="importBtn">Import &amp; preview</button>
-        <span class="msg" id="csvMsg"></span>
-      </div>
-      <details style="margin-top:12px">
-        <summary style="cursor:pointer;color:var(--gold);font-size:.85rem;font-weight:600">Automate it — no manual paste</summary>
-        <div class="hint" style="margin-top:8px;line-height:1.7">
-          <b style="color:#cfc6b3">Auto-sync from a Google Sheet (fully hands-off):</b> keep a sheet with those columns → <i>File → Share → Publish to web → CSV</i> → copy the link → in Cloudflare set a Worker variable <code>CAMPAIGN_CSV_URL</code> to it. The dashboard then refreshes from the sheet every 15 minutes on its own. Fill the sheet however you like (paste from your tracker, or point a scraper/automation at it).<br><br>
-          <b style="color:#cfc6b3">Push from a script or automation (Zapier, Make, cron):</b> send the CSV as a <code>POST</code> to <code>/api/campaign/import</code> with header <code>Authorization: Bearer &lt;password&gt;</code>. Each push updates the live dashboard immediately.
+      <!-- Campaign settings -->
+      <div class="card">
+        <div class="card-title">Campaign settings</div>
+        <div class="fields">
+          <div class="field">
+            <label>Artist / client</label>
+            <input id="s-client" type="text" value="Itzdanielmichael" placeholder="Artist name">
+          </div>
+          <div class="field">
+            <label>Campaign title</label>
+            <input id="s-campaign" type="text" value="Need You · Please Stay" placeholder="Campaign title">
+          </div>
+          <div class="field">
+            <label>Budget ($)</label>
+            <input id="s-budget" type="number" min="0" value="1000" placeholder="1000">
+          </div>
+          <div class="field">
+            <label>CPM ($ per 1k views)</label>
+            <input id="s-cpm" type="number" min="0" step="0.01" value="0.50" placeholder="0.50">
+          </div>
+          <div class="field full">
+            <label>Guarantee floor (views, optional)</label>
+            <input id="s-floor" type="number" min="0" placeholder="e.g. 1500000 — leave blank if none">
+          </div>
         </div>
-      </details>
-    </div>
-
-    <div class="card">
-      <h2>Hands-off auto-sync · connection test</h2>
-      <p class="hint" style="margin-top:0">For a fully automatic feed from a source behind a login, add your platform <b>API key</b> in Cloudflare as a secret named <code>WHOP_API_KEY</code> (Worker → Settings → Variables and Secrets → Add → Secret), then redeploy. Click below to check whether your campaign data is reachable through it — no code needed.</p>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="ghost small" id="whopTest">Test hands-off connection</button>
-        <span class="msg" id="whopMsg"></span>
       </div>
-      <pre id="whopOut" style="display:none;margin-top:10px;max-height:260px;overflow:auto;background:#0e0b07;border:1px solid var(--line);border-radius:9px;padding:12px;font-size:.74rem;color:#cfc6b3;white-space:pre-wrap;word-break:break-word"></pre>
-      <p class="hint" id="whopHint" style="display:none">Copy this and send it to me — I'll wire the automatic sync from it. If it says the data isn't exposed, I'll set up the login-scraper path instead.</p>
-    </div>
 
-    <div class="card">
-      <h2>Campaign</h2>
-      <div class="grid2">
-        <div><label>Client name</label><input id="f-client" placeholder="e.g. Acme Studios"></div>
-        <div><label>Campaign title</label><input id="f-campaign" placeholder="e.g. Launch Distribution"></div>
+      <!-- Upload zone -->
+      <div class="zone" id="zone">
+        <input type="file" id="fileInput" accept=".csv,text/csv,text/plain">
+        <div class="zone-icon">↑</div>
+        <div class="zone-head display">Drop your CSV here</div>
+        <div class="zone-sub">or click to browse · exports from any tracker work</div>
+        <div class="zone-name" id="fileName"></div>
       </div>
-      <label>Tagline (one line, shown under the title)</label>
-      <input id="f-tagline" placeholder="e.g. Live distribution across our network">
-    </div>
 
-    <div class="card">
-      <h2>Headline numbers</h2>
-      <div class="grid3">
-        <div><label>Total views</label><input id="f-views" type="number" min="0" placeholder="0"></div>
-        <div><label>Clips live</label><input id="f-clips" type="number" min="0" placeholder="0"></div>
-        <div><label>Creators</label><input id="f-creators" type="number" min="0" placeholder="0"></div>
-        <div><label>Budget total ($)</label><input id="f-budgetTotal" type="number" min="0" placeholder="5000"></div>
-        <div><label>Budget spent ($)</label><input id="f-budgetSpent" type="number" min="0" placeholder="0"></div>
-        <div><label>Guaranteed floor (views)</label><input id="f-guaranteeFloor" type="number" min="0" placeholder="4500000"></div>
+      <!-- Result -->
+      <div class="status" id="statusBox">
+        <div class="status-head" id="statusHead"></div>
+        <div class="status-body" id="statusBody"></div>
+        <a class="view-link" id="dashLink" href="/dashboard" target="_blank" style="display:none">View live dashboard ↗</a>
       </div>
-      <p class="hint">Tip: add clips below, then hit “Recalculate from clips” to fill views, clip count, platform split and creators automatically.</p>
-      <button class="ghost small" id="recalc" style="margin-top:8px">↻ Recalculate from clips</button>
-    </div>
 
-    <div class="card">
-      <h2>Platform split</h2>
-      <div id="platforms"></div>
-      <button class="ghost small addbtn" data-add="platform">+ Add platform</button>
-    </div>
-
-    <div class="card">
-      <h2>Clips · the content tiles</h2>
-      <p class="hint" style="margin-top:0">Each clip becomes a tile on the dashboard. Paste the post link; YouTube thumbnails are automatic, otherwise add a thumbnail image URL.</p>
-      <div id="clips"></div>
-      <button class="ghost small addbtn" data-add="clip">+ Add clip</button>
-    </div>
-
-    <div class="card">
-      <h2>Creator leaderboard <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">(optional — auto-filled by recalculate)</span></h2>
-      <div id="creators"></div>
-      <button class="ghost small addbtn" data-add="creator">+ Add creator</button>
-    </div>
-
-    <div class="savebar">
-      <button id="save">Save &amp; publish</button>
-      <button class="ghost" id="reload">Reload current</button>
-      <span class="msg" id="msg"></span>
     </div>
   </div>
 
 </div>
 
 <script>
-const $ = (s,r=document)=>r.querySelector(s);
-const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
-function pw(){ return sessionStorage.getItem('mde_pw') || ''; }
-function setPw(v){ sessionStorage.setItem('mde_pw', v); }
-function clearPw(){ sessionStorage.removeItem('mde_pw'); }
-function auth(extra){ return Object.assign({ 'Authorization':'Bearer '+pw() }, extra||{}); }
+const $ = (s) => document.querySelector(s);
+const pw = () => sessionStorage.getItem('mde_pw') || '';
+const setPw = (v) => sessionStorage.setItem('mde_pw', v);
+const clearPw = () => sessionStorage.removeItem('mde_pw');
+const authHdr = () => ({ 'Authorization': 'Bearer ' + pw(), 'content-type': 'application/json' });
 
-function showGate(m){ $('#app').style.display='none'; $('#gate').style.display='block'; $('#gateMsg').textContent=m||''; $('#pw').focus(); }
-
-const PLATFORMS = ['tiktok','instagram','youtube','reels','shorts','other'];
-
-function platformRow(p){
-  p = p || {name:'',views:0};
-  const el = document.createElement('div');
-  el.className='row-item';
-  el.innerHTML =
-    '<button class="danger rm">Remove</button>' +
-    '<div class="gridrow" style="margin-right:80px">' +
-      '<div><label>Platform</label><input class="p-name" value="'+escAttr(p.name)+'" placeholder="TikTok"></div>' +
-      '<div><label>Views</label><input class="p-views" type="number" min="0" value="'+(p.views||0)+'"></div>' +
-    '</div>';
-  el.querySelector('.rm').onclick=()=>el.remove();
-  return el;
+function showGate(msg) {
+  $('#gate').style.display = '';
+  $('#app').style.display = 'none';
+  $('#topLinks').style.display = 'none';
+  $('#gateErr').textContent = msg || '';
+  setTimeout(() => $('#pw').focus(), 50);
 }
 
-function clipRow(c){
-  c = c || {title:'',creator:'',platform:'tiktok',url:'',thumb:'',views:0,posted:'',featured:false};
-  const el = document.createElement('div');
-  el.className='row-item';
-  const opts = PLATFORMS.map(p=>'<option value="'+p+'"'+(c.platform===p?' selected':'')+'>'+p+'</option>').join('');
-  el.innerHTML =
-    '<button class="danger rm">Remove</button>' +
-    '<div class="grid2" style="margin-right:80px">' +
-      '<div><label>Post link (URL)</label><input class="c-url" value="'+escAttr(c.url)+'" placeholder="https://"></div>' +
-      '<div><label>Creator handle</label><input class="c-creator" value="'+escAttr(c.creator)+'" placeholder="@handle"></div>' +
-    '</div>' +
-    '<label>Title / caption</label><input class="c-title" value="'+escAttr(c.title)+'" placeholder="Short description of the clip">' +
-    '<div class="grid3">' +
-      '<div><label>Platform</label><select class="c-platform">'+opts+'</select></div>' +
-      '<div><label>Views</label><input class="c-views" type="number" min="0" value="'+(c.views||0)+'"></div>' +
-      '<div><label>Posted (date)</label><input class="c-posted" value="'+escAttr(c.posted)+'" placeholder="2026-06-29"></div>' +
-    '</div>' +
-    '<label>Thumbnail image URL (optional — leave blank for YouTube)</label><input class="c-thumb" value="'+escAttr(c.thumb)+'" placeholder="https://…/thumb.jpg">' +
-    '<label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input type="checkbox" class="c-featured"'+(c.featured?' checked':'')+'> Mark as a “Top” clip (highlighted)</label>';
-  el.querySelector('.rm').onclick=()=>el.remove();
-  return el;
+function showApp() {
+  $('#gate').style.display = 'none';
+  $('#app').style.display = '';
+  $('#topLinks').style.display = '';
 }
 
-function creatorRow(c){
-  c = c || {handle:'',views:0,clips:0};
-  const el = document.createElement('div');
-  el.className='row-item';
-  el.innerHTML =
-    '<button class="danger rm">Remove</button>' +
-    '<div class="grid3" style="margin-right:80px">' +
-      '<div><label>Handle</label><input class="cr-handle" value="'+escAttr(c.handle)+'" placeholder="@creator"></div>' +
-      '<div><label>Views</label><input class="cr-views" type="number" min="0" value="'+(c.views||0)+'"></div>' +
-      '<div><label>Clips</label><input class="cr-clips" type="number" min="0" value="'+(c.clips||0)+'"></div>' +
-    '</div>';
-  el.querySelector('.rm').onclick=()=>el.remove();
-  return el;
+function fmt(n) {
+  n = Number(n) || 0;
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return String(Math.round(n));
 }
 
-function escAttr(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-
-function fill(d){
-  d = d || {}; const s = d.summary || {};
-  $('#f-client').value = d.client && d.client!=='Client' && d.client!=='Client Name' ? d.client : '';
-  $('#f-campaign').value = d.campaign && d.campaign!=='Distribution Campaign' ? d.campaign : '';
-  $('#f-tagline').value = d.tagline || '';
-  $('#f-views').value = s.views||'';
-  $('#f-clips').value = s.clips||'';
-  $('#f-creators').value = s.creators||'';
-  $('#f-budgetTotal').value = s.budgetTotal||'';
-  $('#f-budgetSpent').value = s.budgetSpent||'';
-  $('#f-guaranteeFloor').value = s.guaranteeFloor||'';
-  const pr = $('#platforms'); pr.innerHTML='';
-  (d.platforms && d.platforms.length ? d.platforms : []).forEach(p=>pr.appendChild(platformRow(p)));
-  const cl = $('#clips'); cl.innerHTML='';
-  (d.clips||[]).forEach(c=>cl.appendChild(clipRow(c)));
-  const cr = $('#creators'); cr.innerHTML='';
-  (d.creators||[]).forEach(c=>cr.appendChild(creatorRow(c)));
+function setStatus(kind, head, body, showLink) {
+  const box = $('#statusBox');
+  box.className = 'status ' + kind;
+  box.style.display = '';
+  $('#statusHead').textContent = head;
+  $('#statusBody').textContent = body;
+  $('#dashLink').style.display = showLink ? '' : 'none';
 }
 
-function collect(){
-  const num = id => Number($(id).value)||0;
-  const platforms = $$('#platforms .row-item').map(el=>({
-    name: el.querySelector('.p-name').value.trim(),
-    views: Number(el.querySelector('.p-views').value)||0,
-  })).filter(p=>p.name);
-  const clips = $$('#clips .row-item').map(el=>({
-    title: el.querySelector('.c-title').value.trim(),
-    creator: el.querySelector('.c-creator').value.trim(),
-    platform: el.querySelector('.c-platform').value,
-    url: el.querySelector('.c-url').value.trim(),
-    thumb: el.querySelector('.c-thumb').value.trim(),
-    views: Number(el.querySelector('.c-views').value)||0,
-    posted: el.querySelector('.c-posted').value.trim(),
-    featured: el.querySelector('.c-featured').checked,
-  })).filter(c=>c.url||c.title||c.views);
-  const creators = $$('#creators .row-item').map(el=>({
-    handle: el.querySelector('.cr-handle').value.trim(),
-    views: Number(el.querySelector('.cr-views').value)||0,
-    clips: Number(el.querySelector('.cr-clips').value)||0,
-  })).filter(c=>c.handle);
-  return {
-    client: $('#f-client').value.trim() || 'Client',
-    campaign: $('#f-campaign').value.trim() || 'Distribution Campaign',
-    tagline: $('#f-tagline').value.trim(),
-    summary: {
-      views: num('#f-views'), clips: num('#f-clips'), creators: num('#f-creators'),
-      budgetTotal: num('#f-budgetTotal'), budgetSpent: num('#f-budgetSpent'),
-      guaranteeFloor: num('#f-guaranteeFloor'),
-    },
-    platforms, clips, creators,
+async function uploadFile(file) {
+  if (!file) return;
+  $('#fileName').textContent = file.name;
+  setStatus('ok', 'Uploading…', '', false);
+
+  const csv = await file.text();
+  const meta = {
+    csv,
+    client: $('#s-client').value.trim() || 'Itzdanielmichael',
+    campaign: $('#s-campaign').value.trim() || 'Need You · Please Stay',
+    budgetTotal: Number($('#s-budget').value) || 1000,
+    cpm: Number($('#s-cpm').value) || 0,
+    guaranteeFloor: Number($('#s-floor').value) || 0,
+    tagline: 'Live distribution across our creator network',
   };
-}
 
-// Derive totals + platform split + creator leaderboard from the clip rows.
-function recalc(){
-  const d = collect();
-  const clips = d.clips;
-  let totalViews = 0; const byPlat = {}; const byCreator = {};
-  clips.forEach(c=>{
-    totalViews += c.views;
-    const p = (c.platform||'other'); byPlat[p] = (byPlat[p]||0) + c.views;
-    if(c.creator){ const k=c.creator; (byCreator[k] = byCreator[k] || {handle:k,views:0,clips:0}); byCreator[k].views+=c.views; byCreator[k].clips+=1; }
-  });
-  $('#f-views').value = totalViews;
-  $('#f-clips').value = clips.length;
-  const creators = Object.values(byCreator);
-  $('#f-creators').value = creators.length;
-  // platforms
-  const pr = $('#platforms'); pr.innerHTML='';
-  Object.keys(byPlat).sort((a,b)=>byPlat[b]-byPlat[a]).forEach(name=>{
-    const label = name.charAt(0).toUpperCase()+name.slice(1);
-    pr.appendChild(platformRow({name:label, views:byPlat[name]}));
-  });
-  // creators
-  const cr = $('#creators'); cr.innerHTML='';
-  creators.sort((a,b)=>b.views-a.views).forEach(c=>cr.appendChild(creatorRow(c)));
-  flash('ok','Recalculated from '+clips.length+' clips. Review, then Save.');
-}
-
-function flash(kind,text){ const m=$('#msg'); m.className='msg '+kind; m.textContent=text; }
-function csvFlash(kind,text){ const m=$('#csvMsg'); m.className='msg '+kind; m.textContent=text; }
-
-function fmtN(n){ n=Number(n)||0; if(n>=1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M'; if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K'; return String(n); }
-
-// Apply imported clips: replace the content-derived fields, leave the user's
-// campaign identity, budget and guarantee numbers exactly as they are.
-function applyImported(d){
-  const cl=$('#clips'); cl.innerHTML=''; (d.clips||[]).forEach(c=>cl.appendChild(clipRow(c)));
-  const pr=$('#platforms'); pr.innerHTML=''; (d.platforms||[]).forEach(p=>pr.appendChild(platformRow(p)));
-  const cr=$('#creators'); cr.innerHTML=''; (d.creators||[]).forEach(c=>cr.appendChild(creatorRow(c)));
-  const s=d.summary||{};
-  $('#f-views').value=s.views||0; $('#f-clips').value=s.clips||0; $('#f-creators').value=s.creators||0;
-}
-
-async function whopTest(){
-  $('#whopTest').disabled=true;
-  const msg=$('#whopMsg'); msg.className='msg'; msg.textContent='Checking…';
-  const out=$('#whopOut'), hint=$('#whopHint');
-  try{
-    const res=await fetch('/api/campaign/whop', { headers: auth(), cache:'no-store' });
-    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
-    const j=await res.json();
-    out.style.display='block'; out.textContent=JSON.stringify(j, null, 2);
-    if(res.status===400 && /WHOP_API_KEY/.test(j.error||'')){
-      msg.className='msg err'; msg.textContent='No API key set yet — add the WHOP_API_KEY secret in Cloudflare, then retry.';
-      hint.style.display='none';
-    } else if(j.candidateFields && j.candidateFields.length){
-      msg.className='msg ok'; msg.textContent='Found '+j.candidateFields.length+' candidate data field(s). Looks promising.';
-      hint.style.display='block';
-    } else {
-      msg.className='msg'; msg.textContent='Connected. Review the output below.';
-      hint.style.display='block';
-    }
-  }catch(e){ msg.className='msg err'; msg.textContent='Test failed: '+(e.message||e); }
-  finally{ $('#whopTest').disabled=false; }
-}
-
-async function importCSV(){
-  const csv=$('#csv').value.trim();
-  if(!csv){ csvFlash('err','Paste a CSV first.'); return; }
-  $('#importBtn').disabled=true; csvFlash('','Parsing…');
-  try{
-    const res=await fetch('/api/campaign/import?dryRun=1',{ method:'POST', headers: auth({'content-type':'text/csv'}), body: csv });
-    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
-    if(!res.ok){ csvFlash('err','Import failed: '+(await res.text()).slice(0,160)); return; }
-    const j=await res.json();
-    applyImported(j.campaign);
-    const s=j.campaign.summary||{};
-    csvFlash('ok','Imported '+(s.clips||0)+' clips · '+fmtN(s.views)+' views. Review below, then Save.');
-  }catch(e){ csvFlash('err','Import failed: '+(e.message||e)); }
-  finally{ $('#importBtn').disabled=false; }
-}
-
-async function loadData(){
-  if(!pw()){ showGate(); return; }
-  let res;
-  try{ res = await fetch('/api/campaign', { headers: auth(), cache:'no-store' }); }
-  catch(e){ showGate('Network error.'); return; }
-  if(res.status===401){ clearPw(); showGate('Wrong password.'); return; }
-  const d = await res.json();
-  $('#gate').style.display='none'; $('#app').style.display='block';
-  fill(d);
-}
-
-async function save(){
-  $('#save').disabled=true; flash('','Saving…');
-  const body = collect();
-  try{
-    const res = await fetch('/api/campaign', { method:'POST', headers: auth({'content-type':'application/json'}), body: JSON.stringify(body) });
-    if(res.status===401){ clearPw(); showGate('Session expired, unlock again.'); return; }
-    if(!res.ok){ flash('err','Save failed: '+(await res.text()).slice(0,120)); return; }
+  try {
+    const res = await fetch('/api/campaign/import', {
+      method: 'POST',
+      headers: authHdr(),
+      body: JSON.stringify(meta),
+    });
+    if (res.status === 401) { clearPw(); showGate('Session expired — unlock again.'); return; }
     const j = await res.json();
-    flash('ok','Saved. Live dashboard is updated. ('+new Date(j.updated).toLocaleTimeString()+')');
-  }catch(e){ flash('err','Save failed: '+(e.message||e)); }
-  finally{ $('#save').disabled=false; }
+    if (!res.ok) {
+      setStatus('err', 'Upload failed', j.error || 'Unknown error — check your CSV format.', false);
+      return;
+    }
+    const views = fmt(j.views || 0);
+    const clips = j.imported || 0;
+    const spent = j.budgetSpent != null ? ' · $' + (j.budgetSpent).toFixed(2) + ' deployed' : '';
+    setStatus('ok',
+      '✓ Dashboard updated',
+      clips + ' clips · ' + views + ' views' + spent,
+      true
+    );
+  } catch (e) {
+    setStatus('err', 'Upload failed', e.message || String(e), false);
+  }
 }
 
-// wiring
-$('#gateBtn').onclick = ()=>{ const v=$('#pw').value.trim(); if(!v) return; setPw(v); $('#pw').value=''; loadData(); };
-$('#pw').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#gateBtn').click(); });
-$('#logout').onclick = e=>{ e.preventDefault(); clearPw(); showGate('Locked.'); };
-$('#save').onclick = save;
-$('#reload').onclick = loadData;
-$('#recalc').onclick = recalc;
-$('#importBtn').onclick = importCSV;
-$('#whopTest').onclick = whopTest;
-document.body.addEventListener('click', e=>{
-  const add = e.target.getAttribute && e.target.getAttribute('data-add');
-  if(add==='platform') $('#platforms').appendChild(platformRow());
-  if(add==='clip') $('#clips').appendChild(clipRow());
-  if(add==='creator') $('#creators').appendChild(creatorRow());
+// File input
+$('#fileInput').addEventListener('change', (e) => {
+  if (e.target.files[0]) uploadFile(e.target.files[0]);
 });
 
-loadData();
+// Drag and drop
+const zone = $('#zone');
+zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+zone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  zone.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) uploadFile(f);
+});
+
+// Auth
+$('#unlockBtn').addEventListener('click', async () => {
+  const v = $('#pw').value.trim();
+  if (!v) return;
+  setPw(v);
+  $('#pw').value = '';
+  // Quick auth check
+  try {
+    const r = await fetch('/api/campaign', { headers: { 'Authorization': 'Bearer ' + v }, cache: 'no-store' });
+    if (r.status === 401) { clearPw(); showGate('Wrong password.'); return; }
+    showApp();
+  } catch (e) { showGate('Network error.'); }
+});
+$('#pw').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#unlockBtn').click(); });
+$('#lockBtn').addEventListener('click', (e) => { e.preventDefault(); clearPw(); showGate('Locked.'); });
+
+// Auto-unlock if already have pw
+if (pw()) {
+  fetch('/api/campaign', { headers: { 'Authorization': 'Bearer ' + pw() }, cache: 'no-store' })
+    .then(r => { if (r.status === 401) { clearPw(); showGate(); } else showApp(); })
+    .catch(() => showGate('Network error.'));
+} else {
+  showGate();
+}
 </script>
 </body>
 </html>
