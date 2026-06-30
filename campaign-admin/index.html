@@ -144,6 +144,17 @@ details[open] summary::after{transform:rotate(90deg)}
         </div>
       </details>
 
+      <!-- Thumbnail diagnostic -->
+      <details>
+        <summary>Diagnose Instagram thumbnails</summary>
+        <div class="settings-body" style="grid-template-columns:1fr">
+          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Paste any Instagram reel link from your campaign and run the test. It reports exactly what the server sees — whether the scraper key is active, the HTTP status, and whether an image was found. Paste the result back to me.</div>
+          <div class="sf full"><input id="dgUrl" type="text" placeholder="https://www.instagram.com/reel/XXXXXXX/"></div>
+          <button class="btn btn-ghost" id="dgBtn" type="button">Run diagnostic</button>
+          <pre id="dgOut" style="display:none;white-space:pre-wrap;word-break:break-all;font-size:.7rem;background:#0a0a0c;border:1px solid var(--hair);border-radius:8px;padding:.8rem;color:var(--text-mute);max-height:320px;overflow:auto"></pre>
+        </div>
+      </details>
+
     </div>
   </div>
 
@@ -293,6 +304,17 @@ $('#unlockBtn').addEventListener('click', async()=>{
 });
 $('#pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
 $('#lockBtn').addEventListener('click', e=>{ e.preventDefault(); clrPw(); showGate('Locked.'); });
+
+$('#dgBtn').addEventListener('click', async()=>{
+  const url=$('#dgUrl').value.trim();
+  const out=$('#dgOut'); out.style.display=''; out.textContent='Running…';
+  if(!url){ out.textContent='Paste an Instagram reel link first.'; return; }
+  try{
+    const r=await fetch('/api/campaign/thumbtest?url='+encodeURIComponent(url),{headers:hdr()});
+    const j=await r.json();
+    out.textContent=JSON.stringify(j,null,2);
+  }catch(e){ out.textContent='Error: '+(e.message||e); }
+});
 
 if(pw()){
   fetch('/api/campaign',{headers:{'Authorization':'Bearer '+pw()},cache:'no-store'})
