@@ -336,13 +336,17 @@ function proxied(u){ return 'https://images.weserv.nl/?url=' + encodeURIComponen
 function wireThumb(img){
   const raw = img.getAttribute('data-raw');
   if(!raw){ return; }
+  // Instagram/Facebook CDN images hotlink-block direct browser loads, so load
+  // those through the proxy first; everything else tries direct then the proxy.
+  const cdn = /cdninstagram|fbcdn/i.test(raw);
+  const chain = cdn ? [proxied(raw), raw] : [raw, proxied(raw)];
   let stage = 0;
   img.onerror = () => {
     stage++;
-    if(stage === 1){ img.src = proxied(raw); }
+    if(stage < chain.length){ img.src = chain[stage]; }
     else { img.onerror = null; img.remove(); }
   };
-  img.src = raw;
+  img.src = chain[0];
 }
 
 // Browser-side preview for tiles the server couldn't resolve. Instagram blocks

@@ -1,6 +1,6 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
-import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV, handleWhopProbe, handleThumbTest } from './lib/handlers.js';
+import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV, handleWhopProbe, handleThumbTest, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -28,6 +28,12 @@ export default {
   // Cron trigger (see wrangler.toml). Pulls the campaign CSV source, if one is
   // configured via the CAMPAIGN_CSV_URL var, and refreshes the dashboard data.
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(pullCampaignCSV(env));
+    // Refresh from a CSV source if configured, and fill in any thumbnails that
+    // didn't resolve at publish time — so every tile self-heals within the cron
+    // interval.
+    ctx.waitUntil((async () => {
+      await pullCampaignCSV(env);
+      await resolveStoredThumbnails(env);
+    })());
   },
 };
