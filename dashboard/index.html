@@ -332,14 +332,17 @@ function renderClips(clips){
 // Load a thumbnail with graceful fallback: try the raw image first, then route
 // it through a hotlink-proof image proxy (defeats TikTok/Instagram referrer
 // blocks), then give up to the placeholder. Avoids broken-image tiles.
-function proxied(u){ return 'https://images.weserv.nl/?url=' + encodeURIComponent(u) + '&w=480&output=jpg&we'; }
+// Same-origin image proxy (the Worker fetches the CDN image and re-serves it),
+// with the third-party proxy as a secondary fallback.
+function imgProxy(u){ return '/api/img?u=' + encodeURIComponent(u); }
+function weserv(u){ return 'https://images.weserv.nl/?url=' + encodeURIComponent(u) + '&w=480&output=jpg&we'; }
 function wireThumb(img){
   const raw = img.getAttribute('data-raw');
   if(!raw){ return; }
-  // Instagram/Facebook CDN images hotlink-block direct browser loads, so load
-  // those through the proxy first; everything else tries direct then the proxy.
-  const cdn = /cdninstagram|fbcdn/i.test(raw);
-  const chain = cdn ? [proxied(raw), raw] : [raw, proxied(raw)];
+  // Instagram/TikTok CDN images hotlink-block direct browser loads, so route
+  // those through our own origin first; everything else tries direct first.
+  const cdn = /cdninstagram|fbcdn|tiktokcdn/i.test(raw);
+  const chain = cdn ? [imgProxy(raw), weserv(raw), raw] : [raw, imgProxy(raw)];
   let stage = 0;
   img.onerror = () => {
     stage++;
