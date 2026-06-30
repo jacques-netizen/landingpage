@@ -422,16 +422,20 @@ function paint(d){
 
   // headline stats
   const views = s.views || 0;
-  const cpm = views > 0 ? (s.budgetSpent || 0) / (views/1000) : 0;
   setStat('views', views, fmt);
   setStat('clips', s.clips || 0, v => fmt(v));
   setStat('creators', s.creators || 0, v => Math.round(v));
-  setStat('cpm', cpm, v => '$' + (v).toFixed(2));
+  // CPM and spend are only ever shown from real reported spend — never estimated.
+  if(s.spendKnown && views > 0){
+    setStat('cpm', (s.budgetSpent || 0) / (views/1000), v => '$' + (v).toFixed(2));
+  } else {
+    const el = $('[data-k="cpm"]'); if(el){ el.textContent = '—'; el.dataset.val = 0; } prev.cpm = undefined;
+  }
   $('#viewsSub').textContent = fmtFull(views) + ' total';
 
-  // budget — only shown when there's a budget to report against
+  // budget — shown ONLY when the data carries real reported spend
   const total = s.budgetTotal || 0, spent = s.budgetSpent || 0;
-  if(total > 0){
+  if(s.spendKnown && total > 0){
     $('#budgetSec').style.display = '';
     const bpct = Math.min(100, spent/total*100);
     $('#bFill').style.width = bpct + '%';

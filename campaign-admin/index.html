@@ -140,8 +140,7 @@ details[open] summary::after{transform:rotate(90deg)}
           <div class="sf"><label>Artist / client</label><input id="sClient" type="text" value="Itzdanielmichael"></div>
           <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" value="Need You · Please Stay"></div>
           <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" value="1000"></div>
-          <div class="sf"><label>Payout rate ($ / 1k views)</label><input id="sRate" type="number" min="0" step="0.01" value="0.50"></div>
-          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is taken from a reward/earnings column in your CSV if it has one; otherwise it’s views × this rate.</div>
+          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is read straight from a reward/earnings column in your CSV. If the export has no such column, the dashboard shows no spend figure — it’s never estimated.</div>
         </div>
       </details>
 
@@ -178,7 +177,6 @@ function meta(){
     client: $('#sClient').value.trim() || 'Itzdanielmichael',
     campaign: $('#sCampaign').value.trim() || 'Need You · Please Stay',
     budgetTotal: Number($('#sBudget').value) || 1000,
-    rate: Number($('#sRate').value) || 0,
     tagline: 'Live distribution across our creator network',
   };
 }
@@ -247,8 +245,9 @@ async function parseFile(file){
     if(!r.ok){ setBanner('bad','✕','Couldn’t read that file',j.error||'Check the CSV and try again.'); return; }
     const camp=j.campaign||{}; const clips=camp.clips||[]; const s=camp.summary||{};
     const linked=clips.filter(c=>c.url).length;
+    const spendBit = s.spendKnown ? ('spend '+money(s.budgetSpent||0)+' (from CSV)') : 'no spend column in CSV — spend hidden';
     setBanner('ok','✓','Parsed '+clips.length+' clips · '+fmt(s.views||0)+' views',
-      linked+' of '+clips.length+' have links · spend '+money(s.budgetSpent||0)+' of '+money(s.budgetTotal||0)+' · review, then publish');
+      linked+' of '+clips.length+' have links · '+spendBit+' · review, then publish');
     renderPreview(clips);
     $('#pvActions').style.display='';
   }catch(e){ setBanner('bad','✕','Upload failed', String(e.message||e)); }
