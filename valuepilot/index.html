@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValuePilot · Marketing Execution Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0f;
+    --ink-soft:#16161a;
+    --cream:#f4f1ea;
+    --cream-deep:#ece7db;
+    --gold:#a88a4f;
+    --gold-light:#b89968;
+    --text-dark:#23211c;
+    --text-mute:#6f6a5e;
+    --text-cream:#e8e3d6;
+    --text-cream-mute:#9b9484;
+    --hair-dark:rgba(35,33,28,0.16);
+    --hair-cream:rgba(232,227,214,0.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:var(--cream);
+    color:var(--text-dark);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .eyebrow{
+    font-family:'Archivo',sans-serif;font-weight:500;font-size:0.72rem;
+    letter-spacing:0.32em;text-transform:uppercase;color:var(--gold);
+  }
+  .section{padding:clamp(4rem,9vh,7.5rem) clamp(1.5rem,7vw,8rem);position:relative}
+  .wrap{max-width:1080px;margin:0 auto}
+  .hair{height:1px;background:var(--hair-dark);border:0;margin:0}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* ---------- COVER ---------- */
+  .cover{
+    background:var(--ink);color:var(--text-cream);
+    min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;
+    padding:clamp(2.2rem,5vw,3.6rem) clamp(1.5rem,7vw,8rem);
+  }
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.15rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-light);font-weight:500}
+  .cover-doc{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-cream-mute)}
+  .cover-mid{max-width:920px}
+  .cover-mid .eyebrow{margin-bottom:1.6rem;display:block}
+  .cover h1{
+    font-family:'EB Garamond',serif;font-weight:400;
+    font-size:clamp(2.6rem,6.4vw,5.2rem);line-height:1.02;letter-spacing:-0.02em;
+  }
+  .cover h1 i{font-style:italic;color:var(--gold-light)}
+  .cover-sub{
+    margin-top:2rem;font-size:clamp(1rem,1.7vw,1.2rem);color:var(--text-cream-mute);
+    max-width:600px;font-weight:300;line-height:1.55;
+  }
+  .cover-bot{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .cover-for{font-size:0.95rem;color:var(--text-cream);font-weight:400}
+  .cover-for span{display:block;color:var(--text-cream-mute);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.35rem}
+  .scrollcue{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* ---------- shared headings ---------- */
+  .lead{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.8rem,3.8vw,2.9rem);line-height:1.1;letter-spacing:-0.015em;max-width:20ch}
+  .lead.wide{max-width:26ch}
+  .lead i{font-style:italic;color:var(--gold)}
+  .kicker{display:block;margin-bottom:1.5rem}
+  .body-lg{font-size:clamp(1rem,1.35vw,1.14rem);color:var(--text-mute);max-width:64ch;font-weight:300;line-height:1.7}
+  .body-lg + .body-lg{margin-top:1.2rem}
+  .body-lg b{color:var(--text-dark);font-weight:500}
+
+  .cream{background:var(--cream)}
+  .cream-deep{background:var(--cream-deep)}
+
+  /* two-up columns */
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,5rem);margin-top:3rem}
+  .pillar .p-eye{font-family:'Archivo';font-weight:600;font-size:0.74rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);padding-bottom:1rem;border-bottom:1px solid var(--hair-dark);margin-bottom:1.4rem;display:block}
+  .pillar h3{font-family:'EB Garamond',serif;font-weight:400;font-size:1.6rem;line-height:1.15;margin-bottom:0.9rem}
+  .pillar p{font-size:0.98rem;color:var(--text-mute);font-weight:300;line-height:1.65}
+
+  /* proof / info cards */
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-dark);margin-top:3rem;border-top:1px solid var(--hair-dark);border-left:1px solid var(--hair-dark)}
+  .proof-grid.three{grid-template-columns:1fr 1fr 1fr}
+  .proof{background:var(--cream);padding:clamp(1.6rem,3vw,2.4rem)}
+  .cream-deep .proof{background:var(--cream-deep)}
+  .proof .name{font-family:'EB Garamond',serif;font-size:1.4rem;margin-bottom:0.4rem}
+  .proof .role{font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:0.9rem;font-weight:600}
+  .proof p{font-size:0.93rem;color:var(--text-mute);font-weight:300;line-height:1.6}
+
+  /* ink band */
+  .band{background:var(--ink);color:var(--text-cream)}
+  .band .eyebrow{color:var(--gold-light)}
+  .band .lead i{color:var(--gold-light)}
+  .band .body-lg{color:var(--text-cream-mute)}
+  .band .body-lg b{color:var(--text-cream)}
+
+  /* deliver lists */
+  .deliver{list-style:none}
+  .deliver li{padding:1rem 0;border-bottom:1px solid var(--hair-dark);display:flex;gap:1rem;align-items:baseline}
+  .deliver li:first-child{border-top:1px solid var(--hair-dark)}
+  .deliver .dlabel{font-family:'EB Garamond',serif;font-size:1.05rem;color:var(--text-dark);flex:1}
+  .deliver .dsub{font-size:0.84rem;color:var(--text-mute);font-weight:300;flex:1.4}
+  .band .deliver li{border-color:var(--hair-cream)}
+  .band .deliver .dlabel{color:var(--text-cream)}
+  .band .deliver .dsub{color:var(--text-cream-mute)}
+  .spec{font-family:'Archivo';font-weight:600;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.9rem;display:block}
+
+  /* stage flow (growth model) */
+  .stages{counter-reset:st;margin-top:3rem;border-top:1px solid var(--hair-cream)}
+  .stage{display:grid;grid-template-columns:70px 220px 1fr;gap:1.4rem;padding:1.5rem 0;border-bottom:1px solid var(--hair-cream);align-items:baseline}
+  .stage .sn{font-family:'EB Garamond',serif;font-style:italic;color:var(--gold-light);font-size:1.15rem}
+  .stage .sn:before{counter-increment:st;content:counter(st,decimal-leading-zero)}
+  .stage h4{font-family:'EB Garamond',serif;font-weight:400;font-size:1.45rem;color:var(--text-cream)}
+  .stage p{font-size:0.93rem;color:var(--text-cream-mute);font-weight:300;line-height:1.6;max-width:60ch}
+
+  /* channel cards */
+  .chan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.6rem}
+  .chan{border:1px solid var(--hair-dark);padding:1.5rem 1.5rem;background:rgba(255,255,255,0.3)}
+  .chan .cn{font-family:'EB Garamond',serif;font-size:1.35rem;margin-bottom:0.2rem}
+  .chan .cr{font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.7rem}
+  .chan p{font-size:0.88rem;color:var(--text-mute);font-weight:300;line-height:1.55}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:0.55rem;margin-top:1.2rem}
+  .chip{font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--text-mute);border:1px solid var(--hair-dark);border-radius:999px;padding:0.5rem 1rem}
+  .chip.gold{color:var(--ink);border-color:var(--gold);background:rgba(168,138,79,0.16)}
+  .band .chip{color:var(--text-cream-mute);border-color:var(--hair-cream)}
+  .band .chip.gold{color:var(--ink);background:var(--gold-light);border-color:var(--gold-light)}
+
+  /* product cards */
+  .prod{border-left:3px solid var(--gold);background:var(--cream-deep);padding:clamp(1.5rem,3vw,2.2rem)}
+  .prod .pn{font-family:'EB Garamond',serif;font-size:1.7rem;margin-bottom:0.25rem}
+  .prod .pt{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.9rem}
+  .prod p{font-size:0.93rem;color:var(--text-mute);font-weight:300;line-height:1.6}
+  .prod ul{list-style:none;margin-top:1rem}
+  .prod li{padding:0.55rem 0;border-top:1px solid var(--hair-dark);font-size:0.93rem;color:var(--text-dark)}
+  .prod li span{display:block;font-size:0.8rem;color:var(--text-mute);font-weight:300}
+
+  /* phases timeline */
+  .phases{counter-reset:ph;margin-top:2.8rem}
+  .phase{display:grid;grid-template-columns:120px 1fr;gap:clamp(1.2rem,4vw,3rem);padding:1.7rem 0;border-top:1px solid var(--hair-dark);align-items:start}
+  .phase:last-child{border-bottom:1px solid var(--hair-dark)}
+  .phase .pnum{font-family:'EB Garamond',serif;font-style:italic;color:var(--gold);font-size:1.05rem}
+  .phase .pnum:before{counter-increment:ph;content:"Phase " counter(ph)}
+  .phase h4{font-family:'EB Garamond',serif;font-weight:400;font-size:1.5rem;margin-bottom:0.4rem}
+  .phase p{font-size:0.95rem;color:var(--text-mute);font-weight:300;line-height:1.6;max-width:64ch}
+
+  /* checklist */
+  .checks{list-style:none;margin-top:1.6rem;columns:2;column-gap:clamp(1.5rem,4vw,3.5rem)}
+  .checks li{break-inside:avoid;padding:0.75rem 0 0.75rem 1.9rem;border-bottom:1px solid var(--hair-dark);font-size:0.95rem;color:var(--text-dark);position:relative}
+  .checks li:before{content:"";position:absolute;left:0;top:1.05rem;width:9px;height:9px;border:1.5px solid var(--gold);transform:rotate(45deg)}
+  .band .checks li{border-color:var(--hair-cream);color:var(--text-cream)}
+
+  /* funnel ownership */
+  .own-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.6rem}
+  .own{border:1px solid var(--hair-dark);padding:1.7rem 1.8rem}
+  .own .ot{font-family:'EB Garamond',serif;font-size:1.35rem;margin-bottom:0.2rem}
+  .own .os{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:0.8rem}
+  .own p{font-size:0.92rem;color:var(--text-mute);font-weight:300;line-height:1.6}
+  .own .flow{font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--text-dark);margin-bottom:0.8rem}
+  .own .flow i{color:var(--gold);font-style:normal}
+
+  /* metric families */
+  .met-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-cream);border:1px solid var(--hair-cream);margin-top:2.6rem}
+  .met{background:var(--ink);padding:1.6rem 1.5rem}
+  .met .mt{font-family:'EB Garamond',serif;font-size:1.25rem;color:var(--gold-light);margin-bottom:0.5rem}
+  .met p{font-size:0.86rem;color:var(--text-cream-mute);font-weight:300;line-height:1.55}
+
+  /* campaign slate */
+  .slate{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.6rem}
+  .camp{border:1px solid var(--hair-dark);padding:0}
+  .camp .ch{padding:1.3rem 1.5rem;background:var(--ink);color:var(--text-cream)}
+  .camp .ch .cn2{font-family:'EB Garamond',serif;font-size:1.4rem}
+  .camp .ch .cs2{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+  .camp ul{list-style:none}
+  .camp li{padding:1.05rem 1.5rem;border-top:1px solid var(--hair-dark)}
+  .camp li b{font-family:'EB Garamond',serif;font-weight:500;font-size:1.08rem;color:var(--text-dark);display:block}
+  .camp li span{font-size:0.85rem;color:var(--text-mute);font-weight:300}
+
+  /* close */
+  .cta{background:var(--ink);color:var(--text-cream)}
+  .cta .lead{max-width:24ch}
+  .cta .lead i{color:var(--gold-light)}
+  .cta .body-lg{color:var(--text-cream-mute)}
+  .cta .body-lg b{color:var(--gold-light)}
+  .signoff{margin-top:3.4rem;padding-top:2rem;border-top:1px solid var(--hair-cream);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-light);font-weight:500}
+  .signoff .s-name{font-size:0.85rem;color:var(--text-cream-mute);text-align:right;line-height:1.5}
+
+  @media(max-width:760px){
+    .twoup,.proof-grid,.proof-grid.three,.chan-grid,.own-grid,.met-grid,.slate{grid-template-columns:1fr}
+    .checks{columns:1}
+    .stage{grid-template-columns:48px 1fr;grid-template-rows:auto auto}
+    .stage p{grid-column:2}
+    .phase{grid-template-columns:1fr;gap:0.4rem}
+    .cover-mid h1{font-size:2.4rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<header class="cover">
+  <div class="cover-top">
+    <div class="mark">Value<b>Pilot</b></div>
+    <div class="cover-doc">Marketing Execution Plan · Confidential</div>
+  </div>
+
+  <div class="cover-mid">
+    <span class="eyebrow rv">In response to the ValuePilot Global Marketing Doctrine</span>
+    <h1 class="rv d1">The doctrine is set.<br>This is how it gets<br><i>executed</i>.</h1>
+    <p class="cover-sub rv d2">How the marketing organization will be built and operated for the two MVP products, RenewalGuard and RefundPilot, and how it will produce measurable users, subscribers, revenue, retention, and referrals.</p>
+  </div>
+
+  <div class="cover-bot">
+    <div class="cover-for rv d3">
+      <span>Prepared by</span>
+      Jacques Amoako · EVP Marketing · June 2026
+    </div>
+    <div class="scrollcue">Scroll ↓</div>
+  </div>
+</header>
+
+<!-- 01 MANDATE & ROLE -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">01 · Mandate and role</span>
+    <h2 class="lead rv d1">A revenue and growth role, not a <i>content</i> role.</h2>
+    <div style="margin-top:2.4rem">
+      <p class="body-lg rv d2">As EVP Marketing, Jacques Amoako acts as the commercial voice, campaign architect, creator program operator, brand steward, channel builder, and growth lead for ValuePilot. <b>Maison d'Élites operates as the execution arm reporting into that role.</b> It comprises an in-house design and content team and a performance-paid creator network, so the organization can produce at volume without depending on any single person.</p>
+    </div>
+    <div class="twoup">
+      <div class="pillar rv d2">
+        <span class="p-eye">Accountability</span>
+        <h3>Four outcomes</h3>
+        <p>The role is accountable for users, revenue, retention, and brand trust. Everything in this plan traces back to one of those four.</p>
+      </div>
+      <div class="pillar rv d3">
+        <span class="p-eye">Operating principles</span>
+        <h3>Three rules</h3>
+        <p>Every channel connects to a conversion path. Every campaign reports performance. No public material reveals protected methods.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 02 FOCUS & PORTFOLIO SCOPE -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">02 · Focus and portfolio scope</span>
+    <h2 class="lead wide rv d1">Two products. One brand system, one engine, one <i>launch</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The doctrine names RenewalGuard and RefundPilot as the MVP. This plan concentrates the full launch behind those two products, because <b>concentration is what makes a first launch succeed.</b></p>
+    <div class="twoup" style="margin-top:2.4rem">
+      <div class="prod rv d2">
+        <div class="pt">In focus now</div>
+        <div class="pn">RenewalGuard</div>
+        <p>Money protection. A charge caught before it billed.</p>
+      </div>
+      <div class="prod rv d3">
+        <div class="pt">In focus now</div>
+        <div class="pn">RefundPilot</div>
+        <p>Money recovery. Money recovered that was owed.</p>
+      </div>
+    </div>
+    <div style="margin-top:2.6rem" class="rv d3">
+      <span class="spec">Sequenced next, after the MVP proves the model</span>
+      <div class="chips">
+        <span class="chip">FollowUp</span>
+        <span class="chip">LeakageIndex</span>
+        <span class="chip">EnterprisePilot</span>
+        <span class="chip">DrivePilot</span>
+        <span class="chip">BoarderPilot</span>
+        <span class="chip">Add-ons</span>
+        <span class="chip">MealPilot</span>
+        <span class="chip">PriceDropMonitor-AI</span>
+      </div>
+      <div class="chips" style="margin-top:0.8rem">
+        <span class="chip gold">Long term · FutureCircle, once the initial applications create traction</span>
+      </div>
+    </div>
+    <p class="body-lg rv d4" style="margin-top:2.4rem">The brand framework, channel setup, content pipeline, email engine, creator network, and tracking built for the first two products are reusable. <b>Each later product is added as new scope and reuses this infrastructure rather than rebuilding it.</b></p>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 03 POSITIONING & MESSAGING -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">03 · Positioning and messaging</span>
+    <h2 class="lead wide rv d1">Simple, outcome-led, and inside the <i>guardrails</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">Positioning and messaging are owned and authored by the EVP and finalized against the real product once access is granted. This keeps the public message simple and outcome-led, and keeps it inside the protected-methods guardrails. For each product, the messaging framework defines four things:</p>
+    <div class="proof-grid">
+      <div class="proof rv d1">
+        <div class="role">Component 1</div>
+        <div class="name">Positioning &amp; core promise</div>
+        <p>A positioning statement and core promise in plain language. What the product does for a person, said the way a person would say it.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="role">Component 2</div>
+        <div class="name">Persona-to-angle map</div>
+        <p>A map of personas to message angles across the doctrine's audiences, so every creator and asset speaks to a specific person, not the average of all of them.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="role">Component 3</div>
+        <div class="name">Proof approach</div>
+        <p>How savings, recoveries, and outcomes are shown: as examples, and where tracked, as data. Claims stand on evidence.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="role">Component 4</div>
+        <div class="name">The "do not say" guide</div>
+        <p>A list of the language creators and content must avoid. The framework commits to the method and the guardrails, not to draft copy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 GROWTH MODEL -->
+<section class="section band">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">04 · Growth model</span>
+    <h2 class="lead wide rv d1">Creator-led distribution, in six <i>stages</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">Both products share a clear consumer outcome: a charge caught before it billed, or money recovered that was owed. That outcome is well suited to short-form content and creator demonstration. The model produces the impression volume the funnel requires <b>at a cost that scales with results rather than with spend committed up front.</b></p>
+    <div class="stages rv d3">
+      <div class="stage"><span class="sn"></span><h4>Source</h4><p>A small number of high-quality assets: real reviews from mid-tier YouTubers, founder podcast appearances, and genuine save-and-recover stories.</p></div>
+      <div class="stage"><span class="sn"></span><h4>Multiply</h4><p>Each long-form asset is cut into 30 to 50 short vertical clips, producing hundreds of assets from a small number of sources.</p></div>
+      <div class="stage"><span class="sn"></span><h4>Distribute</h4><p>A performance-paid clipper network posts the clips at volume. This is the primary source of impressions.</p></div>
+      <div class="stage"><span class="sn"></span><h4>Amplify</h4><p>Paid spend is applied only behind clips that have already proven they convert.</p></div>
+      <div class="stage"><span class="sn"></span><h4>Capture</h4><p>Waitlists and landing pages turn attention into an owned list.</p></div>
+      <div class="stage"><span class="sn"></span><h4>Convert</h4><p>Email sequences and the launch push turn the list into paying users.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 CREATOR PROGRAM -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">05 · Creator and distribution program</span>
+    <h2 class="lead wide rv d1">A performance channel and a <i>trust</i> channel at once.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The program runs across the doctrine's creator categories, and all creators operate on tracked links and codes.</p>
+    <div class="chips rv d2">
+      <span class="chip">Savings creators</span>
+      <span class="chip">Family creators</span>
+      <span class="chip">Student creators</span>
+      <span class="chip">Business creators</span>
+      <span class="chip">Travel creators</span>
+      <span class="chip">Productivity creators</span>
+    </div>
+    <div class="twoup">
+      <div class="pillar rv d2">
+        <span class="p-eye">Recruitment model</span>
+        <h3>The launch recruits the team</h3>
+        <p>The launch campaign also functions as the recruitment process. Open clip bounties and creator slots surface the strongest performers through their actual view and conversion numbers. The best clippers, UGC creators, and bloggers are then brought onto the internal team on a commission basis, paid on the results they drive.</p>
+      </div>
+      <div class="pillar rv d3">
+        <span class="p-eye">Creator rules, enforced</span>
+        <h3>Four non-negotiables</h3>
+        <p>Approved product names only, with no description of confidential internal methods. Every creator on a tracking link or code, with attribution recorded per person from the start. Any content involving money, savings, refunds, or outcomes is reviewed before publication. Compensation accounts for deliverables, usage rights, exclusivity, and performance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 06 CHANNELS -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">06 · Channels and platform buildout</span>
+    <h2 class="lead wide rv d1">Fewer strong channels beat many <i>underused</i> ones.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The doctrine asks the EVP to recommend dedicated product channels or a centralized strategy. The recommendation: <b>a centralized ValuePilot presence as the brand home</b>, with dedicated channels for the two MVP products only where the content style genuinely differs.</p>
+    <div class="chan-grid">
+      <div class="chan rv d1"><div class="cn">TikTok</div><div class="cr">Primary</div><p>The main home of the clipper output. Short use-case clips at volume.</p></div>
+      <div class="chan rv d1"><div class="cn">Instagram</div><div class="cr">Amplify</div><p>Reels, carousels, creator clips, and testimonials.</p></div>
+      <div class="chan rv d2"><div class="cn">YouTube</div><div class="cr">Source</div><p>Hero reviews and walkthroughs, which are the source material for the clips.</p></div>
+      <div class="chan rv d2"><div class="cn">LinkedIn</div><div class="cr">Credibility</div><p>The small business and finance angle for both products, plus founder and EVP credibility.</p></div>
+      <div class="chan rv d3"><div class="cn">Facebook</div><div class="cr">Communities</div><p>Households, families, and savings communities.</p></div>
+      <div class="chan rv d3"><div class="cn">WhatsApp &amp; X</div><div class="cr">Real time</div><p>Early access and ambassador communities, launch amplification, and real-time updates.</p></div>
+    </div>
+    <p class="body-lg rv d4" style="margin-top:2.4rem">Buildout includes branded handles, one-sentence value bios, pinned launch explainers, consistent product visuals, a social proof repository for demos and testimonials, and moderation and routing rules for comments, complaints, refund and pricing questions, and support.</p>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 07 CONTENT ENGINE -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">07 · Content engine</span>
+    <h2 class="lead wide rv d1">Multiplication, not manual <i>volume</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The pre-launch content targets are met through multiplication rather than manual volume. A small set of hero sources is cut into hundreds of clips and then expanded by the creator network. All content types are drawn from the same pipeline, and all of it runs on an approved calendar across the launch channels <b>so that no channel goes live empty.</b></p>
+    <ul class="checks rv d3">
+      <li>Educational and problem-awareness content</li>
+      <li>Product explanation and demos</li>
+      <li>Savings and recovery examples</li>
+      <li>Customer scenarios</li>
+      <li>Creator and UGC content</li>
+      <li>Founder and EVP content</li>
+      <li>Executive thought leadership</li>
+      <li>Launch content</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 08 OWNED INFRASTRUCTURE -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">08 · Owned infrastructure and engines</span>
+    <h2 class="lead wide rv d1">Six engines, built once and <i>reused</i>.</h2>
+    <div class="proof-grid three">
+      <div class="proof rv d1">
+        <div class="role">Engine</div>
+        <div class="name">Email</div>
+        <p>Built for both products: waitlist, education, launch, trial onboarding, abandoned signup, retention, and win-back sequences.</p>
+      </div>
+      <div class="proof rv d1">
+        <div class="role">Engine</div>
+        <div class="name">Pages</div>
+        <p>Waitlist and product landing pages for each product, ready for A/B testing.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="role">Engine</div>
+        <div class="name">Referral</div>
+        <p>Invites, family sharing, creator codes, ambassadors, and reward tracking.</p>
+      </div>
+      <div class="proof rv d2">
+        <div class="role">Engine</div>
+        <div class="name">Affiliate &amp; creator</div>
+        <p>Tracking links, promo codes, attribution windows, usage rights, a performance dashboard, and compliance review.</p>
+      </div>
+      <div class="proof rv d3">
+        <div class="role">Engine</div>
+        <div class="name">Partnership</div>
+        <p>Savings communities and relevant partners first. Campus, restaurant, and grocery partnerships are sequenced for later products.</p>
+      </div>
+      <div class="proof rv d3">
+        <div class="role">Engine</div>
+        <div class="name">Tracking &amp; CRM</div>
+        <p>UTM and code standards, a single source of truth, and a live KPI dashboard across the full funnel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 09 CAMPAIGN SLATE -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">09 · Campaign slate</span>
+    <h2 class="lead wide rv d1">The opening campaigns, built on the doctrine's own <i>concepts</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">Creative is authored by the EVP against the real product.</p>
+    <div class="slate">
+      <div class="camp rv d2">
+        <div class="ch"><div class="cs2">Money protection</div><div class="cn2">RenewalGuard</div></div>
+        <ul>
+          <li><b>Renewal Countdown</b><span>Everything renewing in the next 90 days.</span></li>
+          <li><b>Cancel Before It Bills</b><span>A charge avoided before it hits.</span></li>
+          <li><b>Subscription Cleanup</b><span>Clearing recurring waste.</span></li>
+        </ul>
+      </div>
+      <div class="camp rv d3">
+        <div class="ch"><div class="cs2">Money recovery</div><div class="cn2">RefundPilot</div></div>
+        <ul>
+          <li><b>Money You May Be Owed</b><span>Common recoverable charges.</span></li>
+          <li><b>Receipt to Recovery</b><span>Evidence to a tracked claim.</span></li>
+          <li><b>Bad Service to Refund</b><span>Structured follow-through.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 10 FUNNEL LOGIC -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">10 · Funnel logic and targets</span>
+    <h2 class="lead wide rv d1">Explicit about which part of the funnel marketing <i>owns</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The doctrine's funnel is a planning discipline: attention to visits to signups to paid.</p>
+    <div class="own-grid">
+      <div class="own rv d2">
+        <div class="os">Marketing owns</div>
+        <div class="flow">Impressions <i>&rarr;</i> Visits <i>&rarr;</i> Signups</div>
+        <p>Produced through clips and creators, and then measured.</p>
+      </div>
+      <div class="own rv d3">
+        <div class="os">Product owns</div>
+        <div class="flow">Signup <i>&rarr;</i> Paid <i>&rarr;</i> Retained</div>
+        <p>These depend on product quality, pricing, and onboarding. Marketing supports them with data and feedback.</p>
+      </div>
+    </div>
+    <div class="twoup" style="margin-top:2.6rem">
+      <div class="pillar rv d3">
+        <span class="p-eye">Discipline</span>
+        <h3>Prove, then scale</h3>
+        <p>The funnel is validated on a measured first cohort before spend is scaled. Once the converting messages and channels are proven, spend is increased behind them.</p>
+      </div>
+      <div class="pillar rv d4">
+        <span class="p-eye">When conversion runs below plan</span>
+        <h3>The response is a list, not a panic</h3>
+        <p>Improve message clarity, landing pages, onboarding, creator fit, pricing, trust proof, email nurturing, and retargeting, consistent with the doctrine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 REPORTING -->
+<section class="section band">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">11 · Reporting and accountability</span>
+    <h2 class="lead wide rv d1">Measured from impression to <i>purchase</i>.</h2>
+    <div class="met-grid rv d2">
+      <div class="met"><div class="mt">Reach</div><p>Impressions, reach, follower growth, video views, watch time.</p></div>
+      <div class="met"><div class="mt">Traffic</div><p>Landing visits, unique visitors, source and channel, click-through rate.</p></div>
+      <div class="met"><div class="mt">Acquisition</div><p>Waitlist signups, installs, account creations, trial starts.</p></div>
+      <div class="met"><div class="mt">Conversion</div><p>Paid users, checkout completion, purchases.</p></div>
+      <div class="met"><div class="mt">Economics</div><p>Revenue by product, acquisition cost, payback, creator and channel ROI.</p></div>
+      <div class="met"><div class="mt">Retention &amp; proof of value</div><p>Active users, churn, renewals avoided, refunds recovered.</p></div>
+    </div>
+    <p class="body-lg rv d3" style="margin-top:2.4rem"><b>Cadence:</b> a weekly executive KPI report, a monthly performance report, and an attribution report, all maintained on a live dashboard.</p>
+  </div>
+</section>
+
+<!-- 12 ROADMAP -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">12 · Roadmap</span>
+    <h2 class="lead wide rv d1">Foundation is built once. Then the engine <i>operates</i>.</h2>
+    <div class="phases rv d2">
+      <div class="phase"><span class="pnum"></span><div><h4>Foundation</h4><p>Brand systems for both products, channels, waitlists, email and tracking, first hero assets, and the creator brief.</p></div></div>
+      <div class="phase"><span class="pnum"></span><div><h4>Audience</h4><p>Open the clipper campaign, test hooks, and recruit the creator bench.</p></div></div>
+      <div class="phase"><span class="pnum"></span><div><h4>Demand</h4><p>Scale the winning clips, convert top talent to commission, and finalize landing pages.</p></div></div>
+      <div class="phase"><span class="pnum"></span><div><h4>Launch</h4><p>Clips, creators, email sequences, referral push, and daily reporting.</p></div></div>
+      <div class="phase"><span class="pnum"></span><div><h4>Optimize</h4><p>Focus on the winners, fix onboarding, and build retention and case studies.</p></div></div>
+    </div>
+    <div style="margin-top:2.8rem" class="rv d3">
+      <span class="spec">Phase 1 is complete when</span>
+      <ul class="checks">
+        <li>Channels are operational and branded, with visual identity standards set</li>
+        <li>The content library and an approved calendar exist</li>
+        <li>The creator program is active and community building has begun</li>
+        <li>Launch assets are prepared</li>
+      </ul>
+      <p class="body-lg" style="margin-top:1.6rem"><b>No major paid acquisition begins until Phase 1 is complete.</b></p>
+    </div>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 13 DELIVERABLES -->
+<section class="section cream">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">13 · Deliverables</span>
+    <h2 class="lead wide rv d1">Concrete artifacts, owned and <i>tracked</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">Scoped to the two MVP products.</p>
+    <ul class="checks rv d3">
+      <li>Product one-pager for each product</li>
+      <li>Creator brief for each product</li>
+      <li>Do-not-say guide</li>
+      <li>Social content calendar for all launch channels</li>
+      <li>Launch email sequence for each product</li>
+      <li>Waitlist and product landing pages</li>
+      <li>Creator tracking system</li>
+      <li>Weekly executive KPI report</li>
+      <li>Monthly performance report and attribution report</li>
+      <li>Partnership prospect list</li>
+      <li>Testimonial and proof-of-value repository</li>
+    </ul>
+  </div>
+</section>
+<hr class="hair">
+
+<!-- 14 RESOURCING -->
+<section class="section cream-deep">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">14 · Resourcing and dependencies</span>
+    <h2 class="lead wide rv d1">Reach is purchased per result, not committed <i>up front</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:2rem">The hero assets and tooling are the main fixed inputs at the start. The volume layer is paid from the results it produces.</p>
+    <div style="margin-top:2.4rem" class="rv d3">
+      <span class="spec">To begin execution, the EVP requires</span>
+      <ul class="deliver">
+        <li><span class="dlabel">Product access &amp; demo footage</span><span class="dsub">For both apps, so creative and claims are authored against the real product.</span></li>
+        <li><span class="dlabel">Sign-off on permitted claims</span><span class="dsub">Covering savings, refunds, and outcomes.</span></li>
+        <li><span class="dlabel">A launch window anchored to product readiness</span><span class="dsub">Rather than a fixed calendar date.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section class="section cta">
+  <div class="wrap">
+    <span class="eyebrow kicker rv">Alignment</span>
+    <h2 class="lead rv d1">Submitted as the basis for <i>alignment</i> ahead of execution.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Everything above is scoped to RenewalGuard and RefundPilot by design. <b>The systems built for them are reusable for the remaining products in the portfolio.</b></p>
+    <div class="signoff rv d3">
+      <div class="s-mark">Value<b>Pilot</b></div>
+      <div class="s-name">Jacques Amoako<br>EVP Marketing · Maison d'Élites, execution arm</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
