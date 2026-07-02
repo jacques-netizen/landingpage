@@ -141,6 +141,17 @@
   .card .c-creator{font-size:0.8rem;color:var(--gold-light);margin-top:0.4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
   .card .c-open{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-top:0.5rem;opacity:0;transition:opacity .2s}
   .card:hover .c-open{opacity:1;color:var(--gold-light)}
+  .card .status{display:inline-flex;align-items:center;gap:0.34rem;font-size:0.58rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.24rem 0.5rem;border-radius:30px;margin-bottom:0.55rem}
+  .card .status .sdot{width:6px;height:6px;border-radius:50%}
+  .card .status.accepted{background:rgba(111,185,138,0.16);color:#8fcfa5}
+  .card .status.accepted .sdot{background:var(--ok)}
+  .card .status.pending{background:rgba(199,168,103,0.16);color:var(--gold-light)}
+  .card .status.pending .sdot{background:var(--gold-light)}
+  .card .status.rejected{background:rgba(255,77,77,0.14);color:#e79a9a}
+  .card .status.rejected .sdot{background:var(--youtube)}
+  .card.rejected{opacity:0.55}
+  .card.rejected:hover{opacity:0.8}
+  .card.rejected .card-bg{filter:grayscale(0.75)}
 
   /* ---------- leaderboard ---------- */
   .board{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
@@ -334,24 +345,44 @@ function renderClips(clips){
     $('#clipNote').textContent = '';
     return;
   }
-  const sorted = clips.slice().sort((a,b) => (b.featured?1:0)-(a.featured?1:0) || b.views - a.views);
-  $('#clipNote').textContent = clips.length + ' clip' + (clips.length>1?'s':'') + ' · sorted by reach';
+  // Rejected sink to the bottom; then featured; then reach.
+  const rank = c => (c.status==='rejected'?1:0);
+  const sorted = clips.slice().sort((a,b) => rank(a)-rank(b) || (b.featured?1:0)-(a.featured?1:0) || b.views - a.views);
+  $('#clipNote').textContent = statusSummary(clips);
   root.innerHTML = sorted.map(c => {
     const p = plat(c.platform);
     const href = c.url ? ' href="'+esc(c.url)+'" target="_blank" rel="noopener"' : '';
     const tag = c.url ? 'a' : 'div';
-    return '<'+tag+' class="card" style="--pc:'+p.color+'"'+href+'>' +
+    const rej = c.status==='rejected' ? ' rejected' : '';
+    return '<'+tag+' class="card'+rej+'" style="--pc:'+p.color+'"'+href+'>' +
       '<div class="card-bg"></div>' +
       '<div class="badge"><span class="pdot" style="background:'+p.color+'"></span>'+esc(p.label)+'</div>' +
       (c.featured ? '<div class="feat">★ Top</div>' : '') +
       '<div class="mono"><span class="mono-ini">'+esc(initials(c.creator))+'</span></div>' +
       '<div class="card-meta">' +
+        statusPill(c.status) +
         '<div class="c-views">'+fmt(c.views)+'<span>views</span></div>' +
         (c.creator ? '<div class="c-creator">'+esc(c.creator)+'</div>' : '') +
         (c.url ? '<div class="c-open">View post →</div>' : '') +
       '</div>' +
     '</'+tag+'>';
   }).join('');
+}
+
+const STATUS = { accepted:{label:'Accepted'}, pending:{label:'Pending'}, rejected:{label:'Rejected'} };
+function statusPill(s){
+  const m = STATUS[s]; if(!m) return '';
+  return '<div class="status '+s+'"><span class="sdot"></span>'+m.label+'</div>';
+}
+function statusSummary(clips){
+  const n = clips.length; if(!n) return '';
+  const c = { accepted:0, pending:0, rejected:0 };
+  clips.forEach(x => { if(c[x.status]!==undefined) c[x.status]++; });
+  const parts = [];
+  if(c.accepted) parts.push(c.accepted+' accepted');
+  if(c.pending) parts.push(c.pending+' pending');
+  if(c.rejected) parts.push(c.rejected+' rejected');
+  return n + ' clip' + (n>1?'s':'') + (parts.length ? ' · ' + parts.join(' · ') : ' · sorted by reach');
 }
 
 function renderPlatforms(platforms){
