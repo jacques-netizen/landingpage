@@ -23,6 +23,24 @@ export default {
       return Response.redirect(new URL('/book', request.url).toString(), 302);
     }
 
+    // Per-client campaign dashboards on campaigns.maisondelites.com:
+    //   /<slug>        -> that client's dashboard
+    //   /<slug>/admin  -> that client's editor
+    //   /              -> a branded placeholder (no public client list)
+    // The dashboard/admin pages read the slug from the URL and call the API with
+    // ?client=<slug>. Reserved words and real files fall through to the assets.
+    if (url.hostname.startsWith('campaigns.')) {
+      const RESERVED = new Set(['api', 'v', 'img', 'dashboard', 'campaign-admin', 'book', 'booked', 'admin', 'assets', 'favicon.ico', 'robots.txt']);
+      const seg = path.split('/').filter(Boolean);
+      const serve = (p) => env.ASSETS.fetch(new Request(new URL(p, url).toString(), request));
+      if (seg.length === 0) return serve('/campaigns/index.html');
+      const looksLikeFile = seg[seg.length - 1].includes('.');
+      if (!looksLikeFile && !RESERVED.has(seg[0])) {
+        if (seg.length === 1) return serve('/dashboard/index.html');
+        if (seg.length === 2 && seg[1] === 'admin') return serve('/campaign-admin/index.html');
+      }
+    }
+
     // Static site (served by the assets binding).
     return env.ASSETS.fetch(request);
   },

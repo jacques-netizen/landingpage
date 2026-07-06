@@ -137,9 +137,9 @@ details[open] summary::after{transform:rotate(90deg)}
       <details>
         <summary>Campaign settings</summary>
         <div class="settings-body">
-          <div class="sf"><label>Artist / client</label><input id="sClient" type="text" value="Itzdanielmichael"></div>
-          <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" value="Need You · Please Stay"></div>
-          <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" value="1000"></div>
+          <div class="sf"><label>Artist / client</label><input id="sClient" type="text" placeholder="Client name"></div>
+          <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" placeholder="Optional"></div>
+          <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" placeholder="e.g. 1000"></div>
           <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is read straight from a reward/earnings column in your CSV. If the export has no such column, the dashboard shows no spend figure — it’s never estimated.</div>
         </div>
       </details>
@@ -170,6 +170,18 @@ const setPw = v => sessionStorage.setItem('mde_pw', v);
 const clrPw = () => sessionStorage.removeItem('mde_pw');
 const hdr = () => ({ 'Authorization': 'Bearer ' + pw(), 'content-type': 'application/json' });
 
+// Which client is this editor for? Slug is the first path segment on
+// campaigns.maisondelites.com/<slug>/admin (default for legacy /campaign-admin).
+const CLIENT = (() => {
+  const seg = location.pathname.split('/').filter(Boolean);
+  const s = (seg[0] && seg[0] !== 'campaign-admin' && seg[0] !== 'admin') ? seg[0] : 'itzdanielmichael';
+  return s.toLowerCase().replace(/[^a-z0-9-]/g,'') || 'itzdanielmichael';
+})();
+const prettyClient = CLIENT.split('-').map(w => w ? w[0].toUpperCase()+w.slice(1) : w).join(' ');
+const DASH = '/' + CLIENT;
+// Append ?client=<slug> (or &client=) to an API path.
+const withClient = (path) => path + (path.includes('?') ? '&' : '?') + 'client=' + encodeURIComponent(CLIENT);
+
 let pendingCSV = '';
 
 function fmt(n){
@@ -187,9 +199,9 @@ function showApp(){ $('#gate').style.display='none'; $('#app').style.display='';
 
 function meta(){
   return {
-    client: $('#sClient').value.trim() || 'Itzdanielmichael',
-    campaign: $('#sCampaign').value.trim() || 'Need You · Please Stay',
-    budgetTotal: Number($('#sBudget').value) || 1000,
+    client: $('#sClient').value.trim() || prettyClient,
+    campaign: $('#sCampaign').value.trim(),
+    budgetTotal: Number($('#sBudget').value) || 0,
     tagline: 'Live distribution across our creator network',
   };
 }
@@ -252,7 +264,7 @@ async function parseFile(file){
   setBanner('work','⏳','Reading your file…','');
 
   try{
-    const r=await fetch('/api/campaign/import?dryRun=1',{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
+    const r=await fetch(withClient('/api/campaign/import?dryRun=1'),{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
     if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
     const j=await r.json();
     if(!r.ok){ setBanner('bad','✕','Couldn’t read that file',j.error||'Check the CSV and try again.'); return; }
@@ -275,7 +287,7 @@ async function publish(){
   if(!pendingCSV) return;
   const btn=$('#publishBtn'); btn.disabled=true; btn.textContent='Publishing…';
   try{
-    const r=await fetch('/api/campaign/import',{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
+    const r=await fetch(withClient('/api/campaign/import'),{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
     if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
     const j=await r.json();
     if(!r.ok){ setBanner('bad','✕','Publish failed', j.error||''); btn.disabled=false; btn.textContent='Save & publish to dashboard'; return; }
@@ -301,7 +313,7 @@ $('#resetBtn').addEventListener('click', resetUpload);
 $('#unlockBtn').addEventListener('click', async()=>{
   const v=$('#pwInput').value.trim(); if(!v) return;
   setPw(v); $('#pwInput').value='';
-  try{ const r=await fetch('/api/campaign',{headers:{'Authorization':'Bearer '+v},cache:'no-store'}); if(r.status===401){clrPw();showGate('Wrong password.');} else showApp(); }
+  try{ const r=await fetch(withClient('/api/campaign'),{headers:{'Authorization':'Bearer '+v},cache:'no-store'}); if(r.status===401){clrPw();showGate('Wrong password.');} else showApp(); }
   catch(e){ showGate('Network error.'); }
 });
 $('#pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
@@ -312,7 +324,7 @@ $('#dgBtn').addEventListener('click', async()=>{
   const out=$('#dgOut'); out.style.display=''; out.textContent='Running…';
   if(!url){ out.textContent='Paste an Instagram reel link first.'; return; }
   try{
-    const r=await fetch('/api/campaign/thumbtest?url='+encodeURIComponent(url),{headers:hdr()});
+    const r=await fetch(withClient('/api/campaign/thumbtest?url='+encodeURIComponent(url)),{headers:hdr()});
     const j=await r.json();
     out.textContent=JSON.stringify(j,null,2);
   }catch(e){ out.textContent='Error: '+(e.message||e); }
@@ -322,15 +334,20 @@ $('#dgResolve').addEventListener('click', async()=>{
   const out=$('#dgOut'); out.style.display=''; out.textContent='Resolving thumbnails… (this can take 20–40s, hang tight)';
   const btn=$('#dgResolve'); btn.disabled=true;
   try{
-    const r=await fetch('/api/campaign/resolve',{method:'POST',headers:hdr()});
+    const r=await fetch(withClient('/api/campaign/resolve'),{method:'POST',headers:hdr()});
     const j=await r.json();
     out.textContent=JSON.stringify(j,null,2)+'\n\nIf "withThumbnail" is less than "total", click again to continue. Then refresh the dashboard.';
   }catch(e){ out.textContent='Error: '+(e.message||e); }
   btn.disabled=false;
 });
 
+// Reflect the current client in the form + dashboard links.
+$('#sClient').value = prettyClient;
+$('#pvDash').href = DASH;
+document.querySelectorAll('.top-right a[target="_blank"]').forEach(a => a.href = DASH);
+
 if(pw()){
-  fetch('/api/campaign',{headers:{'Authorization':'Bearer '+pw()},cache:'no-store'})
+  fetch(withClient('/api/campaign'),{headers:{'Authorization':'Bearer '+pw()},cache:'no-store'})
     .then(r=>{ if(r.status===401){clrPw();showGate();}else showApp(); })
     .catch(()=>showGate('Network error.'));
 }else{ showGate(); }
