@@ -265,6 +265,13 @@
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 const POLL_MS = 20000;
+// Which client's dashboard is this? Slug is the first path segment on
+// campaigns.maisondelites.com/<slug>; falls back to the default for /dashboard.
+const CLIENT = (() => {
+  const seg = location.pathname.split('/').filter(Boolean);
+  const s = (seg[0] && seg[0] !== 'dashboard') ? seg[0] : 'itzdanielmichael';
+  return s.toLowerCase().replace(/[^a-z0-9-]/g, '') || 'itzdanielmichael';
+})();
 let prev = {};            // last-seen numeric values, for flash + count-up
 let lastUpdated = null;
 let firstPaint = true;
@@ -481,7 +488,7 @@ function tickAgo(){
 
 async function load(){
   try{
-    const res = await fetch('/api/campaign', { cache:'no-store' });
+    const res = await fetch('/api/campaign?client=' + encodeURIComponent(CLIENT), { cache:'no-store' });
     if(!res.ok) throw new Error('http '+res.status);
     const d = await res.json();
     paint(d);
