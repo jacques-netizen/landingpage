@@ -20,6 +20,12 @@ name = "landingpage"
 main = "worker.js"
 compatibility_date = "2024-09-01"
 
+# Custom Domains on this Worker (added in the dashboard, one per subdomain):
+#   hello.* / book.* / proposals.*  -> landing, booking, proposals
+#   campaigns.*                      -> multi-tenant client dashboards,
+#                                       campaigns.maisondelites.com/<client>
+# All host routing lives in worker.js (run_worker_first = true).
+
 [assets]
 directory = "."
 binding = "ASSETS"
