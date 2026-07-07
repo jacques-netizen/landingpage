@@ -1,6 +1,6 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
-import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignImport, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
+import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignList, handleCampaignImport, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -11,6 +11,7 @@ export default {
     if (path === '/api/list') return handleList(request, env);
     if (path === '/api/notify') return handleNotify(request, env);
     if (path === '/api/campaign') return handleCampaign(request, env);
+    if (path === '/api/campaigns') return handleCampaignList(request, env);
     if (path === '/api/campaign/import') return handleCampaignImport(request, env, ctx);
     if (path === '/api/campaign/whop') return handleWhopProbe(request, env);
     if (path === '/api/campaign/thumbtest') return handleThumbTest(request, env);
@@ -30,10 +31,12 @@ export default {
     // The dashboard/admin pages read the slug from the URL and call the API with
     // ?client=<slug>. Reserved words and real files fall through to the assets.
     if (url.hostname.startsWith('campaigns.')) {
-      const RESERVED = new Set(['api', 'v', 'img', 'dashboard', 'campaign-admin', 'book', 'booked', 'admin', 'assets', 'favicon.ico', 'robots.txt']);
+      const RESERVED = new Set(['api', 'v', 'img', 'dashboard', 'campaign-admin', 'campaign-hub', 'book', 'booked', 'admin', 'assets', 'favicon.ico', 'robots.txt']);
       const seg = path.split('/').filter(Boolean);
       const serve = (p) => env.ASSETS.fetch(new Request(new URL(p, url).toString(), request));
       if (seg.length === 0) return serve('/campaigns/index.html');
+      // /admin -> operator hub listing every client
+      if (seg.length === 1 && seg[0] === 'admin') return serve('/campaign-hub/index.html');
       const looksLikeFile = seg[seg.length - 1].includes('.');
       if (!looksLikeFile && !RESERVED.has(seg[0])) {
         if (seg.length === 1) return serve('/dashboard/index.html');
