@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Campaign Hub · Maison d'Élites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d0d0f;--ink-card:#141318;--ink-soft:#1a1a20;
+  --gold:#a88a4f;--gold-light:#c7a867;--gold-bright:#e6c984;
+  --text-cream:#e8e3d6;--text-mute:#9b9484;--text-dim:#6f6a5e;
+  --hair:rgba(232,227,214,0.12);--hair-mid:rgba(232,227,214,0.22);
+  --ok:#6fb98a;--bad:#d2766a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cream);-webkit-font-smoothing:antialiased;min-height:100vh}
+.wrap{max-width:860px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+
+.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.4rem}
+.topbar-in{display:flex;align-items:center;justify-content:space-between}
+.mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em}
+.mark b{color:var(--gold-light);font-weight:500}
+.top-right{font-size:.78rem;display:flex;gap:1.2rem}
+.top-right a{color:var(--text-mute);text-decoration:none;cursor:pointer}
+.top-right a:hover{color:var(--gold-light)}
+
+.gate{max-width:340px;margin:10vh auto 0;background:var(--ink-card);border:1px solid var(--hair);border-radius:16px;padding:2rem}
+.gate h2{font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1.4rem}
+input[type=password],input[type=text]{width:100%;padding:.75rem 1rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:9px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;transition:.15s border-color}
+input:focus{border-color:var(--gold)}
+.err{font-size:.8rem;color:var(--bad);min-height:1.1em;margin-top:.4rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;border:0;border-radius:10px;font-family:inherit;font-weight:600;font-size:.9rem;padding:.8rem 1.3rem;transition:.15s}
+.btn-gold{background:var(--gold);color:#1a1208}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-ghost{background:transparent;color:var(--gold-light);border:1px solid var(--hair-mid)}
+.btn-ghost:hover{border-color:var(--gold)}
+.btn.full{width:100%;margin-top:1rem}
+
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.head h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-.01em}
+.head .sub{font-size:.8rem;color:var(--text-dim)}
+
+/* new-campaign form */
+.newbox{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.4rem;display:none}
+.newbox.show{display:block}
+.newrow{display:flex;gap:.7rem;flex-wrap:wrap;align-items:flex-end}
+.nf{flex:1;min-width:180px;display:flex;flex-direction:column;gap:.35rem}
+.nf label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
+.nf .slughint{font-size:.72rem;color:var(--text-dim);margin-top:.3rem}
+.nf .slughint b{color:var(--gold-light)}
+
+/* campaign grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.ccard{display:block;text-decoration:none;background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.2rem 1.3rem;transition:.18s;color:inherit;position:relative}
+.ccard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.ccard .cname{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--text-cream);line-height:1.15}
+.ccard .ccamp{font-size:.78rem;color:var(--text-mute);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccard .cstats{display:flex;gap:1.2rem;margin-top:1rem}
+.ccard .cstat .n{font-family:'EB Garamond',serif;font-size:1.25rem;color:var(--gold-light);line-height:1}
+.ccard .cstat .l{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-top:.3rem}
+.ccard .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem;padding-top:.8rem;border-top:1px solid var(--hair)}
+.ccard .cupd{font-size:.7rem;color:var(--text-dim)}
+.ccard .cedit{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+.ccard .clive{position:absolute;top:1rem;right:1.1rem;font-size:.68rem;color:var(--text-dim);text-decoration:none}
+.ccard .clive:hover{color:var(--gold-light)}
+
+.empty{grid-column:1/-1;text-align:center;padding:2.6rem 1rem;color:var(--text-dim);font-weight:300;border:1px dashed var(--hair);border-radius:14px}
+.empty b{display:block;color:var(--text-mute);font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:400;margin-bottom:.4rem}
+.loading{grid-column:1/-1;color:var(--text-dim);text-align:center;padding:2rem}
+.pad{padding-bottom:3rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-in">
+    <div class="mark">Maison <b>d'Élites</b> · Campaign Hub</div>
+    <div class="top-right" id="topRight" style="display:none">
+      <a id="lockBtn">Lock</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap pad">
+
+  <!-- Gate -->
+  <div id="gate" style="display:none">
+    <div class="gate">
+      <h2>Campaign hub</h2>
+      <input id="pwInput" type="password" placeholder="Admin password" autocomplete="current-password">
+      <div class="err" id="gateErr"></div>
+      <button class="btn btn-gold full" id="unlockBtn">Unlock</button>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div id="app" style="display:none">
+    <div class="head">
+      <div>
+        <h1>Your campaigns</h1>
+        <div class="sub" id="countSub"></div>
+      </div>
+      <button class="btn btn-gold" id="newBtn">＋ New campaign</button>
+    </div>
+
+    <div class="newbox" id="newBox">
+      <div class="newrow">
+        <div class="nf">
+          <label>Client / campaign name</label>
+          <input id="nName" type="text" placeholder="e.g. Acme Records" autocomplete="off">
+          <div class="slughint">URL will be <b id="nSlug">campaigns.maisondelites.com/…</b></div>
+        </div>
+        <button class="btn btn-gold" id="createBtn">Create →</button>
+        <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="loading">Loading campaigns…</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const pw = () => sessionStorage.getItem('mde_pw') || '';
+const setPw = v => sessionStorage.setItem('mde_pw', v);
+const clrPw = () => sessionStorage.removeItem('mde_pw');
+const hdr = () => ({ 'Authorization': 'Bearer ' + pw() });
+
+function fmt(n){
+  n=Number(n)||0;
+  if(n>=1e9) return (n/1e9).toFixed(1).replace(/\.0$/,'')+'B';
+  if(n>=1e6) return (n/1e6).toFixed(1).replace(/\.0$/,'')+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
+  return String(Math.round(n));
+}
+function ago(iso){
+  if(!iso) return 'not published yet';
+  const s=Math.max(0,(Date.now()-new Date(iso).getTime())/1000);
+  if(s<60) return 'updated just now';
+  if(s<3600) return 'updated '+Math.floor(s/60)+'m ago';
+  if(s<86400) return 'updated '+Math.floor(s/3600)+'h ago';
+  return 'updated '+Math.floor(s/86400)+'d ago';
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function slugify(v){ return String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40); }
+
+function showGate(msg){ $('#gate').style.display=''; $('#app').style.display='none'; $('#topRight').style.display='none'; $('#gateErr').textContent=msg||''; setTimeout(()=>$('#pwInput').focus(),40); }
+function showApp(){ $('#gate').style.display='none'; $('#app').style.display=''; $('#topRight').style.display=''; load(); }
+
+async function load(){
+  const grid=$('#grid'); grid.innerHTML='<div class="loading">Loading campaigns…</div>';
+  try{
+    const r=await fetch('/api/campaigns',{headers:hdr(),cache:'no-store'});
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j=await r.json();
+    const list=j.clients||[];
+    $('#countSub').textContent = list.length ? (list.length+' campaign'+(list.length>1?'s':'')+' · click one to update it') : '';
+    if(!list.length){
+      grid.innerHTML='<div class="empty"><b>No campaigns yet</b>Click “New campaign” to create your first one.</div>';
+      return;
+    }
+    grid.innerHTML=list.map(c=>{
+      const dash='/'+encodeURIComponent(c.slug);
+      return '<a class="ccard" href="'+dash+'/admin">'+
+        '<a class="clive" href="'+dash+'" target="_blank" onclick="event.stopPropagation()">Live ↗</a>'+
+        '<div class="cname">'+esc(c.client||c.slug)+'</div>'+
+        '<div class="ccamp">'+esc(c.campaign||'/'+c.slug)+'</div>'+
+        '<div class="cstats">'+
+          '<div class="cstat"><div class="n">'+fmt(c.views)+'</div><div class="l">Views</div></div>'+
+          '<div class="cstat"><div class="n">'+fmt(c.clips)+'</div><div class="l">Clips</div></div>'+
+        '</div>'+
+        '<div class="cfoot"><span class="cupd">'+ago(c.updated)+'</span><span class="cedit">Edit →</span></div>'+
+      '</a>';
+    }).join('');
+  }catch(e){ grid.innerHTML='<div class="empty"><b>Couldn’t load</b>'+esc(e.message||e)+'</div>'; }
+}
+
+// New campaign
+$('#newBtn').addEventListener('click',()=>{ $('#newBox').classList.add('show'); $('#nName').focus(); });
+$('#cancelBtn').addEventListener('click',()=>{ $('#newBox').classList.remove('show'); $('#nName').value=''; updSlug(); });
+function updSlug(){
+  const s=slugify($('#nName').value);
+  $('#nSlug').textContent = s ? 'campaigns.maisondelites.com/'+s : 'campaigns.maisondelites.com/…';
+}
+$('#nName').addEventListener('input',updSlug);
+function create(){
+  const s=slugify($('#nName').value);
+  if(!s){ $('#nName').focus(); return; }
+  location.href='/'+s+'/admin';
+}
+$('#createBtn').addEventListener('click',create);
+$('#nName').addEventListener('keydown',e=>{ if(e.key==='Enter') create(); });
+
+// Auth
+$('#unlockBtn').addEventListener('click', async()=>{
+  const v=$('#pwInput').value.trim(); if(!v) return;
+  setPw(v); $('#pwInput').value='';
+  try{ const r=await fetch('/api/campaigns',{headers:{'Authorization':'Bearer '+v},cache:'no-store'}); if(r.status===401){clrPw();showGate('Wrong password.');} else showApp(); }
+  catch(e){ showGate('Network error.'); }
+});
+$('#pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
+$('#lockBtn').addEventListener('click', ()=>{ clrPw(); showGate('Locked.'); });
+
+if(pw()){
+  fetch('/api/campaigns',{headers:hdr(),cache:'no-store'})
+    .then(r=>{ if(r.status===401){clrPw();showGate();}else showApp(); })
+    .catch(()=>showGate('Network error.'));
+}else{ showGate(); }
+</script>
+</body>
+</html>

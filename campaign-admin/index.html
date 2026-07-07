@@ -87,8 +87,9 @@ details[open] summary::after{transform:rotate(90deg)}
 
 <div class="topbar">
   <div class="wrap topbar-in">
-    <div class="mark">Maison <b>d'Élites</b></div>
+    <div class="mark">Maison <b>d'Élites</b> · <span id="markClient"></span></div>
     <div class="top-right" id="topRight" style="display:none">
+      <a href="/admin">← All campaigns</a>
       <a href="/dashboard" target="_blank">Live dashboard ↗</a>
       <a href="#" id="lockBtn">Lock</a>
     </div>
@@ -343,6 +344,7 @@ $('#dgResolve').addEventListener('click', async()=>{
 
 // Reflect the current client in the form + dashboard links.
 $('#sClient').value = prettyClient;
+$('#markClient').textContent = prettyClient;
 $('#pvDash').href = DASH;
 document.querySelectorAll('.top-right a[target="_blank"]').forEach(a => a.href = DASH);
 
