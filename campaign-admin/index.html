@@ -80,7 +80,21 @@ details[open] summary::after{transform:rotate(90deg)}
 .sf input:focus{border-color:var(--gold)}
 .dash-link{display:block;text-align:center;margin-top:.4rem;padding:.7rem;background:rgba(111,185,138,.12);border:1px solid rgba(111,185,138,.3);border-radius:10px;color:var(--ok);font-size:.85rem;font-weight:600;text-decoration:none}
 
-@media(max-width:460px){.settings-body{grid-template-columns:1fr}}
+/* campaign identity: banner + name */
+.idcard{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:1rem}
+.idtitle{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.bzone{position:relative;border:2px dashed var(--hair-mid);border-radius:12px;overflow:hidden;min-height:130px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;background:var(--ink-soft)}
+.bzone:hover,.bzone.over{border-color:var(--gold);background:rgba(168,138,79,.06)}
+.bzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.bzone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bzone .bempty{display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--text-dim);font-size:.78rem;pointer-events:none;text-align:center;padding:1rem}
+.bzone .bempty b{font-size:1.5rem;color:var(--gold);opacity:.65;font-weight:400}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.bstatus{font-size:.74rem;color:var(--text-dim)}
+.btn-sm{width:auto;padding:.45rem .9rem;font-size:.76rem}
+.idfields{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+
+@media(max-width:460px){.settings-body{grid-template-columns:1fr}.idfields{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -112,6 +126,24 @@ details[open] summary::after{transform:rotate(90deg)}
   <div id="app" style="display:none">
     <div class="stack">
 
+      <!-- Campaign identity: banner + name -->
+      <div class="idcard">
+        <div class="idtitle">Campaign identity</div>
+        <div class="bzone" id="bzone">
+          <input type="file" id="bimgInput" accept="image/*">
+          <img id="bimgPreview" alt="" style="display:none">
+          <div class="bempty" id="bimgEmpty"><b>＋</b>Add a campaign banner image<br>(shown at the top of the live dashboard)</div>
+        </div>
+        <div class="brow">
+          <span class="bstatus" id="bimgStatus"></span>
+          <button class="btn btn-ghost btn-sm" id="bimgRemove" type="button" style="display:none">Remove banner</button>
+        </div>
+        <div class="idfields">
+          <div class="sf"><label>Artist / client</label><input id="sClient" type="text" placeholder="Client name"></div>
+          <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" placeholder="e.g. Need You · Please Stay"></div>
+        </div>
+      </div>
+
       <!-- Step 1: upload -->
       <div class="zone" id="zone">
         <input type="file" id="fileInput" accept=".csv,text/csv,text/plain">
@@ -138,9 +170,7 @@ details[open] summary::after{transform:rotate(90deg)}
       <details>
         <summary>Campaign settings</summary>
         <div class="settings-body">
-          <div class="sf"><label>Artist / client</label><input id="sClient" type="text" placeholder="Client name"></div>
-          <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" placeholder="Optional"></div>
-          <div class="sf"><label>Budget ($)</label><input id="sBudget" type="number" min="0" placeholder="e.g. 1000"></div>
+          <div class="sf full"><label>Budget ($)</label><input id="sBudget" type="number" min="0" placeholder="e.g. 1000"></div>
           <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is read straight from a reward/earnings column in your CSV. If the export has no such column, the dashboard shows no spend figure — it’s never estimated.</div>
         </div>
       </details>
@@ -302,6 +332,66 @@ function resetUpload(){
   pendingCSV=''; $('#previewCard').style.display='none'; $('#fileInput').value='';
 }
 
+// --- campaign banner image (upload / remove) ---
+function setBimgStatus(msg){ $('#bimgStatus').textContent = msg||''; }
+function showBannerPreview(url){
+  if(url){
+    $('#bimgPreview').src = url; $('#bimgPreview').style.display='';
+    $('#bimgEmpty').style.display='none';
+    $('#bimgRemove').style.display='';
+  } else {
+    $('#bimgPreview').style.display='none'; $('#bimgPreview').removeAttribute('src');
+    $('#bimgEmpty').style.display='';
+    $('#bimgRemove').style.display='none';
+  }
+}
+async function uploadBanner(file){
+  if(!file) return;
+  if(!/^image\//.test(file.type)){ setBimgStatus('Please choose an image file.'); return; }
+  setBimgStatus('Uploading…');
+  try{
+    const r = await fetch(withClient('/api/campaign/banner'), {
+      method:'POST',
+      headers: { 'Authorization':'Bearer '+pw(), 'x-file-type': file.type || 'image/jpeg' },
+      body: file,
+    });
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j = await r.json();
+    if(!r.ok){ setBimgStatus(j.error||'Upload failed.'); return; }
+    showBannerPreview(j.banner + '?t=' + Date.now());
+    setBimgStatus('Banner updated — live on the dashboard.');
+  }catch(e){ setBimgStatus('Upload failed: '+(e.message||e)); }
+}
+async function removeBanner(){
+  setBimgStatus('Removing…');
+  try{
+    const r = await fetch(withClient('/api/campaign/banner'), { method:'DELETE', headers:{'Authorization':'Bearer '+pw()} });
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j = await r.json();
+    if(!r.ok){ setBimgStatus(j.error||'Remove failed.'); return; }
+    showBannerPreview('');
+    setBimgStatus('Banner removed.');
+  }catch(e){ setBimgStatus('Remove failed: '+(e.message||e)); }
+}
+$('#bimgInput').addEventListener('change', e=>{ if(e.target.files[0]) uploadBanner(e.target.files[0]); });
+const bzone = $('#bzone');
+bzone.addEventListener('dragover', e=>{e.preventDefault();bzone.classList.add('over');});
+bzone.addEventListener('dragleave', ()=>bzone.classList.remove('over'));
+bzone.addEventListener('drop', e=>{ e.preventDefault(); bzone.classList.remove('over'); if(e.dataTransfer.files[0]) uploadBanner(e.dataTransfer.files[0]); });
+$('#bimgRemove').addEventListener('click', e=>{ e.stopPropagation(); removeBanner(); });
+
+// Fill the form with the campaign's REAL saved values (not a guessed default),
+// so republishing a CSV never silently overwrites a name you've already set.
+function prefill(data){
+  if(!data) return;
+  $('#sClient').value = data.client || prettyClient;
+  $('#sCampaign').value = data.campaign || '';
+  const bt = data.summary && Number(data.summary.budgetTotal);
+  $('#sBudget').value = (bt && bt > 0) ? bt : '';
+  $('#markClient').textContent = data.client || prettyClient;
+  showBannerPreview(data.banner || '');
+}
+
 // wire up
 $('#fileInput').addEventListener('change', e=>{ if(e.target.files[0]) parseFile(e.target.files[0]); });
 const zone=$('#zone');
@@ -311,11 +401,20 @@ zone.addEventListener('drop', e=>{ e.preventDefault(); zone.classList.remove('ov
 $('#publishBtn').addEventListener('click', publish);
 $('#resetBtn').addEventListener('click', resetUpload);
 
+async function loadCurrent(wrongMsg){
+  try{
+    const r = await fetch(withClient('/api/campaign'), { headers:{'Authorization':'Bearer '+pw()}, cache:'no-store' });
+    if(r.status===401){ clrPw(); showGate(wrongMsg || 'Session expired.'); return; }
+    const j = await r.json();
+    prefill(j);
+    showApp();
+  }catch(e){ showGate('Network error.'); }
+}
+
 $('#unlockBtn').addEventListener('click', async()=>{
   const v=$('#pwInput').value.trim(); if(!v) return;
   setPw(v); $('#pwInput').value='';
-  try{ const r=await fetch(withClient('/api/campaign'),{headers:{'Authorization':'Bearer '+v},cache:'no-store'}); if(r.status===401){clrPw();showGate('Wrong password.');} else showApp(); }
-  catch(e){ showGate('Network error.'); }
+  await loadCurrent('Wrong password.');
 });
 $('#pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('#unlockBtn').click(); });
 $('#lockBtn').addEventListener('click', e=>{ e.preventDefault(); clrPw(); showGate('Locked.'); });
@@ -342,17 +441,14 @@ $('#dgResolve').addEventListener('click', async()=>{
   btn.disabled=false;
 });
 
-// Reflect the current client in the form + dashboard links.
+// Reflect the current client in dashboard links immediately; real saved
+// values (name, budget, banner) load and overwrite these once authed.
 $('#sClient').value = prettyClient;
 $('#markClient').textContent = prettyClient;
 $('#pvDash').href = DASH;
 document.querySelectorAll('.top-right a[target="_blank"]').forEach(a => a.href = DASH);
 
-if(pw()){
-  fetch(withClient('/api/campaign'),{headers:{'Authorization':'Bearer '+pw()},cache:'no-store'})
-    .then(r=>{ if(r.status===401){clrPw();showGate();}else showApp(); })
-    .catch(()=>showGate('Network error.'));
-}else{ showGate(); }
+if(pw()){ loadCurrent(); } else { showGate(); }
 </script>
 </body>
 </html>

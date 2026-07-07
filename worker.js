@@ -1,6 +1,6 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
-import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignList, handleCampaignImport, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
+import { handleUpload, handleList, handleMedia, handleNotify, handleCampaign, handleCampaignList, handleCampaignImport, handleCampaignBanner, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -13,6 +13,7 @@ export default {
     if (path === '/api/campaign') return handleCampaign(request, env);
     if (path === '/api/campaigns') return handleCampaignList(request, env);
     if (path === '/api/campaign/import') return handleCampaignImport(request, env, ctx);
+    if (path === '/api/campaign/banner') return handleCampaignBanner(request, env);
     if (path === '/api/campaign/whop') return handleWhopProbe(request, env);
     if (path === '/api/campaign/thumbtest') return handleThumbTest(request, env);
     if (path === '/api/campaign/resolve') return handleResolveThumbs(request, env);

@@ -69,6 +69,16 @@
   .hero-sub{color:var(--text-mute);font-weight:300;font-size:clamp(0.96rem,1.6vw,1.1rem);max-width:60ch}
   .hero-for{margin-top:1rem;font-size:0.8rem;letter-spacing:0.06em;color:var(--text-dim)}
   .hero-for b{color:var(--text-cream);font-weight:500}
+  .hero-for.light{color:rgba(255,255,255,0.82)}
+  .hero-for.light b{color:#fff}
+
+  /* ---------- hero banner (shown when a campaign image is set) ---------- */
+  .herobanner{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--hair);margin-bottom:0.4rem}
+  .herobanner-img{display:block;width:100%;height:clamp(200px,30vw,360px);object-fit:cover;background:var(--ink-soft)}
+  .herobanner-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.05) 30%,rgba(0,0,0,0.55) 72%,rgba(0,0,0,0.92) 100%)}
+  .herobanner-content{position:absolute;left:0;right:0;bottom:0;padding:clamp(1.3rem,3vw,2.2rem)}
+  .herobanner-content .eyebrow{color:var(--gold-bright)}
+  .herobanner-content h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.8rem,5vw,3.2rem);line-height:1.06;letter-spacing:-0.02em;color:#fff;margin:0.5rem 0 0.4rem;text-shadow:0 2px 24px rgba(0,0,0,0.45)}
 
   /* ---------- headline stats ---------- */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:1.6rem}
@@ -196,10 +206,22 @@
 <main class="wrap">
 
   <section class="hero">
-    <span class="eyebrow" id="campaignKicker">Live Campaign Report</span>
-    <h1 id="heroTitle">Your campaign, <i>live</i>.</h1>
-    <p class="hero-sub" id="heroSub">Every clip, every view, updated in real time as the distribution runs.</p>
-    <div class="hero-for" id="heroFor"></div>
+    <div class="herobanner" id="heroBanner" style="display:none">
+      <img class="herobanner-img" id="heroBannerImg" alt="">
+      <div class="herobanner-veil"></div>
+      <div class="herobanner-content">
+        <span class="eyebrow" id="campaignKickerB">Live Campaign Report</span>
+        <h1 id="heroTitleB"></h1>
+        <div class="hero-for light" id="heroForB"></div>
+      </div>
+    </div>
+
+    <div id="heroPlain">
+      <span class="eyebrow" id="campaignKicker">Live Campaign Report</span>
+      <h1 id="heroTitle">Your campaign, <i>live</i>.</h1>
+      <p class="hero-sub" id="heroSub">Every clip, every view, updated in real time as the distribution runs.</p>
+      <div class="hero-for" id="heroFor"></div>
+    </div>
 
     <div class="stats" id="stats">
       <div class="stat"><div class="s-num" data-k="views">—</div><div class="s-lab">Total views</div><div class="s-sub" id="viewsSub">across all platforms</div></div>
@@ -402,6 +424,26 @@ function paint(d){
   if(d.tagline) $('#heroSub').textContent = d.tagline;
   $('#heroFor').innerHTML = d.client ? 'Prepared for <b>'+esc(d.client)+'</b>' : '';
   document.title = "Maison d'Élites · " + (d.client || 'Campaign') + ' Dashboard';
+
+  // Banner mode: when the campaign has a cover image, show a rich editorial
+  // banner with the campaign name overlaid instead of the plain text hero.
+  // Banners are served from our own /v/ media endpoint (same origin), so no
+  // hotlink/CDN-blocking concerns — if it 404s (e.g. deleted), just fall back.
+  if(d.banner){
+    const img = $('#heroBannerImg');
+    if(img.dataset.src !== d.banner){
+      img.dataset.src = d.banner;
+      img.onerror = () => { $('#heroBanner').style.display = 'none'; $('#heroPlain').style.display = ''; };
+      img.src = d.banner;
+    }
+    $('#heroPlain').style.display = 'none';
+    $('#heroBanner').style.display = '';
+    $('#heroTitleB').innerHTML = d.campaign ? esc(d.campaign).replace(/&amp;/g,'&') : (d.client||'Campaign');
+    $('#heroForB').innerHTML = d.client ? 'Prepared for <b>'+esc(d.client)+'</b>' : '';
+  } else {
+    $('#heroBanner').style.display = 'none';
+    $('#heroPlain').style.display = '';
+  }
 
   // headline stats
   const views = s.views || 0;

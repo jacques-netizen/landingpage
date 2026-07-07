@@ -55,8 +55,10 @@ input:focus{border-color:var(--gold)}
 
 /* campaign grid */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
-.ccard{display:block;text-decoration:none;background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.2rem 1.3rem;transition:.18s;color:inherit;position:relative}
+.ccard{display:block;text-decoration:none;background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:0;transition:.18s;color:inherit;position:relative;overflow:hidden}
 .ccard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.45)}
+.ccard .cbanner{display:block;width:100%;height:110px;object-fit:cover;background:var(--ink-soft)}
+.ccard .ccardin{padding:1.2rem 1.3rem}
 .ccard .cname{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--text-cream);line-height:1.15}
 .ccard .ccamp{font-size:.78rem;color:var(--text-mute);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ccard .cstats{display:flex;gap:1.2rem;margin-top:1rem}
@@ -65,8 +67,8 @@ input:focus{border-color:var(--gold)}
 .ccard .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem;padding-top:.8rem;border-top:1px solid var(--hair)}
 .ccard .cupd{font-size:.7rem;color:var(--text-dim)}
 .ccard .cedit{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
-.ccard .clive{position:absolute;top:1rem;right:1.1rem;font-size:.68rem;color:var(--text-dim);text-decoration:none}
-.ccard .clive:hover{color:var(--gold-light)}
+.ccard .clive{position:absolute;top:.7rem;right:.8rem;font-size:.68rem;color:rgba(255,255,255,0.85);text-decoration:none;background:rgba(0,0,0,0.45);backdrop-filter:blur(3px);padding:.28rem .55rem;border-radius:20px;z-index:2}
+.ccard .clive:hover{color:var(--gold-bright)}
 
 .empty{grid-column:1/-1;text-align:center;padding:2.6rem 1rem;color:var(--text-dim);font-weight:300;border:1px dashed var(--hair);border-radius:14px}
 .empty b{display:block;color:var(--text-mute);font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:400;margin-bottom:.4rem}
@@ -169,7 +171,9 @@ async function load(){
     grid.innerHTML=list.map(c=>{
       const dash='/'+encodeURIComponent(c.slug);
       return '<a class="ccard" href="'+dash+'/admin">'+
+        (c.banner ? '<img class="cbanner" src="'+esc(c.banner)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
         '<a class="clive" href="'+dash+'" target="_blank" onclick="event.stopPropagation()">Live ↗</a>'+
+        '<div class="ccardin">'+
         '<div class="cname">'+esc(c.client||c.slug)+'</div>'+
         '<div class="ccamp">'+esc(c.campaign||'/'+c.slug)+'</div>'+
         '<div class="cstats">'+
@@ -177,6 +181,7 @@ async function load(){
           '<div class="cstat"><div class="n">'+fmt(c.clips)+'</div><div class="l">Clips</div></div>'+
         '</div>'+
         '<div class="cfoot"><span class="cupd">'+ago(c.updated)+'</span><span class="cedit">Edit →</span></div>'+
+        '</div>'+
       '</a>';
     }).join('');
   }catch(e){ grid.innerHTML='<div class="empty"><b>Couldn’t load</b>'+esc(e.message||e)+'</div>'; }
