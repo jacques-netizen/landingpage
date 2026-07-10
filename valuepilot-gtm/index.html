@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValuePilot · Go-To-Market Action Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#19150F;
+    --panel:#211A12;
+    --panel-2:#262016;
+    --text:#ECE4D2;
+    --mute:#9C8F75;
+    --gold:#C8A85A;
+    --gold-deep:#A88A4F;
+    --gold-soft:#E2CC92;
+    --hair:rgba(200,168,90,.20);
+    --hair-soft:rgba(200,168,90,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'EB Garamond',serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection{background:var(--gold);color:var(--bg)}
+
+  /* type helpers */
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold)}
+  .label.dim{color:var(--mute)}
+  .h-arch{font-family:'Archivo',sans-serif;font-weight:600;letter-spacing:0.02em}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.85rem,4.4vw,3.2rem);line-height:1.12;letter-spacing:-0.01em;max-width:24ch}
+  .statement i{font-style:italic;color:var(--gold-soft)}
+  .body-lg{font-size:clamp(1.05rem,1.5vw,1.22rem);color:var(--mute);max-width:62ch;line-height:1.7}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .kicker{display:block;margin-bottom:1.4rem}
+
+  .section{padding:clamp(4.5rem,11vh,8.5rem) clamp(1.4rem,7vw,7.5rem);position:relative}
+  .wrap{max-width:1060px;margin:0 auto}
+  .rule{height:1px;background:var(--hair-soft);border:0}
+
+  /* reveals */
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .95s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  /* progress bar */
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft));z-index:9999;transition:width .1s linear}
+
+  /* side dot nav */
+  #dots{position:fixed;right:1.4rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.9rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold-deep);background:transparent;display:block;transition:.3s}
+  #dots a.on{background:var(--gold);border-color:var(--gold);transform:scale(1.25)}
+  #dots a span{
+    position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;
+    font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;
+    opacity:0;pointer-events:none;transition:.25s;
+  }
+  #dots a:hover span,#dots a:focus span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  /* ============ COVER ============ */
+  .cover{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(2rem,5vw,3.4rem) clamp(1.4rem,7vw,7.5rem)}
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.1rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .cover-mid{max-width:960px;padding:3rem 0}
+  .cover-mid .label{display:block;margin-bottom:1.8rem}
+  .cover h1{
+    font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:-0.02em;
+    font-size:clamp(2.5rem,7vw,5.2rem);line-height:1.02;text-transform:none;
+  }
+  .cover h1 span{color:var(--gold)}
+  .cover-sub{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.15rem,2.4vw,1.65rem);color:var(--mute);margin-top:1.8rem;max-width:34ch;line-height:1.4}
+  .meta-chips{display:flex;gap:0.7rem;flex-wrap:wrap;margin-top:2.6rem}
+  .meta-chip{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:500;color:var(--text);border:1px solid var(--hair);padding:0.6rem 1.1rem;border-radius:999px}
+  .meta-chip b{color:var(--gold-soft);font-weight:600}
+  .cover-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* section head pattern */
+  .snum{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:1.4rem}
+
+  /* ============ 1 DECISION CARDS ============ */
+  .cands{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:2.8rem}
+  .cand{background:var(--panel);border:1px solid var(--hair-soft);cursor:pointer;transition:border-color .3s;overflow:hidden}
+  .cand:hover{border-color:var(--hair)}
+  .cand.open{border-color:var(--gold-deep)}
+  .cand-head{padding:1.5rem 1.6rem;display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
+  .cand-head .cn{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.15rem;letter-spacing:0.01em}
+  .cand-head .co{font-size:0.95rem;color:var(--mute);font-style:italic}
+  .cand-head .tog{font-family:'Archivo',sans-serif;color:var(--gold);font-size:1.1rem;line-height:1;transition:transform .35s;flex-shrink:0}
+  .cand.open .tog{transform:rotate(45deg)}
+  .cand-tag{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:600;padding:0.3rem 0.7rem;border-radius:999px;border:1px solid var(--hair);color:var(--mute);flex-shrink:0}
+  .cand-tag.consumer{color:var(--gold-soft);border-color:var(--gold-deep)}
+  .cand-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.2,.7,.2,1)}
+  .cand.open .cand-body{max-height:600px}
+  .cand-body-in{padding:0 1.6rem 1.6rem;border-top:1px solid var(--hair-soft)}
+  .crit{display:grid;grid-template-columns:150px 1fr;gap:0.8rem;padding:0.85rem 0;border-bottom:1px solid var(--hair-soft);align-items:baseline}
+  .crit:last-of-type{border-bottom:0}
+  .crit .ck{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+  .crit .cvv{font-size:0.95rem;color:var(--mute)}
+  .cand-verdict{margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid var(--hair);font-size:1rem;color:var(--text);font-style:italic}
+  .cand-verdict b{color:var(--gold-soft);font-weight:500;font-style:normal}
+
+  .reco{margin-top:2.6rem;background:var(--panel-2);border-left:2px solid var(--gold);padding:clamp(1.5rem,3vw,2.2rem)}
+  .reco .label{display:block;margin-bottom:1rem}
+  .reco p{font-size:1.02rem;color:var(--mute);max-width:70ch}
+  .reco p b{color:var(--text);font-weight:500}
+  .reco p + p{margin-top:0.9rem}
+  .closeline{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.25rem,2.6vw,1.7rem);color:var(--gold-soft);margin-top:2.4rem;max-width:32ch}
+
+  /* ============ 2 RESEARCH ============ */
+  .teardown{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.8rem}
+  .td{background:var(--panel);padding:clamp(1.4rem,3vw,2rem)}
+  .td .tn{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.95rem;margin-bottom:0.5rem;color:var(--gold-soft)}
+  .td p{font-size:0.93rem;color:var(--mute)}
+  .outputline{margin-top:2.2rem;padding:1.3rem 1.6rem;border:1px solid var(--hair);display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap}
+  .outputline .label{flex-shrink:0}
+  .outputline p{font-size:0.98rem;color:var(--text)}
+
+  /* ============ 3 BRAND LAYERS ============ */
+  .layers{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.8rem}
+  .layer{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3vw,2.2rem)}
+  .layer .ln{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.05rem;margin:0.8rem 0 0.7rem}
+  .layer p{font-size:0.96rem;color:var(--mute)}
+  .artifacts{margin-top:2.2rem}
+  .artifacts ul{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem;margin-top:1.2rem}
+  .artifacts li{padding:0.9rem 1.1rem;border:1px solid var(--hair-soft);font-size:0.95rem;color:var(--text);background:var(--panel)}
+  .artifacts li span{display:block;font-size:0.83rem;color:var(--mute);font-style:italic}
+
+  /* ============ 4 PILLARS ============ */
+  .pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:2.8rem}
+  .pill{background:var(--panel);border:1px solid var(--hair-soft);cursor:pointer;transition:.3s;overflow:hidden;position:relative}
+  .pill:hover{border-color:var(--hair)}
+  .pill.open{border-color:var(--gold-deep)}
+  .pill.start{border-color:var(--gold);background:var(--panel-2)}
+  .pill-badge{position:absolute;top:0;right:0;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;background:var(--gold);color:var(--bg);padding:0.35rem 0.8rem}
+  .pill-head{padding:1.5rem 1.6rem;display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+  .pill-head .pn{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.12rem}
+  .pill-head .tog{color:var(--gold);font-size:1.1rem;line-height:1;transition:transform .35s}
+  .pill.open .tog{transform:rotate(45deg)}
+  .pill-body{max-height:0;overflow:hidden;transition:max-height .55s cubic-bezier(.2,.7,.2,1)}
+  .pill.open .pill-body{max-height:700px}
+  .pill-body-in{padding:0 1.6rem 1.6rem;border-top:1px solid var(--hair-soft)}
+  .pill-body-in p{font-size:0.95rem;color:var(--mute);padding-top:1rem}
+  .pill-body-in ul{list-style:none;margin-top:0.4rem}
+  .pill-body-in li{padding:0.75rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.95rem;color:var(--mute)}
+  .pill-body-in li:last-child{border-bottom:0}
+  .pill-body-in li b{color:var(--text);font-weight:500}
+
+  /* ============ 5 ENGINE ============ */
+  .engine{margin-top:3rem}
+  .stage{
+    display:grid;grid-template-columns:56px 200px 1fr;gap:1.3rem;align-items:baseline;
+    padding:1.5rem 1.2rem;border-left:2px solid var(--hair-soft);
+    opacity:.25;transform:translateX(-8px);
+    transition:opacity .7s ease,transform .7s ease,border-color .7s ease,background .7s ease;
+  }
+  .stage.lit{opacity:1;transform:none;border-left-color:var(--gold);background:linear-gradient(90deg,rgba(200,168,90,.06),transparent 60%)}
+  .stage .sn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.1em;color:var(--gold)}
+  .stage h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.15rem}
+  .stage p{font-size:0.96rem;color:var(--mute);max-width:58ch}
+  .callout{margin-top:2.6rem;border:1px solid var(--gold-deep);background:var(--panel-2);padding:clamp(1.5rem,3vw,2.2rem)}
+  .callout .label{display:block;margin-bottom:0.8rem}
+  .callout p{font-family:'EB Garamond',serif;font-size:clamp(1.1rem,2vw,1.3rem);color:var(--text);max-width:56ch;line-height:1.55}
+  .callout p b{color:var(--gold-soft);font-weight:500}
+
+  /* ============ 6 AUDIENCE ============ */
+  .aud{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.8rem}
+  .aud .a{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.5rem,3vw,2rem)}
+  .aud .an{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.02rem;margin:0.7rem 0 0.6rem}
+  .aud p{font-size:0.94rem;color:var(--mute)}
+
+  /* ============ 7 MATH / SLIDER ============ */
+  .mathbox{margin-top:2.8rem;background:var(--panel);border:1px solid var(--hair);padding:clamp(1.6rem,3.5vw,2.6rem)}
+  .mathbox .label{display:block;margin-bottom:1.6rem}
+  .views-read{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(2.2rem,6vw,3.6rem);letter-spacing:-0.02em;color:var(--text);line-height:1}
+  .views-read span{color:var(--gold)}
+  .views-sub{font-size:0.95rem;color:var(--mute);font-style:italic;margin-top:0.3rem}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none;margin:2.2rem 0 0.6rem;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;
+    background:var(--gold);border:4px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold);border:4px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .math-out{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2rem}
+  .mo{background:var(--panel-2);padding:1.6rem 1.4rem;text-align:center}
+  .mo .mv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.5rem);color:var(--gold-soft);line-height:1}
+  .mo .ml{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;font-weight:600}
+  .math-note{font-size:1rem;color:var(--mute);font-style:italic;margin-top:1.6rem;max-width:58ch}
+  .math-note b{color:var(--text);font-style:normal;font-weight:500}
+
+  /* ============ 8 PARTNERSHIPS ============ */
+  .parts{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.8rem}
+  .part{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.5rem,3vw,2rem)}
+  .part .pn2{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.05rem;margin-bottom:0.6rem}
+  .part p{font-size:0.95rem;color:var(--mute)}
+
+  /* ============ 9 TIMELINE ============ */
+  .phases-nav{display:flex;gap:0.5rem;margin-top:2.8rem;overflow-x:auto;padding-bottom:0.5rem;scrollbar-width:none}
+  .phases-nav::-webkit-scrollbar{display:none}
+  .ph-btn{
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--mute);background:transparent;border:1px solid var(--hair-soft);padding:0.85rem 1.2rem;cursor:pointer;
+    white-space:nowrap;transition:.3s;flex-shrink:0;
+  }
+  .ph-btn small{display:block;font-size:0.6rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:0.2rem;font-weight:700}
+  .ph-btn:hover{border-color:var(--hair);color:var(--text)}
+  .ph-btn.on{border-color:var(--gold);color:var(--text);background:var(--panel-2)}
+  .ph-track{height:2px;background:var(--hair-soft);margin-top:0.2rem;position:relative}
+  .ph-track i{position:absolute;left:0;top:0;height:100%;background:var(--gold);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .ph-panel{margin-top:1.8rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3.5vw,2.4rem)}
+  .ph-panel h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.3rem;margin-bottom:1.4rem}
+  .ph-panel h4 span{color:var(--gold);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;display:block;margin-bottom:0.4rem}
+  .ph-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.2rem,3vw,2rem)}
+  .ph-col .label{display:block;margin-bottom:0.7rem;font-size:0.6rem}
+  .ph-col p{font-size:0.93rem;color:var(--mute)}
+  .ph-panel.swap{animation:phswap .45s ease}
+  @keyframes phswap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ============ 10 DEPENDENCIES / CLOSE ============ */
+  .deps{counter-reset:dp;margin-top:2.8rem}
+  .dep{display:grid;grid-template-columns:64px 1fr;gap:1.4rem;padding:1.6rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
+  .dep:last-child{border-bottom:1px solid var(--hair-soft)}
+  .dep:before{counter-increment:dp;content:counter(dp,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:700;color:var(--gold);font-size:0.85rem;letter-spacing:0.1em}
+  .dep .dn{font-family:'EB Garamond',serif;font-size:1.25rem;color:var(--text)}
+  .dep .dd{font-size:0.95rem;color:var(--mute);margin-top:0.3rem}
+  .finale{
+    font-family:'EB Garamond',serif;font-style:italic;font-weight:400;
+    font-size:clamp(1.9rem,5vw,3.2rem);line-height:1.15;color:var(--gold-soft);
+    margin-top:clamp(3.5rem,8vh,5.5rem);max-width:22ch;
+  }
+  .signoff{margin-top:3.2rem;padding-top:2rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.25rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+
+  @media(max-width:760px){
+    .cands,.teardown,.layers,.pillars,.artifacts ul,.aud,.math-out,.parts,.ph-cols{grid-template-columns:1fr}
+    .stage{grid-template-columns:44px 1fr}
+    .stage p{grid-column:2}
+    .crit{grid-template-columns:1fr;gap:0.2rem}
+    .cover h1{font-size:2.35rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv,.stage{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>The First Decision</span></a>
+  <a href="#s2"><span>Research Before Reach</span></a>
+  <a href="#s3"><span>Brand &amp; Positioning</span></a>
+  <a href="#s4"><span>The Four Pillars</span></a>
+  <a href="#s5"><span>The Distribution Engine</span></a>
+  <a href="#s6"><span>Owning the Audience</span></a>
+  <a href="#s7"><span>Paid Ads, Later</span></a>
+  <a href="#s8"><span>Partnerships</span></a>
+  <a href="#s9"><span>The Six-Month Arc</span></a>
+  <a href="#s10"><span>Switching It On</span></a>
+</nav>
+
+<!-- ============ 0 COVER ============ -->
+<header class="cover" id="s0">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d&rsquo;&Eacute;lites</b></div>
+    <div class="label dim">Action Plan &middot; For Alignment</div>
+  </div>
+
+  <div class="cover-mid">
+    <span class="label rv">Maison d&rsquo;&Eacute;lites &middot; EVP Marketing</span>
+    <h1 class="rv d1">ValuePilot<br>Go-To-Market<br><span>Action Plan</span></h1>
+    <p class="cover-sub rv d2">From first decision to launched product. The next six months, step by step.</p>
+    <div class="meta-chips rv d3">
+      <span class="meta-chip">Prepared by <b>Jacques Amoako, EVP Marketing</b></span>
+      <span class="meta-chip">Scope: <b>MVP launch</b></span>
+      <span class="meta-chip">Status: <b>For alignment</b></span>
+    </div>
+  </div>
+
+  <div class="cover-bot">
+    <div class="label dim">ValuePilot &middot; ICP Systems</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 1 THE FIRST DECISION ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; The First Decision</span>
+    <h2 class="statement rv d1">Which product <i>leads</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Before anything is built, we decide the launch slate together. Everything downstream, the research, the brand, the creators, the calendar, depends on this one call. Four candidates are on the table. <b>Tap each one for the honest read.</b></p>
+
+    <div class="cands rv d3">
+      <div class="cand" data-acc>
+        <div class="cand-head">
+          <div><div class="cn">RenewalGuard</div><div class="co">A charge caught before it bills.</div></div>
+          <span class="cand-tag consumer">Consumer</span>
+          <span class="tog">+</span>
+        </div>
+        <div class="cand-body"><div class="cand-body-in">
+          <div class="crit"><span class="ck">Creator-fit</span><span class="cvv">Strong. The moment a renewal gets caught before it charges is a perfect on-screen reveal, made for short-form.</span></div>
+          <div class="crit"><span class="ck">Product readiness</span><span class="cvv">To be confirmed in the first session. Readiness decides the leader.</span></div>
+          <div class="crit"><span class="ck">Audience motion</span><span class="cvv">Consumer. Runs on the creator and clipping engine.</span></div>
+          <div class="crit"><span class="ck">Story strength</span><span class="cvv">Visceral. Money protected before it ever leaves the account.</span></div>
+          <div class="cand-verdict"><b>Lead candidate.</b> Fully clippable, ready for the consumer engine.</div>
+        </div></div>
+      </div>
+
+      <div class="cand" data-acc>
+        <div class="cand-head">
+          <div><div class="cn">RefundPilot</div><div class="co">Money recovered that was owed.</div></div>
+          <span class="cand-tag consumer">Consumer</span>
+          <span class="tog">+</span>
+        </div>
+        <div class="cand-body"><div class="cand-body-in">
+          <div class="crit"><span class="ck">Creator-fit</span><span class="cvv">Strong. Receipt-to-recovery arcs are natural creator storylines with a satisfying payoff.</span></div>
+          <div class="crit"><span class="ck">Product readiness</span><span class="cvv">To be confirmed in the first session. Readiness decides the leader.</span></div>
+          <div class="crit"><span class="ck">Audience motion</span><span class="cvv">Consumer. Runs on the creator and clipping engine.</span></div>
+          <div class="crit"><span class="ck">Story strength</span><span class="cvv">Visceral. Money that was owed, actually coming back.</span></div>
+          <div class="cand-verdict"><b>Lead candidate.</b> Fully clippable, ready for the consumer engine.</div>
+        </div></div>
+      </div>
+
+      <div class="cand" data-acc>
+        <div class="cand-head">
+          <div><div class="cn">GrubBudget</div><div class="co">Money not wasted on food.</div></div>
+          <span class="cand-tag consumer">Consumer</span>
+          <span class="tog">+</span>
+        </div>
+        <div class="cand-body"><div class="cand-body-in">
+          <div class="crit"><span class="ck">Creator-fit</span><span class="cvv">Strong. Food creators, grocery hauls, and budget challenges are one of the most active creator ecosystems there is.</span></div>
+          <div class="crit"><span class="ck">Product readiness</span><span class="cvv">To be confirmed in the first session. Readiness decides the leader.</span></div>
+          <div class="crit"><span class="ck">Audience motion</span><span class="cvv">Consumer. Runs on the creator and clipping engine, with a restaurant partnership layer on top.</span></div>
+          <div class="crit"><span class="ck">Story strength</span><span class="cvv">Everyday and relatable. Everyone eats, everyone overspends on it.</span></div>
+          <div class="cand-verdict"><b>Lead candidate.</b> Fully clippable, ready for the consumer engine.</div>
+        </div></div>
+      </div>
+
+      <div class="cand" data-acc>
+        <div class="cand-head">
+          <div><div class="cn">LeakageIndex</div><div class="co">Organizations finding their leaks.</div></div>
+          <span class="cand-tag">Business</span>
+          <span class="tog">+</span>
+        </div>
+        <div class="cand-body"><div class="cand-body-in">
+          <div class="crit"><span class="ck">Creator-fit</span><span class="cvv">Limited. The buyer is an organization, not a scrolling consumer.</span></div>
+          <div class="crit"><span class="ck">Product readiness</span><span class="cvv">Independent of the consumer race. Its track is not gated by this decision.</span></div>
+          <div class="crit"><span class="ck">Audience motion</span><span class="cvv">B2B. LinkedIn, founder authority, and a sales-led motion.</span></div>
+          <div class="crit"><span class="ck">Story strength</span><span class="cvv">Strong for its audience, but it is a boardroom story, not a feed story.</span></div>
+          <div class="cand-verdict"><b>Parallel track, later.</b> Deserves its own LinkedIn and founder-authority engine. It should not lead a consumer launch.</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="reco rv">
+      <span class="label">The EVP read</span>
+      <p><b>LeakageIndex is a B2B motion.</b> It deserves its own LinkedIn and founder-authority track, run in parallel later. It should not lead, because the launch engine is a consumer engine.</p>
+      <p>Among RenewalGuard, RefundPilot, and GrubBudget: all three are consumer, all three are highly clippable. <b>The lead is whichever is closest to product-ready.</b> The engine is built so the other two follow on the same rails.</p>
+    </div>
+
+    <p class="closeline rv">&ldquo;One product leads. The system built for it carries every product after.&rdquo;</p>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 2 RESEARCH BEFORE REACH ============ -->
+<section class="section" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; Research Before Reach</span>
+    <h2 class="statement rv d1">We do not guess. We study the <i>winners</i> first.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Before a single piece of content is made, every candidate product gets a full competitor and market teardown. Four questions, answered in writing:</p>
+
+    <div class="teardown rv d3">
+      <div class="td"><div class="tn">Who they are</div><p>The direct and adjacent competitors for each product, mapped.</p></div>
+      <div class="td"><div class="tn">How they marketed</div><p>Exactly which channels they used, which influencer and creator partnerships they ran, which content formats and hooks actually worked.</p></div>
+      <div class="td"><div class="tn">Where the audiences live</div><p>Which platforms and communities their users sit in, and what they respond to.</p></div>
+      <div class="td"><div class="tn">What they missed</div><p>The gaps: angles and channels competitors underused that we can own.</p></div>
+    </div>
+
+    <div class="outputline rv">
+      <span class="label">Output</span>
+      <p>A written teardown document per product, plus a channel and creator shortlist. This is week one and week two work, and it is what the brand and content strategy stands on.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 3 BRAND AND POSITIONING ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; Brand and Positioning</span>
+    <h2 class="statement rv d1">Two layers, built <i>together</i>.</h2>
+
+    <div class="layers rv d2">
+      <div class="layer">
+        <span class="label">Layer one</span>
+        <div class="ln">The ValuePilot ecosystem brand</div>
+        <p>The parent story. One promise: people and organizations stop losing money and start acting with confidence.</p>
+      </div>
+      <div class="layer">
+        <span class="label">Layer two</span>
+        <div class="ln">Individual product brands</div>
+        <p>Each product positioned as its own standalone brand with its own audience, voice, and visual identity, connected to the family at the benefit level only.</p>
+      </div>
+    </div>
+
+    <div class="artifacts rv d3">
+      <p class="body-lg">Authored by the EVP against the real product once access is granted. For every product, four artifacts:</p>
+      <ul>
+        <li>Positioning statement<span>what it is and who it is for, in plain language</span></li>
+        <li>Persona-to-hook map<span>which angle speaks to which person</span></li>
+        <li>Proof framing<span>how outcomes are shown credibly</span></li>
+        <li>The do-not-say guide<span>protecting confidential methods</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 4 FOUR PILLARS ============ -->
+<section class="section" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; The Four Pillars</span>
+    <h2 class="statement rv d1">Four ways in. One <i>starting</i> point.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Every acquisition motion falls into one of four pillars. All four have a role, but they are not equal at the start. <b>Tap each pillar.</b></p>
+
+    <div class="pillars rv d3">
+      <div class="pill" data-acc>
+        <div class="pill-head"><div class="pn">Warm Outreach</div><span class="tog">+</span></div>
+        <div class="pill-body"><div class="pill-body-in">
+          <p>Relationships already within reach: communities, existing contacts, early believers. Warm outreach supports the partnership and B2B tracks, where a trusted introduction does the heavy lifting. <b>Role: supporting.</b></p>
+        </div></div>
+      </div>
+      <div class="pill" data-acc>
+        <div class="pill-head"><div class="pn">Cold Outreach</div><span class="tog">+</span></div>
+        <div class="pill-body"><div class="pill-body-in">
+          <p>Opening doors that do not know us yet: partnership prospects, community operators, and later the B2B pipeline for LeakageIndex. Precise and personal, never mass spam. <b>Role: supporting.</b></p>
+        </div></div>
+      </div>
+      <div class="pill" data-acc>
+        <div class="pill-head"><div class="pn">Paid Advertising</div><span class="tog">+</span></div>
+        <div class="pill-body"><div class="pill-body-in">
+          <p>Comes later by design, and cheaper. Not a dollar of ad spend until organic content has proven which creative converts. Then paid distribution travels further, because we only boost what people already demonstrated they like. <b>Role: later, on proof.</b></p>
+        </div></div>
+      </div>
+      <div class="pill start" data-acc>
+        <span class="pill-badge">Start here</span>
+        <div class="pill-head"><div class="pn">Content</div><span class="tog">+</span></div>
+        <div class="pill-body"><div class="pill-body-in">
+          <ul>
+            <li><b>Awareness is the first battle.</b> It does not matter how good the product is if nobody knows or trusts it.</li>
+            <li><b>Influencers transfer trust fastest.</b> Creators relevant to each product&rsquo;s niche move awareness and trust faster than any other channel. Food creators for GrubBudget, finance creators for RenewalGuard and RefundPilot.</li>
+            <li><b>Scale compounds.</b> The bigger the creator, the more awareness and trust it lends the brand.</li>
+            <li><b>Creators produce both forms.</b> Short form and long form: podcasts, live streams, YouTube challenges, reviews. One relationship, many assets.</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 5 DISTRIBUTION ENGINE ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; The Distribution Engine</span>
+    <h2 class="statement rv d1">The awareness <i>machine</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Six stages. Each one feeds the next.</p>
+
+    <div class="engine" id="engineFlow">
+      <div class="stage"><span class="sn">01</span><h4>Source</h4><p>Niche-relevant creators produce hero content, short form and long form: podcasts, streams, challenges, reviews.</p></div>
+      <div class="stage"><span class="sn">02</span><h4>Multiply</h4><p>Every long-form piece is cut into dozens of short clips.</p></div>
+      <div class="stage"><span class="sn">03</span><h4>Redistribute</h4><p>The clipping and distribution network pushes the clips at mass scale, targeting millions upon millions of views.</p></div>
+      <div class="stage"><span class="sn">04</span><h4>Capture</h4><p>Trackers and CRM are set up from day one, so the first wave of attention converts into signups and emails, not just views.</p></div>
+      <div class="stage"><span class="sn">05</span><h4>Learn</h4><p>The first wave tells us which content pieces and formats actually convert.</p></div>
+      <div class="stage"><span class="sn">06</span><h4>Promote from within</h4><p>The best performers in the distribution network transition into the in-house content distributor team, promoting on their own pages on an affiliate basis.</p></div>
+    </div>
+
+    <div class="callout rv">
+      <span class="label">Free first</span>
+      <p>We launch on a free tier because we are in the awareness stage. <b>Trust before monetization.</b> The email list and the product experience do the converting later.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 6 OWNING THE AUDIENCE ============ -->
+<section class="section" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Owning the Audience</span>
+    <h2 class="statement rv d1">The list is the <i>asset</i>.</h2>
+
+    <div class="aud rv d2">
+      <div class="a">
+        <span class="label">Collect</span>
+        <div class="an">Every campaign collects emails</div>
+        <p>Views are the spark. Names on a list are the asset. Every campaign, creator, and clip routes attention toward capture.</p>
+      </div>
+      <div class="a">
+        <span class="label">Deplatform</span>
+        <div class="an">Rented reach becomes owned reach</div>
+        <p>Views on rented platforms become names on an owned list, nurtured by email sequences: waitlist, education, launch, onboarding.</p>
+      </div>
+      <div class="a">
+        <span class="label">Attribute</span>
+        <div class="an">CRM and trackers stitched through everything</div>
+        <p>Every creator, clip, and campaign is attributed. We always know what produced what.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 7 PAID ADS, LATER AND CHEAPER ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Paid Ads, Later and Cheaper</span>
+    <h2 class="statement rv d1">The sequence <i>is</i> the strategy.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Organic first, paid second. Because the winning formats are proven organically before a dollar of ad spend, the cost of acquisition drops sharply: <b>we only boost creative that people already demonstrated they like</b>, so paid distribution travels further.</p>
+
+    <div class="mathbox rv d3">
+      <span class="label">The honest math &middot; drag the views</span>
+      <div class="views-read"><span id="vNum">10</span>M <span style="color:var(--mute);font-family:'EB Garamond',serif;font-style:italic;font-weight:400;font-size:0.45em">views</span></div>
+      <div class="views-sub">organic views produced by the engine</div>
+      <input type="range" id="vSlider" min="1" max="50" step="1" value="10" aria-label="Views in millions">
+      <div class="range-ends"><span>1M</span><span>50M+</span></div>
+      <div class="math-out">
+        <div class="mo"><div class="mv" id="sLo">10,000</div><div class="ml">Signups at 0.1% conversion</div></div>
+        <div class="mo"><div class="mv" id="sHi">70,000</div><div class="ml">Signups at 0.7% conversion</div></div>
+      </div>
+      <p class="math-note">At scale, even honest conversion rates produce thousands of signups, <b>and every stage after this improves the rate.</b> These are planning figures, not promises.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 8 PARTNERSHIPS ============ -->
+<section class="section" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; Partnerships</span>
+    <h2 class="statement rv d1">A layer matched to each product&rsquo;s <i>world</i>.</h2>
+
+    <div class="parts rv d2">
+      <div class="part">
+        <div class="pn2">GrubBudget</div>
+        <p>Restaurant partnerships are vital, with grocery and campus partnerships sequenced later. The product lives where people eat.</p>
+      </div>
+      <div class="part">
+        <div class="pn2">RenewalGuard &amp; RefundPilot</div>
+        <p>Savings communities and finance creators. The places people already gather to stop losing money.</p>
+      </div>
+    </div>
+    <p class="body-lg rv d3" style="margin-top:2.2rem"><b>Partnerships compound the creator engine. They do not replace it.</b></p>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 9 SIX-MONTH ARC ============ -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; The Six-Month Arc</span>
+    <h2 class="statement rv d1">Five phases. Each one unlocks the <i>next</i>.</h2>
+
+    <div class="phases-nav rv d2" id="phNav" role="tablist"></div>
+    <div class="ph-track rv d2"><i id="phFill"></i></div>
+    <div class="ph-panel rv d3" id="phPanel"></div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- ============ 10 SWITCH ON ============ -->
+<section class="section" id="s10">
+  <div class="wrap">
+    <span class="snum rv">10 &middot; What This Needs To Switch On</span>
+    <h2 class="statement rv d1">Three dependencies, stated <i>plainly</i>.</h2>
+
+    <div class="deps rv d2">
+      <div class="dep"><div><div class="dn">The lead-product decision</div><div class="dd">Made together in the first session.</div></div></div>
+      <div class="dep"><div><div class="dn">Product access and demo footage</div><div class="dd">For the lead product, so everything is authored against the real thing.</div></div></div>
+      <div class="dep"><div><div class="dn">Sign-off on claims</div><div class="dd">What the team is cleared to say about savings, refunds, and outcomes.</div></div></div>
+    </div>
+
+    <p class="finale rv">&ldquo;The number is the goal. The machine is how we reach it.&rdquo;</p>
+
+    <div class="signoff rv">
+      <div class="s-mark">Maison <b>d&rsquo;&Eacute;lites</b></div>
+      <div class="s-r">Maison d&rsquo;&Eacute;lites &middot; EVP Marketing &middot; ValuePilot</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* reveals */
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* progress bar */
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  },{passive:true});
+
+  /* dot nav */
+  const dots=Array.from(document.querySelectorAll('#dots a'));
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const secIO=new IntersectionObserver((es)=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const i=secs.indexOf(e.target);
+        dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+      }
+    });
+  },{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&secIO.observe(s));
+
+  /* accordions (candidates + pillars) */
+  document.querySelectorAll('[data-acc]').forEach(card=>{
+    const head=card.querySelector('.cand-head,.pill-head');
+    head.addEventListener('click',()=>card.classList.toggle('open'));
+  });
+
+  /* engine stages light up sequentially */
+  const flow=document.getElementById('engineFlow');
+  const stages=Array.from(flow.querySelectorAll('.stage'));
+  const engIO=new IntersectionObserver((es)=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        stages.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),i*420));
+        engIO.disconnect();
+      }
+    });
+  },{threshold:0.25});
+  engIO.observe(flow);
+
+  /* conversion slider */
+  (function(){
+    const sl=document.getElementById('vSlider');
+    const vN=document.getElementById('vNum'),lo=document.getElementById('sLo'),hi=document.getElementById('sHi');
+    function upd(){
+      const m=parseInt(sl.value,10);
+      vN.textContent=m;
+      lo.textContent=Math.round(m*1e6*0.001).toLocaleString('en-US');
+      hi.textContent=Math.round(m*1e6*0.007).toLocaleString('en-US');
+    }
+    sl.addEventListener('input',upd);upd();
+  })();
+
+  /* phases timeline */
+  const PHASES=[
+    {n:'Phase 1',t:'Foundation',
+     a:'The lead-product decision, competitor teardowns, brand and positioning, channels, trackers and CRM, email infrastructure, and first creator outreach.',
+     b:'A decided slate, written teardowns, a brand system, live channels, live tracking, and an engaged creator shortlist.',
+     c:'Content production at volume, with everything it needs already standing.'},
+    {n:'Phase 2',t:'Awareness',
+     a:'Hero content goes live, the clipping network runs at scale, the first wave of mass views lands, and emails start collecting.',
+     b:'A library of live content, a growing owned list, and the first real attribution data.',
+     c:'Knowing which content actually converts, instead of guessing.'},
+    {n:'Phase 3',t:'Learning and Demand',
+     a:'Double down on converting formats, transition top distributors in-house on an affiliate basis, and open the partnership tracks.',
+     b:'Proven formats, an in-house distributor bench, and a partnership pipeline.',
+     c:'A launch with proof behind it, not hope.'},
+    {n:'Phase 4',t:'Launch',
+     a:'The coordinated push: creator burst, email sequences firing, and paid ads switched on behind proven creative only.',
+     b:'A launched product with live acquisition running across every channel at once.',
+     c:'Optimization on real data from a real launch.'},
+    {n:'Phase 5',t:'Optimize and Scale',
+     a:'Scale the winners, improve conversion, build retention and case studies, and prepare the next product on the same rails.',
+     b:'An engine that transfers: the system built for the lead product, ready to carry the next one.',
+     c:'The next product&rsquo;s launch, on rails that already exist.'},
+  ];
+  const nav=document.getElementById('phNav'),panel=document.getElementById('phPanel'),fill=document.getElementById('phFill');
+  PHASES.forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.className='ph-btn';b.setAttribute('role','tab');
+    b.innerHTML='<small>'+p.n+'</small>'+p.t;
+    b.addEventListener('click',()=>selPhase(i));
+    nav.appendChild(b);
+  });
+  function selPhase(i){
+    const p=PHASES[i];
+    Array.from(nav.children).forEach((b,j)=>b.classList.toggle('on',j===i));
+    fill.style.width=((i+1)/PHASES.length*100)+'%';
+    panel.classList.remove('swap');void panel.offsetWidth;
+    panel.innerHTML='<h4><span>'+p.n+'</span>'+p.t+'</h4>'
+      +'<div class="ph-cols">'
+      +'<div class="ph-col"><span class="label">What happens</span><p>'+p.a+'</p></div>'
+      +'<div class="ph-col"><span class="label">What exists at the end</span><p>'+p.b+'</p></div>'
+      +'<div class="ph-col"><span class="label">What it unlocks</span><p>'+p.c+'</p></div>'
+      +'</div>';
+    panel.classList.add('swap');
+  }
+  selPhase(0);
+</script>
+</body>
+</html>
