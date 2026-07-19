@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gordon Glenister &middot; Brand Monetization System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF8;
+    --panel:#F3F2EE;
+    --panel-2:#ECEAE4;
+    --ink:#1A1D21;
+    --mute:#5B5F66;
+    --mute-2:#83878E;
+    --steel:#2F5266;
+    --steel-light:#6C8FA3;
+    --steel-pale:#EAF0F3;
+    --hair:#E2E1DB;
+    --hair-strong:#CFCEC6;
+    --good:#3E6A4C;
+    --warn:#A85A3A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Source Serif 4',serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--steel);color:#fff}
+  .arch{font-family:'Archivo',sans-serif}
+  .eyebrow{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--steel)}
+  h2.title{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.7rem,3.2vw,2.5rem);letter-spacing:-0.01em;color:var(--ink);line-height:1.15;margin-top:0.6rem}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.15rem;color:var(--ink);margin-bottom:0.6rem}
+  p.lead{font-size:1.05rem;color:var(--mute);max-width:62ch;margin-top:1rem}
+  p.lead b{color:var(--ink);font-weight:600}
+  .hair{height:1px;background:var(--hair);border:0}
+
+  /* ===== gate ===== */
+  #gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+  #gate.hidden{display:none}
+  .gate-box{max-width:380px;width:100%;text-align:left}
+  .gate-box .eyebrow{display:block;margin-bottom:1rem}
+  .gate-box h1{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.6rem;margin-bottom:0.5rem}
+  .gate-box p{color:var(--mute);font-size:0.95rem;margin-bottom:1.6rem}
+  .gate-box input{
+    width:100%;font-family:'Archivo',sans-serif;font-size:1rem;padding:0.85rem 1rem;
+    border:1px solid var(--hair-strong);background:#fff;color:var(--ink);outline:none;margin-bottom:0.9rem;
+  }
+  .gate-box input:focus{border-color:var(--steel)}
+  .gate-box button{
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:0.85rem;letter-spacing:0.04em;
+    background:var(--steel);color:#fff;border:0;padding:0.85rem 1.4rem;cursor:pointer;width:100%;
+    transition:background .2s;
+  }
+  .gate-box button:hover{background:var(--ink)}
+  .gate-err{color:var(--warn);font-size:0.85rem;margin-top:0.8rem;display:none}
+  .gate-err.show{display:block}
+
+  /* ===== layout shell ===== */
+  #app{display:none}
+  #app.ready{display:block}
+  .shell{display:grid;grid-template-columns:264px 1fr;max-width:1400px;margin:0 auto}
+
+  /* sidebar */
+  .side{position:sticky;top:0;height:100vh;border-right:1px solid var(--hair);padding:2rem 1.6rem;display:flex;flex-direction:column}
+  .side-brand{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.2rem}
+  .side-brand span{color:var(--steel)}
+  .side-doc{font-size:0.72rem;color:var(--mute-2);margin-bottom:2.2rem}
+  .side-nav{list-style:none;flex:1}
+  .side-nav li{margin-bottom:0.15rem}
+  .side-nav a{
+    display:flex;gap:0.7rem;align-items:baseline;padding:0.65rem 0.7rem;text-decoration:none;color:var(--mute);
+    font-family:'Archivo',sans-serif;font-size:0.86rem;font-weight:500;border-left:2px solid transparent;transition:.2s;
+  }
+  .side-nav a .no{font-size:0.7rem;color:var(--mute-2);font-weight:600}
+  .side-nav a:hover{color:var(--ink);background:var(--panel)}
+  .side-nav a.on{color:var(--ink);border-left-color:var(--steel);background:var(--panel)}
+  .side-nav a.on .no{color:var(--steel)}
+  .side-progress{border-top:1px solid var(--hair);padding-top:1.2rem;margin-top:1rem}
+  .side-progress .pl{font-family:'Archivo',sans-serif;font-size:0.64rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute-2);margin-bottom:0.5rem}
+  .side-progress .pv{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.3rem;color:var(--steel)}
+  .side-progress .pbar{height:3px;background:var(--hair);margin-top:0.6rem;position:relative}
+  .side-progress .pbar i{position:absolute;left:0;top:0;height:100%;background:var(--steel);transition:width .4s ease}
+
+  /* mobile tab bar */
+  .mtabs{display:none}
+
+  /* main content */
+  .main{min-width:0}
+  .sec{padding:clamp(3.2rem,7vw,5.5rem) clamp(1.6rem,4vw,4rem);border-bottom:1px solid var(--hair)}
+  .sec:last-child{border-bottom:0}
+  .wrap{max-width:840px}
+
+  .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+
+  /* ===== offer (section 1) ===== */
+  .offer-card{margin-top:2.2rem;border:1px solid var(--hair-strong);background:#fff}
+  .offer-top{padding:1.8rem 2rem;background:var(--steel);color:#fff;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:0.6rem}
+  .offer-top .on{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.3rem}
+  .offer-top .ot{font-family:'Archivo',sans-serif;font-size:0.78rem;color:#D8E4EA}
+  .offer-rows{padding:0.4rem 2rem 1.6rem}
+  .offer-row{display:grid;grid-template-columns:150px 1fr;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--hair)}
+  .offer-row:last-child{border-bottom:0}
+  .offer-row .ok{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.85rem;color:var(--steel)}
+  .offer-row .ov{font-size:0.96rem;color:var(--mute)}
+  .offer-row .ov b{color:var(--ink)}
+
+  .econ-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:1.6rem}
+  .econ{background:var(--panel);padding:1.3rem 1.4rem;text-align:center}
+  .econ .ev{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.5rem;color:var(--steel)}
+  .econ .el{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute-2);margin-top:0.4rem}
+
+  .proof-bank{margin-top:1.8rem}
+  .proof-list{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;margin-top:0.8rem}
+  .proof-list li{padding:0.7rem 0.9rem;border:1px solid var(--hair);font-size:0.88rem;color:var(--mute);background:#fff}
+  .proof-list li b{color:var(--ink);font-weight:600}
+
+  .note-box{margin-top:1.8rem;border-left:2px solid var(--steel);background:var(--steel-pale);padding:1.2rem 1.5rem}
+  .note-box p{font-size:0.95rem;color:var(--ink);font-style:italic}
+
+  /* ===== checklist / task rows (shared) ===== */
+  .tasklist{list-style:none;margin-top:1rem}
+  .task-row{display:flex;gap:0.85rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid var(--hair)}
+  .task-row:last-child{border-bottom:0}
+  .task-row input[type=checkbox]{
+    appearance:none;width:18px;height:18px;border:1.5px solid var(--hair-strong);flex-shrink:0;margin-top:0.15rem;
+    cursor:pointer;position:relative;background:#fff;
+  }
+  .task-row input[type=checkbox]:checked{background:var(--steel);border-color:var(--steel)}
+  .task-row input[type=checkbox]:checked::after{
+    content:"";position:absolute;left:5px;top:1px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .task-row label{font-size:0.96rem;color:var(--ink);cursor:pointer}
+  .task-row.done label{color:var(--mute-2);text-decoration:line-through}
+  .task-row .tag{
+    font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.08em;font-weight:700;color:var(--steel);
+    background:var(--steel-pale);padding:0.15rem 0.45rem;border-radius:3px;margin-right:0.4rem;white-space:nowrap;
+  }
+
+  .group-progress{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.05em;color:var(--mute-2);margin-top:0.9rem}
+  .group-progress b{color:var(--steel)}
+
+  /* ===== section 2 content ===== */
+  .framework-block{margin-top:2rem;padding:1.6rem 1.8rem;background:var(--panel);border:1px solid var(--hair)}
+  .framework-block .fb-label{margin-bottom:0.8rem}
+  .framework-block ol,.framework-block ul{margin:0.6rem 0 0 1.2rem;color:var(--mute);font-size:0.94rem}
+  .framework-block li{margin-bottom:0.5rem}
+  .framework-block li b{color:var(--ink)}
+  .angles{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem}
+  .angle-chip{font-family:'Archivo',sans-serif;font-size:0.72rem;font-weight:500;color:var(--steel);border:1px solid var(--steel-light);padding:0.4rem 0.8rem;border-radius:999px}
+
+  .adapt-block{margin-top:1.8rem}
+  .adapt-list{list-style:none;margin-top:1rem}
+  .adapt-list li{padding:0.9rem 0;border-top:1px solid var(--hair);font-size:0.95rem;color:var(--mute)}
+  .adapt-list li b{color:var(--ink);font-weight:600;display:block;margin-bottom:0.2rem;font-family:'Archivo',sans-serif;font-size:0.9rem}
+
+  .week-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.8rem;margin-top:1.8rem}
+  .day-card{border:1px solid var(--hair-strong);background:#fff;padding:1.2rem 1.1rem;position:relative;cursor:pointer;transition:border-color .2s}
+  .day-card:hover{border-color:var(--steel)}
+  .day-card .dd{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.1em;color:var(--steel);text-transform:uppercase}
+  .day-card .dn{font-family:'Archivo',sans-serif;font-weight:600;font-size:1rem;margin:0.5rem 0 0.5rem;color:var(--ink)}
+  .day-card p{font-size:0.85rem;color:var(--mute);display:none}
+  .day-card.open p{display:block}
+  .day-badge{position:absolute;top:0.7rem;right:0.7rem;font-family:'Archivo',sans-serif;font-size:0.55rem;font-weight:700;letter-spacing:0.06em;color:#fff;background:var(--warn);padding:0.15rem 0.4rem;border-radius:3px}
+  .week-note{margin-top:1.2rem;font-size:0.9rem;color:var(--mute);font-style:italic}
+
+  /* ===== section 3 pipeline ===== */
+  .pipeline{margin-top:2rem}
+  .pstage{display:grid;grid-template-columns:44px 1fr;gap:1.2rem;padding:1.5rem 0;border-top:1px solid var(--hair)}
+  .pstage:last-child{border-bottom:1px solid var(--hair)}
+  .pstage .pnum{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.1rem;color:var(--hair-strong)}
+  .pstage-head{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.5rem}
+  .pstage h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.08rem}
+  .rtag{font-family:'Archivo',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.06em;padding:0.22rem 0.55rem;border-radius:3px;color:#fff;background:var(--mute)}
+  .rtag.automation{background:var(--steel-light)}
+  .rtag.setter{background:var(--steel)}
+  .rtag.gordon{background:var(--ink)}
+  .rtag.mde{background:var(--warn)}
+  .rtag.future{background:transparent;color:var(--mute-2);border:1px dashed var(--hair-strong)}
+  .pstage p{font-size:0.95rem;color:var(--mute)}
+  .pstage p + p{margin-top:0.5rem}
+  .pstage ul{margin:0.5rem 0 0 1.2rem;color:var(--mute);font-size:0.9rem}
+  .pstage ul li{margin-bottom:0.3rem}
+
+  .seq-block{margin-top:2.4rem;padding:1.8rem;background:var(--panel);border:1px solid var(--hair)}
+  .seq-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2rem}
+  .seq-item label{font-family:'Archivo',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--steel);display:block;margin-bottom:0.5rem}
+  .seq-item textarea{
+    width:100%;min-height:90px;font-family:'Source Serif 4',serif;font-size:0.9rem;padding:0.8rem;
+    border:1px solid var(--hair-strong);background:#fff;color:var(--ink);resize:vertical;outline:none;
+  }
+  .seq-item textarea:focus{border-color:var(--steel)}
+
+  /* ===== section 4 funnel + metrics ===== */
+  .funnel{display:flex;flex-wrap:wrap;gap:0;margin-top:2rem;align-items:stretch}
+  .fstage{flex:1 1 130px;background:var(--panel);border:1px solid var(--hair-strong);padding:1rem 0.9rem;text-align:center;position:relative}
+  .fstage .fn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;color:var(--steel);letter-spacing:0.05em}
+  .fstage .ft{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.85rem;margin-top:0.4rem;color:var(--ink)}
+  .fstage.won{background:var(--steel);border-color:var(--steel)}
+  .fstage.won .fn,.fstage.won .ft{color:#fff}
+  .fstage.lost{background:#fff;border-style:dashed}
+  .farrow{display:flex;align-items:center;justify-content:center;flex:0 0 22px;color:var(--mute-2);font-size:1rem}
+
+  .own-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.8rem}
+  .own{border:1px solid var(--hair);padding:1.1rem 1.2rem}
+  .own .ol2{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.85rem;color:var(--steel);margin-bottom:0.4rem}
+  .own p{font-size:0.88rem;color:var(--mute)}
+
+  .metrics-box{margin-top:2.4rem;border:1px solid var(--hair-strong);background:#fff;padding:clamp(1.5rem,3vw,2.2rem)}
+  .metrics-inputs{display:grid;grid-template-columns:repeat(6,1fr);gap:0.8rem;margin-top:1.4rem}
+  .min-item label{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute-2);display:block;margin-bottom:0.4rem}
+  .min-item input{width:100%;font-family:'Archivo',sans-serif;font-size:1rem;padding:0.6rem 0.5rem;border:1px solid var(--hair-strong);text-align:center;outline:none}
+  .min-item input:focus{border-color:var(--steel)}
+  .rates-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:1.8rem}
+  .rate{background:var(--panel);padding:1.3rem 1rem;text-align:center;transition:background .3s}
+  .rate.low{background:#F7ECE6}
+  .rate .rv2{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.7rem;color:var(--steel)}
+  .rate.low .rv2{color:var(--warn)}
+  .rate .rl{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute-2);margin-top:0.5rem}
+  .diag{margin-top:1.2rem;font-size:0.92rem;color:var(--mute);min-height:1.4em}
+  .diag b{color:var(--warn)}
+
+  /* ===== section 5 phases ===== */
+  .phase{border:1px solid var(--hair-strong);margin-top:1rem;background:#fff}
+  .phase-head{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.4rem;cursor:pointer;gap:1rem}
+  .phase-head .ph-l{display:flex;align-items:baseline;gap:0.9rem}
+  .phase-head .pn3{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;color:var(--steel)}
+  .phase-head h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.1rem}
+  .phase-head .ph-r{display:flex;align-items:center;gap:0.9rem}
+  .phase-head .pcount{font-family:'Archivo',sans-serif;font-size:0.76rem;color:var(--mute-2)}
+  .phase-head .ptog{font-size:1.1rem;color:var(--steel);transition:transform .3s}
+  .phase.open .ptog{transform:rotate(45deg)}
+  .phase-body{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.2,.7,.2,1)}
+  .phase.open .phase-body{max-height:900px}
+  .phase-body-in{padding:0 1.4rem 1.4rem;border-top:1px solid var(--hair)}
+
+  .finale-block{margin-top:3rem;padding-top:2.4rem;border-top:1px solid var(--hair)}
+  .finale-block p{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.05rem;color:var(--ink)}
+
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr}
+    .side{display:none}
+    .mtabs{
+      display:flex;position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--hair);
+      overflow-x:auto;padding:0.7rem 1rem;gap:0.4rem;scrollbar-width:none;
+    }
+    .mtabs::-webkit-scrollbar{display:none}
+    .mtabs a{
+      flex-shrink:0;font-family:'Archivo',sans-serif;font-size:0.74rem;font-weight:600;color:var(--mute);
+      border:1px solid var(--hair-strong);padding:0.55rem 0.9rem;border-radius:999px;text-decoration:none;white-space:nowrap;
+    }
+    .mtabs a.on{background:var(--steel);border-color:var(--steel);color:#fff}
+    .week-grid,.metrics-inputs,.own-rules,.proof-list,.seq-grid{grid-template-columns:repeat(2,1fr)}
+    .econ-row{grid-template-columns:1fr}
+    .rates-grid{grid-template-columns:1fr 1fr}
+    .funnel{flex-direction:column}
+    .farrow{transform:rotate(90deg);margin:0 auto}
+  }
+  @media(max-width:560px){
+    .week-grid,.metrics-inputs,.proof-list,.seq-grid{grid-template-columns:1fr}
+    .rates-grid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <span class="eyebrow">Maison d&rsquo;&Eacute;lites &middot; Internal</span>
+    <h1>Gordon Glenister System</h1>
+    <p>This is an internal operating document. Enter the passphrase to continue.</p>
+    <input type="password" id="gatePw" placeholder="Passphrase" autocomplete="off">
+    <button id="gateBtn">Enter</button>
+    <div class="gate-err" id="gateErr">Incorrect passphrase.</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav class="mtabs" id="mtabs"></nav>
+
+  <div class="shell">
+    <aside class="side">
+      <div class="side-brand">Maison <span>d&rsquo;&Eacute;lites</span></div>
+      <div class="side-doc">Gordon Glenister &middot; Brand Monetization System</div>
+      <ul class="side-nav" id="sideNav"></ul>
+      <div class="side-progress">
+        <div class="pl">Overall progress</div>
+        <div class="pv"><span id="gDone">0</span>/<span id="gTotal">0</span></div>
+        <div class="pbar"><i id="gBar" style="width:0%"></i></div>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <!-- 0 HEADER -->
+      <section class="sec" id="s0">
+        <div class="wrap">
+          <span class="eyebrow rv">Maison d&rsquo;&Eacute;lites &middot; Internal Operating Document</span>
+          <h2 class="title rv">Gordon Glenister<br>Brand Monetization System</h2>
+          <p class="lead rv">The full system for building Gordon&rsquo;s personal brand into a repeatable client pipeline: the offer, the content engine, the outreach automation, the CRM, and the six-month rollout. Working document, referenced and checked off during execution.</p>
+        </div>
+      </section>
+
+      <!-- 1 THE OFFER -->
+      <section class="sec" id="s1">
+        <div class="wrap">
+          <span class="eyebrow rv">01 &middot; The Offer</span>
+          <h2 class="title rv">Locked for launch.</h2>
+          <p class="lead rv">Status: locked as-is for launch, with a stress-test scheduled later once real call data exists. Every piece of copy built on this offer, everywhere in this system, sells the outcome: becoming the recognized expert voice in his niche. It never sells the deliverables list.</p>
+
+          <div class="offer-card rv">
+            <div class="offer-top">
+              <div class="on">Influence VIP Program</div>
+              <div class="ot">3-month engagement, then ongoing</div>
+            </div>
+            <div class="offer-rows">
+              <div class="offer-row"><span class="ok">&pound;5,000 / 90 days</span><span class="ov">6&times; one-to-one sessions (1.5h each), positioning and expert-voice strategy, a full strategy plan, and a 12-month content plan including implementation guidance.</span></div>
+              <div class="offer-row"><span class="ok">&pound;2,000 / month</span><span class="ov">Ongoing: continued social media planning and strategic direction after the initial 90 days.</span></div>
+            </div>
+          </div>
+
+          <div class="econ-row rv">
+            <div class="econ"><div class="ev">80%+</div><div class="el">Margin</div></div>
+            <div class="econ"><div class="ev">4 / quarter</div><div class="el">Client target</div></div>
+            <div class="econ"><div class="ev">&pound;20K</div><div class="el">New revenue per quarter, plus stacking retainers</div></div>
+          </div>
+
+          <div class="proof-bank rv">
+            <h3 class="sub" style="margin-top:2rem">Proof bank</h3>
+            <p class="lead" style="margin-top:0">Author, BCMA background, host of the Influence Global Podcast, lecturer, and a bank of five-star reviews.</p>
+            <ul class="proof-list">
+              <li><b>Dolores Semeraro</b> &middot; 2024&ndash;2025</li>
+              <li><b>Neil Whiteside</b> &middot; 2024&ndash;2025</li>
+              <li><b>Rebecca Allen</b> &middot; 2024&ndash;2025</li>
+              <li><b>Daniel Corbett</b> &middot; 2024&ndash;2025</li>
+              <li><b>24 fingers Team</b> &middot; 2024&ndash;2025</li>
+              <li><b>Charlotte Walter</b> &middot; 2024&ndash;2025</li>
+              <li><b>Dan Hall</b> &middot; 2024&ndash;2025</li>
+            </ul>
+          </div>
+
+          <div class="note-box rv">
+            <p>Authority compounds. The 90 days builds the engine and the position; growth stacks from there. No instant-ROI promises, and this line also filters the wrong clients out before they start.</p>
+          </div>
+
+          <ul class="tasklist rv" data-group="sec1">
+            <li class="task-row"><input type="checkbox" id="t-sec1-1"><label for="t-sec1-1">Stress-test offer positioning (scheduled, not yet done).</label></li>
+          </ul>
+          <div class="group-progress" data-progress-target="sec1"></div>
+        </div>
+      </section>
+
+      <!-- 2 CONTENT SYSTEM -->
+      <section class="sec" id="s2">
+        <div class="wrap">
+          <span class="eyebrow rv">02 &middot; Content System</span>
+          <h2 class="title rv">LinkedIn, 4&ndash;5 posts a week.</h2>
+
+          <div class="framework-block rv">
+            <span class="eyebrow fb-label">2a &middot; The anchor framework</span>
+            <p class="lead" style="margin-top:0">Reverse-engineered from Lara Acosta&rsquo;s live feed, then adapted for Gordon&rsquo;s older corporate audience.</p>
+            <ol>
+              <li><b>Campaign architecture, not a content calendar.</b> During a launch window, every post, regardless of type, funnels to one destination and one CTA. Multiple angles, one door.</li>
+              <li><b>Cadence:</b> 4&ndash;5 posts per week.</li>
+              <li><b>The repeating post skeleton:</b>
+                <ol style="margin-top:0.4rem">
+                  <li>Hook: a specific number or a vulnerability admission. Never a topic statement.</li>
+                  <li>Short one-to-three line stanzas, heavy white space.</li>
+                  <li>A negation or contrast block mid-post (&ldquo;I don&rsquo;t X, you don&rsquo;t need Y&rdquo;; &ldquo;How-to sounds generic, how-I stops the scroll&rdquo;).</li>
+                  <li>Numbered steps or one compressed lesson.</li>
+                  <li>Visual proof attached to every post: analytics screenshots, receipts of old posts, event photos, video.</li>
+                  <li>A CTA with a hard date, then a PS/PPS engineered for engagement: a question, a repost ask, an open loop.</li>
+                </ol>
+              </li>
+              <li><b>SLAY structure</b> underlies the story format: Story &rarr; Lesson &rarr; Actionable advice &rarr; You (question or CTA), roughly 200 words.</li>
+            </ol>
+            <p style="margin-top:1rem"><b>Six rotating post angles:</b></p>
+            <div class="angles">
+              <span class="angle-chip">Client proof with receipts</span>
+              <span class="angle-chip">Vulnerability / origin story with receipts</span>
+              <span class="angle-chip">Money or result proof, negation stack, steps</span>
+              <span class="angle-chip">Craft tip: never do X, do this instead</span>
+              <span class="angle-chip">Tool tutorial, numbered walkthrough</span>
+              <span class="angle-chip">Why / emotional story tied to a number</span>
+            </div>
+            <p style="margin-top:1rem"><b>Topic sourcing wells:</b> problems solved for self, problems solved for clients, feed takes to agree or disagree with, and reverse-engineering his own best performers monthly.</p>
+          </div>
+
+          <div class="adapt-block rv">
+            <span class="eyebrow">2b &middot; Gordon&rsquo;s adaptation rules</span>
+            <ul class="adapt-list">
+              <li><b>Register</b>Same skeleton, senior register. No cringe or slay vocabulary, no bro-speak. Hooks written for a fifty to sixty year old founder or executive.</li>
+              <li><b>Vulnerability angle</b>Career-honesty stories: what he got wrong across decades of marketing, moments of reinvention. Not student-hustle stories.</li>
+              <li><b>Proof assets he already owns</b>Podcast clips and guest moments from the Influence Global Podcast, client reviews, speaking and event photos, the book. Every post carries one.</li>
+              <li><b>Authority data as his analytics screenshot</b>Creator-economy data (for example, the &dollar;250bn creator economy) plays the role Lara&rsquo;s analytics screenshots play, paired with a client story wherever possible.</li>
+              <li><b>The belief to attack repeatedly</b>&ldquo;Social media doesn&rsquo;t sell products or people.&rdquo; This is his ICP&rsquo;s stated limiting belief.</li>
+              <li><b>Launch-mode option</b>When Gordon has a date-bound push (VIP intake, Top 100 Index, AI Hackathon, a workshop), the whole week&rsquo;s posts flip to single-CTA campaign mode, Lara-style.</li>
+            </ul>
+          </div>
+
+          <h3 class="sub rv" style="margin-top:2.4rem">2c &middot; Weekly grid</h3>
+          <p class="lead rv" style="margin-top:0">Tap a day for detail.</p>
+          <div class="week-grid rv" id="weekGrid"></div>
+          <p class="week-note rv">Soft CTA in-feed, maximum once a week (&ldquo;I take on 4 founders per quarter, message me &lsquo;VIP&rsquo;&rdquo;). The profile itself carries the hard offer at all times.</p>
+
+          <h3 class="sub rv" style="margin-top:2.4rem">2d &middot; Daily operating rules</h3>
+          <ul class="tasklist rv" data-group="sec2d">
+            <li class="task-row"><input type="checkbox" id="t-sec2d-1"><label for="t-sec2d-1">15 minutes a day commenting on 5 ICP-adjacent posts before publishing his own. This warms the outreach in Section 3, targets recognize his name.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec2d-2"><label for="t-sec2d-2">Reply to comments within 2 hours on posting days.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec2d-3"><label for="t-sec2d-3">Monthly: review top performers, extract repeatable frameworks, feed back into the grid.</label></li>
+          </ul>
+          <div class="group-progress" data-progress-target="sec2d"></div>
+        </div>
+      </section>
+
+      <!-- 3 OUTREACH -->
+      <section class="sec" id="s3">
+        <div class="wrap">
+          <span class="eyebrow rv">03 &middot; LinkedIn Outreach Automation</span>
+          <h2 class="title rv">Automation starts conversations. Humans close them.</h2>
+          <p class="lead rv">The automation&rsquo;s only job is to start conversations. Nobody downstream pitches until Gordon&rsquo;s call.</p>
+
+          <div class="pipeline rv" id="pipeline"></div>
+
+          <div class="seq-block rv">
+            <span class="eyebrow">Sequence copy drafts</span>
+            <p class="lead" style="margin-top:0.6rem">Paste drafts in during build-out.</p>
+            <div class="seq-grid">
+              <div class="seq-item"><label>Message 1</label><textarea placeholder="Draft message 1..."></textarea></div>
+              <div class="seq-item"><label>Follow-up, day 4</label><textarea placeholder="Draft follow-up..."></textarea></div>
+              <div class="seq-item"><label>Follow-up, day 8</label><textarea placeholder="Draft follow-up..."></textarea></div>
+              <div class="seq-item"><label>Break-up, day 14</label><textarea placeholder="Draft break-up message..."></textarea></div>
+            </div>
+            <ul class="tasklist" data-group="sec3" style="margin-top:1rem">
+              <li class="task-row"><input type="checkbox" id="t-sec3-1"><label for="t-sec3-1"><span class="rtag mde">MDE</span>Write and approve all four DM sequence messages in Gordon&rsquo;s voice.</label></li>
+            </ul>
+            <div class="group-progress" data-progress-target="sec3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 CRM -->
+      <section class="sec" id="s4">
+        <div class="wrap">
+          <span class="eyebrow rv">04 &middot; CRM and Appointment Setting</span>
+          <h2 class="title rv">One pipeline, one loop back to content.</h2>
+          <p class="lead rv">Primary: GoHighLevel, which Gordon already has. Fallback: a Notion board with identical stages if his GHL is inactive.</p>
+
+          <div class="funnel rv" id="funnel"></div>
+
+          <div class="own-rules rv">
+            <div class="own"><div class="ol2">Setter</div><p>Owns movement from New Reply through Call Booked.</p></div>
+            <div class="own"><div class="ol2">Gordon / Closer</div><p>Owns Call Held through Closed.</p></div>
+            <div class="own"><div class="ol2">MDE</div><p>Owns the system: segmentation, sequence copy, reporting, hiring.</p></div>
+          </div>
+
+          <h3 class="sub rv" style="margin-top:2.2rem">GoHighLevel configuration</h3>
+          <ul class="tasklist rv" data-group="sec4">
+            <li class="task-row"><input type="checkbox" id="t-sec4-1"><label for="t-sec4-1">Build the 7-stage pipeline.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec4-2"><label for="t-sec4-2">Connect Gordon&rsquo;s calendar; booking link for the setter.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec4-3"><label for="t-sec4-3">Automated booking confirmations and reminder sequence (email and SMS) to kill no-shows: confirm on booking, reminder at 24 hours, reminder at 1 hour.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec4-4"><label for="t-sec4-4">No-show automation: auto-move to Follow-up, trigger a rebooking message.</label></li>
+            <li class="task-row"><input type="checkbox" id="t-sec4-5"><label for="t-sec4-5">Closed Lost tagged to Nurture: these people keep seeing Gordon&rsquo;s content, which re-warms them. The content system and the outreach system are one loop.</label></li>
+          </ul>
+          <div class="group-progress" data-progress-target="sec4"></div>
+
+          <div class="metrics-box rv">
+            <span class="eyebrow">Weekly metrics</span>
+            <div class="metrics-inputs">
+              <div class="min-item"><label>Sends</label><input type="number" min="0" id="mSends" value="0"></div>
+              <div class="min-item"><label>Replies</label><input type="number" min="0" id="mReplies" value="0"></div>
+              <div class="min-item"><label>Conversations</label><input type="number" min="0" id="mConvos" value="0"></div>
+              <div class="min-item"><label>Calls booked</label><input type="number" min="0" id="mBooked" value="0"></div>
+              <div class="min-item"><label>Calls held</label><input type="number" min="0" id="mHeld" value="0"></div>
+              <div class="min-item"><label>Closes</label><input type="number" min="0" id="mCloses" value="0"></div>
+            </div>
+            <div class="rates-grid">
+              <div class="rate" id="rateCard1"><div class="rv2" id="rateVal1">&ndash;</div><div class="rl">Sends &rarr; replies</div></div>
+              <div class="rate" id="rateCard2"><div class="rv2" id="rateVal2">&ndash;</div><div class="rl">Replies &rarr; booked</div></div>
+              <div class="rate" id="rateCard3"><div class="rv2" id="rateVal3">&ndash;</div><div class="rl">Booked &rarr; show</div></div>
+              <div class="rate" id="rateCard4"><div class="rv2" id="rateVal4">&ndash;</div><div class="rl">Show &rarr; close</div></div>
+            </div>
+            <div class="diag" id="diagLine">Enter this week&rsquo;s numbers to see the diagnosis.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 ROLLOUT -->
+      <section class="sec" id="s5">
+        <div class="wrap">
+          <span class="eyebrow rv">05 &middot; Rollout Timeline</span>
+          <h2 class="title rv">Six months, five phases.</h2>
+          <div id="phases" class="rv"></div>
+
+          <div class="finale-block rv">
+            <p>The engine is the deliverable. Every phase after Phase 1 runs on what Phase 1 built.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+/* ================= GATE ================= */
+const PASSPHRASE = 'INFLUENCE2026';
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+function tryUnlock(){
+  const v = document.getElementById('gatePw').value.trim();
+  if (v === PASSPHRASE) {
+    gate.classList.add('hidden');
+    app.classList.add('ready');
+    initApp();
+  } else {
+    document.getElementById('gateErr').classList.add('show');
+  }
+}
+document.getElementById('gateBtn').addEventListener('click', tryUnlock);
+document.getElementById('gatePw').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+/* ================= DATA ================= */
+const SECTIONS = [
+  {id:'s0', label:'Overview', no:'00'},
+  {id:'s1', label:'The Offer', no:'01'},
+  {id:'s2', label:'Content System', no:'02'},
+  {id:'s3', label:'Outreach Automation', no:'03'},
+  {id:'s4', label:'CRM & Metrics', no:'04'},
+  {id:'s5', label:'Rollout Timeline', no:'05'},
+];
+
+const WEEK = [
+  {d:'Mon', t:'Authority / Insight', badge:null, p:'Industry data paired with a client story. Positions expertise.'},
+  {d:'Tue', t:'Belief-Breaker', badge:'PEAK DAY', p:'Attacks the ICP limiting belief with a contrast block. The heaviest-selling post of the week.'},
+  {d:'Wed', t:'Story', badge:null, p:'Origin or career-honesty post, SLAY structure, receipts attached.'},
+  {d:'Thu', t:'Proof', badge:null, p:'Client transformation, testimonial-anchored post, or case study.'},
+  {d:'Fri', t:'Podcast repurpose', badge:null, p:'A clip or distilled takeaway from the Influence Global Podcast. Near-zero production cost, cross-promotes the podcast.'},
+];
+
+const PIPELINE = [
+  {tags:['mde'], t:'Segmentation', p:['Pull Gordon’s 1st-degree connections and follower list. Filter to ICP: founder or executive titles, team-size 10+ signals, £1m+ revenue proxies (headcount, industry, seniority), UK/EU weighted.', 'The qualified segment only goes into Dripify, never the whole network. Weekly refresh.']},
+  {tags:['automation'], t:'Dripify DM sequence', p:['Sent to matched followers and connections. Message 1 plus follow-ups on a D1 / D4 / D8 / D14 rhythm.', 'Voice: Gordon’s, warm, senior, zero sales pressure. Every message references something true: they follow him, the podcast, shared context. Conversation-starter goal only. A reply kills the sequence for that lead instantly.'], ul:['Conservative daily send caps: his aged, trusted account is the asset, protect it.','Messaging existing connections and followers only: lower flag-risk than cold connects.','No links in message 1.']},
+  {tags:['setter'], t:'Human takeover on reply', p:['The DM setter picks up the live thread from Gordon’s inbox. Flow: acknowledge naturally, ask one diagnostic question about their brand or visibility situation, then move to booking.', 'Calendar link sent inside the conversation; the call lands on Gordon’s calendar. The setter never pitches price and never explains the program.']},
+  {tags:['setter'], t:'Pre-call brief', p:['One-line brief per booked call: who, company, what they said in the DMs. Delivered to Gordon before every call.']},
+  {tags:['gordon'], t:'Sales call', p:['Gordon runs the conversation and closes into the £5,000 / 90-day program.']},
+  {tags:['future'], t:'Closer swap', p:['After enough closed deals validate the pipeline, a commission-based closer takes this stage; Gordon moves to delivery only.', 'The system upstream doesn’t change. That is deliberate.']},
+];
+
+const FUNNEL = ['New Reply','In Conversation','Call Booked','Call Held','Proposal / Follow-up','Closed Won','Closed Lost / Nurture'];
+
+const PHASES = [
+  {n:'Phase 1', t:'Foundations', sub:'Week 1', tasks:[
+    ['Lock offer copy (outcome-first, one paragraph plus one-liner).','MDE + Gordon'],
+    ['Rebuild LinkedIn profile: headline, banner, about section, featured. Profile carries the hard offer.','MDE'],
+    ['Audit and confirm GoHighLevel access; if dead, spin up a Notion board.','MDE'],
+    ['Assemble proof bank: reviews, podcast clips, photos, book assets, in one folder.','Gordon'],
+  ]},
+  {n:'Phase 2', t:'Content engine live', sub:'Week 1–2', tasks:[
+    ['Draft the first two weeks of posts using the weekly grid and skeleton.','MDE drafts, Gordon approves'],
+    ['Gordon trained on daily rules: commenting habit, 2-hour reply window.','Gordon'],
+    ['Posting begins. Minimum 4 per week, no exceptions.','Gordon'],
+  ]},
+  {n:'Phase 3', t:'Outreach live', sub:'Week 2–3', tasks:[
+    ['Segment audience, load Dripify.','MDE'],
+    ['Write and approve the 4-message sequence in Gordon’s voice.','MDE + Gordon'],
+    ['Configure send caps and reply-kill.','MDE'],
+    ['Onboard the DM setter: SOP, handoff script, booking flow, pre-call brief format.','MDE'],
+    ['Launch the sequence to the first segment batch.','Automation'],
+  ]},
+  {n:'Phase 4', t:'Pipeline running', sub:'Week 3+', tasks:[
+    ['GHL pipeline and reminders live before the first call is booked.','MDE'],
+    ['First calls held by Gordon.','Gordon'],
+    ['Weekly metrics review against the diagnostic legend.','MDE'],
+  ]},
+  {n:'Phase 5', t:'Scale', sub:'After validated closes', tasks:[
+    ['Recruit a commission closer.','MDE'],
+    ['Handoff sales calls; Gordon moves to delivery only.','MDE + Gordon'],
+    ['Revisit the offer stress-test with real call data.','MDE + Gordon'],
+    ['Extend the system to the Facebook audience, second wave, same machine.','Parked until LinkedIn proven'],
+  ]},
+];
+
+/* ================= BUILD ================= */
+function initApp(){
+  buildNav();
+  buildWeek();
+  buildPipeline();
+  buildFunnel();
+  buildPhases();
+  wireTasks();
+  wireMetrics();
+  wireReveals();
+  wireDayCards();
+}
+
+function buildNav(){
+  const sideNav = document.getElementById('sideNav');
+  const mtabs = document.getElementById('mtabs');
+  SECTIONS.forEach(s=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="#${s.id}" data-target="${s.id}"><span class="no">${s.no}</span>${s.label}</a>`;
+    sideNav.appendChild(li);
+    const mt = document.createElement('a');
+    mt.href = '#'+s.id; mt.dataset.target = s.id; mt.textContent = s.label;
+    mtabs.appendChild(mt);
+  });
+  const allLinks = Array.from(document.querySelectorAll('.side-nav a, .mtabs a'));
+  const secEls = SECTIONS.map(s=>document.getElementById(s.id));
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if (e.isIntersecting){
+        const id = e.target.id;
+        allLinks.forEach(a=>a.classList.toggle('on', a.dataset.target===id));
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  secEls.forEach(el=>el && io.observe(el));
+}
+
+function buildWeek(){
+  const grid = document.getElementById('weekGrid');
+  WEEK.forEach(w=>{
+    const c = document.createElement('div');
+    c.className = 'day-card';
+    c.innerHTML = `${w.badge?`<span class="day-badge">${w.badge}</span>`:''}<div class="dd">${w.d}</div><div class="dn">${w.t}</div><p>${w.p}</p>`;
+    grid.appendChild(c);
+  });
+}
+function wireDayCards(){
+  document.querySelectorAll('.day-card').forEach(c=>c.addEventListener('click', ()=>c.classList.toggle('open')));
+}
+
+function buildPipeline(){
+  const wrap = document.getElementById('pipeline');
+  PIPELINE.forEach((s,i)=>{
+    const el = document.createElement('div');
+    el.className = 'pstage';
+    const tags = s.tags.map(tg=>`<span class="rtag ${tg}">${tg==='future'?'FUTURE':tg.toUpperCase()}</span>`).join('');
+    const paras = s.p.map(p=>`<p>${p}</p>`).join('');
+    const ul = s.ul ? `<ul>${s.ul.map(u=>`<li>${u}</li>`).join('')}</ul>` : '';
+    el.innerHTML = `<div class="pnum">${String(i+1).padStart(2,'0')}</div><div><div class="pstage-head">${tags}<h4>${s.t}</h4></div>${paras}${ul}</div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function buildFunnel(){
+  const wrap = document.getElementById('funnel');
+  FUNNEL.forEach((f,i)=>{
+    if (i>0){
+      const ar = document.createElement('div');
+      ar.className = 'farrow'; ar.textContent = '→';
+      wrap.appendChild(ar);
+    }
+    const el = document.createElement('div');
+    el.className = 'fstage' + (f==='Closed Won'?' won':'') + (f.includes('Lost')?' lost':'');
+    el.innerHTML = `<div class="fn">${String(i+1).padStart(2,'0')}</div><div class="ft">${f}</div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function buildPhases(){
+  const wrap = document.getElementById('phases');
+  PHASES.forEach((ph,i)=>{
+    const el = document.createElement('div');
+    el.className = 'phase' + (i===0 ? ' open' : '');
+    const group = 'phase'+(i+1);
+    const tasksHtml = ph.tasks.map((tk,j)=>{
+      const id = `t-${group}-${j}`;
+      return `<li class="task-row"><input type="checkbox" id="${id}"><label for="${id}"><span class="rtag mde" style="background:var(--mute)">${tk[1]}</span>${tk[0]}</label></li>`;
+    }).join('');
+    el.innerHTML = `
+      <div class="phase-head" data-toggle>
+        <div class="ph-l"><span class="pn3">${ph.n.toUpperCase()}</span><h4>${ph.t}</h4></div>
+        <div class="ph-r"><span class="pcount" data-progress-target="${group}"></span><span class="ptog">+</span></div>
+      </div>
+      <div class="phase-body"><div class="phase-body-in">
+        <p class="lead" style="margin-top:1rem">${ph.sub}</p>
+        <ul class="tasklist" data-group="${group}">${tasksHtml}</ul>
+      </div></div>`;
+    wrap.appendChild(el);
+    el.querySelector('[data-toggle]').addEventListener('click', ()=>el.classList.toggle('open'));
+  });
+}
+
+function wireTasks(){
+  document.querySelectorAll('.task-row input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      cb.closest('.task-row').classList.toggle('done', cb.checked);
+      updateProgress();
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const groups = new Set(Array.from(document.querySelectorAll('[data-group]')).map(g=>g.dataset.group));
+  let gDone=0, gTotal=0;
+  groups.forEach(g=>{
+    const boxes = document.querySelectorAll(`[data-group="${g}"] input[type=checkbox]`);
+    const done = Array.from(boxes).filter(b=>b.checked).length;
+    gDone += done; gTotal += boxes.length;
+    const target = document.querySelector(`[data-progress-target="${g}"]`);
+    if (target) target.innerHTML = `<b>${done}</b>/${boxes.length}`;
+  });
+  document.getElementById('gDone').textContent = gDone;
+  document.getElementById('gTotal').textContent = gTotal;
+  document.getElementById('gBar').style.width = gTotal ? (gDone/gTotal*100)+'%' : '0%';
+}
+
+function wireMetrics(){
+  const ids = ['mSends','mReplies','mConvos','mBooked','mHeld','mCloses'];
+  ids.forEach(id=>document.getElementById(id).addEventListener('input', calcRates));
+  calcRates();
+}
+function calcRates(){
+  const sends = +document.getElementById('mSends').value || 0;
+  const replies = +document.getElementById('mReplies').value || 0;
+  const booked = +document.getElementById('mBooked').value || 0;
+  const held = +document.getElementById('mHeld').value || 0;
+  const closes = +document.getElementById('mCloses').value || 0;
+
+  const rates = [
+    {val: sends>0 ? replies/sends*100 : null, id:1, diag:'Low reply rate: message and copy problem.'},
+    {val: replies>0 ? booked/replies*100 : null, id:2, diag:'Low booking rate: setter problem.'},
+    {val: booked>0 ? held/booked*100 : null, id:3, diag:'Low show rate: reminder problem.'},
+    {val: held>0 ? closes/held*100 : null, id:4, diag:'Low close rate: offer or call problem.'},
+  ];
+
+  rates.forEach(r=>{
+    const valEl = document.getElementById('rateVal'+r.id);
+    const cardEl = document.getElementById('rateCard'+r.id);
+    valEl.textContent = r.val===null ? '–' : r.val.toFixed(1)+'%';
+    cardEl.classList.remove('low');
+  });
+
+  const valid = rates.filter(r=>r.val!==null);
+  const diagLine = document.getElementById('diagLine');
+  if (!valid.length){
+    diagLine.innerHTML = 'Enter this week’s numbers to see the diagnosis.';
+    return;
+  }
+  const lowest = valid.reduce((a,b)=> b.val < a.val ? b : a);
+  document.getElementById('rateCard'+lowest.id).classList.add('low');
+  diagLine.innerHTML = `<b>Bottleneck:</b> ${lowest.diag}`;
+}
+
+function wireReveals(){
+  const io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.1, rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+}
+</script>
+</body>
+</html>
