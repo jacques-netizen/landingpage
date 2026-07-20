@@ -167,18 +167,23 @@
   .seg-detail p{font-size:0.94rem;color:var(--mute);margin-top:0.6rem}
   .budget-sep-note{margin-top:1.6rem;font-size:0.88rem;color:var(--mute);font-style:italic}
 
-  /* two options */
-  .opts-frame{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.1rem,2vw,1.35rem);color:var(--gold-soft);margin-top:1.6rem;max-width:44ch}
-  .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.4rem}
-  .opt{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3vw,2.1rem);cursor:pointer;transition:border-color .3s,background .3s}
-  .opt:hover{border-color:var(--hair)}
-  .opt.sel{border-color:var(--gold);background:var(--panel-2)}
-  .opt .ol{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold)}
-  .opt .oframe{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.02em;color:var(--mute);margin-top:0.5rem}
-  .opt .oprice{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3vw,2rem);color:var(--text);margin-top:1rem;line-height:1.2}
-  .opt .oprice small{display:block;font-family:'Archivo',sans-serif;font-weight:500;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.4rem}
-  .opt ul{list-style:none;margin-top:1.2rem;border-top:1px solid var(--hair-soft);padding-top:1rem}
-  .opt li{font-size:0.92rem;color:var(--mute);padding:0.4rem 0}
+  /* two options: plain comparison table */
+  .cmp-scroll-hint{display:none;font-family:'Archivo',sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:2rem}
+  .cmp-wrap{margin-top:2.2rem;overflow-x:auto;border:1px solid var(--hair-soft)}
+  table.cmp-table{width:100%;border-collapse:collapse;min-width:520px}
+  .cmp-table th,.cmp-table td{padding:1rem 1.3rem;text-align:left;border-bottom:1px solid var(--hair-soft);font-size:0.94rem}
+  .cmp-table thead th{background:var(--panel);border-bottom:1px solid var(--hair)}
+  .cmp-table th.rowlabel{background:transparent;border-bottom:1px solid var(--hair)}
+  .cmp-table td.rowlabel{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+  .cmp-table th.opt-head{
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.04em;color:var(--text);
+    cursor:pointer;transition:.25s;border-bottom:2px solid transparent;
+  }
+  .cmp-table th.opt-head:hover{color:var(--gold-soft)}
+  .cmp-table th.opt-head.sel{color:var(--gold);border-bottom-color:var(--gold)}
+  .cmp-table tbody td:not(.rowlabel){color:var(--mute)}
+  .cmp-table tbody tr td.opt-col-sel{color:var(--text);background:var(--panel-2)}
+  .cmp-table tbody tr:last-child td{border-bottom:0}
   .opt-summary{margin-top:1.8rem;padding:1.4rem 1.6rem;background:var(--panel);border-left:2px solid var(--gold)}
   .opt-summary .label{display:block;margin-bottom:0.7rem}
   .opt-summary p{font-size:1rem;color:var(--text)}
@@ -200,10 +205,11 @@
   .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
 
   @media(max-width:760px){
-    .proof-grid,.brings-grid,.calc-out,.opts-grid{grid-template-columns:1fr}
+    .proof-grid,.brings-grid,.calc-out{grid-template-columns:1fr}
     .proof-grid{grid-template-columns:1fr 1fr}
     .estep{grid-template-columns:36px 1fr}
     .cover h1{font-size:2.1rem}
+    .cmp-scroll-hint{display:block}
   }
   @media(prefers-reduced-motion:reduce){
     .rv{transition:none;opacity:1;transform:none}
@@ -400,34 +406,32 @@
 <section class="section" id="s8">
   <div class="wrap">
     <span class="snum rv">08 &middot; The Two Options</span>
-    <h2 class="statement rv d1">How to pay, not <i>whether</i>.</h2>
-    <p class="opts-frame rv d2">&ldquo;This is a choice about how to pay, not whether to pay. Option A is the bet, Option B is the certainty.&rdquo;</p>
+    <h2 class="statement rv d1">Two ways to structure the <i>retainer</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.6rem">Both include the full team, the network, and the system described above. The difference is only how the retainer is priced. Select a column.</p>
 
-    <div class="opts-grid rv d3">
-      <div class="opt" id="optA" data-opt="A">
-        <div class="ol">Option A</div>
-        <div class="oframe">Lower monthly cost, shared upside. Best if you believe in the products.</div>
-        <div class="oprice">$10,000<small>per month, plus 5% of net revenue</small></div>
-        <ul>
-          <li>5% of net revenue attributed to marketing-driven customers.</li>
-          <li>Includes recurring revenue, for the duration of the engagement.</li>
-          <li>Monthly cost is lower. The upside is shared.</li>
-        </ul>
-      </div>
-      <div class="opt" id="optB" data-opt="B">
-        <div class="ol">Option B</div>
-        <div class="oframe">Higher fixed cost, full clarity. You keep all the upside.</div>
-        <div class="oprice">$15,000<small>per month, no commission</small></div>
-        <ul>
-          <li>No commission, no revenue share, ever.</li>
-          <li>Fixed monthly cost, fully predictable.</li>
-          <li>Every dollar of upside stays with the Company.</li>
-        </ul>
-      </div>
+    <div class="cmp-scroll-hint">Swipe to compare &rarr;</div>
+    <div class="cmp-wrap rv d3">
+      <table class="cmp-table" id="cmpTable">
+        <thead>
+          <tr>
+            <th class="rowlabel"></th>
+            <th class="opt-head" data-opt="A">Option A</th>
+            <th class="opt-head" data-opt="B">Option B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rowlabel">Monthly fee</td><td>$10,000</td><td>$15,000</td></tr>
+          <tr><td class="rowlabel">Revenue share</td><td>5% of net revenue from marketing-driven customers</td><td>None</td></tr>
+          <tr><td class="rowlabel">Includes recurring revenue</td><td>Yes, for the duration of the engagement</td><td>Not applicable</td></tr>
+          <tr><td class="rowlabel">Monthly cost</td><td>Lower, fixed portion</td><td>Higher, fully fixed</td></tr>
+          <tr><td class="rowlabel">Upside if the products perform</td><td>Shared with Maison d&rsquo;&Eacute;lites</td><td>Stays entirely with the Company</td></tr>
+          <tr><td class="rowlabel">Best suited for</td><td>Confidence in the products, lower cost up front</td><td>Maximum cost certainty, no shared upside</td></tr>
+        </tbody>
+      </table>
     </div>
     <div class="opt-summary rv d4">
       <span class="label">What this means for you</span>
-      <p id="optSummary">Select an option above to see what it means in plain terms.</p>
+      <p id="optSummary">Select Option A or Option B above to see what it means in plain terms.</p>
     </div>
   </div>
 </section>
@@ -583,19 +587,24 @@
   poolSlider.addEventListener('input',renderBudget);
   buildBudget();
 
-  /* ---- two options ---- */
-  const optA=document.getElementById('optA'), optB=document.getElementById('optB'), optSummary=document.getElementById('optSummary');
+  /* ---- two options: comparison table selection ---- */
+  const cmpTable=document.getElementById('cmpTable'), optSummary=document.getElementById('optSummary');
   const SUMMARIES={
     A:'You pay $10,000 a month. On top of that, the Company shares 5% of net revenue from marketing-driven customers, including recurring revenue, for as long as the engagement runs. Lower cost up front, shared upside if the products perform.',
     B:'You pay $15,000 a month. No commission, no revenue share, no further calculation. Higher fixed cost, but every dollar the products earn stays fully with the Company.',
   };
   function selectOpt(key){
-    optA.classList.toggle('sel', key==='A');
-    optB.classList.toggle('sel', key==='B');
+    cmpTable.querySelectorAll('th.opt-head').forEach(th=>th.classList.toggle('sel', th.dataset.opt===key));
+    cmpTable.querySelectorAll('tbody tr').forEach(tr=>{
+      const cellA=tr.children[1], cellB=tr.children[2];
+      cellA.classList.toggle('opt-col-sel', key==='A');
+      cellB.classList.toggle('opt-col-sel', key==='B');
+    });
     optSummary.textContent=SUMMARIES[key];
   }
-  optA.addEventListener('click',()=>selectOpt('A'));
-  optB.addEventListener('click',()=>selectOpt('B'));
+  cmpTable.querySelectorAll('th.opt-head').forEach(th=>{
+    th.addEventListener('click',()=>selectOpt(th.dataset.opt));
+  });
 </script>
 </body>
 </html>
