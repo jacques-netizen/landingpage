@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison d&rsquo;&Eacute;lites &times; ValuePilot &middot; Growth Engine Engagement Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#19150F;
+    --panel:#211A12;
+    --panel-2:#241D14;
+    --text:#ECE4D2;
+    --mute:#9C8F75;
+    --gold:#C8A85A;
+    --gold-deep:#A88A4F;
+    --gold-soft:#E2CC92;
+    --hair:rgba(200,168,90,.20);
+    --hair-soft:rgba(200,168,90,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'EB Garamond',serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection{background:var(--gold);color:var(--bg)}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold)}
+  .label.dim{color:var(--mute)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.85rem,4.4vw,3.1rem);line-height:1.12;letter-spacing:-0.01em;max-width:25ch}
+  .statement i{font-style:italic;color:var(--gold-soft)}
+  .body-lg{font-size:clamp(1.02rem,1.45vw,1.18rem);color:var(--mute);max-width:64ch;line-height:1.7}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .kicker{display:block;margin-bottom:1.4rem}
+
+  .section{padding:clamp(4.5rem,11vh,8.5rem) clamp(1.4rem,7vw,7.5rem);position:relative}
+  .wrap{max-width:1080px;margin:0 auto}
+  .rule{height:1px;background:var(--hair-soft);border:0}
+
+  .rv{opacity:0;transform:translateY(26px);transition:opacity .95s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.4rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.85rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold-deep);background:transparent;display:block;transition:.3s}
+  #dots a.on{background:var(--gold);border-color:var(--gold);transform:scale(1.25)}
+  #dots a span{
+    position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;
+    font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;
+    opacity:0;pointer-events:none;transition:.25s;
+  }
+  #dots a:hover span,#dots a:focus span{opacity:1}
+  @media(max-width:900px){#dots{display:none}}
+
+  /* cover */
+  .cover{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(2rem,5vw,3.4rem) clamp(1.4rem,7vw,7.5rem)}
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.1rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .cover-mid{max-width:960px;padding:3rem 0}
+  .cover-mid .label{display:block;margin-bottom:1.8rem}
+  .cover h1{font-family:'Archivo',sans-serif;font-weight:700;letter-spacing:-0.02em;font-size:clamp(2.3rem,6.6vw,4.6rem);line-height:1.04}
+  .cover-sub{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.1rem,2.2vw,1.5rem);color:var(--mute);margin-top:1.8rem;max-width:40ch;line-height:1.45}
+  .meta-chips{display:flex;gap:0.7rem;flex-wrap:wrap;margin-top:2.6rem}
+  .meta-chip{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;color:var(--text);border:1px solid var(--hair);padding:0.6rem 1.05rem;border-radius:999px}
+  .meta-chip b{color:var(--gold-soft);font-weight:600}
+  .cover-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  .snum{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;display:block;margin-bottom:1.4rem}
+
+  /* proof stat band */
+  .proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.8rem}
+  .proof{background:var(--panel);padding:clamp(1.5rem,2.6vw,2rem) clamp(1.1rem,2vw,1.5rem)}
+  .proof .pv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3vw,2.1rem);color:var(--gold-soft);line-height:1}
+  .proof .pl{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .proof-frame{margin-top:2.2rem;font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.15rem,2.2vw,1.4rem);color:var(--gold-soft);max-width:36ch}
+
+  /* section 3 team/network/system */
+  .brings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.8rem}
+  .brings{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.5rem,3vw,2rem)}
+  .role-list{list-style:none;margin-top:1rem}
+  .role-list li{padding:0.85rem 0;border-top:1px solid var(--hair-soft);font-size:0.95rem;color:var(--mute)}
+  .role-list li b{color:var(--text);font-weight:500;display:block;font-family:'Archivo',sans-serif;font-size:0.92rem;margin-bottom:0.15rem}
+  .shape-flow{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.2rem;align-items:center}
+  .shape-step{font-family:'Archivo',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold-soft);border:1px solid var(--hair);padding:0.5rem 0.9rem;border-radius:999px}
+  .shape-arrow{color:var(--mute);font-size:0.8rem}
+
+  /* section 4 engine */
+  .engine-list{list-style:none;margin-top:2rem}
+  .estep{display:grid;grid-template-columns:44px 1fr;gap:1.2rem;padding:1.4rem 0;border-top:1px solid var(--hair-soft)}
+  .estep:last-child{border-bottom:1px solid var(--hair-soft)}
+  .estep .en{font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem;color:var(--gold)}
+  .estep h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.08rem;margin-bottom:0.4rem}
+  .estep p{font-size:0.96rem;color:var(--mute)}
+  .strategic-note{margin-top:2.2rem;border-left:2px solid var(--gold);background:var(--panel-2);padding:1.4rem 1.6rem}
+  .strategic-note .label{display:block;margin-bottom:0.7rem}
+  .strategic-note p{font-size:0.98rem;color:var(--text)}
+
+  /* calculator */
+  .calcbox{margin-top:2.8rem;background:var(--panel);border:1px solid var(--hair);padding:clamp(1.6rem,3.5vw,2.6rem)}
+  .calc-row{margin-top:1.8rem}
+  .calc-row:first-of-type{margin-top:0.4rem}
+  .calc-row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.4rem}
+  .calc-row-head .cl{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+  .calc-row-head .cv{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.3rem;color:var(--gold)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);border:4px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);border:4px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
+  .calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .co{background:var(--panel-2);padding:1.5rem 1.2rem;text-align:center}
+  .co .cov{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3.6vw,2.3rem);color:var(--gold-soft);line-height:1}
+  .co .col{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem}
+  .calc-note{font-size:0.9rem;color:var(--mute);font-style:italic;margin-top:1.4rem;max-width:56ch}
+
+  /* timeline (reuse phase pattern) */
+  .phases-nav{display:flex;gap:0.5rem;margin-top:2.8rem;overflow-x:auto;padding-bottom:0.5rem;scrollbar-width:none}
+  .phases-nav::-webkit-scrollbar{display:none}
+  .ph-btn{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);background:transparent;border:1px solid var(--hair-soft);padding:0.85rem 1.15rem;cursor:pointer;white-space:nowrap;transition:.3s;flex-shrink:0}
+  .ph-btn small{display:block;font-size:0.58rem;letter-spacing:0.16em;color:var(--gold);margin-bottom:0.2rem;font-weight:700}
+  .ph-btn:hover{border-color:var(--hair);color:var(--text)}
+  .ph-btn.on{border-color:var(--gold);color:var(--text);background:var(--panel-2)}
+  .ph-track{height:2px;background:var(--hair-soft);margin-top:0.2rem;position:relative}
+  .ph-track i{position:absolute;left:0;top:0;height:100%;background:var(--gold);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .ph-panel{margin-top:1.8rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3.5vw,2.4rem)}
+  .ph-panel h4{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.3rem;margin-bottom:0.4rem}
+  .ph-panel h4 span{color:var(--gold);font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;display:block;margin-bottom:0.4rem}
+  .ph-panel p{font-size:0.98rem;color:var(--mute);max-width:66ch}
+  .ph-panel.swap{animation:phswap .45s ease}
+  @keyframes phswap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .fc-note{margin-top:1.6rem;padding:1.1rem 1.4rem;border:1px dashed var(--hair);font-size:0.9rem;color:var(--mute);font-style:italic}
+
+  /* budget breakdown */
+  .budgetbox{margin-top:2.8rem}
+  .pool-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:0.5rem}
+  .pool-head .cv{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.6rem;color:var(--gold)}
+  .segbar{display:flex;height:38px;margin-top:1.4rem;border:1px solid var(--hair);overflow:hidden}
+  .seg{cursor:pointer;transition:filter .2s,opacity .2s;display:flex;align-items:center;justify-content:center;position:relative}
+  .seg:not(:last-child){border-right:1px solid var(--bg)}
+  .seg span{font-family:'Archivo',sans-serif;font-size:0.68rem;font-weight:700;color:var(--bg)}
+  .seg.dim{opacity:0.45}
+  .seg:hover{filter:brightness(1.1)}
+  .seg-legend{display:flex;flex-wrap:wrap;gap:0.9rem;margin-top:1.2rem}
+  .leg-item{display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-family:'Archivo',sans-serif;font-size:0.76rem;color:var(--mute);padding:0.3rem 0.2rem}
+  .leg-item.active{color:var(--text)}
+  .leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .seg-detail{margin-top:1.6rem;background:var(--panel);border-left:2px solid var(--gold);padding:1.4rem 1.6rem}
+  .seg-detail .sd-h{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .seg-detail .sd-t{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.05rem;color:var(--gold-soft)}
+  .seg-detail .sd-v{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text)}
+  .seg-detail p{font-size:0.94rem;color:var(--mute);margin-top:0.6rem}
+  .budget-sep-note{margin-top:1.6rem;font-size:0.88rem;color:var(--mute);font-style:italic}
+
+  /* two options */
+  .opts-frame{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.1rem,2vw,1.35rem);color:var(--gold-soft);margin-top:1.6rem;max-width:44ch}
+  .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.4rem}
+  .opt{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3vw,2.1rem);cursor:pointer;transition:border-color .3s,background .3s}
+  .opt:hover{border-color:var(--hair)}
+  .opt.sel{border-color:var(--gold);background:var(--panel-2)}
+  .opt .ol{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold)}
+  .opt .oframe{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.02em;color:var(--mute);margin-top:0.5rem}
+  .opt .oprice{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3vw,2rem);color:var(--text);margin-top:1rem;line-height:1.2}
+  .opt .oprice small{display:block;font-family:'Archivo',sans-serif;font-weight:500;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.4rem}
+  .opt ul{list-style:none;margin-top:1.2rem;border-top:1px solid var(--hair-soft);padding-top:1rem}
+  .opt li{font-size:0.92rem;color:var(--mute);padding:0.4rem 0}
+  .opt-summary{margin-top:1.8rem;padding:1.4rem 1.6rem;background:var(--panel);border-left:2px solid var(--gold)}
+  .opt-summary .label{display:block;margin-bottom:0.7rem}
+  .opt-summary p{font-size:1rem;color:var(--text)}
+
+  /* needs */
+  .needs{counter-reset:nd;margin-top:2.8rem}
+  .need{display:grid;grid-template-columns:60px 1fr;gap:1.3rem;padding:1.5rem 0;border-top:1px solid var(--hair-soft)}
+  .need:last-child{border-bottom:1px solid var(--hair-soft)}
+  .need:before{counter-increment:nd;content:counter(nd,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:700;color:var(--gold);font-size:0.82rem}
+  .need p{font-size:1rem;color:var(--text)}
+
+  /* close */
+  .cta{background:var(--panel);border:1px solid var(--hair-soft)}
+  .cta .wrap{padding:clamp(3rem,7vw,5rem) clamp(1.6rem,4vw,3.5rem)}
+  .finale{font-family:'EB Garamond',serif;font-style:italic;font-weight:400;font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.3;color:var(--gold-soft);max-width:30ch}
+  .signoff{margin-top:2.6rem;padding-top:1.8rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.25rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+
+  @media(max-width:760px){
+    .proof-grid,.brings-grid,.calc-out,.opts-grid{grid-template-columns:1fr}
+    .proof-grid{grid-template-columns:1fr 1fr}
+    .estep{grid-template-columns:36px 1fr}
+    .cover h1{font-size:2.1rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>The Engagement</span></a>
+  <a href="#s2"><span>Proof</span></a>
+  <a href="#s3"><span>What MDE Brings</span></a>
+  <a href="#s4"><span>The Engine</span></a>
+  <a href="#s5"><span>Reach Calculator</span></a>
+  <a href="#s6"><span>The Plan</span></a>
+  <a href="#s7"><span>The Budget</span></a>
+  <a href="#s8"><span>The Two Options</span></a>
+  <a href="#s9"><span>What's Needed</span></a>
+  <a href="#s10"><span>Close</span></a>
+</nav>
+
+<!-- 0 COVER -->
+<header class="cover" id="s0">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d&rsquo;&Eacute;lites</b></div>
+    <div class="label dim">For Decision</div>
+  </div>
+  <div class="cover-mid">
+    <span class="label rv">Maison d&rsquo;&Eacute;lites &times; ValuePilot</span>
+    <h1 class="rv d1">Growth Engine<br>Engagement Proposal</h1>
+    <p class="cover-sub rv d2">Building and running ValuePilot&rsquo;s marketing engine. Six months, four products, one team.</p>
+    <div class="meta-chips rv d3">
+      <span class="meta-chip">Prepared by <b>Jacques Amoako, EVP Marketing</b></span>
+      <span class="meta-chip">Scope: <b>GrubBudget, PriceDropMonitor, RenewalGuard, RefundPilot</b></span>
+      <span class="meta-chip">Model: <b>Creator-led distribution</b></span>
+      <span class="meta-chip">Status: <b>For decision</b></span>
+    </div>
+  </div>
+  <div class="cover-bot">
+    <div class="label dim">ValuePilot &middot; ICP Systems</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- 1 THE ENGAGEMENT -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; The Engagement</span>
+    <h2 class="statement rv d1">One team, running the <i>engine</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Maison d&rsquo;&Eacute;lites runs ValuePilot&rsquo;s growth as its marketing engine, with Jacques Amoako as EVP Marketing leading it. MDE brings an in-house team, a creator and clipping network, and a proven distribution system.</p>
+    <p class="body-lg rv d2"><b>The Company funds a marketing budget the EVP deploys, with full transparency and reporting.</b> That budget is separate from the retainer that pays for the team and the system. There are two ways to structure the retainer, shown in Section 08 below.</p>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 2 PROOF -->
+<section class="section" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; Proof</span>
+    <h2 class="statement rv d1">Attention is the easy part. This does <i>both</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">The question is not whether attention can be produced. It is whether it converts. These do both.</p>
+    <div class="proof-grid rv d3">
+      <div class="proof"><div class="pv">5.1M</div><div class="pl">Views, Mannywellz campaign</div></div>
+      <div class="proof"><div class="pv">11M</div><div class="pl">Views, Logan / Jake Paul campaign</div></div>
+      <div class="proof"><div class="pv">Sub-$1</div><div class="pl">CPM delivered across campaigns</div></div>
+      <div class="proof"><div class="pv">4,300</div><div class="pl">Direct keyword-intent leads from 1.4M views across a three-reel set</div></div>
+    </div>
+    <p class="proof-frame rv">&ldquo;Proof that attention converts to captured, reachable leads, not just views.&rdquo;</p>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 3 WHAT MDE BRINGS -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; What Maison d&rsquo;&Eacute;lites Brings</span>
+    <h2 class="statement rv d1">The team, the network, the <i>system</i>.</h2>
+    <div class="brings-grid rv d2">
+      <div class="brings">
+        <span class="label">The team</span>
+        <ul class="role-list">
+          <li><b>Head of Content</b>Also runs the social channels day to day.</li>
+          <li><b>Graphic Designer</b>Visual identity and creative across every product.</li>
+          <li><b>Campaign Managers</b>Moderate the clipper network, approve hundreds of clips daily.</li>
+          <li><b>Virtual Assistants</b>Convert comment and DM intent into tracked signups.</li>
+        </ul>
+      </div>
+      <div class="brings">
+        <span class="label">The network and the system</span>
+        <p class="body-lg" style="margin-top:0.9rem">A performance-paid clipper and creator network, briefed and moderated in-house. The system runs in one shape, applied to every product:</p>
+        <div class="shape-flow">
+          <span class="shape-step">Source</span><span class="shape-arrow">&rarr;</span>
+          <span class="shape-step">Multiply</span><span class="shape-arrow">&rarr;</span>
+          <span class="shape-step">Distribute</span><span class="shape-arrow">&rarr;</span>
+          <span class="shape-step">Amplify</span><span class="shape-arrow">&rarr;</span>
+          <span class="shape-step">Capture</span><span class="shape-arrow">&rarr;</span>
+          <span class="shape-step">Convert</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 4 THE ENGINE -->
+<section class="section" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; The Engine</span>
+    <h2 class="statement rv d1">Transparency is the <i>sell</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">How reach is manufactured, in plain terms.</p>
+    <ul class="engine-list rv d3">
+      <li class="estep"><span class="en">01</span><div><h4>Hero content is produced</h4><p>Jacques is the primary face. External creators are capped at $500 per long-form piece, to keep this lean.</p></div></li>
+      <li class="estep"><span class="en">02</span><div><h4>Every long-form asset is cut into 30 to 50 short clips</h4><p>One source, dozens of assets.</p></div></li>
+      <li class="estep"><span class="en">03</span><div><h4>A performance-paid clipper network posts at volume</h4><p>Paid $1 to $2 per 1,000 views delivered. This is the cheapest reach available and the core of the model.</p></div></li>
+      <li class="estep"><span class="en">04</span><div><h4>Winning clips get paid amplification</h4><p>Attention is captured to an owned email list and converted from there.</p></div></li>
+    </ul>
+    <div class="strategic-note rv">
+      <span class="label">Strategic note</span>
+      <p>The clipping spend builds toward an in-house ValuePilot clipping team. The budget creates an owned distribution asset, not rented reach that disappears when spending stops.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 5 CALCULATOR -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; Reach Calculator</span>
+    <h2 class="statement rv d1">Move the numbers <i>yourself</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">This is the core economics of the model, live. Set a clipping budget and a blended rate, and see exactly what it buys.</p>
+
+    <div class="calcbox rv d3">
+      <div class="calc-row">
+        <div class="calc-row-head"><span class="cl">Clipping budget allocated</span><span class="cv" id="cbVal">$30,000</span></div>
+        <input type="range" id="cbSlider" min="0" max="50000" step="500" value="30000">
+        <div class="range-ends"><span>$0</span><span>$50,000</span></div>
+      </div>
+      <div class="calc-row">
+        <div class="calc-row-head"><span class="cl">Blended rate, per 1,000 views</span><span class="cv" id="crVal">$1.50</span></div>
+        <input type="range" id="crSlider" min="1" max="2" step="0.1" value="1.5">
+        <div class="range-ends"><span>$1.00</span><span>$2.00</span></div>
+      </div>
+      <div class="calc-out">
+        <div class="co"><div class="cov" id="outViews">20,000,000</div><div class="col">Total views produced</div></div>
+        <div class="co"><div class="cov" id="outCpm">$1.50</div><div class="col">Per 1,000 views, a fraction of paid advertising</div></div>
+        <div class="co"><div class="cov" id="outLeads">20,000&ndash;140,000</div><div class="col">Estimated captured-intent leads (0.1% to 0.7% of views)</div></div>
+      </div>
+      <p class="calc-note">Lead range is a planning estimate, not a guarantee. It is drawn from the conversion band observed across prior campaigns.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 6 THE PLAN / TIMELINE -->
+<section class="section" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; The Plan</span>
+    <h2 class="statement rv d1">Six months, five <i>phases</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">Anchored to the real product slate. Tap a phase.</p>
+    <div class="phases-nav rv d3" id="phNav"></div>
+    <div class="ph-track rv d3"><i id="phFill"></i></div>
+    <div class="ph-panel rv d4" id="phPanel"></div>
+    <div class="fc-note rv">FutureCircle soft-launches on the Company&rsquo;s own network with no marketing spend, untouched by MDE until later.</div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 7 THE BUDGET -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; The Budget</span>
+    <h2 class="statement rv d1">Every dollar, shown <i>openly</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">How the six-month marketing pool splits. This is the Company&rsquo;s money, deployed by the EVP with full reporting. It is separate from the retainer.</p>
+
+    <div class="budgetbox rv d3">
+      <div class="pool-head"><span class="cl label">Six-month marketing pool</span><span class="cv" id="poolVal">$40,000</span></div>
+      <input type="range" id="poolSlider" min="30000" max="50000" step="1000" value="40000">
+      <div class="range-ends"><span>$30,000</span><span>$50,000</span></div>
+
+      <div class="segbar" id="segbar"></div>
+      <div class="seg-legend" id="segLegend"></div>
+      <div class="seg-detail" id="segDetail"></div>
+      <p class="budget-sep-note">Allocation flexes toward whatever is converting. These figures are a starting split, not a fixed rule.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 8 TWO OPTIONS -->
+<section class="section" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; The Two Options</span>
+    <h2 class="statement rv d1">How to pay, not <i>whether</i>.</h2>
+    <p class="opts-frame rv d2">&ldquo;This is a choice about how to pay, not whether to pay. Option A is the bet, Option B is the certainty.&rdquo;</p>
+
+    <div class="opts-grid rv d3">
+      <div class="opt" id="optA" data-opt="A">
+        <div class="ol">Option A</div>
+        <div class="oframe">Lower monthly cost, shared upside. Best if you believe in the products.</div>
+        <div class="oprice">$10,000<small>per month, plus 5% of net revenue</small></div>
+        <ul>
+          <li>5% of net revenue attributed to marketing-driven customers.</li>
+          <li>Includes recurring revenue, for the duration of the engagement.</li>
+          <li>Monthly cost is lower. The upside is shared.</li>
+        </ul>
+      </div>
+      <div class="opt" id="optB" data-opt="B">
+        <div class="ol">Option B</div>
+        <div class="oframe">Higher fixed cost, full clarity. You keep all the upside.</div>
+        <div class="oprice">$15,000<small>per month, no commission</small></div>
+        <ul>
+          <li>No commission, no revenue share, ever.</li>
+          <li>Fixed monthly cost, fully predictable.</li>
+          <li>Every dollar of upside stays with the Company.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="opt-summary rv d4">
+      <span class="label">What this means for you</span>
+      <p id="optSummary">Select an option above to see what it means in plain terms.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 9 WHAT'S NEEDED -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; What&rsquo;s Needed to Start</span>
+    <h2 class="statement rv d1">Four things, plainly <i>stated</i>.</h2>
+    <div class="needs rv d2">
+      <div class="need"><p>Product access and demo footage for the launch products.</p></div>
+      <div class="need"><p>Naming conventions for the social handles, provided by the Company.</p></div>
+      <div class="need"><p>Sign-off on the claims the team is permitted to make: savings, refunds, outcomes.</p></div>
+      <div class="need"><p>A launch window anchored to product readiness.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 CLOSE -->
+<section class="section" id="s10">
+  <div class="wrap">
+    <div class="cta">
+      <div class="wrap">
+        <p class="finale rv">&ldquo;The plan is here, the costs are here, the results are proven. The only open question is how you would like to move.&rdquo;</p>
+        <div class="signoff rv">
+          <div class="s-mark">Maison <b>d&rsquo;&Eacute;lites</b></div>
+          <div class="s-r">Maison d&rsquo;&Eacute;lites &middot; EVP Marketing &middot; Jacques Amoako</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* reveals */
+  const io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* progress bar */
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  },{passive:true});
+
+  /* dot nav */
+  const dots=Array.from(document.querySelectorAll('#dots a'));
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const secIO=new IntersectionObserver((es)=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const i=secs.indexOf(e.target);
+        dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+      }
+    });
+  },{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&secIO.observe(s));
+
+  /* ---- calculator ---- */
+  (function(){
+    const cb=document.getElementById('cbSlider'), cr=document.getElementById('crSlider');
+    const cbVal=document.getElementById('cbVal'), crVal=document.getElementById('crVal');
+    const outViews=document.getElementById('outViews'), outCpm=document.getElementById('outCpm'), outLeads=document.getElementById('outLeads');
+    function money(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+    function calc(){
+      const budget=parseFloat(cb.value), rate=parseFloat(cr.value);
+      const views=rate>0 ? (budget/rate*1000) : 0;
+      cbVal.textContent=money(budget);
+      crVal.textContent='$'+rate.toFixed(2);
+      outViews.textContent=Math.round(views).toLocaleString('en-US');
+      outCpm.textContent='$'+rate.toFixed(2);
+      const lo=Math.round(views*0.001), hi=Math.round(views*0.007);
+      outLeads.textContent=lo.toLocaleString('en-US')+'–'+hi.toLocaleString('en-US');
+    }
+    cb.addEventListener('input',calc); cr.addEventListener('input',calc);
+    calc();
+  })();
+
+  /* ---- timeline ---- */
+  const PHASES=[
+    {n:'Month 1', t:'Foundation + GrubBudget ignition',
+     p:'Channels stood up for all products, trackers, CRM, and email live, brand direction set per product. GrubBudget hero content and challenge formats launch, clipping distribution opens, free-first signups, email capture from day one.'},
+    {n:'Months 2–3', t:'GrubBudget wave + MVP prep',
+     p:'The clipper network scales on winning formats, top distributors convert to the in-house ValuePilot clipping team. RenewalGuard and RefundPilot research, positioning, and assets are built and ready to fire.'},
+    {n:'Month 3–4 / October', t:'MVP launch',
+     p:'RenewalGuard and RefundPilot get a funded push. Cross-product flywheel: the GrubBudget email list gets the savings-to-subscriptions tie-in. Paid amplification runs only behind proven clips.'},
+    {n:'Months 4–5 / November', t:'PriceDropMonitor',
+     p:'The same engine, run for deal-shopper creators, with scan-watch-save challenge formats, timed to Black Friday.'},
+    {n:'Month 6', t:'Optimize + consolidate',
+     p:'Double down on the winners across all products. Retention content, and the case-study numbers the Company can publish.'},
+  ];
+  const nav=document.getElementById('phNav'),panel=document.getElementById('phPanel'),fill=document.getElementById('phFill');
+  PHASES.forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.className='ph-btn';
+    b.innerHTML='<small>'+p.n+'</small>'+p.t;
+    b.addEventListener('click',()=>selPhase(i));
+    nav.appendChild(b);
+  });
+  function selPhase(i){
+    const p=PHASES[i];
+    Array.from(nav.children).forEach((b,j)=>b.classList.toggle('on',j===i));
+    fill.style.width=((i+1)/PHASES.length*100)+'%';
+    panel.classList.remove('swap');void panel.offsetWidth;
+    panel.innerHTML='<h4><span>'+p.n+'</span>'+p.t+'</h4><p>'+p.p+'</p>';
+    panel.classList.add('swap');
+  }
+  selPhase(0);
+
+  /* ---- budget breakdown ---- */
+  const CATS=[
+    {key:'clip', name:'Clipping payouts', pct:64, color:'#C8A85A', d:'Paid at $1 to $2 per 1,000 views delivered. This is the engine, and the majority of the pool.'},
+    {key:'paid', name:'Paid media amplification', pct:16, color:'#A88A4F', d:'Applied only behind clips already proven to convert.'},
+    {key:'tool', name:'Tooling', pct:10, color:'#8A7550', d:'Email marketing platform, tracking, and attribution.'},
+    {key:'hero', name:'Hero content', pct:10, color:'#6B5A3E', d:'Capped at $500 per long-form external creator. Jacques is the primary face, to keep this lean.'},
+  ];
+  const poolSlider=document.getElementById('poolSlider'), poolVal=document.getElementById('poolVal');
+  const segbar=document.getElementById('segbar'), segLegend=document.getElementById('segLegend'), segDetail=document.getElementById('segDetail');
+  let activeCat=CATS[0].key;
+
+  function money(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
+
+  function buildBudget(){
+    segbar.innerHTML=''; segLegend.innerHTML='';
+    CATS.forEach(c=>{
+      const seg=document.createElement('div');
+      seg.className='seg'; seg.style.width=c.pct+'%'; seg.style.background=c.color;
+      seg.dataset.key=c.key;
+      seg.innerHTML='<span>'+c.pct+'%</span>';
+      seg.addEventListener('click',()=>{activeCat=c.key; renderBudget();});
+      segbar.appendChild(seg);
+
+      const leg=document.createElement('div');
+      leg.className='leg-item'; leg.dataset.key=c.key;
+      leg.innerHTML='<span class="leg-dot" style="background:'+c.color+'"></span>'+c.name;
+      leg.addEventListener('click',()=>{activeCat=c.key; renderBudget();});
+      segLegend.appendChild(leg);
+    });
+    renderBudget();
+  }
+  function renderBudget(){
+    const pool=parseFloat(poolSlider.value);
+    poolVal.textContent=money(pool);
+    Array.from(segbar.children).forEach(s=>s.classList.toggle('dim', s.dataset.key!==activeCat));
+    Array.from(segLegend.children).forEach(l=>l.classList.toggle('active', l.dataset.key===activeCat));
+    const c=CATS.find(x=>x.key===activeCat);
+    const amt=pool*c.pct/100;
+    segDetail.innerHTML='<div class="sd-h"><span class="sd-t">'+c.name+'</span><span class="sd-v">'+money(amt)+'</span></div><p>'+c.d+'</p>';
+  }
+  poolSlider.addEventListener('input',renderBudget);
+  buildBudget();
+
+  /* ---- two options ---- */
+  const optA=document.getElementById('optA'), optB=document.getElementById('optB'), optSummary=document.getElementById('optSummary');
+  const SUMMARIES={
+    A:'You pay $10,000 a month. On top of that, the Company shares 5% of net revenue from marketing-driven customers, including recurring revenue, for as long as the engagement runs. Lower cost up front, shared upside if the products perform.',
+    B:'You pay $15,000 a month. No commission, no revenue share, no further calculation. Higher fixed cost, but every dollar the products earn stays fully with the Company.',
+  };
+  function selectOpt(key){
+    optA.classList.toggle('sel', key==='A');
+    optB.classList.toggle('sel', key==='B');
+    optSummary.textContent=SUMMARIES[key];
+  }
+  optA.addEventListener('click',()=>selectOpt('A'));
+  optB.addEventListener('click',()=>selectOpt('B'));
+</script>
+</body>
+</html>
