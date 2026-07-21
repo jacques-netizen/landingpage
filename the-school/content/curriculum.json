@@ -1,0 +1,309 @@
+{
+  "_readme": [
+    "This file IS the curriculum. The app renders whatever is here — nothing is hardcoded.",
+    "Edit freely: rename, reorder (order fields), add/remove campuses, modules, lessons, schools.",
+    "Run `npm run seed` after any edit. Seeding is idempotent (upserts by slug): safe to re-run always.",
+    "Removing an item here does NOT delete it in the DB — archive it in the DB instead, so member progress survives.",
+    "lesson.body is markdown and is intentionally left as outline stubs — fill them in as you record/write.",
+    "lens: null = both schools; 'founder' or 'artist' = only shown to that school's members.",
+    "meta objects are free-form: add whatever properties you want, the schema accepts them."
+  ],
+
+  "schools": [
+    {
+      "slug": "founders",
+      "name": "School for Founders",
+      "tagline": "Marketing to grow a company.",
+      "order": 1,
+      "campuses": [
+        { "campusSlug": "foundation-founders", "order": 1, "gating": "sequential" },
+        { "campusSlug": "outreach", "order": 2, "gating": "sequential" },
+        { "campusSlug": "linkedin", "order": 3, "gating": "sequential" },
+        { "campusSlug": "ig-organic", "order": 4, "lens": "founder", "gating": "sequential" },
+        { "campusSlug": "crm-systems", "order": 5, "gating": "sequential" },
+        { "campusSlug": "distribution", "order": 6, "lens": "founder", "gating": "sequential" },
+        { "campusSlug": "youtube", "order": 7, "lens": "founder", "gating": "open" }
+      ]
+    },
+    {
+      "slug": "artists",
+      "name": "School for Artists",
+      "tagline": "Marketing to grow a name.",
+      "order": 2,
+      "campuses": [
+        { "campusSlug": "foundation-artists", "order": 1, "gating": "sequential" },
+        { "campusSlug": "ig-organic", "order": 2, "lens": "artist", "gating": "sequential" },
+        { "campusSlug": "distribution", "order": 3, "lens": "artist", "gating": "sequential" },
+        { "campusSlug": "tiktok-live", "order": 4, "gating": "sequential" },
+        { "campusSlug": "brand-deals", "order": 5, "gating": "sequential" },
+        { "campusSlug": "youtube", "order": 6, "lens": "artist", "gating": "open" },
+        { "campusSlug": "crm-lite", "order": 7, "gating": "open" }
+      ]
+    }
+  ],
+
+  "campuses": [
+    {
+      "slug": "foundation-founders",
+      "name": "Foundation (Founders)",
+      "promise": "Total clarity on what you sell and who buys it — and your first outreach live.",
+      "fastWin": "First real outreach messages sent to real prospects.",
+      "meta": { "blockerAfterModule": 4 },
+      "modules": [
+        { "slug": "ff-offer", "order": 1, "title": "The Offer", "summary": "What you actually sell, in one sentence a stranger understands.", "assignment": "Write your one-sentence offer and pin it." },
+        { "slug": "ff-icp", "order": 2, "title": "The ICP", "summary": "Role, vertical, region, budget signal. 'Everyone' means no one.", "assignment": "Written ICP with all four dimensions." },
+        { "slug": "ff-proof", "order": 3, "title": "Proof & Positioning", "summary": "What you can honestly claim today, and how to present it without a track record.", "assignment": "One-page proof inventory." },
+        { "slug": "ff-first-contact", "order": 4, "title": "First Contact", "summary": "Manual outreach before any tools. The skill before the scale.", "assignment": "10 messages sent to 10 real ICP prospects." },
+        { "slug": "ff-blocker", "order": 5, "title": "Blocker: Fear of Pitching", "summary": "You have to pitch more businesses than you think, on more channels than you think.", "isBlocker": true },
+        { "slug": "ff-rhythm", "order": 6, "title": "The Operating Rhythm", "summary": "The weekly cadence: outreach blocks, follow-up blocks, content block.", "assignment": "Calendar built, first week executed." }
+      ],
+      "shelf": [
+        { "title": "Offer one-liner worksheet", "kind": "template" },
+        { "title": "ICP definition template", "kind": "template" },
+        { "title": "Proof inventory template", "kind": "template" },
+        { "title": "First-contact message templates", "kind": "swipe" },
+        { "title": "Weekly operating calendar", "kind": "template" }
+      ]
+    },
+    {
+      "slug": "foundation-artists",
+      "name": "Foundation (Artists)",
+      "promise": "Clarity on what you're actually selling — attention → fandom → career — and your first intent-driven content live.",
+      "fastWin": "First content live with a clear capture mechanism.",
+      "meta": { "blockerAfterModule": 4 },
+      "modules": [
+        { "slug": "fa-chain", "order": 1, "title": "What an Artist Actually Sells", "summary": "Attention becomes fandom becomes career. Every marketing act serves one link.", "assignment": "Map your chain, mark your current position." },
+        { "slug": "fa-positioning", "order": 2, "title": "Positioning the Name", "summary": "What makes you followable beyond the work: story, register, the thing people attach to.", "assignment": "Positioning statement — who follows you and why." },
+        { "slug": "fa-inventory", "order": 3, "title": "The Asset Inventory", "summary": "Songs, performances, footage, story moments. Remix what exists before making anything new.", "assignment": "Full inventory, tagged by what it could become." },
+        { "slug": "fa-capture", "order": 4, "title": "First Capture", "summary": "Reach vs owned attention: follows, DMs, saves. First keyword-style CTA on your strongest asset.", "assignment": "First capture-driven post live." },
+        { "slug": "fa-blocker", "order": 5, "title": "Blocker: 'The Work Should Speak for Itself'", "summary": "It doesn't. The best-marketed song beats the best song, every week, everywhere.", "isBlocker": true },
+        { "slug": "fa-rhythm", "order": 6, "title": "The Operating Rhythm", "summary": "Creation block, posting cadence, engagement block. Sustainable beats heroic.", "assignment": "Calendar built, first week executed." }
+      ],
+      "shelf": [
+        { "title": "Value chain map", "kind": "template" },
+        { "title": "Positioning worksheet", "kind": "template" },
+        { "title": "Asset inventory template", "kind": "template" },
+        { "title": "Capture CTA templates", "kind": "swipe" },
+        { "title": "Weekly calendar template", "kind": "template" }
+      ]
+    },
+    {
+      "slug": "outreach",
+      "name": "Outreach (Cold-to-Close)",
+      "promise": "A complete outbound system — sequence, conversation, pipeline, call, proposal, close.",
+      "fastWin": "Sequence live and generating replies, pipeline tracking every conversation.",
+      "meta": { "blockerAfterModule": 5 },
+      "modules": [
+        { "slug": "or-funnel", "order": 1, "title": "The Real Funnel", "summary": "The honest math of outbound: every stage leaks; know your numbers so you fix the right leak.", "assignment": "Build your funnel tracker with every stage defined." },
+        { "slug": "or-sequence", "order": 2, "title": "Sequence Design", "summary": "Warm → connect → message ladder. The goal is a REPLY, not a booked call.", "assignment": "Full sequence written, every message drafted." },
+        { "slug": "or-asset", "order": 3, "title": "The Value Asset", "summary": "The thing you give before you ask — and what makes it valuable vs a brochure.", "assignment": "Your value asset built." },
+        { "slug": "or-bridge", "order": 4, "title": "The Bridge (the #1 leak)", "summary": "Sending the asset is not booking the call. Every asset send gets a bridge follow-up, always.", "assignment": "Bridge scripts written and wired into the sequence." },
+        { "slug": "or-pipeline", "order": 5, "title": "The DM Setting Pipeline", "summary": "Conversations as a pipeline, not an inbox. Every conversation gets a stage and a next action.", "assignment": "Pipeline built, all live conversations staged." },
+        { "slug": "or-blocker", "order": 6, "title": "Blocker: Volume Avoidance", "summary": "You're polishing message #3 instead of sending message #300.", "isBlocker": true },
+        { "slug": "or-reactivation", "order": 7, "title": "Reactivation", "summary": "Cold leads are an asset. 14 days silent → reactivation → recontact → back to live.", "assignment": "Reactivation rules and recontact messages built." },
+        { "slug": "or-discovery", "order": 8, "title": "Discovery Calls", "summary": "Qualification, budget questions, listening ratios, concrete next steps.", "assignment": "Call framework written; first discovery run." },
+        { "slug": "or-close", "order": 9, "title": "Proposals & Closing", "summary": "Outcome, scope, guaranteed floor, price, terms. Hold your floor, trade concessions.", "assignment": "Proposal template built; a live deal moved to proposal." }
+      ],
+      "shelf": [
+        { "title": "Funnel tracker", "kind": "tracker" },
+        { "title": "Sequence message ladder templates", "kind": "swipe" },
+        { "title": "Bridge script bank", "kind": "swipe" },
+        { "title": "Pipeline stage definitions", "kind": "sop" },
+        { "title": "Reactivation sequence templates", "kind": "swipe" },
+        { "title": "Discovery call framework + question bank", "kind": "sop" },
+        { "title": "Proposal template", "kind": "template" }
+      ]
+    },
+    {
+      "slug": "linkedin",
+      "name": "LinkedIn (Outbound at Scale)",
+      "promise": "LinkedIn as a scaled, safe, multi-account outbound machine feeding the pipeline.",
+      "fastWin": "Account warmed correctly, first campaign live with proper naming and sourcing.",
+      "meta": { "blockerAfterModule": 5 },
+      "modules": [
+        { "slug": "li-logic", "order": 1, "title": "The Platform Logic", "summary": "Decision-makers identifiable by role, reachable directly. Account safety is the foundation." },
+        { "slug": "li-warmup", "order": 2, "title": "The Warm-Up Protocol", "summary": "Gradual ramp over two weeks to steady state; engagement mixed in to look human.", "assignment": "Warm-up schedule started on your account, day one." },
+        { "slug": "li-sourcing", "order": 3, "title": "Sourcing Prospects (3 methods)", "summary": "Sales Nav direct / Sales Nav + scraper / free tier + scraper — pick by budget. The list defines the campaign.", "assignment": "First list of 200+ ICP-matched prospects." },
+        { "slug": "li-campaigns", "order": 4, "title": "Campaign Architecture & Naming", "summary": "Region | ICP | Vertical | Offer | Period. Organized, trackable, comparable. One variable per campaign.", "assignment": "First campaign structured and named." },
+        { "slug": "li-automation", "order": 5, "title": "Automation Tools & Sequences", "summary": "The sequence wired into tooling: humanized delays, lead-timezone sending, behavioral limits.", "assignment": "Sequence live in your chosen tool." },
+        { "slug": "li-blocker", "order": 6, "title": "Blocker: Tool Paralysis", "summary": "You need a warmed account and a good list, not the perfect stack.", "isBlocker": true },
+        { "slug": "li-scaling", "order": 7, "title": "Multi-Account Scaling", "summary": "The scaling math — and the quality gate: hold acceptance rate while scaling or fix the list, not the volume.", "assignment": "Scaling plan; second account warming if resourced." },
+        { "slug": "li-profile", "order": 8, "title": "Profile as Landing Page", "summary": "Headline states the outcome; featured section carries proof; activity shows a real operator.", "assignment": "Profile rebuilt against the checklist." },
+        { "slug": "li-numbers", "order": 9, "title": "Reading the Numbers", "summary": "Acceptance, reply, conversation, pipeline entries. Kill/scale per campaign.", "assignment": "Two-week review, one evidence-based campaign decision." }
+      ],
+      "shelf": [
+        { "title": "Warm-up schedule template", "kind": "template" },
+        { "title": "Sourcing method SOPs (all three)", "kind": "sop" },
+        { "title": "Campaign naming convention card", "kind": "sop" },
+        { "title": "Profile checklist", "kind": "sop" },
+        { "title": "Metrics panel template", "kind": "tracker" }
+      ]
+    },
+    {
+      "slug": "ig-organic",
+      "name": "IG Organic (The Personal Authority Engine)",
+      "promise": "A complete, daily-executable IG system — profile, reels, stories — that builds authority and captures intent-leads.",
+      "fastWin": "Your Content Execution Map built and live, first authority reel posted with a keyword CTA.",
+      "meta": { "sharedSpine": true, "blockerAfterModule": 4 },
+      "modules": [
+        { "slug": "ig-positioning", "order": 1, "title": "Positioning & the Account as an Asset", "summary": "The one thing people should DM you for; profile as landing page.", "assignment": "Positioning statement + rebuilt profile." },
+        { "slug": "ig-map", "order": 2, "title": "The Content Execution Map", "summary": "Every day has a strategic objective; the map kills the daily 'what do I post' decision.", "assignment": "Your full 7-day map, built and committed to." },
+        { "slug": "ig-stories", "order": 3, "title": "Story Architecture", "summary": "The 5–10 slide daily sequence: interactive opener → lesson → proof → personal → repost → tease.", "assignment": "Run the sequence daily off your map for a week." },
+        { "slug": "ig-steal", "order": 4, "title": "Steal Like an Artist", "summary": "Find proven formats, deconstruct the skeleton, remix with your frame. Three registers: green-screen authority, philosophical short-form, case-study reels.", "assignment": "Deconstruct 5 winning reels; shoot one remix in each register." },
+        { "slug": "ig-blocker", "order": 5, "title": "Blocker: Volume and Ego", "summary": "You're not posting enough and you're scared of looking stupid.", "isBlocker": true },
+        { "slug": "ig-hooks", "order": 6, "title": "Hooks & the First Second", "summary": "Hook taxonomy judged by skip rate — how one rewrite moves it.", "assignment": "10 hooks against your positioning, tested live." },
+        { "slug": "ig-data", "order": 7, "title": "Reading the Data Like an Operator", "summary": "Skip rate, retention shape, replay signal, non-follower %, saves. Batch-and-ride. The reach/intent inversion.", "assignment": "Two-week log, one evidence-based kill/scale call." },
+        { "slug": "ig-capture", "order": 8, "title": "The Keyword Capture Layer", "summary": "Comment/DM keyword CTAs; capture at solo scale with off-the-shelf tools.", "assignment": "CTA live on your best-performing format." },
+        { "slug": "ig-engine", "order": 9, "title": "The Standing Engine", "summary": "Batching against the map, sustainable cadence, and the honest ceiling.", "assignment": "Repeatable weekly production system built." }
+      ],
+      "shelf": [
+        { "title": "Content Execution Map template", "kind": "template" },
+        { "title": "Story sequences per day-objective", "kind": "template" },
+        { "title": "Hook swipe file by taxonomy", "kind": "swipe" },
+        { "title": "Green-screen setup SOP", "kind": "sop" },
+        { "title": "Skeleton files (pre-deconstructed proven formats)", "kind": "swipe" },
+        { "title": "Operator's-panel tracker", "kind": "tracker" },
+        { "title": "Teardown vault", "kind": "teardown" }
+      ]
+    },
+    {
+      "slug": "distribution",
+      "name": "Short-Form Distribution (The Volume Economy)",
+      "promise": "Run a distribution campaign engineered as math, not luck — many creators posting at volume.",
+      "fastWin": "First campaign modeled and briefed: view target reverse-engineered into budget, roster, script pack.",
+      "meta": { "sharedSpine": true, "blockerAfterModule": 5 },
+      "modules": [
+        { "slug": "di-thesis", "order": 1, "title": "The Volume Economy", "summary": "Reach = views-per-post × posts. Buy posting slots at saturation. Flood the zone.", "assignment": "Reverse-engineer a real goal into the volume math." },
+        { "slug": "di-economics", "order": 2, "title": "Unit Economics & Campaign Pricing", "summary": "Cost per post, CPM, floors. Expected-views-per-post is the load-bearing assumption.", "assignment": "Full campaign model as a keeper spreadsheet." },
+        { "slug": "di-roster", "order": 3, "title": "Clippers vs UGC & Sourcing the Roster", "summary": "When each fires, vetting for real reach, spotting bot farmers, recruitment floors.", "assignment": "Roster sourced and shortlisted (start 2–4)." },
+        { "slug": "di-scripts", "order": 4, "title": "The Script Pack", "summary": "Never let creators invent. Multi-variant packs by psychological register collapse quality variance.", "assignment": "3–5 variant script/hook pack built." },
+        { "slug": "di-formats", "order": 5, "title": "Content Formats for Volume", "summary": "Faceless, trial reels, fast-cut edits — fast and low-variance wins at 150 posts.", "assignment": "First batch produced or briefed." },
+        { "slug": "di-blocker", "order": 6, "title": "Blocker: Delegation & Spending Fear", "summary": "Perfectionism is the enemy of distribution. Fund the pool and let the math run.", "isBlocker": true },
+        { "slug": "di-payouts", "order": 7, "title": "Payout Structures & Fraud Control", "summary": "CPM/flat/bounty/hybrid; why caps get gamed; human-in-the-loop qualification as the defense.", "assignment": "Payout model + approval criteria documented." },
+        { "slug": "di-qc", "order": 8, "title": "Quality Control, Tracking & Reporting", "summary": "Reviewing at volume, verifying real views, the one-page report that proves it worked.", "assignment": "Run the batch, review, log verified views, produce the report." },
+        { "slug": "di-live", "order": 9, "title": "Running It Live & The Ceiling", "summary": "The operational rhythm launch → payout → report — and where solo orchestration caps.", "assignment": "First live campaign run end to end." }
+      ],
+      "shelf": [
+        { "title": "Campaign model spreadsheet", "kind": "template" },
+        { "title": "Script-pack templates by register", "kind": "swipe" },
+        { "title": "Creator brief template", "kind": "template" },
+        { "title": "Sourcing + vetting checklist", "kind": "sop" },
+        { "title": "Payout-model templates", "kind": "template" },
+        { "title": "One-page report template", "kind": "template" },
+        { "title": "Campaign teardown vault", "kind": "teardown" }
+      ]
+    },
+    {
+      "slug": "tiktok-live",
+      "name": "TikTok Live (Real-Time Fan Conversion)",
+      "promise": "Live streaming as a fan-conversion and monetization engine.",
+      "fastWin": "First structured live streamed with engagement loops and a follow CTA, reviewed against the metrics panel.",
+      "meta": { "blockerAfterModule": 3 },
+      "modules": [
+        { "slug": "tl-why", "order": 1, "title": "Why Live Is Different", "summary": "Attention converts in real time. Comment-to-view ratio and watch time beat raw views.", "assignment": "Watch three lives in your niche, log the engagement mechanics." },
+        { "slug": "tl-market", "order": 2, "title": "Market & Language Targeting", "summary": "Your live audience is defined by language and stream timing. Stream to the target market's clock.", "assignment": "Market chosen, schedule set to that market's hours." },
+        { "slug": "tl-structure", "order": 3, "title": "The Stream Structure", "summary": "Open, loop, peaks, close. Follow CTAs placed at engagement peaks, not randomly.", "assignment": "Structure written; first structured live run." },
+        { "slug": "tl-blocker", "order": 4, "title": "Blocker: Fear of the Empty Room", "summary": "Stream anyway. The room grows because you kept showing up to it.", "isBlocker": true },
+        { "slug": "tl-gifts", "order": 5, "title": "The Gift Economy", "summary": "Coins → gifts → diamonds at ~half value. Micro-gifts from many beat whale-hunting.", "assignment": "Gift math for your room size; three micro-gift moments designed in." },
+        { "slug": "tl-consistency", "order": 6, "title": "Consistency & the Algorithm", "summary": "Same slots, same days; duration compounds discovery; platform comparisons as feedback.", "assignment": "Two-week consistent schedule, metrics logged per stream." },
+        { "slug": "tl-funnel", "order": 7, "title": "Live as a Funnel Layer", "summary": "Viewers → followers → DMs → what you sell. Clip your lives into short-form. Recognize the 'can I join' moment.", "assignment": "Your live-to-next-step path defined and announced on stream." },
+        { "slug": "tl-presence", "order": 8, "title": "Presence & Performance", "summary": "Energy over an hour, eye contact, dead rooms, trolls, the setting as brand. Review streams like game film.", "assignment": "Self-review of two streams against the presence checklist." }
+      ],
+      "shelf": [
+        { "title": "Stream structure template", "kind": "template" },
+        { "title": "Engagement loop bank", "kind": "swipe" },
+        { "title": "Gift-economy calculator", "kind": "tracker" },
+        { "title": "Per-stream metrics log", "kind": "tracker" },
+        { "title": "Presence checklist", "kind": "sop" }
+      ]
+    },
+    {
+      "slug": "brand-deals",
+      "name": "Brand & Deals (Monetizing the Name)",
+      "promise": "Know what your content is worth, price it properly, negotiate like you're represented.",
+      "fastWin": "Your rate card built — deliverables and usage priced separately.",
+      "meta": { "blockerAfterModule": 3 },
+      "modules": [
+        { "slug": "bd-selling", "order": 1, "title": "What You're Actually Selling", "summary": "A deal is two products: the deliverable and the usage rights. Price them separately.", "assignment": "Deliverables listed, separated in writing from usage." },
+        { "slug": "bd-pricing", "order": 2, "title": "Pricing the Deliverable", "summary": "Tier, platform, engagement quality, format bundles. Niche authority commands a premium.", "assignment": "Your tiered rate card." },
+        { "slug": "bd-usage", "order": 3, "title": "Usage Rights as a Revenue Lever", "summary": "Percentage of deliverable fee scaled by term, territory, media type. Perpetual should cost a fortune.", "assignment": "Usage-fee schedule as add-on percentages." },
+        { "slug": "bd-blocker", "order": 4, "title": "Blocker: Undercharging Out of Gratitude", "summary": "A brand in your DMs is already sold. You're the product they came for — price like it.", "isBlocker": true },
+        { "slug": "bd-negotiation", "order": 5, "title": "Reading the Deal & Negotiating", "summary": "Anchoring, floors, trading concessions. Counter lowballs with benchmarks, not emotion.", "assignment": "Full counter written on a real or mock offer." },
+        { "slug": "bd-contracts", "order": 6, "title": "Contracts & What to Flag", "summary": "Scope, usage, exclusivity, kill fees, liability — what to catch, then lawyer's eyes.", "assignment": "Sample contract marked up, every negotiable clause flagged." },
+        { "slug": "bd-payment", "order": 7, "title": "Payment Terms & Getting Paid", "summary": "Deposits, milestones, kill fees, invoicing rhythm. Protect the money.", "assignment": "Standard payment terms + invoice template." },
+        { "slug": "bd-inbound", "order": 8, "title": "Inbound vs Outbound Deals", "summary": "Brands finding you vs you pitching. A media kit that closes.", "assignment": "Media kit built." },
+        { "slug": "bd-business", "order": 9, "title": "Running It Like a Business & The Ceiling", "summary": "Tracking, rebooking, raising rates — and the point you want representation.", "assignment": "Deal tracker live with every active conversation." }
+      ],
+      "shelf": [
+        { "title": "Tiered rate-card template", "kind": "template" },
+        { "title": "Usage-fee schedule", "kind": "template" },
+        { "title": "Media kit template", "kind": "template" },
+        { "title": "Deal-counter script bank", "kind": "swipe" },
+        { "title": "Contract-clause checklist", "kind": "sop" },
+        { "title": "Deal tracker", "kind": "tracker" }
+      ]
+    },
+    {
+      "slug": "youtube",
+      "name": "YouTube (Long-Form Authority)",
+      "promise": "A long-form home that converts short-form attention into deep trust.",
+      "fastWin": "First video published from material you already have.",
+      "meta": { "sharedSpine": true, "lean": true },
+      "modules": [
+        { "slug": "yt-job", "order": 1, "title": "YouTube's Job in This System", "summary": "Short-form is discovery; YouTube is depth. The proof shelf, not the algorithm chase." },
+        { "slug": "yt-spine", "order": 2, "title": "The Content Spine", "summary": "Teardown/case study (proof), process video (authority), story video (connection) — from what already exists.", "assignment": "First three videos planned from existing material." },
+        { "slug": "yt-packaging", "order": 3, "title": "Packaging", "summary": "Titles and thumbnails as the hook layer; the promise the video must keep.", "assignment": "Title/thumbnail drafts for the first three." },
+        { "slug": "yt-production", "order": 4, "title": "Production Reality", "summary": "Minimum viable workflow; one long-form becomes a week of short-form.", "assignment": "First video published." },
+        { "slug": "yt-panel", "order": 5, "title": "The Panel", "summary": "CTR, average view duration, returning viewers. Judge on trend, not video.", "assignment": "30-day review." }
+      ],
+      "shelf": [
+        { "title": "Content spine planner", "kind": "template" },
+        { "title": "Minimum-viable production SOP", "kind": "sop" },
+        { "title": "Repurposing map (1 long-form → 7 short-form)", "kind": "sop" }
+      ]
+    },
+    {
+      "slug": "crm-systems",
+      "name": "CRM & Systems",
+      "promise": "The operational backend — pipelines, triggers, SOPs, dashboards — a machine someone else could run.",
+      "fastWin": "CRM live with every active lead staged and a next action on each.",
+      "meta": { "blockerAfterModule": 2 },
+      "modules": [
+        { "slug": "cs-truth", "order": 1, "title": "Source of Truth", "summary": "ONE place where state lives. Comms happen where the client prefers; state lives in the system.", "assignment": "Tool chosen, workspace created." },
+        { "slug": "cs-pipelines", "order": 2, "title": "Pipeline Design", "summary": "Outbound, sales, reactivation. A record without a next action is a dead record.", "assignment": "Pipelines built, all live deals imported and staged." },
+        { "slug": "cs-blocker", "order": 3, "title": "Blocker: System Avoidance", "summary": "You think you'll remember. You won't. The boring thing is the business.", "isBlocker": true },
+        { "slug": "cs-triggers", "order": 4, "title": "Triggers & Automation", "summary": "Events fire actions. Manual first, automated second.", "assignment": "Five triggers defined and running." },
+        { "slug": "cs-imports", "order": 5, "title": "Lead Imports & List Hygiene", "summary": "Dedupe, tag by source/campaign, stage deep-funnel vs cold. Old tagged leads are found money.", "assignment": "Full historical lead import, tagged and staged." },
+        { "slug": "cs-sops", "order": 6, "title": "SOPs by Role", "summary": "Roles, never names. Could a new hire run this from the document alone?", "assignment": "One full SOP for your most repeated process." },
+        { "slug": "cs-dashboards", "order": 7, "title": "Dashboards & the Weekly Review", "summary": "Pipeline value, stage conversion, activity, aging. What moved, what stalled, what leaks.", "assignment": "Dashboard built, first weekly review done." },
+        { "slug": "cs-hiring", "order": 8, "title": "Hiring Into the System", "summary": "You hand off a documented machine, not chaos.", "assignment": "Delegation map: first handoff + the SOP that enables it." }
+      ],
+      "shelf": [
+        { "title": "Pipeline templates (outbound / sales / reactivation)", "kind": "template" },
+        { "title": "Trigger library", "kind": "sop" },
+        { "title": "SOP template (role-based)", "kind": "template" },
+        { "title": "Dashboard template", "kind": "tracker" },
+        { "title": "Weekly review agenda", "kind": "sop" }
+      ]
+    },
+    {
+      "slug": "crm-lite",
+      "name": "CRM Lite (Artists)",
+      "promise": "A lightweight system so nothing valuable dies in the DMs.",
+      "fastWin": "Three lists built and populated from your actual DMs.",
+      "meta": { "lean": true, "blockerAfterModule": 1 },
+      "modules": [
+        { "slug": "cl-lists", "order": 1, "title": "The Artist's Pipeline", "summary": "Industry contacts, active opportunities, superfans — built from your DMs.", "assignment": "All three lists built and populated." },
+        { "slug": "cl-blocker", "order": 2, "title": "Blocker: 'I'll Reply Later'", "summary": "Later is where money goes to die.", "isBlocker": true },
+        { "slug": "cl-staging", "order": 3, "title": "Opportunity Staging", "summary": "New → In Conversation → Terms → Confirmed → Delivered → Paid.", "assignment": "Live opportunities staged." },
+        { "slug": "cl-triggers", "order": 4, "title": "Follow-Up Triggers", "summary": "7 days silent → follow up; delivered → invoice; paid → thank + rebook window.", "assignment": "Triggers set." },
+        { "slug": "cl-review", "order": 5, "title": "The Weekly Review", "summary": "Fifteen minutes: what moved, what's stalling, who to follow up.", "assignment": "First review done." }
+      ],
+      "shelf": [
+        { "title": "Three-list template", "kind": "template" },
+        { "title": "Opportunity pipeline template", "kind": "template" },
+        { "title": "Follow-up scripts", "kind": "swipe" }
+      ]
+    }
+  ]
+}

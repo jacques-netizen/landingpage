@@ -1,0 +1,210 @@
+// THE SCHOOL — data model
+// Content is data: schools/campuses/modules/lessons are rows, never code.
+// `meta Json` on content models = adaptation room without migrations.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- CONTENT (seeded from content/curriculum.json, editable in DB) ----------
+
+model School {
+  id       String   @id @default(cuid())
+  slug     String   @unique // "founders" | "artists" — but nothing in code assumes only two
+  name     String
+  tagline  String?
+  order    Int      @default(0)
+  archived Boolean  @default(false)
+  meta     Json     @default("{}")
+  campuses CampusOnSchool[]
+  members  Member[]
+}
+
+// A Campus can belong to multiple schools (shared spines) with per-school order + lens.
+model Campus {
+  id       String   @id @default(cuid())
+  slug     String   @unique
+  name     String
+  promise  String?  // one-line promise
+  fastWin  String?  // defined by what ships — never a clock
+  order    Int      @default(0) // default order; per-school order lives on the join
+  archived Boolean  @default(false)
+  meta     Json     @default("{}") // e.g. { "sharedSpine": true, "blockerVideoAfterModule": 4 }
+  schools  CampusOnSchool[]
+  modules  Module[]
+  shelf    ShelfItem[]
+}
+
+model CampusOnSchool {
+  school   School @relation(fields: [schoolId], references: [id])
+  schoolId String
+  campus   Campus @relation(fields: [campusId], references: [id])
+  campusId String
+  order    Int    @default(0)   // unlock order within this school
+  lens     String?              // "founder" | "artist" | null — filters lens-tagged content
+  gating   String @default("sequential") // "sequential" | "open" — Foundation gates by order
+  @@id([schoolId, campusId])
+}
+
+model Module {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  campus     Campus   @relation(fields: [campusId], references: [id])
+  campusId   String
+  title      String
+  summary    String?
+  order      Int      @default(0)
+  isBlocker  Boolean  @default(false) // blocker video modules
+  archived   Boolean  @default(false)
+  meta       Json     @default("{}") // e.g. { "lens": "artist" } for lens-specific modules
+  lessons    Lesson[]
+  assignment Assignment?
+  progress   ModuleProgress[]
+}
+
+model Lesson {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  module   Module  @relation(fields: [moduleId], references: [id])
+  moduleId String
+  title    String
+  body     String? @db.Text // markdown — editable content, never JSX
+  videoUrl String? // Mux/Bunny embed URL — video is never served from this app
+  order    Int     @default(0)
+  lens     String? // null = both schools; "founder"/"artist" = lens-specific version
+  archived Boolean @default(false)
+  meta     Json    @default("{}")
+}
+
+// Ranks are earned by SHIPPED assignments, not watch time.
+model Assignment {
+  id          String  @id @default(cuid())
+  module      Module  @relation(fields: [moduleId], references: [id])
+  moduleId    String  @unique
+  description String  @db.Text
+  meta        Json    @default("{}")
+  shipments   AssignmentShipment[]
+}
+
+model ShelfItem {
+  id       String  @id @default(cuid())
+  campus   Campus  @relation(fields: [campusId], references: [id])
+  campusId String
+  title    String
+  kind     String  @default("template") // template | sop | swipe | teardown | tracker
+  url      String? // link to the asset (Notion, file, video)
+  lens     String?
+  order    Int     @default(0)
+  archived Boolean @default(false)
+  meta     Json    @default("{}")
+}
+
+// ---------- MEMBERS & ACCESS ----------
+
+model Member {
+  id               String   @id @default(cuid())
+  clerkUserId      String   @unique
+  email            String   @unique
+  name             String?
+  school           School?  @relation(fields: [schoolId], references: [id])
+  schoolId         String?  // chosen at onboarding; switchable — code never assumes fixed
+  discordUserId    String?  @unique
+  stripeCustomerId String?  @unique
+  accessStatus     String   @default("none") // none | active | past_due | canceled
+  plan             String?  // monthly | annual
+  rank             Int      @default(0) // computed from shipped assignments
+  createdAt        DateTime @default(now())
+  meta             Json     @default("{}")
+  subscriptions    Subscription[]
+  purchases        Purchase[]
+  moduleProgress   ModuleProgress[]
+  shipments        AssignmentShipment[]
+  events           Event[]
+  submissions      Submission[]
+}
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  member               Member   @relation(fields: [memberId], references: [id])
+  memberId             String
+  stripeSubscriptionId String   @unique
+  status               String   // mirrors Stripe status
+  plan                 String   // monthly | annual
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime @default(now())
+}
+
+// One-time purchases: the $67 bump, the $297 audit — priced in Stripe, not here.
+model Purchase {
+  id                    String   @id @default(cuid())
+  member                Member   @relation(fields: [memberId], references: [id])
+  memberId              String
+  stripePriceId         String
+  kind                  String   // "bump" | "upsell_audit" | future kinds
+  amountCents           Int
+  createdAt             DateTime @default(now())
+}
+
+// ---------- PROGRESS (soft-delete-safe: content archiving never orphans these) ----------
+
+model ModuleProgress {
+  id          String    @id @default(cuid())
+  member      Member    @relation(fields: [memberId], references: [id])
+  memberId    String
+  module      Module    @relation(fields: [moduleId], references: [id])
+  moduleId    String
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  @@unique([memberId, moduleId])
+}
+
+model AssignmentShipment {
+  id           String     @id @default(cuid())
+  member       Member     @relation(fields: [memberId], references: [id])
+  memberId     String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId String
+  proofUrl     String?    // link to what they shipped
+  note         String?    @db.Text
+  shippedAt    DateTime   @default(now())
+  approved     Boolean    @default(false) // human-in-the-loop, per the vault philosophy
+  @@unique([memberId, assignmentId])
+}
+
+// ---------- EVENTS → SETTER QUEUE ----------
+
+model Event {
+  id        String   @id @default(cuid())
+  member    Member?  @relation(fields: [memberId], references: [id])
+  memberId  String?
+  type      String   // joined | discord_linked | module_started | module_completed |
+                     // campus_completed | went_quiet | ceiling_signal | payment_failed ...
+  payload   Json     @default("{}")
+  createdAt DateTime @default(now())
+  syncedToSetterQueue Boolean @default(false) // Phase 4: Notion sync marks this
+  @@index([type, createdAt])
+}
+
+// Stripe webhook idempotency
+model WebhookEvent {
+  id          String   @id // Stripe event id
+  processedAt DateTime @default(now())
+}
+
+// ---------- RESERVED: clipper pool (do not build features yet — slot only) ----------
+
+model Submission {
+  id        String   @id @default(cuid())
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  String
+  url       String
+  platform  String?
+  status    String   @default("pending") // pending | approved | rejected
+  meta      Json     @default("{}")
+  createdAt DateTime @default(now())
+}
