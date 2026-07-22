@@ -31,7 +31,7 @@ const RANK_ROLES: [number, string][] = process.env.DISCORD_RANK_ROLES
 
 async function syncAccessEvents() {
   const events = await db.event.findMany({
-    where: { type: "access_changed", syncedToSetterQueue: false },
+    where: { type: "access_changed", processed: false },
     include: { member: { include: { school: true } } },
     take: 25,
   });
@@ -59,7 +59,7 @@ async function syncAccessEvents() {
         await guildMember.roles.remove(ROLE_FOUNDERS).catch(() => {});
         await guildMember.roles.remove(ROLE_ARTISTS).catch(() => {});
       }
-      await db.event.update({ where: { id: ev.id }, data: { syncedToSetterQueue: true } });
+      await db.event.update({ where: { id: ev.id }, data: { processed: true } });
       console.log(`role sync: ${m.email} -> ${m.accessStatus}`);
     } catch (e) {
       console.error(`role sync failed for ${m.email}:`, e);
@@ -69,7 +69,7 @@ async function syncAccessEvents() {
 
 async function syncOnboardingDMs() {
   const events = await db.event.findMany({
-    where: { type: "discord_linked", syncedToSetterQueue: false },
+    where: { type: "discord_linked", processed: false },
     include: { member: true },
     take: 25,
   });
@@ -84,11 +84,11 @@ async function syncOnboardingDMs() {
       await guildMember.send(
         "You're linked up. Your member role lands as soon as your membership is active — head back to the dashboard if you haven't finished checkout yet."
       );
-      await db.event.update({ where: { id: ev.id }, data: { syncedToSetterQueue: true } });
+      await db.event.update({ where: { id: ev.id }, data: { processed: true } });
       console.log(`onboarding DM sent: ${m.email}`);
     } catch (e) {
       console.error(`onboarding DM failed for ${m.email}:`, e);
-      await db.event.update({ where: { id: ev.id }, data: { syncedToSetterQueue: true } });
+      await db.event.update({ where: { id: ev.id }, data: { processed: true } });
     }
   }
 }
@@ -96,7 +96,7 @@ async function syncOnboardingDMs() {
 async function syncAnnouncements() {
   if (!CHANNEL_ANNOUNCEMENTS) return;
   const events = await db.event.findMany({
-    where: { type: "campus_completed", syncedToSetterQueue: false },
+    where: { type: "campus_completed", processed: false },
     include: { member: true },
     take: 25,
   });
@@ -113,7 +113,7 @@ async function syncAnnouncements() {
       await channel.send(
         `🎉 ${m?.name ?? m?.email ?? "A member"} just finished **${campus?.name ?? "a campus"}**.`
       );
-      await db.event.update({ where: { id: ev.id }, data: { syncedToSetterQueue: true } });
+      await db.event.update({ where: { id: ev.id }, data: { processed: true } });
     } catch (e) {
       console.error(`announcement failed for event ${ev.id}:`, e);
     }
@@ -123,7 +123,7 @@ async function syncAnnouncements() {
 async function syncRankRoles() {
   if (RANK_ROLES.length === 0) return;
   const events = await db.event.findMany({
-    where: { type: "assignment_shipped", syncedToSetterQueue: false },
+    where: { type: "assignment_shipped", processed: false },
     include: { member: true },
     take: 25,
   });
@@ -143,7 +143,7 @@ async function syncRankRoles() {
         if (roleId === targetRoleId) await guildMember.roles.add(roleId);
         else await guildMember.roles.remove(roleId).catch(() => {});
       }
-      await db.event.update({ where: { id: ev.id }, data: { syncedToSetterQueue: true } });
+      await db.event.update({ where: { id: ev.id }, data: { processed: true } });
       console.log(`rank sync: ${m.email} -> rank ${m.rank}`);
     } catch (e) {
       console.error(`rank sync failed for ${m.email}:`, e);

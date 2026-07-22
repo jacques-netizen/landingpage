@@ -43,12 +43,10 @@ the Discord role. If that path works end-to-end, the platform works.
 
 ## Build phases
 
-See `CLAUDE.md`. Phases 1–3 are built: spine (auth, checkout, webhook, Discord
-role grant), delivery (data-driven course player + progress), and the bot
-(role sync, onboarding DM on `discord_linked`, campus-completed announcements,
-optional rank roles via `DISCORD_RANK_ROLES`). Phase 4 (setter queue → Notion
-sync) is intentionally not built yet — it needs the founder's actual setter
-Notion database shape to design against.
+See `CLAUDE.md`. All three phases are built: spine (auth, checkout, webhook,
+Discord role grant), delivery (data-driven course player + progress), and the
+bot (role sync, onboarding DM on `discord_linked`, campus-completed
+announcements, optional rank roles via `DISCORD_RANK_ROLES`).
 
 This app is a standalone Next.js service — it doesn't run inside this repo's
 Cloudflare static-asset Worker. Deploy it separately (Vercel + a Postgres host

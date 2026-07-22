@@ -1,7 +1,7 @@
 /**
  * Every meaningful member action emits an Event (CLAUDE.md Rule 5).
- * The Discord bot and the setter queue (Phase 4 Notion sync) consume these.
- * Silence is a bug: when adding features, ask what event they should emit.
+ * The Discord bot polls and acts on these. Silence is a bug: when adding
+ * features, ask what event they should emit.
  */
 import { db } from "./db";
 

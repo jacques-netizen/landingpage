@@ -62,12 +62,12 @@ This platform teaches craft and strategy. It must never contain:
 
 If curriculum content arrives that crosses this line, flag it — do not seed it.
 
-## Rule 5 — Events feed the setter, not just analytics
+## Rule 5 — Events feed the bot, not just analytics
 
 Meaningful member actions emit an `Event` row (joined, discord_linked,
-module_started, module_completed, went_quiet, ceiling_signal). The setter
-queue (Notion sync, Phase 4) is built on these. When adding features, ask
-"what event should this emit?" — silence is a bug.
+module_started, module_completed). The Discord bot polls these to grant
+roles, send DMs, and post announcements. When adding features, ask "what
+event should this emit?" — silence is a bug.
 
 ## Build phases (do them in order)
 
@@ -78,7 +78,6 @@ queue (Notion sync, Phase 4) is built on these. When adding features, ask
    progress tracking, "Foundation gates everything" logic, lens filtering.
 3. **Bot** — role sync (from Phase 1), onboarding DM, announcements, ranks by
    shipped assignments.
-4. **Setter feed** — Event stream → Notion sync for the trigger queue.
 
 Reserved for later (schema slots exist, do not build yet): clipper submissions
 pool (`Submission` model), payouts.

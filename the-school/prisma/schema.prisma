@@ -176,17 +176,18 @@ model AssignmentShipment {
   @@unique([memberId, assignmentId])
 }
 
-// ---------- EVENTS → SETTER QUEUE ----------
+// ---------- EVENTS (drive the Discord bot) ----------
 
 model Event {
   id        String   @id @default(cuid())
   member    Member?  @relation(fields: [memberId], references: [id])
   memberId  String?
   type      String   // joined | discord_linked | module_started | module_completed |
-                     // campus_completed | went_quiet | ceiling_signal | payment_failed ...
+                     // campus_completed | checkout_started | checkout_completed |
+                     // access_changed | payment_failed | upsell_purchased | assignment_shipped
   payload   Json     @default("{}")
   createdAt DateTime @default(now())
-  syncedToSetterQueue Boolean @default(false) // Phase 4: Notion sync marks this
+  processed Boolean @default(false) // marked true once the bot has acted on this event
   @@index([type, createdAt])
 }
 
