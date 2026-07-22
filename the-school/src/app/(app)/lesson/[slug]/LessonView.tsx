@@ -1,44 +1,63 @@
 /**
  * Presentational only. Swap this file for a redesigned version — page.tsx
- * owns the data fetch (Rule 0). The interactive "mark complete / ship"
- * controls are passed in as children so this stays pure presentation.
+ * owns the data fetch (Rule 0). The quietest screen in the product (design
+ * study §6): wide measure, generous leading, video flush in the column.
+ * The interactive controls (ship/complete + exam) are passed in as children.
  */
+import Link from "next/link";
+import { Caption } from "@/components/Caption";
+
 export function LessonView({
   campusName,
   title,
   videoUrl,
   body,
-  assignmentDescription,
+  examHref,
   children,
 }: {
   campusName: string;
   title: string;
   videoUrl: string | null;
   body: string | null;
-  assignmentDescription: string | null;
+  examHref: string | null;
   children: React.ReactNode;
 }) {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-sm uppercase tracking-widest opacity-60">{campusName}</p>
-      <h1 className="mt-1 text-3xl font-semibold">{title}</h1>
+    <main className="min-h-screen bg-ink pt-[76px]">
+      <div className="mx-auto max-w-[720px] px-6 py-16 sm:px-11">
+        <Caption>{campusName.toUpperCase()}</Caption>
+        <h1 className="mt-3.5 font-display text-[34px] leading-[1.0] tracking-[-0.01em] text-cream-bright sm:text-[48px]">
+          {title}
+        </h1>
 
-      {videoUrl && (
-        <div className="mt-6 aspect-video overflow-hidden rounded-lg bg-black">
-          <iframe src={videoUrl} className="h-full w-full" allowFullScreen />
-        </div>
-      )}
+        {videoUrl && (
+          <div className="relative mt-10">
+            <div className="aspect-video bg-[#0d0a06]">
+              <iframe src={videoUrl} className="h-full w-full" allowFullScreen />
+            </div>
+            <div className="pointer-events-none absolute -top-px -left-px h-[18px] w-[18px] border-t-2 border-l-2 border-gold" />
+            <div className="pointer-events-none absolute -top-px -right-px h-[18px] w-[18px] border-t-2 border-r-2 border-gold" />
+            <div className="pointer-events-none absolute -bottom-px -left-px h-[18px] w-[18px] border-b-2 border-l-2 border-gold" />
+            <div className="pointer-events-none absolute -bottom-px -right-px h-[18px] w-[18px] border-b-2 border-r-2 border-gold" />
+          </div>
+        )}
 
-      {body && <article className="prose mt-8 max-w-none whitespace-pre-wrap">{body}</article>}
+        {body && (
+          <article className="mt-10 max-w-none text-lg leading-[1.75] whitespace-pre-wrap text-cream/82">{body}</article>
+        )}
 
-      {assignmentDescription && (
-        <div className="mt-10 rounded-lg border-2 border-black p-5">
-          <h2 className="font-medium">Ship it</h2>
-          <p className="mt-1 text-sm opacity-80">{assignmentDescription}</p>
-        </div>
-      )}
+        {children}
 
-      {children}
+        {examHref && (
+          <Link
+            href={examHref}
+            className="mt-6 flex items-center justify-between rounded-[2px] border border-cream/14 px-6 py-4 text-sm text-cream/75 transition-colors hover:border-gold/40 hover:text-cream-bright"
+          >
+            <span>Take the exam for this module</span>
+            <span className="text-gold">→</span>
+          </Link>
+        )}
+      </div>
     </main>
   );
 }

@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/*
+ * École palette (design study §4) — dark ink ground, gold reserved for
+ * earned standing only. Font families are wired to CSS vars set by
+ * next/font/google in layout.tsx (--ff-display/--ff-body/--ff-mono).
+ */
+@theme {
+  --font-display: var(--ff-display), Georgia, serif;
+  --font-body: var(--ff-body), system-ui, sans-serif;
+  --font-mono: var(--ff-mono), monospace;
+
+  --color-ink: #14110d;
+  --color-ink-soft: #1b170f;
+  --color-cream: #ede6d6;
+  --color-cream-bright: #f7f2e6;
+  --color-gold: #d9b063;
+  --color-gold-bright: #f5de9c;
+  --color-plum: #b08bb0;
+  --color-rouge: #8c2f2a;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+@keyframes stampPress {
+  0% {
+    transform: scale(1.9) rotate(-13deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(0.87) rotate(3deg);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.08) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.stamp-press {
+  animation: stampPress 0.5s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-press {
+    animation: none;
+  }
+}

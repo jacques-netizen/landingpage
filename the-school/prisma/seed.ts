@@ -13,10 +13,14 @@ import * as path from "path";
 
 const prisma = new PrismaClient();
 
+type ExamDef = {
+  passScore?: number;
+  questions: { question: string; choices: string[]; correctIndex: number }[];
+};
 type ModuleDef = {
   slug: string; order: number; title: string; summary?: string;
   isBlocker?: boolean; assignment?: string; lens?: string | null;
-  archived?: boolean; meta?: Record<string, unknown>;
+  archived?: boolean; meta?: Record<string, unknown>; exam?: ExamDef;
   lessons?: { slug: string; title: string; body?: string; videoUrl?: string; order?: number; lens?: string | null }[];
 };
 type ShelfDef = { title: string; kind?: string; url?: string; lens?: string | null; order?: number };
@@ -64,6 +68,15 @@ async function main() {
           where: { moduleId: mod.id },
           update: { description: m.assignment },
           create: { moduleId: mod.id, description: m.assignment },
+        });
+      }
+
+      // Exam (optional, one per module) — scored on what they've put in, not watch time.
+      if (m.exam) {
+        await prisma.exam.upsert({
+          where: { moduleId: mod.id },
+          update: { passScore: m.exam.passScore ?? 70, questions: m.exam.questions as object },
+          create: { moduleId: mod.id, passScore: m.exam.passScore ?? 70, questions: m.exam.questions as object },
         });
       }
 

@@ -50,8 +50,20 @@
       "fastWin": "First real outreach messages sent to real prospects.",
       "meta": { "blockerAfterModule": 4 },
       "modules": [
-        { "slug": "ff-offer", "order": 1, "title": "The Offer", "summary": "What you actually sell, in one sentence a stranger understands.", "assignment": "Write your one-sentence offer and pin it." },
-        { "slug": "ff-icp", "order": 2, "title": "The ICP", "summary": "Role, vertical, region, budget signal. 'Everyone' means no one.", "assignment": "Written ICP with all four dimensions." },
+        { "slug": "ff-offer", "order": 1, "title": "The Offer", "summary": "What you actually sell, in one sentence a stranger understands.", "assignment": "Write your one-sentence offer and pin it.",
+          "exam": { "passScore": 70, "questions": [
+            { "question": "What makes an offer strong, per this module?", "choices": ["It lists every feature you have", "A stranger understands it in one sentence", "It sounds impressive to other founders", "It matches your competitor's wording"], "correctIndex": 1 },
+            { "question": "Who is the audience test for your one-sentence offer?", "choices": ["Your co-founder", "A stranger with no context", "Your most loyal customer", "An investor"], "correctIndex": 1 },
+            { "question": "What should you do with the offer once it's written?", "choices": ["Keep refining it forever before sharing", "Pin it and use it as-is in real conversations", "Only use it internally", "Wait until you have more proof"], "correctIndex": 1 }
+          ] }
+        },
+        { "slug": "ff-icp", "order": 2, "title": "The ICP", "summary": "Role, vertical, region, budget signal. 'Everyone' means no one.", "assignment": "Written ICP with all four dimensions.",
+          "exam": { "passScore": 70, "questions": [
+            { "question": "How many dimensions does a written ICP need, per this module?", "choices": ["One", "Two", "Four", "As many as possible"], "correctIndex": 2 },
+            { "question": "What's wrong with targeting 'everyone'?", "choices": ["It's too expensive", "It effectively targets no one", "It's illegal", "It takes too long to write"], "correctIndex": 1 },
+            { "question": "Which of these is one of the four ICP dimensions from this module?", "choices": ["Favorite color", "Budget signal", "Shoe size", "Social media platform"], "correctIndex": 1 }
+          ] }
+        },
         { "slug": "ff-proof", "order": 3, "title": "Proof & Positioning", "summary": "What you can honestly claim today, and how to present it without a track record.", "assignment": "One-page proof inventory." },
         { "slug": "ff-first-contact", "order": 4, "title": "First Contact", "summary": "Manual outreach before any tools. The skill before the scale.", "assignment": "10 messages sent to 10 real ICP prospects." },
         { "slug": "ff-blocker", "order": 5, "title": "Blocker: Fear of Pitching", "summary": "You have to pitch more businesses than you think, on more channels than you think.", "isBlocker": true },
@@ -72,7 +84,13 @@
       "fastWin": "First content live with a clear capture mechanism.",
       "meta": { "blockerAfterModule": 4 },
       "modules": [
-        { "slug": "fa-chain", "order": 1, "title": "What an Artist Actually Sells", "summary": "Attention becomes fandom becomes career. Every marketing act serves one link.", "assignment": "Map your chain, mark your current position." },
+        { "slug": "fa-chain", "order": 1, "title": "What an Artist Actually Sells", "summary": "Attention becomes fandom becomes career. Every marketing act serves one link.", "assignment": "Map your chain, mark your current position.",
+          "exam": { "passScore": 70, "questions": [
+            { "question": "What is the chain described in this module?", "choices": ["Attention → fandom → career", "Views → likes → followers", "Practice → talent → luck", "Content → virality → deal"], "correctIndex": 0 },
+            { "question": "What should every marketing act serve, per this module?", "choices": ["The algorithm", "One link in the chain", "Your ego", "A specific platform's rules"], "correctIndex": 1 },
+            { "question": "What does the assignment ask you to mark on your chain map?", "choices": ["Your favorite platform", "Your current position", "Your competitors' positions", "Your posting schedule"], "correctIndex": 1 }
+          ] }
+        },
         { "slug": "fa-positioning", "order": 2, "title": "Positioning the Name", "summary": "What makes you followable beyond the work: story, register, the thing people attach to.", "assignment": "Positioning statement — who follows you and why." },
         { "slug": "fa-inventory", "order": 3, "title": "The Asset Inventory", "summary": "Songs, performances, footage, story moments. Remix what exists before making anything new.", "assignment": "Full inventory, tagged by what it could become." },
         { "slug": "fa-capture", "order": 4, "title": "First Capture", "summary": "Reach vs owned attention: follows, DMs, saves. First keyword-style CTA on your strongest asset.", "assignment": "First capture-driven post live." },

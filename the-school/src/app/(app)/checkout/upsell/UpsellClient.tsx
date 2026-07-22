@@ -5,6 +5,7 @@
  */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Caption } from "@/components/Caption";
 
 export function UpsellClient() {
   const router = useRouter();
@@ -18,19 +19,31 @@ export function UpsellClient() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-16 text-center">
-      <h1 className="text-3xl font-semibold">You&apos;re in. One more thing.</h1>
-      <p className="mt-4 opacity-80">
-        Add the Launch Audit: a 1:1 call and a personal 90-day plan for your exact situation.
-        Charged to the card you just used — one click.
-      </p>
-      <div className="mt-8 flex justify-center gap-3">
-        <button onClick={buy} disabled={busy} className="rounded-lg bg-black px-6 py-3 text-white disabled:opacity-40">
-          Add the Launch Audit
-        </button>
-        <button onClick={() => router.push("/dashboard")} className="rounded-lg border px-6 py-3">
-          No thanks, take me in
-        </button>
+    <main className="flex min-h-screen items-center bg-ink pt-[76px]">
+      <div className="mx-auto max-w-xl px-6 py-16 text-center">
+        <Caption>You&apos;re in</Caption>
+        <h1 className="mt-3.5 font-display text-[36px] leading-[1.0] tracking-[-0.01em] text-cream-bright sm:text-[44px]">
+          One more thing.
+        </h1>
+        <p className="mt-5 text-cream/72">
+          Add the Launch Audit: a 1:1 call and a personal 90-day plan for your exact situation.
+          Charged to the card you just used — one click.
+        </p>
+        <div className="mt-9 flex justify-center gap-3">
+          <button
+            onClick={buy}
+            disabled={busy}
+            className="rounded-[2px] border border-gold bg-gold px-6 py-3.5 font-body text-sm font-semibold text-ink transition-colors hover:bg-gold-bright disabled:opacity-40"
+          >
+            Add the Launch Audit
+          </button>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="rounded-[2px] border border-cream/20 px-6 py-3.5 font-body text-sm text-cream/75 transition-colors hover:border-cream/40"
+          >
+            No thanks, take me in
+          </button>
+        </div>
       </div>
     </main>
   );

@@ -1,16 +1,19 @@
 /**
  * Presentational only. Swap this file for a redesigned version — page.tsx
- * owns the data fetch, unlock check, and lens filtering (Rule 0/1) and never
- * needs to change when the look does.
+ * owns the data fetch and lens filtering (Rule 0). Every module is open —
+ * no locked state; numbering is legitimate here since order carries
+ * information (design study §6).
  */
 import Link from "next/link";
+import { Caption } from "@/components/Caption";
+import { Stamp } from "@/components/Stamp";
 
 export type CampusModule = {
   id: string;
   title: string;
   summary: string | null;
   isBlocker: boolean;
-  completed: boolean;
+  earned: boolean;
   lessonSlug: string | null;
 };
 
@@ -22,12 +25,14 @@ export type CampusShelfItem = {
 };
 
 export function CampusView({
+  slug,
   name,
   promise,
   fastWin,
   modules,
   shelf,
 }: {
+  slug: string;
   name: string;
   promise: string | null;
   fastWin: string | null;
@@ -35,54 +40,59 @@ export function CampusView({
   shelf: CampusShelfItem[];
 }) {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-3xl font-semibold">{name}</h1>
-      {promise && <p className="mt-2 opacity-70">{promise}</p>}
-      {fastWin && (
-        <p className="mt-4 rounded-lg bg-neutral-100 p-4 text-sm">
-          <strong>The win:</strong> {fastWin}
-        </p>
-      )}
+    <main className="min-h-screen bg-ink pt-[76px]">
+      <div className="mx-auto max-w-3xl px-6 py-16 sm:px-11">
+        <h1 className="font-display text-[38px] leading-[1.0] tracking-[-0.01em] text-cream-bright sm:text-[56px]">
+          {name}
+        </h1>
+        {promise && <p className="mt-3 text-cream/70">{promise}</p>}
+        {fastWin && (
+          <p className="mt-6 rounded-[2px] border border-gold/22 border-t-2 border-t-gold bg-white/[0.035] p-5 text-sm text-cream/90">
+            <strong className="text-gold">The win —</strong> {fastWin}
+          </p>
+        )}
 
-      <h2 className="mt-10 text-xl font-medium">Linear core</h2>
-      <ol className="mt-4 space-y-2">
-        {modules.map((m) => (
-          <li key={m.id} className="flex items-center gap-3 rounded-lg border p-4">
-            <span className={m.completed ? "text-green-600" : "opacity-30"}>●</span>
-            <div className="flex-1">
-              {m.lessonSlug ? (
-                <Link href={`/lesson/${m.lessonSlug}`} className="font-medium hover:underline">
-                  {m.title}
-                </Link>
-              ) : (
-                <span className="font-medium">{m.title}</span>
-              )}
-              {m.summary && <p className="text-sm opacity-70">{m.summary}</p>}
-            </div>
-            {m.isBlocker && <span className="text-xs uppercase tracking-wide opacity-50">blocker</span>}
-          </li>
-        ))}
-      </ol>
-
-      {shelf.length > 0 && (
-        <>
-          <h2 className="mt-10 text-xl font-medium">Library shelf</h2>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-            {shelf.map((s) => (
-              <li key={s.id} className="rounded-lg border p-4 text-sm">
-                {s.url ? (
-                  <a href={s.url} className="font-medium hover:underline">
-                    {s.title}
-                  </a>
+        <Caption className="mt-14">Linear core</Caption>
+        <ol className="mt-4 flex flex-col">
+          {modules.map((m, i) => (
+            <li key={m.id} className="flex items-center gap-4 border-t border-cream/12 py-5 first:border-t-0">
+              <span className="w-6 flex-shrink-0 font-mono text-xs text-cream/40">{String(i + 1).padStart(2, "0")}</span>
+              <Stamp campusSlug={slug} earned={m.earned} size={40} />
+              <div className="min-w-0 flex-1">
+                {m.lessonSlug ? (
+                  <Link href={`/lesson/${m.lessonSlug}`} className="font-display text-lg text-cream-bright hover:text-gold-bright">
+                    {m.title}
+                  </Link>
                 ) : (
-                  <span className="font-medium">{s.title}</span>
+                  <span className="font-display text-lg text-cream-bright">{m.title}</span>
                 )}
-                <span className="ml-2 text-xs uppercase opacity-50">{s.kind}</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+                {m.summary && <p className="mt-0.5 text-sm text-cream/60">{m.summary}</p>}
+              </div>
+              {m.isBlocker && <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-cream/40">blocker</span>}
+            </li>
+          ))}
+        </ol>
+
+        {shelf.length > 0 && (
+          <>
+            <Caption className="mt-14">Library shelf</Caption>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              {shelf.map((s) => (
+                <li key={s.id} className="border border-cream/12 p-4 font-mono text-sm">
+                  {s.url ? (
+                    <a href={s.url} className="text-cream-bright hover:text-gold-bright">
+                      {s.title}
+                    </a>
+                  ) : (
+                    <span className="text-cream-bright">{s.title}</span>
+                  )}
+                  <span className="ml-2 text-[10px] uppercase text-cream/45">{s.kind}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </main>
   );
 }

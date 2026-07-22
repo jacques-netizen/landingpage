@@ -1,12 +1,13 @@
 /**
- * Data loader + gating only — see DashboardView.tsx for the presentation.
+ * Data loader only — see DashboardView.tsx for the presentation.
  * 100% data-driven (CLAUDE.md Rule 0): renders whatever the member's school
- * contains — campuses, order, lock state all from DB.
+ * contains. Every campus is open — no sequential gating.
  */
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { getMemberByClerkId, hasActiveAccess, isCampusUnlocked } from "@/lib/access";
+import { getMemberByClerkId, hasActiveAccess } from "@/lib/access";
+import { getStampedModuleIds } from "@/lib/stamps";
 import { DashboardView } from "./DashboardView";
 
 export default async function Dashboard() {
@@ -20,22 +21,26 @@ export default async function Dashboard() {
   const links = await db.campusOnSchool.findMany({
     where: { schoolId: member.schoolId, campus: { archived: false } },
     orderBy: { order: "asc" },
-    include: { campus: true, school: true },
+    include: {
+      campus: { include: { modules: { where: { archived: false, isBlocker: false } } } },
+      school: true,
+    },
   });
 
-  const unlocked = await Promise.all(
-    links.map((l) => isCampusUnlocked(member.id, member.schoolId!, l.campusId))
-  );
+  const allModuleIds = links.flatMap((l) => l.campus.modules.map((m) => m.id));
+  const stamped = await getStampedModuleIds(member.id, allModuleIds);
 
   return (
     <DashboardView
       schoolName={links[0]?.school.name ?? ""}
+      schoolSlug={member.school?.slug ?? null}
       discordConnected={!!member.discordUserId}
-      campuses={links.map((l, i) => ({
+      campuses={links.map((l) => ({
         slug: l.campus.slug,
         name: l.campus.name,
-        promise: l.campus.promise,
-        unlocked: unlocked[i],
+        subtitle: (l.campus.meta as { sharedSpine?: boolean })?.sharedSpine ? "Shared" : null,
+        moduleCount: l.campus.modules.length,
+        earnedCount: l.campus.modules.filter((m) => stamped.has(m.id)).length,
       }))}
     />
   );

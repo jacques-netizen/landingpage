@@ -64,6 +64,7 @@ model Module {
   meta       Json     @default("{}") // e.g. { "lens": "artist" } for lens-specific modules
   lessons    Lesson[]
   assignment Assignment?
+  exam       Exam?
   progress   ModuleProgress[]
 }
 
@@ -89,6 +90,33 @@ model Assignment {
   description String  @db.Text
   meta        Json    @default("{}")
   shipments   AssignmentShipment[]
+}
+
+// Optional per-module exam: scored on the work the member has put in, not a
+// watch-time gate. Questions are content (Rule 0) -- authored in
+// curriculum.json, never in code. Multiple choice only, kept generic on
+// purpose: { question, choices: string[], correctIndex }[].
+model Exam {
+  id        String   @id @default(cuid())
+  module    Module   @relation(fields: [moduleId], references: [id])
+  moduleId  String   @unique
+  passScore Int      @default(70) // percent correct required to pass
+  questions Json
+  meta      Json     @default("{}")
+  attempts  ExamAttempt[]
+}
+
+model ExamAttempt {
+  id        String   @id @default(cuid())
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  String
+  exam      Exam     @relation(fields: [examId], references: [id])
+  examId    String
+  answers   Json     // member's selected choice index per question
+  score     Int      // percent correct, scored server-side against Exam.questions
+  passed    Boolean
+  createdAt DateTime @default(now())
+  @@index([memberId, examId])
 }
 
 model ShelfItem {
@@ -124,6 +152,7 @@ model Member {
   purchases        Purchase[]
   moduleProgress   ModuleProgress[]
   shipments        AssignmentShipment[]
+  examAttempts     ExamAttempt[]
   events           Event[]
   submissions      Submission[]
 }

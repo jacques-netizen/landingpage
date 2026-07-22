@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
+import { Caption } from "@/components/Caption";
 
 type School = { slug: string; name: string; tagline: string | null };
 
@@ -36,19 +37,21 @@ export function JoinForm({ schools }: { schools: School[] }) {
   }
 
   return (
-    <div className="mt-8 space-y-6">
+    <div className="mt-10 flex flex-col gap-8">
       {schools.length > 0 && (
         <div>
-          <p className="text-sm font-medium">Track</p>
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          <Caption>Wing</Caption>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {schools.map((s) => (
               <button
                 key={s.slug}
                 onClick={() => setSchoolSlug(s.slug)}
-                className={`rounded-lg border p-4 text-left ${schoolSlug === s.slug ? "border-black" : "opacity-70"}`}
+                className={`rounded-[2px] border p-4 text-left transition-colors ${
+                  schoolSlug === s.slug ? "border-gold" : "border-cream/16 hover:border-cream/30"
+                }`}
               >
-                <span className="font-medium">{s.name}</span>
-                {s.tagline && <p className="mt-1 text-sm opacity-70">{s.tagline}</p>}
+                <span className="font-display text-lg text-cream-bright">{s.name}</span>
+                {s.tagline && <p className="mt-1 text-sm text-cream/60">{s.tagline}</p>}
               </button>
             ))}
           </div>
@@ -56,33 +59,37 @@ export function JoinForm({ schools }: { schools: School[] }) {
       )}
 
       <div>
-        <p className="text-sm font-medium">Billing</p>
-        <div className="mt-2 flex gap-2">
+        <Caption>Billing</Caption>
+        <div className="mt-3 flex gap-2">
           <button
             onClick={() => setPlan("monthly")}
-            className={`rounded-lg border px-4 py-2 text-sm ${plan === "monthly" ? "border-black" : "opacity-70"}`}
+            className={`rounded-[2px] border px-4 py-2 text-sm transition-colors ${
+              plan === "monthly" ? "border-gold text-cream-bright" : "border-cream/16 text-cream/65 hover:border-cream/30"
+            }`}
           >
             Monthly
           </button>
           <button
             onClick={() => setPlan("annual")}
-            className={`rounded-lg border px-4 py-2 text-sm ${plan === "annual" ? "border-black" : "opacity-70"}`}
+            className={`rounded-[2px] border px-4 py-2 text-sm transition-colors ${
+              plan === "annual" ? "border-gold text-cream-bright" : "border-cream/16 text-cream/65 hover:border-cream/30"
+            }`}
           >
             Annual
           </button>
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2.5 text-sm text-cream/80">
         <input type="checkbox" checked={withBump} onChange={(e) => setWithBump(e.target.checked)} />
         Add the Vault (one-time add-on)
       </label>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rouge">{error}</p>}
 
       <SignedOut>
         <SignUpButton mode="modal" forceRedirectUrl="/join">
-          <button className="w-full rounded-lg bg-black px-6 py-3 text-white">
+          <button className="w-full rounded-[2px] border border-gold bg-gold px-6 py-3.5 font-body text-sm font-semibold tracking-[0.02em] text-ink transition-colors hover:bg-gold-bright">
             Create your account to continue
           </button>
         </SignUpButton>
@@ -91,9 +98,9 @@ export function JoinForm({ schools }: { schools: School[] }) {
         <button
           onClick={checkout}
           disabled={busy || !schoolSlug}
-          className="w-full rounded-lg bg-black px-6 py-3 text-white disabled:opacity-40"
+          className="w-full rounded-[2px] border border-gold bg-gold px-6 py-3.5 font-body text-sm font-semibold tracking-[0.02em] text-ink transition-colors hover:bg-gold-bright disabled:cursor-default disabled:opacity-40"
         >
-          {busy ? "Redirecting..." : "Continue to checkout"}
+          {busy ? "Redirecting…" : "Continue to checkout"}
         </button>
       </SignedIn>
     </div>
