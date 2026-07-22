@@ -1,6 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublic = createRouteMatcher(["/", "/join", "/sign-in(.*)", "/sign-up(.*)", "/api/webhooks(.*)"]);
+// /api/admin is gated by its own ADMIN_SECRET check, not a Clerk session —
+// it needs to be callable directly (support tooling, scripts), same as webhooks.
+const isPublic = createRouteMatcher(["/", "/join", "/sign-in(.*)", "/sign-up(.*)", "/api/webhooks(.*)", "/api/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublic(req)) await auth.protect();
