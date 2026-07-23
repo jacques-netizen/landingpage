@@ -152,11 +152,20 @@
   .flow-step{font-family:'Archivo';font-weight:600;font-size:0.76rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-cream);border:1px solid var(--hair-cream);padding:0.55rem 1rem;border-radius:999px}
   .flow-arrow{color:var(--gold-light);font-size:0.9rem}
 
-  /* ---------- views into leads ---------- */
-  .lead-math{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark);margin-top:2.4rem}
-  .lm{background:var(--cream-deep);padding:1.6rem 1.3rem;text-align:center}
-  .lm .lv{font-family:'EB Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);color:var(--gold);line-height:1}
-  .lm .ll{font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-mute);margin-top:0.55rem;font-weight:600}
+  /* ---------- views into leads: live calculator ---------- */
+  .calc{background:var(--cream-deep);border-left:3px solid var(--gold);padding:clamp(1.6rem,3vw,2.4rem);margin-top:2.2rem}
+  .calc-q{font-size:0.82rem;letter-spacing:0.04em;color:var(--text-mute);font-weight:400;margin-bottom:0.9rem}
+  .calc-input{display:flex;align-items:center;gap:0.6rem;border:1px solid var(--hair-dark);background:rgba(255,255,255,0.55);padding:0.7rem 1.1rem;max-width:220px}
+  .calc-input span{font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--gold)}
+  .calc-input input{border:0;background:none;font-family:'EB Garamond',serif;font-size:1.5rem;color:var(--text-dark);width:100%;outline:none}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair-dark);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold);border:3px solid var(--cream-deep);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:3px solid var(--cream-deep);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .calc-range{display:flex;gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark);margin-top:1.6rem}
+  .calc-cell{background:var(--cream);padding:1.5rem 1.2rem;flex:1;text-align:center}
+  .calc-cell .cv{font-family:'EB Garamond',serif;font-size:clamp(1.7rem,3.6vw,2.6rem);color:var(--gold);line-height:1}
+  .calc-cell .cl{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-mute);margin-top:0.55rem;font-weight:600}
+  .calc-note{font-size:0.8rem;color:var(--text-mute);font-weight:300;margin-top:1.2rem;line-height:1.5}
   .case-callout{margin-top:2.2rem;background:var(--cream-deep);border-left:3px solid var(--gold);padding:clamp(1.5rem,3vw,2.1rem)}
   .case-callout p{font-size:0.98rem;color:var(--text-dark);font-weight:300;line-height:1.65}
   .case-callout p b{font-weight:500;color:var(--gold)}
@@ -199,7 +208,8 @@
   .signoff .s-name{font-size:0.85rem;color:var(--text-cream-mute);text-align:right;line-height:1.5}
 
   @media(max-width:760px){
-    .proof-grid,.offer,.lead-math,.dash-grid{grid-template-columns:1fr}
+    .proof-grid,.offer,.dash-grid{grid-template-columns:1fr}
+    .calc-range{flex-direction:column}
     .bigstats{grid-template-columns:1fr 1fr}
     .heard-list li,.mech-list li,.tl-item{grid-template-columns:32px 1fr}
     .tl-item{grid-template-columns:1fr}
@@ -241,7 +251,7 @@
 <section class="section cream">
   <div class="wrap">
     <span class="eyebrow kicker rv">What we heard</span>
-    <h2 class="lead wide rv d1">Six things you told us, <i>plainly</i>.</h2>
+    <h2 class="lead wide rv d1">Before we built anything, we <i>listened</i>.</h2>
     <ul class="heard-list rv d2">
       <li><span class="hn">01</span><p>Agencies first. That is who this has to reach, before anyone else.</p></li>
       <li><span class="hn">02</span><p>Pro and Studio need their own story. One blended pitch undersells both.</p></li>
@@ -367,10 +377,15 @@
     <h2 class="lead wide rv d1">Distribution is not the end <i>point</i>.</h2>
     <p class="body-lg rv d2" style="margin-top:1.8rem">Comment and DM capture runs automatically on every clip. Reach turns into a list you own, not a number you look at. Our average conversion rate is <b>0.3% of views into direct leads.</b></p>
 
-    <div class="lead-math rv d3">
-      <div class="lm"><div class="lv">1,000,000</div><div class="ll">Guaranteed view floor</div></div>
-      <div class="lm"><div class="lv">0.3%</div><div class="ll">Views into direct leads</div></div>
-      <div class="lm"><div class="lv">3,000</div><div class="ll">Leads, before one reaches your landing page</div></div>
+    <div class="calc rv d3">
+      <div class="calc-q">Move the budget and watch the guaranteed floor and lead count update.</div>
+      <div class="calc-input"><span>$</span><input id="fbBudget" type="number" min="500" step="500" value="2000" inputmode="numeric" aria-label="Campaign budget"></div>
+      <input type="range" id="fbSlider" min="500" max="10000" step="500" value="2000" aria-label="Campaign budget slider" style="margin-top:1rem">
+      <div class="calc-range">
+        <div class="calc-cell"><div class="cv" id="fbFloor">1,000,000</div><div class="cl">Guaranteed view floor, $2 CPM</div></div>
+        <div class="calc-cell"><div class="cv" id="fbLeads">3,000</div><div class="cl">Leads, at 0.3% of views</div></div>
+      </div>
+      <p class="calc-note">$2,000 is the campaign one commitment. The slider shows how the same guarantee scales if that commitment grows.</p>
     </div>
 
     <div class="case-callout rv d4">
@@ -444,6 +459,22 @@
     es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:0.16,rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  /* live floor + leads calculator */
+  (function(){
+    const inp=document.getElementById('fbBudget'), sl=document.getElementById('fbSlider');
+    const floorOut=document.getElementById('fbFloor'), leadsOut=document.getElementById('fbLeads');
+    function calc(src){
+      let b=parseFloat(src.value); if(isNaN(b)||b<0)b=0;
+      inp.value=b; sl.value=b;
+      const floor=(b/2)*1000;
+      const leads=floor*0.003;
+      floorOut.textContent=Math.round(floor).toLocaleString('en-US');
+      leadsOut.textContent=Math.round(leads).toLocaleString('en-US');
+    }
+    inp.addEventListener('input',()=>calc(inp));
+    sl.addEventListener('input',()=>calc(sl));
+  })();
 </script>
 </body>
 </html>
