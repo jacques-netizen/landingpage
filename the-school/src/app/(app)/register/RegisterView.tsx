@@ -54,14 +54,14 @@ export function RegisterView({
             {totalEarned}
           </div>
           <div className="relative">
-            <Caption className={accentTextClass(schoolSlug)}>{schoolName} — The Register</Caption>
+            <Caption className={accentTextClass(schoolSlug)}>{schoolName} · The register</Caption>
             <h1 className="mt-3.5 max-w-[12ch] font-display text-[44px] leading-[0.94] tracking-[-0.01em] text-cream-bright sm:text-[64px] md:text-[80px]">
-              Everything you have shipped.
+              {totalEarned} stamps · {campuses.length} campuses.
             </h1>
           </div>
         </div>
         <p className="mt-6 max-w-[52ch] text-base leading-[1.6] text-cream/68">
-          {totalEarned} of {totalModules} modules pressed into the record. Standing: {tier}.
+          {totalEarned} of {totalModules} modules shipped. Standing: {tier}.
         </p>
 
         <div className="mt-16 flex flex-col gap-12">

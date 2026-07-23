@@ -47,9 +47,10 @@ export function CampusView({
         </h1>
         {promise && <p className="mt-3 text-cream/70">{promise}</p>}
         {fastWin && (
-          <p className="mt-6 rounded-[2px] border border-gold/22 border-t-2 border-t-gold bg-white/[0.035] p-5 text-sm text-cream/90">
-            <strong className="text-gold">The win —</strong> {fastWin}
-          </p>
+          <div className="mt-6 rounded-[2px] border border-gold/22 border-t-2 border-t-gold bg-white/[0.035] p-5">
+            <div className="font-mono text-[10px] tracking-[0.14em] text-gold/85 uppercase">Ships</div>
+            <p className="mt-1.5 text-sm text-cream/90">{fastWin}</p>
+          </div>
         )}
 
         <Caption className="mt-14">Linear core</Caption>

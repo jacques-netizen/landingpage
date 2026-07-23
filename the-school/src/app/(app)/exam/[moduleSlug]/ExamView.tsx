@@ -49,13 +49,13 @@ export function ExamView({
     <main className="min-h-screen bg-ink pt-[76px]">
       <div className="mx-auto max-w-2xl px-6 py-16 sm:px-11">
         <Caption>
-          {campusName.toUpperCase()} / {moduleName.toUpperCase()} — EXAM
+          {campusName.toUpperCase()} · {moduleName.toUpperCase()}
         </Caption>
         <h1 className="mt-3.5 font-display text-[36px] leading-[1.0] tracking-[-0.01em] text-cream-bright sm:text-[48px]">
-          Show what you kept.
+          Exam.
         </h1>
         <p className="mt-4 text-sm text-cream/68">
-          {questions.length} questions. {passScore}% correct to pass. Retake any time.
+          {questions.length} questions. {passScore}% to pass. Retake any time.
         </p>
 
         {result && (
@@ -64,7 +64,7 @@ export function ExamView({
               result.passed ? "border-gold/30 bg-gold/[0.06] text-gold-bright" : "border-rouge/40 bg-rouge/[0.08] text-cream/85"
             }`}
           >
-            {result.passed ? "Passed" : "Not yet"} — {result.score}% correct.
+            {result.passed ? "Passed" : "Not yet"} · {result.score}% correct.
           </div>
         )}
 

@@ -34,10 +34,10 @@ export function DashboardView({
       <div className="mx-auto max-w-4xl px-6 py-16 sm:px-11">
         <Caption className={accentTextClass(schoolSlug)}>{schoolName}</Caption>
         <h1 className="mt-3.5 max-w-[11ch] font-display text-[44px] leading-[0.94] tracking-[-0.01em] text-cream-bright sm:text-[64px] md:text-[84px]">
-          The plan of the house.
+          Your campuses.
         </h1>
         <p className="mt-6 max-w-[52ch] text-base leading-[1.6] text-cream/68">
-          {campuses.length} campuses. Work whichever one you like, in whatever order suits you.
+          {campuses.length} campuses. Any order.
         </p>
 
         {!discordConnected && (
