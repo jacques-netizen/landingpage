@@ -1,53 +1,61 @@
+"use client";
 /**
- * École chrome: the wordmark treats the É as the signature glyph (design
- * study §5). Wing dot + nav are the only data-dependent pieces, fetched
- * here directly since the header has no natural page.tsx of its own.
+ * École chrome. Fixed, transparent over the cinematic hero, solidifying to a
+ * blurred bar once you scroll past it. The É is the signature glyph
+ * (design study §5). Auth state comes from Clerk's own client components, so
+ * this stays a pure client island with no server round-trip.
  */
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { auth } from "@clerk/nextjs/server";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { db } from "@/lib/db";
-import { accentBgClass } from "@/lib/wing";
 
-export async function SiteHeader() {
-  const { userId } = await auth();
-  const member = userId
-    ? await db.member.findUnique({ where: { clerkUserId: userId }, include: { school: true } })
-    : null;
+export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-[76px] items-center justify-between px-6 sm:px-11">
+    <header
+      className="fixed inset-x-0 top-0 z-50 flex h-[70px] items-center justify-between px-6 transition-[background,border-color,backdrop-filter] duration-300 sm:px-11"
+      style={{
+        background: scrolled ? "rgba(13,15,13,0.82)" : "transparent",
+        backdropFilter: scrolled ? "blur(12px)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(232,230,221,0.1)" : "1px solid transparent",
+      }}
+    >
       <Link href="/" className="flex items-baseline gap-0">
-        <span className="font-display text-[34px] leading-[0.8] text-gold">É</span>
-        <span className="font-display text-[19px] tracking-[0.02em] text-cream-bright">cole</span>
+        <span className="font-display text-[32px] leading-[0.8] text-gold">É</span>
+        <span className="font-display text-[18px] tracking-[0.03em] text-cream-bright">cole</span>
       </Link>
       <nav className="flex items-center gap-6 sm:gap-8">
         <SignedIn>
-          <Link href="/dashboard" className="font-body text-[13px] uppercase tracking-[0.05em] text-cream/70 hover:text-cream-bright">
+          <Link href="/dashboard" className="font-body text-[13px] tracking-[0.03em] text-cream/70 hover:text-cream-bright">
             Dashboard
           </Link>
-          <Link href="/register" className="font-body text-[13px] uppercase tracking-[0.05em] text-cream/70 hover:text-cream-bright">
+          <Link href="/register" className="font-body text-[13px] tracking-[0.03em] text-cream/70 hover:text-cream-bright">
             Register
           </Link>
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <Link href="/join" className="font-body text-[13px] uppercase tracking-[0.05em] text-cream/70 hover:text-cream-bright">
-            Join
-          </Link>
           <SignInButton mode="modal">
-            <button className="font-body text-[13px] uppercase tracking-[0.05em] text-cream/70 hover:text-cream-bright">
+            <button className="font-body text-[13px] tracking-[0.03em] text-cream/70 hover:text-cream-bright">
               Sign in
             </button>
           </SignInButton>
+          <Link
+            href="/join"
+            className="rounded-[2px] bg-gold px-5 py-2.5 font-body text-[13px] font-bold tracking-[0.02em] text-ink transition-colors hover:bg-gold-bright"
+          >
+            Enter École →
+          </Link>
         </SignedOut>
       </nav>
-      {member?.school && (
-        <div className="hidden items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-cream/55 uppercase sm:flex">
-          <span className={`inline-block h-1.5 w-1.5 rounded-full ${accentBgClass(member.school.slug)}`} />
-          {member.school.name}
-        </div>
-      )}
     </header>
   );
 }

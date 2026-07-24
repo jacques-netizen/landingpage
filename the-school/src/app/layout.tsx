@@ -13,7 +13,7 @@ const bodoniModa = Bodoni_Moda({
 });
 const archivo = Archivo({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--ff-body",
 });
 const ibmPlexMono = IBM_Plex_Mono({
