@@ -341,6 +341,7 @@
           <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
           <div class="s-r">Jacques &middot; Founder</div>
         </div>
+        <p style="margin-top:1.4rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.04em;color:var(--mute);opacity:0.7">Portraits of Maya Jama and the Sidemen via Wikimedia Commons, used under Creative Commons licence. Remaining portraits from the Maison d&rsquo;&Eacute;lites talent library.</p>
       </div>
     </div>
   </div>
@@ -349,19 +350,19 @@
 <script>
 /* ---------- talent data ---------- */
 const TALENT = [
-  { pod:'A', id:'naomi', name:'Naomi Campbell', mono:'NC', tier:'brand',
+  { pod:'A', id:'naomi', name:'Naomi Campbell', mono:'NC', tier:'brand', img:'naomi.jpg', pos:'center 18%',
     handle:'Global fashion icon',
     desc:'Multi-decade brand equity and an extensive luxury and beauty licensing history.',
     fit:'Premium dark chocolate, or a collagen and beauty gummy positioned at the luxury end. Naomi moves a product from creator collab to brand, which changes what retail is willing to do with it.',
     lines:['chocolate','beauty','brand'], lineLabels:['Premium chocolate','Beauty supplement','Brand level'] },
 
-  { pod:'A', id:'maya', name:'Maya Jama', mono:'MJ', tier:'headline',
+  { pod:'A', id:'maya', name:'Maya Jama', mono:'MJ', tier:'headline', img:'mayajama.jpg', pos:'center 18%',
     handle:'UK entertainment',
     desc:'One of the most visible personalities in UK entertainment. Beauty and lifestyle are her core commercial categories, and her audience is heavily female and highly engaged.',
     fit:'Headline partner on a beauty supplement gummy: skin, hair, nails.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
-  { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator',
+  { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator', img:'sil_labae.jpg', pos:'center 15%',
     handle:'@sil_labae &middot; 300K+ Instagram',
     desc:'Ghanaian model and digital creator. Fashion Nova ambassador, Miss Grand Ghana finalist. Beauty is her entire content category, and her engagement is real rather than inflated.',
     fit:'Beauty supplement line. She is exactly the creator profile this product converts through, and she gives the campaign reach into a market with fast-growing beauty spend.',
@@ -373,14 +374,14 @@ const TALENT = [
     fit:'Campaign volume and amplification across the beauty line.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
-  { pod:'B', id:'sidemen', name:'The Sidemen', mono:'SDMN', tier:'headline',
+  { pod:'B', id:'sidemen', name:'The Sidemen', mono:'SDMN', tier:'headline', img:'sidemen.jpg', pos:'center center',
     handle:'Collective',
     desc:'The largest entertainment group in UK creator media, with a proven track record of taking consumer products into physical retail. Combined reach here is, by a distance, the biggest asset in this document.',
     fit:'Loud Mouth Bites, gummy candy, and instant noodles. All three are native to what these channels already do: challenge, reaction and taste-test content. The noodle line in particular works if there is a heat or challenge mechanic built into the product, because then the content writes itself.',
     note:'Can be approached collectively or as individual members, which gives real flexibility on budget. Worth confirming which route you would prefer before we open it.',
     lines:['loudmouth','gummy','noodles'], lineLabels:['Loud Mouth Bites','Gummy candy','Instant noodles'] },
 
-  { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline',
+  { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline', img:'tobjizzle.jpg', pos:'center 12%',
     handle:'TBJZL &middot; Sidemen member',
     desc:'Direct relationship, and the name we would lead with. Tobi has hands-on experience taking a consumer product from concept through to retail, so he engages with the commercial side rather than treating it as a fee-for-post.',
     fit:'Anchor partner on the candy line. Highest-confidence conversion on this list.',
@@ -392,7 +393,7 @@ const TALENT = [
     fit:'Snack and noodle content at volume.',
     lines:['noodles','loudmouth'], lineLabels:['Instant noodles','Loud Mouth Bites'] },
 
-  { pod:'C', id:'idris', name:'Idris Elba', mono:'IE', tier:'brand',
+  { pod:'C', id:'idris', name:'Idris Elba', mono:'IE', tier:'brand', img:'idriselba-portrait.jpg', pos:'center center',
     handle:'Actor and DJ',
     desc:'The most broadly recognisable name here. Category-agnostic, with the standing to front a brand rather than endorse a product.',
     fit:'Brand-level partnership across any line.',
@@ -413,7 +414,7 @@ function cardHTML(t){
       <span class="tier-flag">${TIER_LABEL[t.tier]}</span>
       <button class="pickmark" data-pick="${t.id}" aria-label="Add ${t.name} to shortlist">+</button>
       <span class="mono">${t.mono}</span>
-      <img src="talent/${t.id}.jpg" alt="${t.name}" onerror="this.remove()">
+      ${t.img ? `<img src="/talent/${t.img}" alt="${t.name}" style="object-position:${t.pos||'center 22%'}" onerror="this.remove()">` : ''}
     </div>
     <div class="t-body">
       <div class="t-name">${t.name}</div>
