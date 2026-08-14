@@ -127,6 +127,9 @@
   .t-body{padding:1.1rem 1.2rem 1.2rem;flex:1;display:flex;flex-direction:column}
   .t-name{font-family:'EB Garamond',serif;font-size:1.35rem;line-height:1.15}
   .t-handle{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.06em;color:var(--gold-light);margin-top:0.25rem}
+  .t-reach{display:flex;align-items:baseline;gap:0.5rem;margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid var(--hair-soft)}
+  .t-reach .rv-num{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.1rem;color:var(--gold-soft);line-height:1}
+  .t-reach .rv-on{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
   .t-desc{font-size:0.92rem;color:var(--mute);margin-top:0.7rem;line-height:1.6}
   .t-more{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.7,.2,1)}
   .talent.open .t-more{max-height:420px}
@@ -292,7 +295,7 @@
     <div class="planner rv d3">
       <div class="planner-top">
         <span class="pt-l">Your shortlist</span>
-        <span class="pt-c"><span id="slCount">0</span> selected</span>
+        <span class="pt-c"><span id="slCount">0</span> selected &middot; <span id="slReach" style="color:var(--gold-soft)">0</span> combined audience</span>
       </div>
       <div class="shortlist" id="shortlist"><span class="sl-empty">Tap a name above to add them here.</span></div>
 
@@ -318,7 +321,7 @@
         <span class="ptl">Indicative total, your figures</span>
         <span class="ptv" id="planTotal">Set your tiers</span>
       </div>
-      <p class="planner-note">These are your figures, not our quote. Nothing here is a fee we have agreed with any name on this list. Set the ceiling you are comfortable with and we pitch inside it, then come back with confirmed interest and indicative terms.</p>
+      <p class="planner-note">Audience figures are indicative and stated per name on their primary platform, so combined audience is a reach guide rather than a deduplicated total. These are your figures, not our quote. Nothing here is a fee we have agreed with any name on this list. Set the ceiling you are comfortable with and we pitch inside it, then come back with confirmed interest and indicative terms.</p>
     </div>
   </div>
 </section>
@@ -350,50 +353,50 @@
 <script>
 /* ---------- talent data ---------- */
 const TALENT = [
-  { pod:'A', id:'naomi', name:'Naomi Campbell', mono:'NC', tier:'brand', img:'naomi.jpg', pos:'center 18%',
+  { pod:'A', id:'naomi', name:'Naomi Campbell', mono:'NC', tier:'brand', img:'naomi.jpg', pos:'center 18%', reach:'15.5M', reachNum:15500000, reachOn:'Instagram',
     handle:'Global fashion icon',
     desc:'Multi-decade brand equity and an extensive luxury and beauty licensing history.',
     fit:'Premium dark chocolate, or a collagen and beauty gummy positioned at the luxury end. Naomi moves a product from creator collab to brand, which changes what retail is willing to do with it.',
     lines:['chocolate','beauty','brand'], lineLabels:['Premium chocolate','Beauty supplement','Brand level'] },
 
-  { pod:'A', id:'maya', name:'Maya Jama', mono:'MJ', tier:'headline', img:'mayajama.jpg', pos:'center 18%',
+  { pod:'A', id:'maya', name:'Maya Jama', mono:'MJ', tier:'headline', img:'mayajama.jpg', pos:'center 18%', reach:'3.1M', reachNum:3100000, reachOn:'Instagram',
     handle:'UK entertainment',
     desc:'One of the most visible personalities in UK entertainment. Beauty and lifestyle are her core commercial categories, and her audience is heavily female and highly engaged.',
     fit:'Headline partner on a beauty supplement gummy: skin, hair, nails.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
-  { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator', img:'sil_labae.jpg', pos:'center 15%',
+  { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator', img:'sil_labae.jpg', pos:'center 15%', reach:'300K+', reachNum:300000, reachOn:'Instagram',
     handle:'@sil_labae &middot; 300K+ Instagram',
     desc:'Ghanaian model and digital creator. Fashion Nova ambassador, Miss Grand Ghana finalist. Beauty is her entire content category, and her engagement is real rather than inflated.',
     fit:'Beauty supplement line. She is exactly the creator profile this product converts through, and she gives the campaign reach into a market with fast-growing beauty spend.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
-  { pod:'A', id:'eva', name:'Eva Apio', mono:'EA', tier:'creator',
+  { pod:'A', id:'eva', name:'Eva Apio', mono:'EA', tier:'creator', img:'evaapio.jpg', pos:'center 20%', reach:'860K', reachNum:860000, reachOn:'Instagram',
     handle:'Model and creator',
     desc:'Strong fashion and lifestyle following.',
     fit:'Campaign volume and amplification across the beauty line.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
-  { pod:'B', id:'sidemen', name:'The Sidemen', mono:'SDMN', tier:'headline', img:'sidemen.jpg', pos:'center center',
+  { pod:'B', id:'sidemen', name:'The Sidemen', mono:'SDMN', tier:'headline', img:'sidemen.jpg', pos:'center center', reach:'23.2M', reachNum:23200000, reachOn:'Sidemen channels',
     handle:'Collective',
     desc:'The largest entertainment group in UK creator media, with a proven track record of taking consumer products into physical retail. Combined reach here is, by a distance, the biggest asset in this document.',
     fit:'Loud Mouth Bites, gummy candy, and instant noodles. All three are native to what these channels already do: challenge, reaction and taste-test content. The noodle line in particular works if there is a heat or challenge mechanic built into the product, because then the content writes itself.',
     note:'Can be approached collectively or as individual members, which gives real flexibility on budget. Worth confirming which route you would prefer before we open it.',
     lines:['loudmouth','gummy','noodles'], lineLabels:['Loud Mouth Bites','Gummy candy','Instant noodles'] },
 
-  { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline', img:'tobjizzle.jpg', pos:'center 12%',
+  { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline', img:'tobjizzle.jpg', pos:'center 12%', reach:'7.1M', reachNum:7100000, reachOn:'YouTube, combined',
     handle:'TBJZL &middot; Sidemen member',
     desc:'Direct relationship, and the name we would lead with. Tobi has hands-on experience taking a consumer product from concept through to retail, so he engages with the commercial side rather than treating it as a fee-for-post.',
     fit:'Anchor partner on the candy line. Highest-confidence conversion on this list.',
     lines:['gummy','loudmouth'], lineLabels:['Gummy candy','Loud Mouth Bites'] },
 
-  { pod:'B', id:'tyrique', name:'Tyrique Hyde', mono:'TH', tier:'creator',
+  { pod:'B', id:'tyrique', name:'Tyrique Hyde', mono:'TH', tier:'creator', img:'tyrique.jpg', pos:'center 12%', reach:'1M+', reachNum:1000000, reachOn:'Instagram',
     handle:'Reality personality',
     desc:'Young, highly engaged, food-and-lifestyle-forward audience.',
     fit:'Snack and noodle content at volume.',
     lines:['noodles','loudmouth'], lineLabels:['Instant noodles','Loud Mouth Bites'] },
 
-  { pod:'C', id:'idris', name:'Idris Elba', mono:'IE', tier:'brand', img:'idriselba-portrait.jpg', pos:'center center',
+  { pod:'C', id:'idris', name:'Idris Elba', mono:'IE', tier:'brand', img:'idris.jpg', pos:'center 8%', reach:'7M', reachNum:7000000, reachOn:'Instagram',
     handle:'Actor and DJ',
     desc:'The most broadly recognisable name here. Category-agnostic, with the standing to front a brand rather than endorse a product.',
     fit:'Brand-level partnership across any line.',
@@ -419,6 +422,7 @@ function cardHTML(t){
     <div class="t-body">
       <div class="t-name">${t.name}</div>
       <div class="t-handle">${t.handle}</div>
+      <div class="t-reach"><span class="rv-num">${t.reach}</span><span class="rv-on">${t.reachOn}</span></div>
       <p class="t-desc">${t.desc}</p>
       <div class="t-lines">${lines}</div>
       <div class="t-more">
@@ -470,9 +474,16 @@ document.querySelectorAll('[data-pick]').forEach(btn=>{
   });
 });
 
+function fmtReach(n){
+  if(n>=1e6) return (n/1e6).toFixed(n>=1e7?1:2).replace(/\.?0+$/,'')+'M';
+  if(n>=1e3) return Math.round(n/1e3)+'K';
+  return String(n);
+}
 function renderShortlist(){
   const box = document.getElementById('shortlist');
   document.getElementById('slCount').textContent = picked.size;
+  const totalReach = TALENT.filter(t=>picked.has(t.id)).reduce((a,t)=>a+(t.reachNum||0),0);
+  document.getElementById('slReach').textContent = fmtReach(totalReach);
   if(!picked.size){
     box.innerHTML = '<span class="sl-empty">Tap a name above to add them here.</span>';
   } else {
