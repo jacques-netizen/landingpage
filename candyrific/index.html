@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison d'&Eacute;lites &middot; Talent Roster &middot; CandyRific</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#19150F;
+    --panel:#211A12;
+    --panel-2:#241D14;
+    --text:#ECE4D2;
+    --mute:#9C8F75;
+    --gold:#A88A4F;
+    --gold-light:#C8A85A;
+    --gold-soft:#E2CC92;
+    --hair:rgba(200,168,90,.20);
+    --hair-soft:rgba(200,168,90,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);
+    line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection{background:var(--gold);color:var(--bg)}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .label.dim{color:var(--mute)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.6vw,3.3rem);line-height:1.12;letter-spacing:-0.01em}
+  .statement i{font-style:italic;color:var(--gold-soft)}
+  .body-lg{font-size:clamp(1.02rem,1.45vw,1.18rem);color:var(--mute);max-width:64ch;line-height:1.7}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+
+  .section{padding:clamp(4rem,9vh,7rem) clamp(1.4rem,7vw,7.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .rule{height:1px;background:var(--hair-soft);border:0}
+
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}.rv.d4{transition-delay:.28s}
+
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.3rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.8rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.25)}
+  #dots a span{
+    position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;
+    font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;
+    opacity:0;pointer-events:none;transition:.25s;
+  }
+  #dots a:hover span{opacity:1}
+  @media(max-width:1000px){#dots{display:none}}
+
+  /* cover */
+  .cover{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(2rem,5vw,3.4rem) clamp(1.4rem,7vw,7.5rem)}
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.1rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .cover-mid{max-width:900px;padding:2.5rem 0}
+  .cover-mid .label{display:block;margin-bottom:1.7rem}
+  .cover h1{font-family:'EB Garamond',serif;font-weight:400;letter-spacing:-0.015em;font-size:clamp(2.3rem,6.4vw,4.6rem);line-height:1.05}
+  .cover h1 i{font-style:italic;color:var(--gold-soft)}
+  .cover-sub{font-size:clamp(1.02rem,1.8vw,1.28rem);color:var(--mute);margin-top:1.7rem;max-width:48ch;line-height:1.55;font-weight:300}
+  .cover-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  .snum{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:block;margin-bottom:1.3rem}
+
+  /* filter bar */
+  .filterbar{position:sticky;top:0;z-index:60;background:rgba(25,21,15,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair-soft);padding:0.9rem clamp(1.4rem,7vw,7.5rem)}
+  .filter-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:0.9rem;flex-wrap:wrap}
+  .filter-lab{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);flex-shrink:0}
+  .chips{display:flex;gap:0.45rem;flex-wrap:wrap}
+  .chip{
+    font-family:'Archivo',sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;
+    color:var(--mute);background:transparent;border:1px solid var(--hair-soft);border-radius:999px;
+    padding:0.45rem 0.9rem;cursor:pointer;transition:.25s;white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--hair);color:var(--text)}
+  .chip.on{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+
+  /* pods */
+  .pod{margin-top:clamp(2.6rem,5vh,4rem)}
+  .pod-head{border-top:2px solid var(--gold);padding-top:1.3rem;margin-bottom:2rem}
+  .pod-head .pk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.2em;color:var(--gold-light);margin-bottom:0.6rem}
+  .pod-head h3{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.15}
+  .pod-head p{font-size:0.98rem;color:var(--mute);margin-top:0.7rem;max-width:70ch;line-height:1.65}
+
+  /* talent grid */
+  .talent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+  .talent{
+    background:var(--panel);border:1px solid var(--hair-soft);overflow:hidden;
+    cursor:pointer;transition:border-color .3s,transform .3s,opacity .3s;display:flex;flex-direction:column;
+  }
+  .talent:hover{border-color:var(--hair);transform:translateY(-3px)}
+  .talent.open{border-color:var(--gold)}
+  .talent.dim{opacity:0.22;pointer-events:none}
+  .talent.picked{border-color:var(--gold-light);box-shadow:inset 0 0 0 1px var(--gold-light)}
+
+  .portrait{position:relative;aspect-ratio:4/5;background:linear-gradient(150deg,#2A2218 0%,#1C1710 60%,#241D14 100%);overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block}
+  .portrait .mono{font-family:'EB Garamond',serif;font-size:clamp(2.6rem,6vw,3.6rem);letter-spacing:0.06em;color:var(--gold);opacity:0.55;line-height:1}
+  .portrait:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(25,21,15,0.88) 100%)}
+  .portrait .tier-flag{
+    position:absolute;top:0.7rem;left:0.7rem;z-index:3;font-family:'Archivo',sans-serif;font-weight:700;
+    font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.28rem 0.55rem;
+    background:rgba(25,21,15,0.82);border:1px solid var(--hair);color:var(--gold-soft);
+  }
+  .portrait .pickmark{
+    position:absolute;top:0.7rem;right:0.7rem;z-index:3;width:24px;height:24px;border-radius:50%;
+    border:1px solid var(--hair);background:rgba(25,21,15,0.82);display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo',sans-serif;font-size:0.8rem;color:var(--mute);transition:.25s;
+  }
+  .talent.picked .pickmark{background:var(--gold-light);border-color:var(--gold-light);color:var(--bg)}
+
+  .t-body{padding:1.1rem 1.2rem 1.2rem;flex:1;display:flex;flex-direction:column}
+  .t-name{font-family:'EB Garamond',serif;font-size:1.35rem;line-height:1.15}
+  .t-handle{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.06em;color:var(--gold-light);margin-top:0.25rem}
+  .t-desc{font-size:0.92rem;color:var(--mute);margin-top:0.7rem;line-height:1.6}
+  .t-more{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.7,.2,1)}
+  .talent.open .t-more{max-height:420px}
+  .t-fit{margin-top:0.9rem;padding-top:0.9rem;border-top:1px solid var(--hair-soft)}
+  .t-fit .fk{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.4rem}
+  .t-fit p{font-size:0.9rem;color:var(--mute);line-height:1.6}
+  .t-note{margin-top:0.8rem;font-size:0.85rem;color:var(--gold-soft);font-style:italic;line-height:1.55}
+  .t-toggle{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light)}
+  .t-lines{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.8rem}
+  .t-line{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);border:1px solid var(--hair-soft);padding:0.22rem 0.5rem;border-radius:999px}
+
+  /* shortlist + planner */
+  .planner{background:var(--panel);border:1px solid var(--hair);padding:clamp(1.6rem,3.5vw,2.6rem);margin-top:2.4rem}
+  .planner-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem}
+  .planner-top .pt-l{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .planner-top .pt-c{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.1rem;color:var(--text)}
+  .shortlist{min-height:44px;display:flex;flex-wrap:wrap;gap:0.5rem;padding-bottom:1.4rem;border-bottom:1px solid var(--hair-soft)}
+  .sl-empty{font-size:0.95rem;color:var(--mute);font-style:italic}
+  .sl-item{
+    font-family:'Archivo',sans-serif;font-size:0.72rem;font-weight:600;color:var(--bg);background:var(--gold-light);
+    padding:0.42rem 0.75rem;border-radius:999px;display:flex;align-items:center;gap:0.45rem;cursor:pointer;
+  }
+  .sl-item span{opacity:0.65;font-size:0.85rem;line-height:1}
+  .tier-rows{margin-top:1.5rem}
+  .tier-row{display:grid;grid-template-columns:180px 1fr 130px;gap:1.2rem;align-items:center;padding:1rem 0;border-bottom:1px solid var(--hair-soft)}
+  .tier-row .tr-n{font-family:'Archivo',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.04em;color:var(--text)}
+  .tier-row .tr-n small{display:block;font-weight:400;font-size:0.66rem;color:var(--mute);letter-spacing:0;margin-top:0.15rem}
+  .tier-row .tr-v{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;color:var(--gold-soft);text-align:right}
+  .tier-row .tr-v small{display:block;font-family:'Archivo',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);margin-top:0.2rem}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .planner-total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.3rem;border-top:1px solid var(--hair)}
+  .planner-total .ptl{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .planner-total .ptv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);color:var(--gold)}
+  .planner-note{margin-top:1.2rem;font-size:0.88rem;color:var(--mute);font-style:italic;line-height:1.6;max-width:62ch}
+
+  /* next steps */
+  .steps{list-style:none;counter-reset:st;margin-top:2.2rem}
+  .steps li{display:grid;grid-template-columns:40px 1fr;gap:1.1rem;padding:1.1rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
+  .steps li:last-child{border-bottom:1px solid var(--hair-soft)}
+  .steps li:before{counter-increment:st;content:counter(st,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;color:var(--gold)}
+  .steps li p{font-size:1rem;color:var(--text);line-height:1.6}
+
+  .cta{background:var(--panel);border:1px solid var(--hair-soft)}
+  .cta .wrap{padding:clamp(2.6rem,6vw,4.2rem) clamp(1.6rem,4vw,3.5rem)}
+  .finale{font-family:'EB Garamond',serif;font-style:italic;font-size:clamp(1.5rem,3.6vw,2.2rem);line-height:1.3;color:var(--gold-soft);max-width:34ch}
+  .signoff{margin-top:2.4rem;padding-top:1.7rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.25rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+
+  @media(max-width:760px){
+    .tier-row{grid-template-columns:1fr;gap:0.6rem}
+    .tier-row .tr-v{text-align:left}
+    .cover h1{font-size:2.1rem}
+    .filterbar{padding:0.7rem 1.4rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>How To Read This</span></a>
+  <a href="#s2"><span>The Roster</span></a>
+  <a href="#s3"><span>Shortlist Planner</span></a>
+  <a href="#s4"><span>Next Steps</span></a>
+</nav>
+
+<!-- COVER -->
+<header class="cover" id="s0">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d'&Eacute;lites</b></div>
+    <div class="label dim">Batch 01 &middot; Private &amp; Confidential</div>
+  </div>
+  <div class="cover-mid">
+    <span class="label rv">Talent Roster &middot; Prepared for CandyRific</span>
+    <h1 class="rv d1">Eight names.<br>Every one a live <i>relationship</i>.</h1>
+    <p class="cover-sub rv d2">Grouped by where they would actually land commercially, not by category. We have kept this batch short on purpose.</p>
+  </div>
+  <div class="cover-bot">
+    <div class="label dim rv d3">Maison d'&Eacute;lites &middot; Direct-access talent</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- HOW TO READ THIS -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; How To Read This</span>
+    <h2 class="statement rv d1">Short by <i>design</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.7rem">Following your note on expanded focus areas, this is our first batch of direct-access talent. They are grouped into three pods by where they would land commercially rather than by category, because that is the decision in front of you.</p>
+    <p class="body-lg rv d2">On your point about follow-through: agreed, and it is why this batch is short. <b>We would rather bring you three names who sign than fifteen who express interest.</b></p>
+    <p class="body-lg rv d3">Use the filters to see who fits a given product line. Tap any name to open the commercial rationale, and add the ones worth opening to the shortlist at the bottom.</p>
+  </div>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filterbar" id="s2">
+  <div class="filter-inner">
+    <span class="filter-lab">Filter by line</span>
+    <div class="chips" id="lineChips">
+      <button class="chip on" data-line="all">All talent</button>
+      <button class="chip" data-line="beauty">Beauty supplement</button>
+      <button class="chip" data-line="chocolate">Premium chocolate</button>
+      <button class="chip" data-line="loudmouth">Loud Mouth Bites</button>
+      <button class="chip" data-line="gummy">Gummy candy</button>
+      <button class="chip" data-line="noodles">Instant noodles</button>
+      <button class="chip" data-line="brand">Brand level</button>
+    </div>
+  </div>
+</div>
+
+<!-- THE ROSTER -->
+<section class="section">
+  <div class="wrap">
+
+    <div class="pod" data-pod="A">
+      <div class="pod-head rv">
+        <div class="pk">Pod A</div>
+        <h3>Women's Beauty, Wellness &amp; Premium Confectionery</h3>
+        <p>The strongest commercial lane in this document. These are audiences that convert on beauty and wellness recommendation, and where a creator's endorsement translates directly into purchase.</p>
+      </div>
+      <div class="talent-grid" id="podA"></div>
+    </div>
+
+    <div class="pod" data-pod="B">
+      <div class="pod-head rv">
+        <div class="pk">Pod B</div>
+        <h3>Entertainment &amp; Snack</h3>
+        <p>Native to challenge, reaction and taste-test content. This is where a product with a built-in mechanic writes its own campaign.</p>
+      </div>
+      <div class="talent-grid" id="podB"></div>
+    </div>
+
+    <div class="pod" data-pod="C">
+      <div class="pod-head rv">
+        <div class="pk">Pod C</div>
+        <h3>Brand Level</h3>
+        <p>Standing to front a brand rather than endorse a product. Terms sit outside the standard creator structure.</p>
+      </div>
+      <div class="talent-grid" id="podC"></div>
+    </div>
+
+  </div>
+</section>
+<hr class="rule">
+
+<!-- SHORTLIST PLANNER -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; Shortlist Planner</span>
+    <h2 class="statement rv d1">Build the batch you want <i>opened</i>.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.7rem">Step one of next steps asks you for a rough fee range per tier so we pitch accurately. Set your ceiling per tier below and the shortlist prices itself against your own figures.</p>
+
+    <div class="planner rv d3">
+      <div class="planner-top">
+        <span class="pt-l">Your shortlist</span>
+        <span class="pt-c"><span id="slCount">0</span> selected</span>
+      </div>
+      <div class="shortlist" id="shortlist"><span class="sl-empty">Tap a name above to add them here.</span></div>
+
+      <div class="tier-rows">
+        <div class="tier-row">
+          <div class="tr-n">Creator tier<small>Priscilla Donkoh, Eva Apio, Tyrique Hyde</small></div>
+          <input type="range" id="feeCreator" min="0" max="50000" step="1000" value="0" aria-label="Creator tier indicative fee">
+          <div class="tr-v"><span id="valCreator">Set a figure</span><small>per name</small></div>
+        </div>
+        <div class="tier-row">
+          <div class="tr-n">Headline tier<small>Maya Jama, The Sidemen, Tobi Brown</small></div>
+          <input type="range" id="feeHeadline" min="0" max="250000" step="5000" value="0" aria-label="Headline tier indicative fee">
+          <div class="tr-v"><span id="valHeadline">Set a figure</span><small>per name</small></div>
+        </div>
+        <div class="tier-row">
+          <div class="tr-n">Brand tier<small>Naomi Campbell, Idris Elba</small></div>
+          <input type="range" id="feeBrand" min="0" max="1000000" step="25000" value="0" aria-label="Brand tier indicative fee">
+          <div class="tr-v"><span id="valBrand">Set a figure</span><small>per name</small></div>
+        </div>
+      </div>
+
+      <div class="planner-total">
+        <span class="ptl">Indicative total, your figures</span>
+        <span class="ptv" id="planTotal">Set your tiers</span>
+      </div>
+      <p class="planner-note">These are your figures, not our quote. Nothing here is a fee we have agreed with any name on this list. Set the ceiling you are comfortable with and we pitch inside it, then come back with confirmed interest and indicative terms.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- NEXT STEPS -->
+<section class="section" id="s4">
+  <div class="wrap">
+    <div class="cta">
+      <div class="wrap">
+        <span class="snum rv">03 &middot; Next Steps</span>
+        <h2 class="statement rv d1" style="margin-bottom:0.5rem">Three moves from <i>here</i>.</h2>
+        <ol class="steps rv d2">
+          <li><p>Confirm which pods you want opened first, and the rough fee range per tier so we pitch accurately.</p></li>
+          <li><p>MDE opens conversations directly with our contacts. No outbound work on your side.</p></li>
+          <li><p>We come back with confirmed interest and indicative terms, not soft yeses.</p></li>
+        </ol>
+        <p class="finale rv d3" style="margin-top:2.4rem">Three names who sign, not fifteen who express interest.</p>
+        <div class="signoff rv d4">
+          <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+          <div class="s-r">Jacques &middot; Founder</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ---------- talent data ---------- */
+const TALENT = [
+  { pod:'A', id:'naomi', name:'Naomi Campbell', mono:'NC', tier:'brand',
+    handle:'Global fashion icon',
+    desc:'Multi-decade brand equity and an extensive luxury and beauty licensing history.',
+    fit:'Premium dark chocolate, or a collagen and beauty gummy positioned at the luxury end. Naomi moves a product from creator collab to brand, which changes what retail is willing to do with it.',
+    lines:['chocolate','beauty','brand'], lineLabels:['Premium chocolate','Beauty supplement','Brand level'] },
+
+  { pod:'A', id:'maya', name:'Maya Jama', mono:'MJ', tier:'headline',
+    handle:'UK entertainment',
+    desc:'One of the most visible personalities in UK entertainment. Beauty and lifestyle are her core commercial categories, and her audience is heavily female and highly engaged.',
+    fit:'Headline partner on a beauty supplement gummy: skin, hair, nails.',
+    lines:['beauty'], lineLabels:['Beauty supplement'] },
+
+  { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator',
+    handle:'@sil_labae &middot; 300K+ Instagram',
+    desc:'Ghanaian model and digital creator. Fashion Nova ambassador, Miss Grand Ghana finalist. Beauty is her entire content category, and her engagement is real rather than inflated.',
+    fit:'Beauty supplement line. She is exactly the creator profile this product converts through, and she gives the campaign reach into a market with fast-growing beauty spend.',
+    lines:['beauty'], lineLabels:['Beauty supplement'] },
+
+  { pod:'A', id:'eva', name:'Eva Apio', mono:'EA', tier:'creator',
+    handle:'Model and creator',
+    desc:'Strong fashion and lifestyle following.',
+    fit:'Campaign volume and amplification across the beauty line.',
+    lines:['beauty'], lineLabels:['Beauty supplement'] },
+
+  { pod:'B', id:'sidemen', name:'The Sidemen', mono:'SDMN', tier:'headline',
+    handle:'Collective',
+    desc:'The largest entertainment group in UK creator media, with a proven track record of taking consumer products into physical retail. Combined reach here is, by a distance, the biggest asset in this document.',
+    fit:'Loud Mouth Bites, gummy candy, and instant noodles. All three are native to what these channels already do: challenge, reaction and taste-test content. The noodle line in particular works if there is a heat or challenge mechanic built into the product, because then the content writes itself.',
+    note:'Can be approached collectively or as individual members, which gives real flexibility on budget. Worth confirming which route you would prefer before we open it.',
+    lines:['loudmouth','gummy','noodles'], lineLabels:['Loud Mouth Bites','Gummy candy','Instant noodles'] },
+
+  { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline',
+    handle:'TBJZL &middot; Sidemen member',
+    desc:'Direct relationship, and the name we would lead with. Tobi has hands-on experience taking a consumer product from concept through to retail, so he engages with the commercial side rather than treating it as a fee-for-post.',
+    fit:'Anchor partner on the candy line. Highest-confidence conversion on this list.',
+    lines:['gummy','loudmouth'], lineLabels:['Gummy candy','Loud Mouth Bites'] },
+
+  { pod:'B', id:'tyrique', name:'Tyrique Hyde', mono:'TH', tier:'creator',
+    handle:'Reality personality',
+    desc:'Young, highly engaged, food-and-lifestyle-forward audience.',
+    fit:'Snack and noodle content at volume.',
+    lines:['noodles','loudmouth'], lineLabels:['Instant noodles','Loud Mouth Bites'] },
+
+  { pod:'C', id:'idris', name:'Idris Elba', mono:'IE', tier:'brand',
+    handle:'Actor and DJ',
+    desc:'The most broadly recognisable name here. Category-agnostic, with the standing to front a brand rather than endorse a product.',
+    fit:'Brand-level partnership across any line.',
+    note:'Idris operates at talent-agency level, so terms sit outside the standard creator structure. Worth aligning on budget before we open that conversation.',
+    lines:['brand','beauty','chocolate','loudmouth','gummy','noodles'], lineLabels:['Any line'] },
+];
+
+const TIER_LABEL = { creator:'Creator tier', headline:'Headline tier', brand:'Brand tier' };
+const picked = new Set();
+
+/* ---------- render ---------- */
+function cardHTML(t){
+  const lines = t.lineLabels.map(l=>`<span class="t-line">${l}</span>`).join('');
+  const note = t.note ? `<p class="t-note">${t.note}</p>` : '';
+  return `
+  <article class="talent" data-id="${t.id}" data-lines="${t.lines.join(' ')}" data-tier="${t.tier}">
+    <div class="portrait">
+      <span class="tier-flag">${TIER_LABEL[t.tier]}</span>
+      <button class="pickmark" data-pick="${t.id}" aria-label="Add ${t.name} to shortlist">+</button>
+      <span class="mono">${t.mono}</span>
+      <img src="talent/${t.id}.jpg" alt="${t.name}" onerror="this.remove()">
+    </div>
+    <div class="t-body">
+      <div class="t-name">${t.name}</div>
+      <div class="t-handle">${t.handle}</div>
+      <p class="t-desc">${t.desc}</p>
+      <div class="t-lines">${lines}</div>
+      <div class="t-more">
+        <div class="t-fit"><div class="fk">Commercial fit</div><p>${t.fit}</p>${note}</div>
+      </div>
+      <div class="t-toggle">Tap for commercial fit</div>
+    </div>
+  </article>`;
+}
+['A','B','C'].forEach(p=>{
+  document.getElementById('pod'+p).innerHTML =
+    TALENT.filter(t=>t.pod===p).map(cardHTML).join('');
+});
+
+/* ---------- expand on click ---------- */
+document.querySelectorAll('.talent').forEach(card=>{
+  card.addEventListener('click', e=>{
+    if(e.target.closest('[data-pick]')) return;
+    card.classList.toggle('open');
+    card.querySelector('.t-toggle').textContent =
+      card.classList.contains('open') ? 'Tap to close' : 'Tap for commercial fit';
+  });
+});
+
+/* ---------- filter ---------- */
+document.getElementById('lineChips').addEventListener('click', e=>{
+  const btn = e.target.closest('.chip'); if(!btn) return;
+  document.querySelectorAll('#lineChips .chip').forEach(c=>c.classList.toggle('on', c===btn));
+  const line = btn.dataset.line;
+  document.querySelectorAll('.talent').forEach(card=>{
+    const match = line==='all' || card.dataset.lines.split(' ').includes(line);
+    card.classList.toggle('dim', !match);
+  });
+  document.querySelectorAll('.pod').forEach(pod=>{
+    const any = pod.querySelectorAll('.talent:not(.dim)').length > 0;
+    pod.style.opacity = any ? '1' : '0.3';
+  });
+});
+
+/* ---------- shortlist ---------- */
+document.querySelectorAll('[data-pick]').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const id = btn.dataset.pick;
+    picked.has(id) ? picked.delete(id) : picked.add(id);
+    document.querySelector(`.talent[data-id="${id}"]`).classList.toggle('picked', picked.has(id));
+    btn.textContent = picked.has(id) ? '✓' : '+';
+    renderShortlist();
+  });
+});
+
+function renderShortlist(){
+  const box = document.getElementById('shortlist');
+  document.getElementById('slCount').textContent = picked.size;
+  if(!picked.size){
+    box.innerHTML = '<span class="sl-empty">Tap a name above to add them here.</span>';
+  } else {
+    box.innerHTML = TALENT.filter(t=>picked.has(t.id))
+      .map(t=>`<button class="sl-item" data-remove="${t.id}">${t.name}<span>&times;</span></button>`).join('');
+    box.querySelectorAll('[data-remove]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const id = b.dataset.remove;
+        picked.delete(id);
+        const card = document.querySelector(`.talent[data-id="${id}"]`);
+        card.classList.remove('picked');
+        card.querySelector('[data-pick]').textContent = '+';
+        renderShortlist();
+      });
+    });
+  }
+  calcPlan();
+}
+
+/* ---------- fee planner ---------- */
+const fees = { creator:0, headline:0, brand:0 };
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+
+function bindFee(tier, sliderId, valId){
+  const sl = document.getElementById(sliderId), out = document.getElementById(valId);
+  sl.addEventListener('input', ()=>{
+    fees[tier] = parseFloat(sl.value) || 0;
+    out.textContent = fees[tier] > 0 ? money(fees[tier]) : 'Set a figure';
+    calcPlan();
+  });
+}
+bindFee('creator','feeCreator','valCreator');
+bindFee('headline','feeHeadline','valHeadline');
+bindFee('brand','feeBrand','valBrand');
+
+function calcPlan(){
+  const out = document.getElementById('planTotal');
+  const anyFee = fees.creator > 0 || fees.headline > 0 || fees.brand > 0;
+  if(!picked.size || !anyFee){
+    out.textContent = !picked.size ? 'Add names to shortlist' : 'Set your tiers';
+    return;
+  }
+  let total = 0;
+  TALENT.filter(t=>picked.has(t.id)).forEach(t=>{ total += fees[t.tier]; });
+  out.textContent = money(total);
+}
+
+/* ---------- chrome ---------- */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+const prog = document.getElementById('progress');
+addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop/(h.scrollHeight-h.clientHeight)*100) + '%';
+},{passive:true});
+
+const dots = Array.from(document.querySelectorAll('#dots a'));
+const secs = dots.map(a=>document.querySelector(a.getAttribute('href')));
+const secIO = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const i = secs.indexOf(e.target);
+      dots.forEach((d,j)=>d.classList.toggle('on', j===i));
+    }
+  });
+},{rootMargin:'-45% 0px -45% 0px'});
+secs.forEach(s=>s && secIO.observe(s));
+</script>
+</body>
+</html>
