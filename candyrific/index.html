@@ -137,7 +137,8 @@
   .t-fit .fk{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.4rem}
   .t-fit p{font-size:0.9rem;color:var(--mute);line-height:1.6}
   .t-note{margin-top:0.8rem;font-size:0.85rem;color:var(--gold-soft);font-style:italic;line-height:1.55}
-  .t-toggle{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light)}
+  .t-toggle{margin-top:0.9rem;font-size:0.85rem;line-height:1;color:var(--gold-light);transition:transform .35s;display:inline-block}
+  .talent.open .t-toggle{transform:rotate(180deg)}
   .t-lines{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.8rem}
   .t-line{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);border:1px solid var(--hair-soft);padding:0.22rem 0.5rem;border-radius:999px}
 
@@ -165,7 +166,6 @@
   .planner-total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.3rem;border-top:1px solid var(--hair)}
   .planner-total .ptl{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
   .planner-total .ptv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);color:var(--gold)}
-  .planner-note{margin-top:1.2rem;font-size:0.88rem;color:var(--mute);font-style:italic;line-height:1.6;max-width:62ch}
 
   /* next steps */
   .steps{list-style:none;counter-reset:st;margin-top:2.2rem}
@@ -200,9 +200,9 @@
 <div id="progress"></div>
 <nav id="dots" aria-label="Sections">
   <a href="#s0"><span>Cover</span></a>
-  <a href="#s1"><span>How To Read This</span></a>
+  <a href="#s1"><span>The batch</span></a>
   <a href="#s2"><span>The Roster</span></a>
-  <a href="#s3"><span>Shortlist Planner</span></a>
+  <a href="#s3"><span>Shortlist</span></a>
   <a href="#s4"><span>Next Steps</span></a>
 </nav>
 
@@ -214,8 +214,8 @@
   </div>
   <div class="cover-mid">
     <span class="label rv">Talent Roster &middot; Prepared for CandyRific</span>
-    <h1 class="rv d1">Eight names.<br>Every one a live <i>relationship</i>.</h1>
-    <p class="cover-sub rv d2">Grouped by where they would actually land commercially, not by category. We have kept this batch short on purpose.</p>
+    <h1 class="rv d1">Eight names.</h1>
+    <p class="cover-sub rv d2">Grouped by where they would land commercially. Every name is a live relationship.</p>
   </div>
   <div class="cover-bot">
     <div class="label dim rv d3">Maison d'&Eacute;lites &middot; Direct-access talent</div>
@@ -226,11 +226,9 @@
 <!-- HOW TO READ THIS -->
 <section class="section" id="s1">
   <div class="wrap">
-    <span class="snum rv">01 &middot; How To Read This</span>
-    <h2 class="statement rv d1">Short by <i>design</i>.</h2>
+    <span class="snum rv">01 &middot; The batch</span>
+    <h2 class="statement rv d1">How this is grouped.</h2>
     <p class="body-lg rv d2" style="margin-top:1.7rem">Following your note on expanded focus areas, this is our first batch of direct-access talent. They are grouped into three pods by where they would land commercially rather than by category, because that is the decision in front of you.</p>
-    <p class="body-lg rv d2">On your point about follow-through: agreed, and it is why this batch is short. <b>We would rather bring you three names who sign than fifteen who express interest.</b></p>
-    <p class="body-lg rv d3">Use the filters to see who fits a given product line. Tap any name to open the commercial rationale, and add the ones worth opening to the shortlist at the bottom.</p>
   </div>
 </section>
 
@@ -267,7 +265,7 @@
       <div class="pod-head rv">
         <div class="pk">Pod B</div>
         <h3>Entertainment &amp; Snack</h3>
-        <p>Native to challenge, reaction and taste-test content. This is where a product with a built-in mechanic writes its own campaign.</p>
+        <p>Native to challenge, reaction and taste-test content.</p>
       </div>
       <div class="talent-grid" id="podB"></div>
     </div>
@@ -288,8 +286,8 @@
 <!-- SHORTLIST PLANNER -->
 <section class="section" id="s3">
   <div class="wrap">
-    <span class="snum rv">02 &middot; Shortlist Planner</span>
-    <h2 class="statement rv d1">Build the batch you want <i>opened</i>.</h2>
+    <span class="snum rv">02 &middot; Shortlist</span>
+    <h2 class="statement rv d1">Shortlist.</h2>
     <p class="body-lg rv d2" style="margin-top:1.7rem">Step one of next steps asks you for a rough fee range per tier so we pitch accurately. Set your ceiling per tier below and the shortlist prices itself against your own figures.</p>
 
     <div class="planner rv d3">
@@ -297,7 +295,7 @@
         <span class="pt-l">Your shortlist</span>
         <span class="pt-c"><span id="slCount">0</span> selected &middot; <span id="slReach" style="color:var(--gold-soft)">0</span> combined audience</span>
       </div>
-      <div class="shortlist" id="shortlist"><span class="sl-empty">Tap a name above to add them here.</span></div>
+      <div class="shortlist" id="shortlist"><span class="sl-empty">No names selected.</span></div>
 
       <div class="tier-rows">
         <div class="tier-row">
@@ -318,10 +316,9 @@
       </div>
 
       <div class="planner-total">
-        <span class="ptl">Indicative total, your figures</span>
+        <span class="ptl">Total</span>
         <span class="ptv" id="planTotal">Set your tiers</span>
       </div>
-      <p class="planner-note">Audience figures are indicative and stated per name on their primary platform, so combined audience is a reach guide rather than a deduplicated total. These are your figures, not our quote. Nothing here is a fee we have agreed with any name on this list. Set the ceiling you are comfortable with and we pitch inside it, then come back with confirmed interest and indicative terms.</p>
     </div>
   </div>
 </section>
@@ -333,18 +330,16 @@
     <div class="cta">
       <div class="wrap">
         <span class="snum rv">03 &middot; Next Steps</span>
-        <h2 class="statement rv d1" style="margin-bottom:0.5rem">Three moves from <i>here</i>.</h2>
+        <h2 class="statement rv d1" style="margin-bottom:0.5rem">Next steps.</h2>
         <ol class="steps rv d2">
           <li><p>Confirm which pods you want opened first, and the rough fee range per tier so we pitch accurately.</p></li>
           <li><p>MDE opens conversations directly with our contacts. No outbound work on your side.</p></li>
           <li><p>We come back with confirmed interest and indicative terms, not soft yeses.</p></li>
         </ol>
-        <p class="finale rv d3" style="margin-top:2.4rem">Three names who sign, not fifteen who express interest.</p>
         <div class="signoff rv d4">
           <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
           <div class="s-r">Jacques &middot; Founder</div>
         </div>
-        <p style="margin-top:1.4rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.04em;color:var(--mute);opacity:0.7">Portraits of Maya Jama and the Sidemen via Wikimedia Commons, used under Creative Commons licence. Remaining portraits from the Maison d&rsquo;&Eacute;lites talent library.</p>
       </div>
     </div>
   </div>
@@ -366,9 +361,9 @@ const TALENT = [
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
   { pod:'A', id:'priscilla', name:'Priscilla Donkoh', mono:'PD', tier:'creator', img:'sil_labae.jpg', pos:'center 15%', reach:'300K+', reachNum:300000, reachOn:'Instagram',
-    handle:'@sil_labae &middot; 300K+ Instagram',
-    desc:'Ghanaian model and digital creator. Fashion Nova ambassador, Miss Grand Ghana finalist. Beauty is her entire content category, and her engagement is real rather than inflated.',
-    fit:'Beauty supplement line. She is exactly the creator profile this product converts through, and she gives the campaign reach into a market with fast-growing beauty spend.',
+    handle:'@sil_labae',
+    desc:'Model. Beauty is her entire content category, and her engagement is real rather than inflated.',
+    fit:'Beauty supplement line. She is exactly the creator profile this product converts through.',
     lines:['beauty'], lineLabels:['Beauty supplement'] },
 
   { pod:'A', id:'eva', name:'Eva Apio', mono:'EA', tier:'creator', img:'evaapio.jpg', pos:'center 20%', reach:'860K', reachNum:860000, reachOn:'Instagram',
@@ -381,7 +376,7 @@ const TALENT = [
     handle:'Collective',
     desc:'The largest entertainment group in UK creator media, with a proven track record of taking consumer products into physical retail. Combined reach here is, by a distance, the biggest asset in this document.',
     fit:'Loud Mouth Bites, gummy candy, and instant noodles. All three are native to what these channels already do: challenge, reaction and taste-test content. The noodle line in particular works if there is a heat or challenge mechanic built into the product, because then the content writes itself.',
-    note:'Can be approached collectively or as individual members, which gives real flexibility on budget. Worth confirming which route you would prefer before we open it.',
+    note:'Can be approached collectively or as individual members. Worth confirming which route you would prefer before we open it.',
     lines:['loudmouth','gummy','noodles'], lineLabels:['Loud Mouth Bites','Gummy candy','Instant noodles'] },
 
   { pod:'B', id:'tobi', name:'Tobi Brown', mono:'TB', tier:'headline', img:'tobjizzle.jpg', pos:'center 12%', reach:'7.1M', reachNum:7100000, reachOn:'YouTube, combined',
@@ -400,7 +395,7 @@ const TALENT = [
     handle:'Actor and DJ',
     desc:'The most broadly recognisable name here. Category-agnostic, with the standing to front a brand rather than endorse a product.',
     fit:'Brand-level partnership across any line.',
-    note:'Idris operates at talent-agency level, so terms sit outside the standard creator structure. Worth aligning on budget before we open that conversation.',
+    note:'Idris operates at talent-agency level, so terms sit outside the standard creator structure.',
     lines:['brand','beauty','chocolate','loudmouth','gummy','noodles'], lineLabels:['Any line'] },
 ];
 
@@ -428,7 +423,7 @@ function cardHTML(t){
       <div class="t-more">
         <div class="t-fit"><div class="fk">Commercial fit</div><p>${t.fit}</p>${note}</div>
       </div>
-      <div class="t-toggle">Tap for commercial fit</div>
+      <div class="t-toggle" aria-hidden="true">&#8964;</div>
     </div>
   </article>`;
 }
@@ -442,8 +437,6 @@ document.querySelectorAll('.talent').forEach(card=>{
   card.addEventListener('click', e=>{
     if(e.target.closest('[data-pick]')) return;
     card.classList.toggle('open');
-    card.querySelector('.t-toggle').textContent =
-      card.classList.contains('open') ? 'Tap to close' : 'Tap for commercial fit';
   });
 });
 
@@ -485,7 +478,7 @@ function renderShortlist(){
   const totalReach = TALENT.filter(t=>picked.has(t.id)).reduce((a,t)=>a+(t.reachNum||0),0);
   document.getElementById('slReach').textContent = fmtReach(totalReach);
   if(!picked.size){
-    box.innerHTML = '<span class="sl-empty">Tap a name above to add them here.</span>';
+    box.innerHTML = '<span class="sl-empty">No names selected.</span>';
   } else {
     box.innerHTML = TALENT.filter(t=>picked.has(t.id))
       .map(t=>`<button class="sl-item" data-remove="${t.id}">${t.name}<span>&times;</span></button>`).join('');
