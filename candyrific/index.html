@@ -147,25 +147,13 @@
   .planner-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem}
   .planner-top .pt-l{font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
   .planner-top .pt-c{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.1rem;color:var(--text)}
-  .shortlist{min-height:44px;display:flex;flex-wrap:wrap;gap:0.5rem;padding-bottom:1.4rem;border-bottom:1px solid var(--hair-soft)}
+  .shortlist{min-height:44px;display:flex;flex-wrap:wrap;gap:0.5rem}
   .sl-empty{font-size:0.95rem;color:var(--mute);font-style:italic}
   .sl-item{
     font-family:'Archivo',sans-serif;font-size:0.72rem;font-weight:600;color:var(--bg);background:var(--gold-light);
     padding:0.42rem 0.75rem;border-radius:999px;display:flex;align-items:center;gap:0.45rem;cursor:pointer;
   }
   .sl-item span{opacity:0.65;font-size:0.85rem;line-height:1}
-  .tier-rows{margin-top:1.5rem}
-  .tier-row{display:grid;grid-template-columns:180px 1fr 130px;gap:1.2rem;align-items:center;padding:1rem 0;border-bottom:1px solid var(--hair-soft)}
-  .tier-row .tr-n{font-family:'Archivo',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.04em;color:var(--text)}
-  .tier-row .tr-n small{display:block;font-weight:400;font-size:0.66rem;color:var(--mute);letter-spacing:0;margin-top:0.15rem}
-  .tier-row .tr-v{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;color:var(--gold-soft);text-align:right}
-  .tier-row .tr-v small{display:block;font-family:'Archivo',sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);margin-top:0.2rem}
-  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
-  .planner-total{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.3rem;border-top:1px solid var(--hair)}
-  .planner-total .ptl{font-family:'Archivo',sans-serif;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
-  .planner-total .ptv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);color:var(--gold)}
 
   /* next steps */
   .steps{list-style:none;counter-reset:st;margin-top:2.2rem}
@@ -183,8 +171,6 @@
   .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
 
   @media(max-width:760px){
-    .tier-row{grid-template-columns:1fr;gap:0.6rem}
-    .tier-row .tr-v{text-align:left}
     .cover h1{font-size:2.1rem}
     .filterbar{padding:0.7rem 1.4rem}
   }
@@ -287,8 +273,7 @@
 <section class="section" id="s3">
   <div class="wrap">
     <span class="snum rv">02 &middot; Shortlist</span>
-    <h2 class="statement rv d1">Shortlist.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.7rem">Step one of next steps asks you for a rough fee range per tier so we pitch accurately. Set your ceiling per tier below and the shortlist prices itself against your own figures.</p>
+    <h2 class="statement rv d1">Which names to open first.</h2>
 
     <div class="planner rv d3">
       <div class="planner-top">
@@ -296,29 +281,6 @@
         <span class="pt-c"><span id="slCount">0</span> selected &middot; <span id="slReach" style="color:var(--gold-soft)">0</span> combined audience</span>
       </div>
       <div class="shortlist" id="shortlist"><span class="sl-empty">No names selected.</span></div>
-
-      <div class="tier-rows">
-        <div class="tier-row">
-          <div class="tr-n">Creator tier<small>Priscilla Donkoh, Eva Apio, Tyrique Hyde</small></div>
-          <input type="range" id="feeCreator" min="0" max="50000" step="1000" value="0" aria-label="Creator tier indicative fee">
-          <div class="tr-v"><span id="valCreator">Set a figure</span><small>per name</small></div>
-        </div>
-        <div class="tier-row">
-          <div class="tr-n">Headline tier<small>Maya Jama, The Sidemen, Tobi Brown</small></div>
-          <input type="range" id="feeHeadline" min="0" max="250000" step="5000" value="0" aria-label="Headline tier indicative fee">
-          <div class="tr-v"><span id="valHeadline">Set a figure</span><small>per name</small></div>
-        </div>
-        <div class="tier-row">
-          <div class="tr-n">Brand tier<small>Naomi Campbell, Idris Elba</small></div>
-          <input type="range" id="feeBrand" min="0" max="1000000" step="25000" value="0" aria-label="Brand tier indicative fee">
-          <div class="tr-v"><span id="valBrand">Set a figure</span><small>per name</small></div>
-        </div>
-      </div>
-
-      <div class="planner-total">
-        <span class="ptl">Total</span>
-        <span class="ptv" id="planTotal">Set your tiers</span>
-      </div>
     </div>
   </div>
 </section>
@@ -493,35 +455,6 @@ function renderShortlist(){
       });
     });
   }
-  calcPlan();
-}
-
-/* ---------- fee planner ---------- */
-const fees = { creator:0, headline:0, brand:0 };
-const money = n => '$' + Math.round(n).toLocaleString('en-US');
-
-function bindFee(tier, sliderId, valId){
-  const sl = document.getElementById(sliderId), out = document.getElementById(valId);
-  sl.addEventListener('input', ()=>{
-    fees[tier] = parseFloat(sl.value) || 0;
-    out.textContent = fees[tier] > 0 ? money(fees[tier]) : 'Set a figure';
-    calcPlan();
-  });
-}
-bindFee('creator','feeCreator','valCreator');
-bindFee('headline','feeHeadline','valHeadline');
-bindFee('brand','feeBrand','valBrand');
-
-function calcPlan(){
-  const out = document.getElementById('planTotal');
-  const anyFee = fees.creator > 0 || fees.headline > 0 || fees.brand > 0;
-  if(!picked.size || !anyFee){
-    out.textContent = !picked.size ? 'Add names to shortlist' : 'Set your tiers';
-    return;
-  }
-  let total = 0;
-  TALENT.filter(t=>picked.has(t.id)).forEach(t=>{ total += fees[t.tier]; });
-  out.textContent = money(total);
 }
 
 /* ---------- chrome ---------- */
