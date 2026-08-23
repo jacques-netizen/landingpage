@@ -7,80 +7,144 @@
 <title>Campaign Hub · Maison d'Élites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0d0d0f;--ink-card:#141318;--ink-soft:#1a1a20;
+  --ink:#0b0b0d;--ink-card:#141318;--ink-soft:#1a1a20;--ink-deep:#08080a;
   --gold:#a88a4f;--gold-light:#c7a867;--gold-bright:#e6c984;
   --text-cream:#e8e3d6;--text-mute:#9b9484;--text-dim:#6f6a5e;
   --hair:rgba(232,227,214,0.12);--hair-mid:rgba(232,227,214,0.22);
   --ok:#6fb98a;--bad:#d2766a;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cream);-webkit-font-smoothing:antialiased;min-height:100vh}
-.wrap{max-width:860px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+html{scroll-behavior:smooth}
+body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cream);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+/* ambient gold atmosphere + film grain, so the page has depth instead of flat black */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(60rem 40rem at 12% -10%, rgba(168,138,79,0.16), transparent 60%),
+    radial-gradient(48rem 34rem at 92% 6%, rgba(199,168,103,0.10), transparent 62%),
+    radial-gradient(70rem 50rem at 50% 105%, rgba(168,138,79,0.07), transparent 65%);
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.4rem);position:relative;z-index:1}
 
-.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.4rem}
-.topbar-in{display:flex;align-items:center;justify-content:space-between}
-.mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em}
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(11,11,13,.78);backdrop-filter:blur(16px);border-bottom:1px solid var(--hair)}
+.topbar-in{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.05rem 0}
+.mark{font-family:'EB Garamond',serif;font-size:1.2rem;letter-spacing:.03em;display:flex;align-items:center;gap:.55rem}
 .mark b{color:var(--gold-light);font-weight:500}
-.top-right{font-size:.78rem;display:flex;gap:1.2rem}
-.top-right a{color:var(--text-mute);text-decoration:none;cursor:pointer}
+.mark .dotmark{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.top-right{font-size:.78rem;display:flex;gap:1.3rem;align-items:center}
+.top-right a{color:var(--text-mute);text-decoration:none;cursor:pointer;transition:color .15s}
 .top-right a:hover{color:var(--gold-light)}
 
-.gate{max-width:340px;margin:10vh auto 0;background:var(--ink-card);border:1px solid var(--hair);border-radius:16px;padding:2rem}
-.gate h2{font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1.4rem}
-input[type=password],input[type=text]{width:100%;padding:.75rem 1rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:9px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;transition:.15s border-color}
-input:focus{border-color:var(--gold)}
-.err{font-size:.8rem;color:var(--bad);min-height:1.1em;margin-top:.4rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;border:0;border-radius:10px;font-family:inherit;font-weight:600;font-size:.9rem;padding:.8rem 1.3rem;transition:.15s}
-.btn-gold{background:var(--gold);color:#1a1208}
-.btn-gold:hover{background:var(--gold-bright)}
-.btn-ghost{background:transparent;color:var(--gold-light);border:1px solid var(--hair-mid)}
-.btn-ghost:hover{border-color:var(--gold)}
-.btn.full{width:100%;margin-top:1rem}
+/* ---------- gate ---------- */
+.gate{max-width:360px;margin:14vh auto 0;background:linear-gradient(180deg,rgba(26,26,32,.9),rgba(20,19,24,.9));border:1px solid var(--hair-mid);border-radius:18px;padding:2.2rem;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.gate .glab{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+.gate h2{font-family:'EB Garamond',serif;font-size:1.7rem;font-weight:400;margin:.5rem 0 1.5rem}
+input[type=password],input[type=text]{width:100%;padding:.8rem 1rem;background:var(--ink-deep);border:1px solid var(--hair-mid);border-radius:10px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;transition:.18s}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,138,79,.14)}
+.err{font-size:.8rem;color:var(--bad);min-height:1.1em;margin-top:.45rem}
 
-.head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
-.head h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.6rem,4vw,2.2rem);letter-spacing:-.01em}
-.head .sub{font-size:.8rem;color:var(--text-dim)}
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;border:0;border-radius:11px;font-family:inherit;font-weight:600;font-size:.88rem;padding:.8rem 1.35rem;transition:.18s;white-space:nowrap}
+.btn-gold{background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:#1a1208;box-shadow:0 6px 20px rgba(168,138,79,.28)}
+.btn-gold:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 10px 26px rgba(168,138,79,.4)}
+.btn-ghost{background:transparent;color:var(--text-mute);border:1px solid var(--hair-mid)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light)}
+.btn.full{width:100%;margin-top:1.1rem}
 
-/* new-campaign form */
-.newbox{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.4rem;display:none}
-.newbox.show{display:block}
-.newrow{display:flex;gap:.7rem;flex-wrap:wrap;align-items:flex-end}
-.nf{flex:1;min-width:180px;display:flex;flex-direction:column;gap:.35rem}
-.nf label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
-.nf .slughint{font-size:.72rem;color:var(--text-dim);margin-top:.3rem}
+/* ---------- masthead ---------- */
+.masthead{padding:clamp(2.2rem,5vw,3.4rem) 0 0}
+.eyebrow{font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+.mast-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.4rem;flex-wrap:wrap;margin-top:.9rem}
+.masthead h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;letter-spacing:-.02em}
+.masthead h1 i{font-style:italic;color:var(--gold-light)}
+.masthead .sub{font-size:.84rem;color:var(--text-dim);margin-top:.6rem;font-weight:300}
+.rule{height:1px;background:linear-gradient(90deg,var(--gold),rgba(168,138,79,.06));margin-top:1.6rem}
+
+/* ---------- portfolio strip ---------- */
+.port{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-top:1.8rem}
+.port .pt{background:linear-gradient(180deg,rgba(26,26,32,.72),rgba(20,19,24,.72));padding:1.3rem 1.2rem;position:relative}
+.port .pt::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.port .pt .n{font-family:'EB Garamond',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--gold-light);line-height:1;letter-spacing:-.01em}
+.port .pt .l{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-mute);margin-top:.6rem}
+@media(max-width:640px){.port{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- new campaign ---------- */
+.newbox{background:linear-gradient(180deg,rgba(26,26,32,.9),rgba(20,19,24,.9));border:1px solid var(--hair-mid);border-radius:16px;padding:1.4rem 1.5rem;margin-top:1.6rem;display:none;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.newbox.show{display:block;animation:fadeUp .35s ease both}
+.newrow{display:flex;gap:.8rem;flex-wrap:wrap;align-items:flex-end}
+.nf{flex:1;min-width:220px;display:flex;flex-direction:column;gap:.4rem}
+.nf label{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-mute)}
+.nf .slughint{font-size:.74rem;color:var(--text-dim);margin-top:.35rem}
 .nf .slughint b{color:var(--gold-light)}
 
-/* campaign grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
-.ccard{display:block;text-decoration:none;background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:0;transition:.18s;color:inherit;position:relative;overflow:hidden}
-.ccard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.45)}
-.ccard .cbanner{display:block;width:100%;height:110px;object-fit:cover;background:var(--ink-soft)}
-.ccard .ccardin{padding:1.2rem 1.3rem}
-.ccard .cname{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--text-cream);line-height:1.15}
-.ccard .ccamp{font-size:.78rem;color:var(--text-mute);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ccard .cstats{display:flex;gap:1.2rem;margin-top:1rem}
-.ccard .cstat .n{font-family:'EB Garamond',serif;font-size:1.25rem;color:var(--gold-light);line-height:1}
-.ccard .cstat .l{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-top:.3rem}
-.ccard .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem;padding-top:.8rem;border-top:1px solid var(--hair)}
-.ccard .cupd{font-size:.7rem;color:var(--text-dim)}
-.ccard .cedit{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
-.ccard .clive{position:absolute;top:.7rem;right:.8rem;font-size:.68rem;color:rgba(255,255,255,0.85);text-decoration:none;background:rgba(0,0,0,0.45);backdrop-filter:blur(3px);padding:.28rem .55rem;border-radius:20px;z-index:2}
-.ccard .clive:hover{color:var(--gold-bright)}
+/* ---------- campaign grid ---------- */
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin:1.8rem 0 1.1rem;flex-wrap:wrap}
+.sechead h2{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.3rem,2.6vw,1.7rem)}
+.sechead .note{font-size:.76rem;color:var(--text-dim)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:1.3rem}
 
-.empty{grid-column:1/-1;text-align:center;padding:2.6rem 1rem;color:var(--text-dim);font-weight:300;border:1px dashed var(--hair);border-radius:14px}
-.empty b{display:block;color:var(--text-mute);font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:400;margin-bottom:.4rem}
-.loading{grid-column:1/-1;color:var(--text-dim);text-align:center;padding:2rem}
-.pad{padding-bottom:3rem}
+.ccard{position:relative;background:linear-gradient(180deg,rgba(26,26,32,.9),rgba(18,17,22,.95));border:1px solid var(--hair);border-radius:18px;overflow:hidden;transition:transform .3s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .3s;opacity:0;animation:fadeUp .5s ease forwards}
+.ccard:hover{transform:translateY(-6px);border-color:rgba(168,138,79,.55);box-shadow:0 22px 50px rgba(0,0,0,.55),0 0 0 1px rgba(168,138,79,.12),0 0 40px rgba(168,138,79,.1)}
+/* stretched primary link — a real <a> that covers the card without nesting anchors */
+.cmain{position:absolute;inset:0;z-index:1;text-indent:-9999px;overflow:hidden}
+.chero{position:relative;height:150px;overflow:hidden;background:var(--ink-soft)}
+.chero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.ccard:hover .chero img{transform:scale(1.06)}
+/* monogram fallback when a campaign has no banner yet */
+.cmono{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 0%,#23222c 0%,#101015 72%)}
+.cmono span{font-family:'EB Garamond',serif;font-size:2.5rem;color:var(--gold);opacity:.62;letter-spacing:.06em;width:88px;height:88px;border-radius:50%;border:1px solid rgba(168,138,79,.34);display:flex;align-items:center;justify-content:center}
+.cveil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.1) 40%,rgba(11,11,13,.9) 100%)}
+.chero .cname{position:absolute;left:1.2rem;right:1.2rem;bottom:.85rem;font-family:'EB Garamond',serif;font-size:1.42rem;font-weight:500;color:#fff;line-height:1.12;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.clive{position:absolute;top:.75rem;right:.8rem;z-index:3;font-size:.64rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);text-decoration:none;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.16);padding:.3rem .6rem;border-radius:30px;transition:.18s}
+.clive:hover{color:#0d0d0f;background:var(--gold-bright);border-color:var(--gold-bright)}
+.cbody{padding:1.1rem 1.25rem 1.25rem}
+.ccamp{font-size:.76rem;color:var(--text-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.9rem}
+.cstats{display:flex;gap:1.6rem}
+.cstat .n{font-family:'EB Garamond',serif;font-size:1.3rem;color:var(--gold-light);line-height:1}
+.cstat .l{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-top:.3rem}
+.cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:1.1rem;padding-top:.85rem;border-top:1px solid var(--hair)}
+.cupd{font-size:.68rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem}
+.cupd .live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px rgba(111,185,138,.7)}
+.cupd .idle-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim)}
+.cedit{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light);font-weight:700;transition:transform .2s}
+.ccard:hover .cedit{transform:translateX(3px)}
+
+/* ---------- states ---------- */
+.empty{grid-column:1/-1;text-align:center;padding:4rem 1.5rem;border:1px dashed var(--hair-mid);border-radius:18px;background:linear-gradient(180deg,rgba(26,26,32,.5),transparent)}
+.empty .ring{width:74px;height:74px;border-radius:50%;border:1px solid rgba(168,138,79,.4);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'EB Garamond',serif;font-size:1.9rem;color:var(--gold-light);box-shadow:0 0 0 8px rgba(199,168,103,.05)}
+.empty b{display:block;color:var(--text-cream);font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:.45rem}
+.empty p{color:var(--text-dim);font-weight:300;font-size:.9rem}
+.loading{grid-column:1/-1;color:var(--text-dim);text-align:center;padding:3rem;font-weight:300}
+.skel{height:150px;border-radius:18px;background:linear-gradient(100deg,#141318 30%,#1e1d24 50%,#141318 70%);background-size:220% 100%;animation:sk 1.5s infinite;border:1px solid var(--hair)}
+@keyframes sk{0%{background-position:120% 0}100%{background-position:-40% 0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.pad{padding-bottom:5rem}
+@media(max-width:480px){
+  .mark{font-size:1rem}
+  .topbar-in{gap:.6rem}
+  .btn{width:100%}
+  .mast-row{align-items:stretch}
+}
+.foot{border-top:1px solid var(--hair);margin-top:3.5rem;padding:1.6rem 0 0;display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-dim);flex-wrap:wrap;gap:.5rem}
+@media(prefers-reduced-motion:reduce){
+  .ccard,.newbox.show{animation:none;opacity:1}
+  .ccard:hover{transform:none}.ccard:hover .chero img{transform:none}.skel{animation:none}
+}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="wrap topbar-in">
-    <div class="mark">Maison <b>d'Élites</b> · Campaign Hub</div>
+    <div class="mark"><span class="dotmark"></span>Maison <b>d'Élites</b></div>
     <div class="top-right" id="topRight" style="display:none">
       <a id="lockBtn">Lock</a>
     </div>
@@ -92,6 +156,7 @@ input:focus{border-color:var(--gold)}
   <!-- Gate -->
   <div id="gate" style="display:none">
     <div class="gate">
+      <div class="glab">Operator console</div>
       <h2>Campaign hub</h2>
       <input id="pwInput" type="password" placeholder="Admin password" autocomplete="current-password">
       <div class="err" id="gateErr"></div>
@@ -101,12 +166,24 @@ input:focus{border-color:var(--gold)}
 
   <!-- App -->
   <div id="app" style="display:none">
-    <div class="head">
-      <div>
-        <h1>Your campaigns</h1>
-        <div class="sub" id="countSub"></div>
+
+    <div class="masthead">
+      <div class="eyebrow">Operator console</div>
+      <div class="mast-row">
+        <div>
+          <h1>Your <i>campaigns</i></h1>
+          <div class="sub" id="countSub"></div>
+        </div>
+        <button class="btn btn-gold" id="newBtn">＋ New campaign</button>
       </div>
-      <button class="btn btn-gold" id="newBtn">＋ New campaign</button>
+      <div class="rule"></div>
+
+      <div class="port">
+        <div class="pt"><div class="n" id="pCount">—</div><div class="l">Campaigns</div></div>
+        <div class="pt"><div class="n" id="pViews">—</div><div class="l">Total views</div></div>
+        <div class="pt"><div class="n" id="pClips">—</div><div class="l">Clips live</div></div>
+        <div class="pt"><div class="n" id="pSpend">—</div><div class="l">Deployed</div></div>
+      </div>
     </div>
 
     <div class="newbox" id="newBox">
@@ -121,8 +198,18 @@ input:focus{border-color:var(--gold)}
       </div>
     </div>
 
+    <div class="sechead">
+      <h2>All campaigns</h2>
+      <span class="note">Click a card to update it · “Live” opens the client view</span>
+    </div>
+
     <div class="grid" id="grid">
-      <div class="loading">Loading campaigns…</div>
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    </div>
+
+    <div class="foot">
+      <span>Maison d'Élites · Campaign Hub</span>
+      <span id="footNote"></span>
     </div>
   </div>
 
@@ -142,6 +229,7 @@ function fmt(n){
   if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
   return String(Math.round(n));
 }
+function money0(n){ n=Number(n)||0; return n>=1000 ? '$'+fmt(n) : '$'+Math.round(n).toLocaleString('en-US'); }
 function ago(iso){
   if(!iso) return 'not published yet';
   const s=Math.max(0,(Date.now()-new Date(iso).getTime())/1000);
@@ -150,41 +238,70 @@ function ago(iso){
   if(s<86400) return 'updated '+Math.floor(s/3600)+'h ago';
   return 'updated '+Math.floor(s/86400)+'d ago';
 }
+function isRecent(iso){ return iso && (Date.now()-new Date(iso).getTime()) < 7*86400e3; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function slugify(v){ return String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40); }
+function initials(name){
+  const parts = String(name||'').replace(/[^a-zA-Z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '—';
+  if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0]+parts[1][0]).toUpperCase();
+}
 
 function showGate(msg){ $('#gate').style.display=''; $('#app').style.display='none'; $('#topRight').style.display='none'; $('#gateErr').textContent=msg||''; setTimeout(()=>$('#pwInput').focus(),40); }
 function showApp(){ $('#gate').style.display='none'; $('#app').style.display=''; $('#topRight').style.display=''; load(); }
 
 async function load(){
-  const grid=$('#grid'); grid.innerHTML='<div class="loading">Loading campaigns…</div>';
+  const grid=$('#grid');
   try{
     const r=await fetch('/api/campaigns',{headers:hdr(),cache:'no-store'});
     if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
     const j=await r.json();
     const list=j.clients||[];
-    $('#countSub').textContent = list.length ? (list.length+' campaign'+(list.length>1?'s':'')+' · click one to update it') : '';
+
+    // Portfolio totals, summed from the list the API already returns.
+    const tot = list.reduce((a,c)=>({
+      views:a.views+(c.views||0), clips:a.clips+(c.clips||0), spend:a.spend+(c.spend||0),
+    }), {views:0,clips:0,spend:0});
+    $('#pCount').textContent = list.length;
+    $('#pViews').textContent = fmt(tot.views);
+    $('#pClips').textContent = fmt(tot.clips);
+    $('#pSpend').textContent = tot.spend>0 ? money0(tot.spend) : '—';
+    $('#countSub').textContent = list.length
+      ? list.length+' campaign'+(list.length>1?'s':'')+' · '+fmt(tot.views)+' views delivered'
+      : 'No campaigns yet';
+    $('#footNote').textContent = list.length ? 'Last refreshed '+new Date().toLocaleTimeString() : '';
+
     if(!list.length){
-      grid.innerHTML='<div class="empty"><b>No campaigns yet</b>Click “New campaign” to create your first one.</div>';
+      grid.innerHTML='<div class="empty"><div class="ring">＋</div><b>No campaigns yet</b><p>Click “New campaign” to create your first one — it goes live the moment you publish a CSV.</p></div>';
       return;
     }
-    grid.innerHTML=list.map(c=>{
+
+    grid.innerHTML=list.map((c,i)=>{
       const dash='/'+encodeURIComponent(c.slug);
-      return '<a class="ccard" href="'+dash+'/admin">'+
-        (c.banner ? '<img class="cbanner" src="'+esc(c.banner)+'" alt="" loading="lazy" onerror="this.remove()">' : '')+
-        '<a class="clive" href="'+dash+'" target="_blank" onclick="event.stopPropagation()">Live ↗</a>'+
-        '<div class="ccardin">'+
-        '<div class="cname">'+esc(c.client||c.slug)+'</div>'+
-        '<div class="ccamp">'+esc(c.campaign||'/'+c.slug)+'</div>'+
-        '<div class="cstats">'+
-          '<div class="cstat"><div class="n">'+fmt(c.views)+'</div><div class="l">Views</div></div>'+
-          '<div class="cstat"><div class="n">'+fmt(c.clips)+'</div><div class="l">Clips</div></div>'+
+      const name=esc(c.client||c.slug);
+      const hero = c.banner
+        ? '<img src="'+esc(c.banner)+'" alt="" loading="lazy" onerror="this.style.display=\'none\'">'
+        : '<div class="cmono"><span>'+esc(initials(c.client||c.slug))+'</span></div>';
+      const dot = isRecent(c.updated) ? '<span class="live-dot"></span>' : '<span class="idle-dot"></span>';
+      return '<div class="ccard" style="animation-delay:'+(i*70)+'ms">'+
+        // Primary target: the editor. Rendered as a stretched link so the whole
+        // card is clickable WITHOUT nesting it around the "Live" anchor.
+        '<a class="cmain" href="'+dash+'/admin">Edit '+name+'</a>'+
+        '<a class="clive" href="'+dash+'" target="_blank" rel="noopener">Live ↗</a>'+
+        '<div class="chero">'+hero+'<div class="cveil"></div><div class="cname">'+name+'</div></div>'+
+        '<div class="cbody">'+
+          '<div class="ccamp">'+esc(c.campaign||dash)+'</div>'+
+          '<div class="cstats">'+
+            '<div class="cstat"><div class="n">'+fmt(c.views)+'</div><div class="l">Views</div></div>'+
+            '<div class="cstat"><div class="n">'+fmt(c.clips)+'</div><div class="l">Clips</div></div>'+
+            (c.spend>0?'<div class="cstat"><div class="n">'+money0(c.spend)+'</div><div class="l">Spent</div></div>':'')+
+          '</div>'+
+          '<div class="cfoot"><span class="cupd">'+dot+ago(c.updated)+'</span><span class="cedit">Edit →</span></div>'+
         '</div>'+
-        '<div class="cfoot"><span class="cupd">'+ago(c.updated)+'</span><span class="cedit">Edit →</span></div>'+
-        '</div>'+
-      '</a>';
+      '</div>';
     }).join('');
-  }catch(e){ grid.innerHTML='<div class="empty"><b>Couldn’t load</b>'+esc(e.message||e)+'</div>'; }
+  }catch(e){ grid.innerHTML='<div class="empty"><b>Couldn’t load</b><p>'+esc(e.message||e)+'</p></div>'; }
 }
 
 // New campaign
