@@ -38,12 +38,20 @@
     min-height:100vh;
     overflow-x:hidden;
   }
+  /* ambient gold atmosphere behind everything, so the page has depth not flat black */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(64rem 42rem at 10% -12%, rgba(168,138,79,0.17), transparent 60%),
+      radial-gradient(50rem 36rem at 94% 4%, rgba(199,168,103,0.11), transparent 62%),
+      radial-gradient(72rem 52rem at 52% 104%, rgba(168,138,79,0.08), transparent 66%);
+  }
   body::after{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.03;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   .display{font-family:'EB Garamond',serif}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.6rem)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.1rem,4vw,2.6rem);position:relative;z-index:1}
 
   /* ---------- top bar ---------- */
   .topbar{
@@ -73,7 +81,13 @@
   .hero-for.light b{color:#fff}
 
   /* ---------- hero banner (shown when a campaign image is set) ---------- */
-  .herobanner{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--hair);margin-bottom:0.4rem}
+  .herobanner{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--hair);margin-bottom:0.4rem;box-shadow:0 26px 70px rgba(0,0,0,.55)}
+  .livepill{position:absolute;top:1.1rem;right:1.1rem;z-index:3;display:flex;align-items:center;gap:.42rem;font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);padding:.34rem .7rem;border-radius:30px}
+  .livepill i{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(111,185,138,.6);animation:pulse 2s infinite;font-style:normal}
+  /* section entrance */
+  .section,.hero{opacity:1}
+  .reveal{opacity:0;transform:translateY(22px)}
+  .reveal.in{opacity:1;transform:none;transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
   .herobanner-img{display:block;width:100%;height:clamp(200px,30vw,360px);object-fit:cover;background:var(--ink-soft)}
   .herobanner-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.05) 30%,rgba(0,0,0,0.55) 72%,rgba(0,0,0,0.92) 100%)}
   .herobanner-content{position:absolute;left:0;right:0;bottom:0;padding:clamp(1.3rem,3vw,2.2rem)}
@@ -81,8 +95,10 @@
   .herobanner-content h1{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.8rem,5vw,3.2rem);line-height:1.06;letter-spacing:-0.02em;color:#fff;margin:0.5rem 0 0.4rem;text-shadow:0 2px 24px rgba(0,0,0,0.45)}
 
   /* ---------- headline stats ---------- */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-top:1.6rem}
-  .stat{background:var(--ink-card);padding:clamp(1.3rem,2.6vw,2rem) clamp(1.1rem,2vw,1.6rem)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-top:1.6rem;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+  .stat{background:linear-gradient(180deg,rgba(26,26,32,.85),rgba(20,19,24,.85));padding:clamp(1.3rem,2.6vw,2rem) clamp(1.1rem,2vw,1.6rem);position:relative;transition:background .25s}
+  .stat::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.75}
+  .stat:hover{background:linear-gradient(180deg,rgba(32,31,39,.92),rgba(23,22,28,.92))}
   .stat .s-num{font-family:'EB Garamond',serif;font-size:clamp(1.9rem,4.2vw,3.1rem);line-height:1;color:var(--gold-light);font-weight:500;letter-spacing:-0.01em}
   .stat .s-lab{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-mute);margin-top:0.7rem}
   .stat .s-sub{font-size:0.78rem;color:var(--text-dim);margin-top:0.25rem;font-weight:300}
@@ -92,8 +108,13 @@
   /* ---------- section ---------- */
   .section{padding:clamp(1.6rem,4vw,2.6rem) 0}
   .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:1.3rem;flex-wrap:wrap}
-  .sec-head h2{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-0.01em}
+  .sec-head h2{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.5rem,3.2vw,2.2rem);letter-spacing:-0.01em}
+  .sec-head h2 i{font-style:italic;color:var(--gold-light)}
   .sec-head .h-note{font-size:0.8rem;color:var(--text-dim);letter-spacing:0.04em}
+  .sec-eyebrow{font-size:0.62rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light);font-weight:600;margin-bottom:.5rem}
+  .sec-rule{height:1px;background:linear-gradient(90deg,var(--gold),rgba(168,138,79,.05));margin-bottom:1.4rem}
+  .panel{position:relative}
+  .panel::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--gold),transparent);opacity:.75}
 
   /* progress + budget row */
   .panels{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem}
@@ -163,11 +184,15 @@
   .card.rejected .card-bg{filter:grayscale(0.75)}
 
   /* ---------- leaderboard ---------- */
-  .board{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
-  .lb-row{display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;padding:0.95rem clamp(1rem,2vw,1.4rem);border-top:1px solid var(--hair)}
+  .board{background:linear-gradient(180deg,rgba(26,26,32,.85),rgba(20,19,24,.85));border:1px solid var(--hair);border-radius:16px;overflow:hidden;box-shadow:0 18px 46px rgba(0,0,0,.4)}
+  .lb-row{position:relative;display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;padding:0.95rem clamp(1rem,2vw,1.4rem);border-top:1px solid var(--hair);transition:background .2s}
   .lb-row:first-child{border-top:0}
-  .lb-rank{font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--text-dim);width:1.6rem;text-align:center}
-  .lb-row.top .lb-rank{color:var(--gold-bright)}
+  .lb-row:hover{background:rgba(168,138,79,.05)}
+  /* share-of-views bar sitting behind each row */
+  .lb-row .lb-bar{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(168,138,79,.16),rgba(168,138,79,0));pointer-events:none;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+  .lb-row > *{position:relative;z-index:1}
+  .lb-rank{font-family:'EB Garamond',serif;font-size:0.92rem;color:var(--text-dim);width:1.9rem;height:1.9rem;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--hair);flex-shrink:0}
+  .lb-row.top .lb-rank{color:#1a1208;background:linear-gradient(180deg,var(--gold-bright),var(--gold));border-color:transparent;font-weight:600}
   .lb-handle{font-size:0.92rem;color:var(--text-cream);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lb-clips{font-size:0.76rem;color:var(--text-dim);letter-spacing:0.04em}
   .lb-views{font-family:'EB Garamond',serif;font-size:1.1rem;color:var(--gold-light);min-width:74px;text-align:right}
@@ -193,6 +218,9 @@
   }
   @media(prefers-reduced-motion:reduce){
     .dot{animation:none}.stat.flash .s-num{animation:none}.skel{animation:none}
+    .livepill i{animation:none}
+    .reveal{opacity:1;transform:none}
+    .reveal.in{transition:none}
   }
 </style>
 </head>
@@ -214,6 +242,7 @@
     <div class="herobanner" id="heroBanner" style="display:none">
       <img class="herobanner-img" id="heroBannerImg" alt="">
       <div class="herobanner-veil"></div>
+      <div class="livepill"><i></i>Live</div>
       <div class="herobanner-content">
         <span class="eyebrow" id="campaignKickerB">Live Campaign Report</span>
         <h1 id="heroTitleB"></h1>
@@ -251,10 +280,12 @@
   </section>
 
   <section class="section">
+    <div class="sec-eyebrow">The work</div>
     <div class="sec-head">
-      <h2>The content, working</h2>
+      <h2>The content, <i>working</i></h2>
       <span class="h-note" id="clipNote"></span>
     </div>
+    <div class="sec-rule"></div>
     <div class="grid2" id="clips">
       <div class="card skel"></div><div class="card skel"></div><div class="card skel"></div>
       <div class="card skel"></div><div class="card skel"></div>
@@ -262,10 +293,12 @@
   </section>
 
   <section class="section" id="boardSec" style="display:none">
+    <div class="sec-eyebrow">The network</div>
     <div class="sec-head">
-      <h2>Top creators</h2>
+      <h2>Top <i>creators</i></h2>
       <span class="h-note">Ranked by views delivered</span>
     </div>
+    <div class="sec-rule"></div>
     <div class="board" id="board"></div>
   </section>
 
@@ -411,8 +444,10 @@ function renderBoard(creators){
   const list = (creators||[]).filter(c=>c.handle).sort((a,b)=>b.views-a.views).slice(0,10);
   if(!list.length){ sec.style.display='none'; return; }
   sec.style.display='';
+  const max = list[0].views || 1;
   $('#board').innerHTML = list.map((c,i) =>
     '<div class="lb-row'+(i<3?' top':'')+'">' +
+      '<div class="lb-bar" style="width:'+Math.max(4,(c.views/max*100))+'%"></div>' +
       '<div class="lb-rank">'+(i+1)+'</div>' +
       '<div class="lb-handle">'+esc(c.handle)+'</div>' +
       '<div class="lb-clips">'+(c.clips? c.clips+' clip'+(c.clips>1?'s':'') : '')+'</div>' +
@@ -518,6 +553,24 @@ async function load(){
     }
   }
 }
+
+// Fade sections up as they enter the viewport. Deliberately conservative: this
+// is a client-facing page, so content must never be able to get stuck hidden.
+// Sections that start display:none (budget, leaderboard) are left alone, and a
+// timeout force-reveals everything if the observer never fires.
+(function reveals(){
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce || !('IntersectionObserver' in window)) return;
+  const secs = $$('main .section').filter(s => getComputedStyle(s).display !== 'none');
+  if(!secs.length) return;
+  secs.forEach(s => s.classList.add('reveal'));
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { rootMargin:'0px 0px -8% 0px', threshold:0.06 });
+  secs.forEach(s => io.observe(s));
+  // Safety net — nothing stays invisible, whatever happens.
+  setTimeout(()=> secs.forEach(s => s.classList.add('in')), 2500);
+})();
 
 load();
 setInterval(load, POLL_MS);
