@@ -100,12 +100,17 @@
   .panel{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:clamp(1.3rem,2.5vw,1.8rem)}
   .panel .p-top{display:flex;align-items:baseline;justify-content:space-between;gap:0.8rem;margin-bottom:1rem;flex-wrap:wrap}
   .panel .p-title{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
-  .panel .p-big{font-family:'EB Garamond',serif;font-size:1.4rem;color:var(--text-cream)}
+  .panel .p-big{font-family:'EB Garamond',serif;font-size:clamp(1.5rem,3.2vw,2.1rem);color:var(--text-cream)}
   .panel .p-big b{color:var(--gold-light);font-weight:500}
-  .track{height:12px;border-radius:8px;background:#0a0a0c;border:1px solid var(--hair);overflow:hidden}
-  .track > i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
-  .track-meta{display:flex;justify-content:space-between;font-size:0.76rem;color:var(--text-mute);margin-top:0.6rem;font-weight:300}
+  .panel .p-big span{color:var(--text-dim);font-size:0.62em}
+  .track{position:relative;height:18px;border-radius:10px;background:#0a0a0c;border:1px solid var(--hair);overflow:hidden}
+  .track > i{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width 1.1s cubic-bezier(.2,.7,.2,1);position:relative}
+  /* moving sheen so the bar reads as live, not a static rule */
+  .track > i::after{content:"";position:absolute;inset:0;border-radius:10px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent);transform:translateX(-100%);animation:sheen 2.8s ease-in-out infinite}
+  @keyframes sheen{0%{transform:translateX(-100%)}55%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+  .track-meta{display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-mute);margin-top:0.75rem;font-weight:300}
   .track-meta b{color:var(--text-cream);font-weight:600}
+  @media(prefers-reduced-motion:reduce){.track > i::after{animation:none}}
 
   /* ---------- content grid ---------- */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:1rem}
@@ -235,7 +240,7 @@
     <div class="panel">
       <div class="p-top">
         <div class="p-title">Budget deployed</div>
-        <div class="p-big"><b id="bSpent">$0</b></div>
+        <div class="p-big" id="bSpent"><b>$0</b></div>
       </div>
       <div class="track"><i id="bFill" style="background:linear-gradient(90deg,#6fb98a,#a88a4f)"></i></div>
       <div class="track-meta">
@@ -458,13 +463,14 @@ function paint(d){
   }
   $('#viewsSub').textContent = fmtFull(views) + ' total';
 
-  // budget — shown ONLY when the data carries real reported spend
+  // budget — shown only when spend is actually reported (from a CSV payout
+  // column, or stated by the operator in the admin). Never estimated.
   const total = s.budgetTotal || 0, spent = s.budgetSpent || 0;
   if(s.spendKnown && total > 0){
     $('#budgetSec').style.display = '';
     const bpct = Math.min(100, spent/total*100);
     $('#bFill').style.width = bpct + '%';
-    $('#bSpent').textContent = money(spent) + ' / ' + money(total);
+    $('#bSpent').innerHTML = '<b>'+money(spent)+'</b> <span>of '+money(total)+'</span>';
     $('#bPct').textContent = Math.round(bpct) + '%';
     $('#bRemain').textContent = money(Math.max(0, total - spent));
   } else {

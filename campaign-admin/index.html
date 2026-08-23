@@ -19,93 +19,135 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--text-cream);-webkit-font-smoothing:antialiased;min-height:100vh}
-.wrap{max-width:600px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
+.wrap{max-width:720px;margin:0 auto;padding:0 clamp(1rem,4vw,2rem)}
 
-.topbar{border-bottom:1px solid var(--hair);padding:1.1rem 0;margin-bottom:2.4rem}
-.topbar-in{display:flex;align-items:center;justify-content:space-between}
-.mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em}
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(13,13,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);padding:.95rem 0;margin-bottom:1.8rem}
+.topbar-in{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.mark{font-family:'EB Garamond',serif;font-size:1.18rem;letter-spacing:.03em;display:flex;align-items:center;gap:.6rem}
 .mark b{color:var(--gold-light);font-weight:500}
-.top-right{font-size:.78rem;display:flex;gap:1.2rem}
-.top-right a{color:var(--text-mute);text-decoration:none}
+.slugchip{font-family:'Archivo',sans-serif;font-size:.64rem;letter-spacing:.08em;color:var(--text-dim);background:var(--ink-soft);border:1px solid var(--hair);padding:.2rem .5rem;border-radius:20px}
+.top-right{font-size:.78rem;display:flex;gap:1.2rem;align-items:center}
+.top-right a{color:var(--text-mute);text-decoration:none;cursor:pointer}
 .top-right a:hover{color:var(--gold-light)}
 
+/* ---------- gate ---------- */
 .gate{max-width:340px;margin:10vh auto 0;background:var(--ink-card);border:1px solid var(--hair);border-radius:16px;padding:2rem}
 .gate h2{font-family:'EB Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1.4rem}
 input[type=password]{width:100%;padding:.75rem 1rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:9px;color:var(--text-cream);font-size:.95rem;font-family:inherit;outline:none;transition:.15s border-color}
 input[type=password]:focus{border-color:var(--gold)}
 .err{font-size:.8rem;color:var(--bad);min-height:1.1em;margin-top:.4rem}
 
+/* ---------- buttons ---------- */
 .btn{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem;border:0;border-radius:10px;font-family:inherit;font-weight:600;font-size:.92rem;cursor:pointer;transition:.15s}
 .btn-gold{background:var(--gold);color:#1a1208}
 .btn-gold:hover{background:var(--gold-bright)}
 .btn-gold:disabled{opacity:.45;cursor:not-allowed}
 .btn-ghost{background:transparent;color:var(--text-mute);border:1px solid var(--hair-mid)}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-light)}
+.btn-inline{width:auto;padding:.6rem 1.15rem;font-size:.84rem}
+.btn-sm{width:auto;padding:.45rem .9rem;font-size:.76rem}
 
-.stack{display:flex;flex-direction:column;gap:1.1rem;padding-bottom:3rem}
+.stack{display:flex;flex-direction:column;gap:1.1rem;padding-bottom:7rem}
 
-.zone{border:2px dashed var(--hair-mid);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:.2s;position:relative}
+/* ---------- live state strip ---------- */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:13px;overflow:hidden}
+.strip .st{background:var(--ink-card);padding:.9rem .8rem;text-align:center}
+.strip .st .n{font-family:'EB Garamond',serif;font-size:1.3rem;color:var(--gold-light);line-height:1}
+.strip .st .l{font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;color:var(--text-dim);margin-top:.35rem}
+@media(max-width:520px){.strip{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- cards ---------- */
+.card{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem}
+.ctitle{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.chint{font-size:.72rem;color:var(--text-dim);font-weight:400;letter-spacing:0;text-transform:none}
+
+/* fields */
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.sf{display:flex;flex-direction:column;gap:.35rem}
+.sf.full{grid-column:1/-1}
+.sf label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
+.sf input[type=text],.sf input[type=number]{padding:.65rem .85rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:8px;color:var(--text-cream);font-size:.88rem;font-family:inherit;outline:none;transition:.15s;width:100%}
+.sf input:focus{border-color:var(--gold)}
+.sf .fhint{font-size:.68rem;color:var(--text-dim)}
+.sf .fhint a{color:var(--gold-light);cursor:pointer;text-decoration:none;border-bottom:1px dotted var(--hair-mid)}
+@media(max-width:460px){.fields{grid-template-columns:1fr}}
+
+/* banner drop zone */
+.bzone{position:relative;border:2px dashed var(--hair-mid);border-radius:12px;overflow:hidden;min-height:140px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;background:var(--ink-soft);margin-bottom:.75rem}
+.bzone:hover,.bzone.over{border-color:var(--gold);background:rgba(168,138,79,.06)}
+.bzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
+.bzone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bzone .bempty{display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--text-dim);font-size:.78rem;pointer-events:none;text-align:center;padding:1rem}
+.bzone .bempty b{font-size:1.5rem;color:var(--gold);opacity:.65;font-weight:400}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:1rem;min-height:1.6rem}
+.bstatus{font-size:.74rem;color:var(--text-dim)}
+
+/* budget slider + live preview */
+.slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:#0a0a0c;border:1px solid var(--hair-mid);outline:none;margin:.2rem 0}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--gold-bright);cursor:pointer;border:3px solid #1a1208;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--gold-bright);cursor:pointer;border:3px solid #1a1208}
+.bprev{margin-top:1rem;padding:1rem 1.1rem;background:#0a0a0c;border:1px solid var(--hair);border-radius:11px}
+.bprev .plab{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.6rem}
+.bprev .ptop{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;margin-bottom:.6rem}
+.bprev .pbig{font-family:'EB Garamond',serif;font-size:1.35rem;color:var(--gold-light)}
+.bprev .pbig span{color:var(--text-dim);font-size:.66em}
+.ptrack{height:14px;border-radius:9px;background:#141318;border:1px solid var(--hair);overflow:hidden}
+.ptrack > i{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .35s ease}
+.pmeta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-mute);margin-top:.55rem}
+.pmeta b{color:var(--text-cream);font-weight:600}
+.bprev.off{opacity:.5}
+
+/* CSV zone */
+.zone{border:2px dashed var(--hair-mid);border-radius:14px;padding:2.2rem 2rem;text-align:center;cursor:pointer;transition:.2s;position:relative}
 .zone:hover,.zone.over{border-color:var(--gold);background:rgba(168,138,79,.05)}
 .zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.zone-arrow{font-size:1.9rem;color:var(--gold);opacity:.7;margin-bottom:.8rem}
-.zone h2{font-family:'EB Garamond',serif;font-size:1.6rem;font-weight:400;margin-bottom:.35rem}
-.zone p{font-size:.82rem;color:var(--text-mute)}
+.zone-arrow{font-size:1.7rem;color:var(--gold);opacity:.7;margin-bottom:.6rem}
+.zone h2{font-family:'EB Garamond',serif;font-size:1.35rem;font-weight:400;margin-bottom:.3rem}
+.zone p{font-size:.8rem;color:var(--text-mute)}
 
-.card{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem}
+.pvbox{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--hair)}
 .banner{display:flex;align-items:center;gap:.6rem;font-size:.9rem;font-weight:600;margin-bottom:.35rem}
 .banner.ok{color:var(--ok)} .banner.bad{color:var(--bad)} .banner.work{color:var(--gold-light)}
 .sub{font-size:.82rem;color:var(--text-mute)}
 .filechip{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--gold-light);margin-top:.5rem}
-
-/* preview grid */
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:.55rem;margin-top:1rem}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:.55rem;margin-top:1rem}
 .pcell{position:relative;aspect-ratio:9/16;border-radius:9px;overflow:hidden;background:var(--ink-soft);border:1px solid var(--hair)}
 .pcell img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pcell .pph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);opacity:.5;background:radial-gradient(120% 120% at 50% 0,#23232c,#101015)}
 .pcell .pv{position:absolute;left:0;right:0;bottom:0;padding:.3rem .35rem;font-size:.64rem;font-weight:700;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.85))}
 .pcell .pd{position:absolute;top:.3rem;left:.3rem;width:7px;height:7px;border-radius:50%}
 .more{font-size:.78rem;color:var(--text-dim);margin-top:.7rem;text-align:center}
-
 .actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem}
-
-details{background:var(--ink-card);border:1px solid var(--hair);border-radius:12px}
-summary{padding:1rem 1.2rem;cursor:pointer;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
-summary::after{content:'›';font-size:1rem;color:var(--text-dim)}
-details[open] summary::after{transform:rotate(90deg)}
-.settings-body{padding:0 1.2rem 1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
-.sf{display:flex;flex-direction:column;gap:.35rem}
-.sf.full{grid-column:1/-1}
-.sf label{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mute)}
-.sf input{padding:.6rem .85rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:8px;color:var(--text-cream);font-size:.88rem;font-family:inherit;outline:none;transition:.15s}
-.sf input:focus{border-color:var(--gold)}
 .dash-link{display:block;text-align:center;margin-top:.4rem;padding:.7rem;background:rgba(111,185,138,.12);border:1px solid rgba(111,185,138,.3);border-radius:10px;color:var(--ok);font-size:.85rem;font-weight:600;text-decoration:none}
 
-/* campaign identity: banner + name */
-.idcard{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem;display:flex;flex-direction:column;gap:1rem}
-.idtitle{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600}
-.bzone{position:relative;border:2px dashed var(--hair-mid);border-radius:12px;overflow:hidden;min-height:130px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;background:var(--ink-soft)}
-.bzone:hover,.bzone.over{border-color:var(--gold);background:rgba(168,138,79,.06)}
-.bzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2}
-.bzone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.bzone .bempty{display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--text-dim);font-size:.78rem;pointer-events:none;text-align:center;padding:1rem}
-.bzone .bempty b{font-size:1.5rem;color:var(--gold);opacity:.65;font-weight:400}
-.brow{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
-.bstatus{font-size:.74rem;color:var(--text-dim)}
-.btn-sm{width:auto;padding:.45rem .9rem;font-size:.76rem}
-.idfields{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+/* advanced */
+details{background:var(--ink-card);border:1px solid var(--hair);border-radius:12px}
+summary{padding:1rem 1.2rem;cursor:pointer;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'›';font-size:1rem;color:var(--text-dim)}
+details[open] summary::after{transform:rotate(90deg)}
+.settings-body{padding:0 1.2rem 1.2rem;display:grid;grid-template-columns:1fr;gap:.7rem}
 
-@media(max-width:460px){.settings-body{grid-template-columns:1fr}.idfields{grid-template-columns:1fr}}
+/* ---------- sticky save bar ---------- */
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(20,19,24,.96);backdrop-filter:blur(14px);border-top:1px solid var(--hair-mid);transform:translateY(110%);transition:transform .22s cubic-bezier(.2,.7,.2,1);box-shadow:0 -10px 30px rgba(0,0,0,.4)}
+.savebar.show{transform:translateY(0)}
+.savebar-in{max-width:720px;margin:0 auto;padding:.85rem clamp(1rem,4vw,2rem);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.savemsg{font-size:.8rem;color:var(--gold-light);font-weight:500}
+.savemsg.saved{color:var(--ok)}
+.savebtns{display:flex;gap:.6rem}
+kbd{font-family:inherit;font-size:.68rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:5px;padding:.1rem .35rem;color:var(--text-dim)}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="wrap topbar-in">
-    <div class="mark">Maison <b>d'Élites</b> · <span id="markClient"></span></div>
+    <div class="mark">Maison <b>d'Élites</b> · <span id="markClient"></span> <span class="slugchip" id="slugChip"></span></div>
     <div class="top-right" id="topRight" style="display:none">
       <a href="/admin">← All campaigns</a>
-      <a href="/dashboard" target="_blank">Live dashboard ↗</a>
-      <a href="#" id="lockBtn">Lock</a>
+      <a id="liveLink" href="/dashboard" target="_blank">Live dashboard ↗</a>
+      <a id="lockBtn">Lock</a>
     </div>
   </div>
 </div>
@@ -126,9 +168,17 @@ details[open] summary::after{transform:rotate(90deg)}
   <div id="app" style="display:none">
     <div class="stack">
 
-      <!-- Campaign identity: banner + name -->
-      <div class="idcard">
-        <div class="idtitle">Campaign identity</div>
+      <!-- Live state -->
+      <div class="strip">
+        <div class="st"><div class="n" id="lsViews">—</div><div class="l">Views</div></div>
+        <div class="st"><div class="n" id="lsClips">—</div><div class="l">Clips</div></div>
+        <div class="st"><div class="n" id="lsCreators">—</div><div class="l">Creators</div></div>
+        <div class="st"><div class="n" id="lsSpend">—</div><div class="l">Spent</div></div>
+      </div>
+
+      <!-- Campaign identity -->
+      <div class="card">
+        <div class="ctitle">Campaign identity</div>
         <div class="bzone" id="bzone">
           <input type="file" id="bimgInput" accept="image/*">
           <img id="bimgPreview" alt="" style="display:none">
@@ -138,52 +188,70 @@ details[open] summary::after{transform:rotate(90deg)}
           <span class="bstatus" id="bimgStatus"></span>
           <button class="btn btn-ghost btn-sm" id="bimgRemove" type="button" style="display:none">Remove banner</button>
         </div>
-        <div class="idfields">
+        <div class="fields">
           <div class="sf"><label>Artist / client</label><input id="sClient" type="text" placeholder="Client name"></div>
           <div class="sf"><label>Campaign title</label><input id="sCampaign" type="text" placeholder="e.g. Need You · Please Stay"></div>
+          <div class="sf full"><label>Tagline</label><input id="sTagline" type="text" placeholder="Live distribution across our creator network"></div>
         </div>
       </div>
 
-      <!-- Step 1: upload -->
-      <div class="zone" id="zone">
-        <input type="file" id="fileInput" accept=".csv,text/csv,text/plain">
-        <div class="zone-arrow">↑</div>
-        <h2>Drop your CSV file here</h2>
-        <p>or click to browse · any export format works</p>
-      </div>
-
-      <!-- Step 2: preview + publish -->
-      <div class="card" id="previewCard" style="display:none">
-        <div class="banner work" id="pvBanner"><span id="pvIcon">⏳</span><span id="pvTitle">Reading file…</span></div>
-        <div class="sub" id="pvSub"></div>
-        <div class="filechip" id="pvFile" style="display:none"></div>
-        <div class="pgrid" id="pvGrid"></div>
-        <div class="more" id="pvMore"></div>
-        <div class="actions" id="pvActions" style="display:none">
-          <button class="btn btn-gold" id="publishBtn">Save &amp; publish to dashboard</button>
-          <button class="btn btn-ghost" id="resetBtn">Choose a different file</button>
+      <!-- Budget -->
+      <div class="card">
+        <div class="ctitle">Budget <span class="chint">Shown to the client as a progress bar</span></div>
+        <div class="fields">
+          <div class="sf"><label>Total budget ($)</label><input id="sBudget" type="number" min="0" step="1" placeholder="e.g. 1000"></div>
+          <div class="sf">
+            <label>Spent so far ($)</label>
+            <input id="sSpent" type="number" min="0" step="1" placeholder="Leave blank to hide">
+            <div class="fhint" id="spendHint"></div>
+          </div>
+          <div class="sf full">
+            <input class="slider" id="spendSlider" type="range" min="0" max="100" step="1" value="0">
+          </div>
         </div>
-        <a class="dash-link" id="pvDash" href="/dashboard" target="_blank" style="display:none">✓ Published — view live dashboard ↗</a>
+        <div class="bprev off" id="bPrev">
+          <div class="plab">Client sees</div>
+          <div class="ptop">
+            <div class="pbig" id="pvSpent"><b>$0</b> <span>of $0</span></div>
+          </div>
+          <div class="ptrack"><i id="pvFill"></i></div>
+          <div class="pmeta"><span><b id="pvPct">0%</b> deployed</span><span><b id="pvRemain">$0</b> remaining</span></div>
+        </div>
       </div>
 
-      <!-- Settings -->
+      <!-- Content / CSV -->
+      <div class="card">
+        <div class="ctitle">Content <span class="chint">Publishes clips to the dashboard</span></div>
+        <div class="zone" id="zone">
+          <input type="file" id="fileInput" accept=".csv,text/csv,text/plain">
+          <div class="zone-arrow">↑</div>
+          <h2>Drop your CSV file here</h2>
+          <p>or click to browse · any export format works</p>
+        </div>
+
+        <div class="pvbox" id="previewCard" style="display:none">
+          <div class="banner work" id="pvBanner"><span id="pvIcon">⏳</span><span id="pvTitle">Reading file…</span></div>
+          <div class="sub" id="pvSub"></div>
+          <div class="filechip" id="pvFile" style="display:none"></div>
+          <div class="pgrid" id="pvGrid"></div>
+          <div class="more" id="pvMore"></div>
+          <div class="actions" id="pvActions" style="display:none">
+            <button class="btn btn-gold" id="publishBtn">Save &amp; publish to dashboard</button>
+            <button class="btn btn-ghost" id="resetBtn">Choose a different file</button>
+          </div>
+          <a class="dash-link" id="pvDash" href="/dashboard" target="_blank" style="display:none">✓ Published — view live dashboard ↗</a>
+        </div>
+      </div>
+
+      <!-- Advanced -->
       <details>
-        <summary>Campaign settings</summary>
+        <summary>Advanced · thumbnail diagnostics</summary>
         <div class="settings-body">
-          <div class="sf full"><label>Budget ($)</label><input id="sBudget" type="number" min="0" placeholder="e.g. 1000"></div>
-          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Spend is read straight from a reward/earnings column in your CSV. If the export has no such column, the dashboard shows no spend figure — it’s never estimated.</div>
-        </div>
-      </details>
-
-      <!-- Thumbnail diagnostic -->
-      <details>
-        <summary>Diagnose Instagram thumbnails</summary>
-        <div class="settings-body" style="grid-template-columns:1fr">
-          <div class="sf full" style="font-size:.72rem;color:var(--text-dim)">Paste any Instagram reel link from your campaign and run the test. It reports exactly what the server sees — whether the scraper key is active, the HTTP status, and whether an image was found. Paste the result back to me.</div>
-          <div class="sf full"><input id="dgUrl" type="text" placeholder="https://www.instagram.com/reel/XXXXXXX/"></div>
+          <div class="sf" style="font-size:.72rem;color:var(--text-dim)">Paste any Instagram reel link from your campaign and run the test. It reports exactly what the server sees — whether the scraper key is active, the HTTP status, and whether an image was found.</div>
+          <div class="sf"><input id="dgUrl" type="text" placeholder="https://www.instagram.com/reel/XXXXXXX/"></div>
           <button class="btn btn-ghost" id="dgBtn" type="button">Run diagnostic</button>
-          <div class="sf full" style="font-size:.72rem;color:var(--text-dim);margin-top:.6rem">Or resolve every clip's thumbnail right now (runs in batches — if it doesn't finish, just click again):</div>
-          <button class="btn btn-gold" id="dgResolve" type="button">Resolve all thumbnails now</button>
+          <div class="sf" style="font-size:.72rem;color:var(--text-dim);margin-top:.6rem">Or resolve every clip's thumbnail right now (runs in batches — if it doesn't finish, just click again):</div>
+          <button class="btn btn-ghost" id="dgResolve" type="button">Resolve all thumbnails now</button>
           <pre id="dgOut" style="display:none;white-space:pre-wrap;word-break:break-all;font-size:.7rem;background:#0a0a0c;border:1px solid var(--hair);border-radius:8px;padding:.8rem;color:var(--text-mute);max-height:320px;overflow:auto"></pre>
         </div>
       </details>
@@ -193,9 +261,19 @@ details[open] summary::after{transform:rotate(90deg)}
 
 </div>
 
+<!-- Sticky save bar -->
+<div class="savebar" id="saveBar">
+  <div class="savebar-in">
+    <span class="savemsg" id="saveMsg">Unsaved changes</span>
+    <div class="savebtns">
+      <button class="btn btn-ghost btn-inline" id="discardBtn" type="button">Discard</button>
+      <button class="btn btn-gold btn-inline" id="saveBtn" type="button">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
 const pw = () => sessionStorage.getItem('mde_pw') || '';
 const setPw = v => sessionStorage.setItem('mde_pw', v);
 const clrPw = () => sessionStorage.removeItem('mde_pw');
@@ -210,10 +288,10 @@ const CLIENT = (() => {
 })();
 const prettyClient = CLIENT.split('-').map(w => w ? w[0].toUpperCase()+w.slice(1) : w).join(' ');
 const DASH = '/' + CLIENT;
-// Append ?client=<slug> (or &client=) to an API path.
 const withClient = (path) => path + (path.includes('?') ? '&' : '?') + 'client=' + encodeURIComponent(CLIENT);
 
 let pendingCSV = '';
+let current = null;   // last-loaded campaign — the baseline for dirty checks
 
 function fmt(n){
   n=Number(n)||0;
@@ -222,23 +300,201 @@ function fmt(n){
   if(n>=1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'')+'K';
   return String(Math.round(n));
 }
+function money(n){ return '$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(n){ return '$' + Math.round(Number(n)||0).toLocaleString('en-US'); }
 const PCOLOR = { tiktok:'var(--tiktok)', instagram:'var(--instagram)', youtube:'var(--youtube)' };
 const PGLYPH = { tiktok:'♪', instagram:'◉', youtube:'▶' };
 
-function showGate(msg){ $('#gate').style.display=''; $('#app').style.display='none'; $('#topRight').style.display='none'; $('#gateErr').textContent=msg||''; setTimeout(()=>$('#pwInput').focus(),40); }
+function showGate(msg){ $('#gate').style.display=''; $('#app').style.display='none'; $('#topRight').style.display='none'; $('#saveBar').classList.remove('show'); $('#gateErr').textContent=msg||''; setTimeout(()=>$('#pwInput').focus(),40); }
 function showApp(){ $('#gate').style.display='none'; $('#app').style.display=''; $('#topRight').style.display=''; }
 
-function meta(){
+// ---- form <-> data ---------------------------------------------------------
+// Spend is manual whenever the operator has typed a figure. Blank = fall back to
+// whatever the CSV reported (and hide the bar if the CSV reported nothing).
+function formState(){
+  const spentRaw = $('#sSpent').value.trim();
+  const manual = spentRaw !== '';
   return {
     client: $('#sClient').value.trim() || prettyClient,
     campaign: $('#sCampaign').value.trim(),
+    tagline: $('#sTagline').value.trim(),
     budgetTotal: Number($('#sBudget').value) || 0,
-    tagline: 'Live distribution across our creator network',
+    budgetSpent: manual ? (Number(spentRaw) || 0) : (current && current.summary ? Number(current.summary.budgetSpent)||0 : 0),
+    spendManual: manual,
   };
 }
-function money(n){ return '$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+// Metadata sent alongside a CSV import, so publishing never contradicts the form.
+function meta(){
+  const f = formState();
+  return {
+    client: f.client,
+    campaign: f.campaign,
+    tagline: f.tagline || 'Live distribution across our creator network',
+    budgetTotal: f.budgetTotal,
+    budgetSpent: f.budgetSpent,
+    spendManual: f.spendManual,
+  };
+}
+function baseline(){
+  const s = (current && current.summary) || {};
+  return {
+    client: current ? (current.client||'') : '',
+    campaign: current ? (current.campaign||'') : '',
+    tagline: current ? (current.tagline||'') : '',
+    budgetTotal: Number(s.budgetTotal)||0,
+    budgetSpent: Number(s.budgetSpent)||0,
+    spendManual: !!s.spendManual,
+  };
+}
+function isDirty(){
+  if(!current) return false;
+  const a = formState(), b = baseline();
+  return a.client!==b.client || a.campaign!==b.campaign || a.tagline!==b.tagline
+      || a.budgetTotal!==b.budgetTotal || a.spendManual!==b.spendManual
+      || (a.spendManual && a.budgetSpent!==b.budgetSpent);
+}
+function refreshDirty(){
+  const d = isDirty();
+  $('#saveBar').classList.toggle('show', d);
+  if(d){ $('#saveMsg').textContent='Unsaved changes'; $('#saveMsg').className='savemsg'; }
+}
 
-// --- thumbnail resolution for the preview (client side) ---
+// Live preview of exactly what the client-facing budget bar will show.
+function renderBudgetPreview(){
+  const f = formState();
+  const total = f.budgetTotal, spent = f.budgetSpent;
+  const known = f.spendManual || (current && current.summary && current.summary.spendKnown && !f.spendManual);
+  const on = !!(known && total > 0);
+  $('#bPrev').classList.toggle('off', !on);
+  const pct = total > 0 ? Math.min(100, spent/total*100) : 0;
+  $('#pvFill').style.width = pct + '%';
+  $('#pvSpent').innerHTML = '<b>'+money(spent)+'</b> <span>of '+money(total)+'</span>';
+  $('#pvPct').textContent = Math.round(pct)+'%';
+  $('#pvRemain').textContent = money(Math.max(0, total-spent));
+  // keep the slider in range/sync with the numbers
+  const sl = $('#spendSlider');
+  sl.max = String(Math.max(total, spent, 1));
+  sl.value = String(Math.min(spent, Number(sl.max)));
+  $('#spendHint').innerHTML = on ? ''
+    : (total <= 0 ? 'Set a total budget to show the bar.'
+       : 'Blank — the client sees no budget bar. Type a figure to show it.');
+}
+function renderLiveStrip(){
+  const s = (current && current.summary) || {};
+  $('#lsViews').textContent = fmt(s.views||0);
+  $('#lsClips').textContent = fmt(s.clips||0);
+  $('#lsCreators').textContent = fmt(s.creators||0);
+  $('#lsSpend').textContent = s.spendKnown ? money0(s.budgetSpent||0) : '—';
+}
+
+// Fill the form from the campaign's REAL saved values (never a slug guess), so
+// saving or republishing can't silently overwrite something already set.
+function prefill(data){
+  current = data || null;
+  if(!data) return;
+  $('#sClient').value = data.client || prettyClient;
+  $('#sCampaign').value = data.campaign || '';
+  $('#sTagline').value = data.tagline || '';
+  const s = data.summary || {};
+  const bt = Number(s.budgetTotal);
+  $('#sBudget').value = (bt && bt > 0) ? bt : '';
+  $('#sSpent').value = s.spendManual ? (Number(s.budgetSpent)||0) : '';
+  $('#markClient').textContent = data.client || prettyClient;
+  showBannerPreview(data.banner || '');
+  renderLiveStrip();
+  renderBudgetPreview();
+  refreshDirty();
+}
+
+// ---- save ------------------------------------------------------------------
+async function save(){
+  if(!isDirty()) return;
+  const btn=$('#saveBtn'); btn.disabled=true; btn.textContent='Saving…';
+  const f = formState();
+  try{
+    // Partial payload — the server merges it over the stored campaign, so clips
+    // and creators are never touched by a settings save.
+    const r = await fetch(withClient('/api/campaign'), {
+      method:'POST', headers:hdr(),
+      body: JSON.stringify({
+        client:f.client, campaign:f.campaign, tagline:f.tagline,
+        summary:{ budgetTotal:f.budgetTotal, budgetSpent:f.budgetSpent, spendManual:f.spendManual, spendKnown: f.spendManual ? true : !!(current&&current.summary&&current.summary.spendKnown) },
+      }),
+    });
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j = await r.json();
+    if(!r.ok){ $('#saveMsg').textContent = j.error||'Save failed'; $('#saveMsg').className='savemsg'; return; }
+    await loadCurrent(null, true);          // re-read what was actually stored
+    $('#saveMsg').textContent = 'Saved ✓'; $('#saveMsg').className='savemsg saved';
+    $('#saveBar').classList.add('show');
+    setTimeout(()=>{ if(!isDirty()) $('#saveBar').classList.remove('show'); }, 1600);
+  }catch(e){ $('#saveMsg').textContent = 'Save failed: '+(e.message||e); }
+  finally{ btn.disabled=false; btn.textContent='Save changes'; }
+}
+$('#saveBtn').addEventListener('click', save);
+$('#discardBtn').addEventListener('click', ()=>{ prefill(current); $('#saveBar').classList.remove('show'); });
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='s'){ e.preventDefault(); save(); }
+});
+window.addEventListener('beforeunload', e=>{ if(isDirty()){ e.preventDefault(); e.returnValue=''; } });
+
+// field wiring
+['#sClient','#sCampaign','#sTagline','#sBudget','#sSpent'].forEach(sel=>{
+  $(sel).addEventListener('input', ()=>{ renderBudgetPreview(); refreshDirty(); });
+});
+$('#spendSlider').addEventListener('input', e=>{
+  $('#sSpent').value = e.target.value;
+  renderBudgetPreview(); refreshDirty();
+});
+
+// ---- banner image ----------------------------------------------------------
+function setBimgStatus(msg){ $('#bimgStatus').textContent = msg||''; }
+function showBannerPreview(url){
+  if(url){
+    $('#bimgPreview').src = url; $('#bimgPreview').style.display='';
+    $('#bimgEmpty').style.display='none'; $('#bimgRemove').style.display='';
+  } else {
+    $('#bimgPreview').style.display='none'; $('#bimgPreview').removeAttribute('src');
+    $('#bimgEmpty').style.display=''; $('#bimgRemove').style.display='none';
+  }
+}
+async function uploadBanner(file){
+  if(!file) return;
+  if(!/^image\//.test(file.type)){ setBimgStatus('Please choose an image file.'); return; }
+  setBimgStatus('Uploading…');
+  try{
+    const r = await fetch(withClient('/api/campaign/banner'), {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer '+pw(), 'x-file-type': file.type || 'image/jpeg' },
+      body: file,
+    });
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j = await r.json();
+    if(!r.ok){ setBimgStatus(j.error||'Upload failed.'); return; }
+    showBannerPreview(j.banner + '?t=' + Date.now());
+    if(current) current.banner = j.banner;
+    setBimgStatus('Banner updated — live on the dashboard.');
+  }catch(e){ setBimgStatus('Upload failed: '+(e.message||e)); }
+}
+async function removeBanner(){
+  setBimgStatus('Removing…');
+  try{
+    const r = await fetch(withClient('/api/campaign/banner'), { method:'DELETE', headers:{'Authorization':'Bearer '+pw()} });
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    const j = await r.json();
+    if(!r.ok){ setBimgStatus(j.error||'Remove failed.'); return; }
+    showBannerPreview(''); if(current) current.banner='';
+    setBimgStatus('Banner removed.');
+  }catch(e){ setBimgStatus('Remove failed: '+(e.message||e)); }
+}
+$('#bimgInput').addEventListener('change', e=>{ if(e.target.files[0]) uploadBanner(e.target.files[0]); });
+const bzone = $('#bzone');
+bzone.addEventListener('dragover', e=>{e.preventDefault();bzone.classList.add('over');});
+bzone.addEventListener('dragleave', ()=>bzone.classList.remove('over'));
+bzone.addEventListener('drop', e=>{ e.preventDefault(); bzone.classList.remove('over'); if(e.dataTransfer.files[0]) uploadBanner(e.dataTransfer.files[0]); });
+$('#bimgRemove').addEventListener('click', e=>{ e.stopPropagation(); removeBanner(); });
+
+// ---- CSV preview thumbnails ------------------------------------------------
 function ytId(u){ const m=String(u||'').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{6,})/); return m?m[1]:null; }
 function proxied(u){ return 'https://images.weserv.nl/?url='+encodeURIComponent(u)+'&w=240&output=jpg&we'; }
 function wireImg(img, raw){
@@ -261,7 +517,6 @@ async function resolveThumb(c){
   }catch(e){}
   return '';
 }
-
 function renderPreview(clips){
   const top = clips.slice().sort((a,b)=>b.views-a.views).slice(0,8);
   $('#pvGrid').innerHTML = top.map((c,i)=>{
@@ -273,7 +528,6 @@ function renderPreview(clips){
     '</div>';
   }).join('');
   $('#pvMore').textContent = clips.length>8 ? '+ '+(clips.length-8)+' more clips' : '';
-  // resolve thumbnails into the cells
   top.forEach(async (c,i)=>{
     const cell=$('#pvGrid').querySelector('[data-i="'+i+'"]'); if(!cell) return;
     const raw=await resolveThumb(c); if(!raw) return;
@@ -283,7 +537,10 @@ function renderPreview(clips){
     wireImg(img, raw);
   });
 }
-
+function setBanner(kind,icon,title,sub){
+  const b=$('#pvBanner'); b.className='banner '+kind;
+  $('#pvIcon').textContent=icon; $('#pvTitle').textContent=title; $('#pvSub').textContent=sub||'';
+}
 async function parseFile(file){
   if(!file) return;
   pendingCSV = await file.text();
@@ -293,7 +550,6 @@ async function parseFile(file){
   $('#pvGrid').innerHTML=''; $('#pvMore').textContent='';
   $('#pvFile').style.display=''; $('#pvFile').innerHTML='📄 '+file.name;
   setBanner('work','⏳','Reading your file…','');
-
   try{
     const r=await fetch(withClient('/api/campaign/import?dryRun=1'),{method:'POST',headers:hdr(),body:JSON.stringify({csv:pendingCSV, ...meta()})});
     if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
@@ -301,19 +557,13 @@ async function parseFile(file){
     if(!r.ok){ setBanner('bad','✕','Couldn’t read that file',j.error||'Check the CSV and try again.'); return; }
     const camp=j.campaign||{}; const clips=camp.clips||[]; const s=camp.summary||{};
     const linked=clips.filter(c=>c.url).length;
-    const spendBit = s.spendKnown ? ('spend '+money(s.budgetSpent||0)+' (from CSV)') : 'no spend column in CSV — spend hidden';
+    const spendBit = s.spendKnown ? ('spend '+money(s.budgetSpent||0)) : 'no spend set';
     setBanner('ok','✓','Parsed '+clips.length+' clips · '+fmt(s.views||0)+' views',
       linked+' of '+clips.length+' have links · '+spendBit+' · review, then publish');
     renderPreview(clips);
     $('#pvActions').style.display='';
   }catch(e){ setBanner('bad','✕','Upload failed', String(e.message||e)); }
 }
-
-function setBanner(kind,icon,title,sub){
-  const b=$('#pvBanner'); b.className='banner '+kind;
-  $('#pvIcon').textContent=icon; $('#pvTitle').textContent=title; $('#pvSub').textContent=sub||'';
-}
-
 async function publish(){
   if(!pendingCSV) return;
   const btn=$('#publishBtn'); btn.disabled=true; btn.textContent='Publishing…';
@@ -325,74 +575,11 @@ async function publish(){
     setBanner('ok','✓','Published to the live dashboard', (j.imported||0)+' clips · '+fmt(j.views||0)+' views are now live');
     $('#pvActions').style.display='none';
     $('#pvDash').style.display='';
+    await loadCurrent(null, true);
   }catch(e){ setBanner('bad','✕','Publish failed', String(e.message||e)); btn.disabled=false; btn.textContent='Save & publish to dashboard'; }
 }
+function resetUpload(){ pendingCSV=''; $('#previewCard').style.display='none'; $('#fileInput').value=''; }
 
-function resetUpload(){
-  pendingCSV=''; $('#previewCard').style.display='none'; $('#fileInput').value='';
-}
-
-// --- campaign banner image (upload / remove) ---
-function setBimgStatus(msg){ $('#bimgStatus').textContent = msg||''; }
-function showBannerPreview(url){
-  if(url){
-    $('#bimgPreview').src = url; $('#bimgPreview').style.display='';
-    $('#bimgEmpty').style.display='none';
-    $('#bimgRemove').style.display='';
-  } else {
-    $('#bimgPreview').style.display='none'; $('#bimgPreview').removeAttribute('src');
-    $('#bimgEmpty').style.display='';
-    $('#bimgRemove').style.display='none';
-  }
-}
-async function uploadBanner(file){
-  if(!file) return;
-  if(!/^image\//.test(file.type)){ setBimgStatus('Please choose an image file.'); return; }
-  setBimgStatus('Uploading…');
-  try{
-    const r = await fetch(withClient('/api/campaign/banner'), {
-      method:'POST',
-      headers: { 'Authorization':'Bearer '+pw(), 'x-file-type': file.type || 'image/jpeg' },
-      body: file,
-    });
-    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
-    const j = await r.json();
-    if(!r.ok){ setBimgStatus(j.error||'Upload failed.'); return; }
-    showBannerPreview(j.banner + '?t=' + Date.now());
-    setBimgStatus('Banner updated — live on the dashboard.');
-  }catch(e){ setBimgStatus('Upload failed: '+(e.message||e)); }
-}
-async function removeBanner(){
-  setBimgStatus('Removing…');
-  try{
-    const r = await fetch(withClient('/api/campaign/banner'), { method:'DELETE', headers:{'Authorization':'Bearer '+pw()} });
-    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
-    const j = await r.json();
-    if(!r.ok){ setBimgStatus(j.error||'Remove failed.'); return; }
-    showBannerPreview('');
-    setBimgStatus('Banner removed.');
-  }catch(e){ setBimgStatus('Remove failed: '+(e.message||e)); }
-}
-$('#bimgInput').addEventListener('change', e=>{ if(e.target.files[0]) uploadBanner(e.target.files[0]); });
-const bzone = $('#bzone');
-bzone.addEventListener('dragover', e=>{e.preventDefault();bzone.classList.add('over');});
-bzone.addEventListener('dragleave', ()=>bzone.classList.remove('over'));
-bzone.addEventListener('drop', e=>{ e.preventDefault(); bzone.classList.remove('over'); if(e.dataTransfer.files[0]) uploadBanner(e.dataTransfer.files[0]); });
-$('#bimgRemove').addEventListener('click', e=>{ e.stopPropagation(); removeBanner(); });
-
-// Fill the form with the campaign's REAL saved values (not a guessed default),
-// so republishing a CSV never silently overwrites a name you've already set.
-function prefill(data){
-  if(!data) return;
-  $('#sClient').value = data.client || prettyClient;
-  $('#sCampaign').value = data.campaign || '';
-  const bt = data.summary && Number(data.summary.budgetTotal);
-  $('#sBudget').value = (bt && bt > 0) ? bt : '';
-  $('#markClient').textContent = data.client || prettyClient;
-  showBannerPreview(data.banner || '');
-}
-
-// wire up
 $('#fileInput').addEventListener('change', e=>{ if(e.target.files[0]) parseFile(e.target.files[0]); });
 const zone=$('#zone');
 zone.addEventListener('dragover', e=>{e.preventDefault();zone.classList.add('over');});
@@ -401,16 +588,16 @@ zone.addEventListener('drop', e=>{ e.preventDefault(); zone.classList.remove('ov
 $('#publishBtn').addEventListener('click', publish);
 $('#resetBtn').addEventListener('click', resetUpload);
 
-async function loadCurrent(wrongMsg){
+// ---- auth / load -----------------------------------------------------------
+async function loadCurrent(wrongMsg, quiet){
   try{
     const r = await fetch(withClient('/api/campaign'), { headers:{'Authorization':'Bearer '+pw()}, cache:'no-store' });
     if(r.status===401){ clrPw(); showGate(wrongMsg || 'Session expired.'); return; }
     const j = await r.json();
     prefill(j);
-    showApp();
-  }catch(e){ showGate('Network error.'); }
+    if(!quiet) showApp();
+  }catch(e){ if(!quiet) showGate('Network error.'); }
 }
-
 $('#unlockBtn').addEventListener('click', async()=>{
   const v=$('#pwInput').value.trim(); if(!v) return;
   setPw(v); $('#pwInput').value='';
@@ -425,28 +612,24 @@ $('#dgBtn').addEventListener('click', async()=>{
   if(!url){ out.textContent='Paste an Instagram reel link first.'; return; }
   try{
     const r=await fetch(withClient('/api/campaign/thumbtest?url='+encodeURIComponent(url)),{headers:hdr()});
-    const j=await r.json();
-    out.textContent=JSON.stringify(j,null,2);
+    out.textContent=JSON.stringify(await r.json(),null,2);
   }catch(e){ out.textContent='Error: '+(e.message||e); }
 });
-
 $('#dgResolve').addEventListener('click', async()=>{
   const out=$('#dgOut'); out.style.display=''; out.textContent='Resolving thumbnails… (this can take 20–40s, hang tight)';
   const btn=$('#dgResolve'); btn.disabled=true;
   try{
     const r=await fetch(withClient('/api/campaign/resolve'),{method:'POST',headers:hdr()});
-    const j=await r.json();
-    out.textContent=JSON.stringify(j,null,2)+'\n\nIf "withThumbnail" is less than "total", click again to continue. Then refresh the dashboard.';
+    out.textContent=JSON.stringify(await r.json(),null,2)+'\n\nIf "withThumbnail" is less than "total", click again to continue.';
   }catch(e){ out.textContent='Error: '+(e.message||e); }
   btn.disabled=false;
 });
 
-// Reflect the current client in dashboard links immediately; real saved
-// values (name, budget, banner) load and overwrite these once authed.
-$('#sClient').value = prettyClient;
+// Immediate labels; real saved values overwrite these once authed.
 $('#markClient').textContent = prettyClient;
+$('#slugChip').textContent = '/' + CLIENT;
 $('#pvDash').href = DASH;
-document.querySelectorAll('.top-right a[target="_blank"]').forEach(a => a.href = DASH);
+$('#liveLink').href = DASH;
 
 if(pw()){ loadCurrent(); } else { showGate(); }
 </script>
