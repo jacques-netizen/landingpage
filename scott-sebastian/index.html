@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison d'&Eacute;lites &middot; Growth Proposal &middot; Scott Sebastian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#19150F; --panel:#211A12; --panel-2:#241D14;
+    --text:#ECE4D2; --mute:#9C8F75;
+    --gold:#A88A4F; --gold-light:#C8A85A; --gold-soft:#E2CC92;
+    --hair:rgba(200,168,90,.20); --hair-soft:rgba(200,168,90,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .label.dim{color:var(--mute)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.2rem);line-height:1.12;letter-spacing:-0.01em}
+  .body-lg{font-size:clamp(1.02rem,1.45vw,1.18rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.15rem}
+  .section{padding:clamp(4.2rem,10vh,7.5rem) clamp(1.4rem,7vw,7.5rem);position:relative}
+  .wrap{max-width:1080px;margin:0 auto}
+  .rule{height:1px;background:var(--hair-soft);border:0}
+  .snum{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:block;margin-bottom:1.3rem}
+
+  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}.rv.d4{transition-delay:.28s}
+
+  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.3rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.8rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.25)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1000px){#dots{display:none}}
+
+  /* cover */
+  .cover{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(2rem,5vw,3.4rem) clamp(1.4rem,7vw,7.5rem)}
+  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.1rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .cover-mid{max-width:900px;padding:2.5rem 0}
+  .cover-mid .label{display:block;margin-bottom:1.7rem}
+  .cover h1{font-family:'EB Garamond',serif;font-weight:400;letter-spacing:-0.015em;font-size:clamp(2.2rem,6vw,4.3rem);line-height:1.06}
+  .cover-sub{font-size:clamp(1.02rem,1.8vw,1.26rem);color:var(--mute);margin-top:1.7rem;max-width:50ch;line-height:1.55;font-weight:300}
+  .cover-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* stand: proven vs missing */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2.6rem}
+  .col{border-top:2px solid var(--gold);padding-top:1.3rem}
+  .col.mutecol{border-top-color:var(--hair)}
+  .col .ck{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1rem}
+  .col.mutecol .ck{color:var(--mute)}
+  .col ul{list-style:none}
+  .col li{padding:0.85rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.97rem;color:var(--mute);line-height:1.6}
+  .col li:last-child{border-bottom:0}
+  .col li b{color:var(--text);font-weight:500}
+
+  .shift{margin-top:2.6rem;background:var(--panel);border-left:3px solid var(--gold);padding:clamp(1.6rem,3vw,2.2rem)}
+  .shift .label{display:block;margin-bottom:1rem}
+  .shift p{font-size:1.05rem;color:var(--text);line-height:1.7;max-width:70ch}
+  .shift p + p{margin-top:0.9rem;color:var(--mute);font-size:0.99rem}
+
+  /* phases */
+  .phase{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.7rem,3.4vw,2.5rem);margin-top:1.4rem}
+  .phase-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-bottom:1.2rem;border-bottom:1px solid var(--hair)}
+  .phase-head .pn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
+  .phase-head h3{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.4rem,2.8vw,1.95rem);line-height:1.15;margin-top:0.4rem}
+  .phase-head .pmeta{text-align:right;font-family:'Archivo',sans-serif}
+  .phase-head .pprice{font-weight:700;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--gold)}
+  .phase-head .ptime{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .deliver{list-style:none;margin-top:0.6rem}
+  .deliver li{padding:1.1rem 0;border-bottom:1px solid var(--hair-soft)}
+  .deliver li:last-child{border-bottom:0}
+  .deliver .dt{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.95rem;color:var(--text);margin-bottom:0.3rem}
+  .deliver .dd{font-size:0.96rem;color:var(--mute);line-height:1.62}
+
+  /* calculator */
+  .calc{margin-top:1.6rem;background:var(--panel-2);border:1px solid var(--hair);padding:clamp(1.5rem,3.2vw,2.2rem)}
+  .calc-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem}
+  .calc-head .cl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)}
+  .calc-head .cv{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.5rem;color:var(--gold)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);border:4px solid var(--panel-2);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);border:4px solid var(--panel-2);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
+  .calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1.8rem}
+  .co{background:var(--panel);padding:1.4rem 1rem;text-align:center}
+  .co .cov{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.25rem,3vw,1.8rem);color:var(--gold-soft);line-height:1}
+  .co .col2{font-family:'Archivo',sans-serif;font-size:0.57rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.55rem;line-height:1.4}
+
+  /* compounding callout */
+  .callout{margin-top:1.6rem;border:1px solid var(--gold-deep,var(--gold));background:var(--panel-2);padding:clamp(1.4rem,3vw,2rem)}
+  .callout .label{display:block;margin-bottom:0.8rem}
+  .callout p{font-size:1.02rem;color:var(--text);line-height:1.68;max-width:66ch}
+
+  /* optional block */
+  .optional{margin-top:2.4rem;border:1px dashed var(--hair);padding:clamp(1.5rem,3vw,2.1rem)}
+  .optional .label{display:block;margin-bottom:0.9rem;color:var(--mute)}
+  .optional p{font-size:0.99rem;color:var(--mute);line-height:1.68;max-width:70ch}
+  .optional p b{color:var(--text);font-weight:500}
+
+  /* timeline */
+  .tl{margin-top:2.4rem}
+  .tl-item{display:grid;grid-template-columns:170px 1fr;gap:1.4rem;padding:1.4rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
+  .tl-item:last-child{border-bottom:1px solid var(--hair-soft)}
+  .tl-when{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light)}
+  .tl-item p{font-size:0.99rem;color:var(--mute);line-height:1.65}
+
+  /* investment table */
+  .inv-wrap{margin-top:2.4rem;overflow-x:auto;border:1px solid var(--hair-soft)}
+  table.inv{width:100%;border-collapse:collapse;min-width:560px}
+  .inv th,.inv td{padding:1.1rem 1.3rem;text-align:left;border-bottom:1px solid var(--hair-soft);font-size:0.98rem}
+  .inv thead th{background:var(--panel);font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--hair)}
+  .inv td.k{color:var(--text)}
+  .inv td.t{color:var(--mute);font-size:0.92rem}
+  .inv td.v{font-family:'Archivo',sans-serif;font-weight:700;color:var(--gold-soft);white-space:nowrap}
+  .inv tr.total td{background:var(--panel-2)}
+  .inv tr.total td.v{color:var(--gold);font-size:1.2rem}
+  .inv tr:last-child td{border-bottom:0}
+  .inv-note{margin-top:1.2rem;font-size:0.92rem;color:var(--mute);line-height:1.6;max-width:66ch}
+
+  /* next steps */
+  .steps{list-style:none;counter-reset:st;margin-top:2.2rem}
+  .steps li{display:grid;grid-template-columns:42px 1fr;gap:1.1rem;padding:1.15rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
+  .steps li:last-child{border-bottom:1px solid var(--hair-soft)}
+  .steps li:before{counter-increment:st;content:counter(st,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;color:var(--gold)}
+  .steps li p{font-size:1rem;color:var(--text);line-height:1.6}
+  .steps a{color:var(--gold-soft)}
+
+  .cta{background:var(--panel);border:1px solid var(--hair-soft)}
+  .cta .wrap{padding:clamp(2.6rem,6vw,4.2rem) clamp(1.6rem,4vw,3.5rem)}
+  .signoff{margin-top:2.4rem;padding-top:1.7rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.25rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .fineprint{margin-top:2rem;font-size:0.84rem;color:var(--mute);line-height:1.6;max-width:76ch;opacity:0.85}
+
+  @media(max-width:760px){
+    .split,.calc-out{grid-template-columns:1fr}
+    .tl-item{grid-template-columns:1fr;gap:0.4rem}
+    .phase-head .pmeta{text-align:left}
+    .cover h1{font-size:2.1rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>Where things stand</span></a>
+  <a href="#s2"><span>The approach</span></a>
+  <a href="#s3"><span>Phase 1</span></a>
+  <a href="#s4"><span>Phase 2</span></a>
+  <a href="#s5"><span>Timeline</span></a>
+  <a href="#s6"><span>Investment</span></a>
+  <a href="#s7"><span>Next steps</span></a>
+</nav>
+
+<!-- COVER -->
+<header class="cover" id="s0">
+  <div class="cover-top">
+    <div class="mark">Maison <b>d'&Eacute;lites</b></div>
+    <div class="label dim">Growth Proposal &middot; Private &amp; Confidential</div>
+  </div>
+  <div class="cover-mid">
+    <span class="label rv">Prepared for Scott Sebastian</span>
+    <h1 class="rv d1">The demand is<br>already proven.</h1>
+    <p class="cover-sub rv d2">Brand positioning and distribution, in that order. Built so every dollar of visibility lands on a story that converts.</p>
+  </div>
+  <div class="cover-bot">
+    <div class="label dim rv d3">Based on our discovery call, 29 August 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- 1 WHERE THINGS STAND -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; Where things stand</span>
+    <h2 class="statement rv d1">You have already done the hardest part.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.7rem">Since 2021, word of mouth alone has carried the brand from friends in Hamburg to strangers stopping you in supermarkets and gyms to ask what you are wearing. Large-follower fragrance influencers are reaching out unprompted. <b>That is not a marketing achievement. That is product-market fit most brands spend years chasing.</b></p>
+
+    <div class="split rv d3">
+      <div class="col">
+        <div class="ck">Already proven</div>
+        <ul>
+          <li>Four years of <b>organic word of mouth</b>, with no paid distribution behind it.</li>
+          <li>Strangers asking about the scent in public, unprompted.</li>
+          <li><b>Fragrance influencers approaching you</b>, rather than the other way round.</li>
+          <li>Demand outpacing what you currently produce.</li>
+        </ul>
+      </div>
+      <div class="col mutecol">
+        <div class="ck">Not yet attached to anything</div>
+        <ul>
+          <li>Someone smells it, loves it, and has <b>no way to trace that moment back to you</b>. No story, no name, no packaging worth keeping.</li>
+          <li>No tracked <b>CAC, click-through or conversion data</b>, so nothing tells you what is working.</li>
+          <li>Packaging does not yet reflect the quality of what is inside, <b>down to print that rubs off the bottle</b> with handling.</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="body-lg rv d4" style="margin-top:2.4rem">None of that is a flaw in the brand. It is a gap between what the product has already proven and what the market has been shown, and closing that gap is what this proposal is for.</p>
+
+    <div class="shift rv d4">
+      <span class="label">The core shift</span>
+      <p>Right now the story is that a few guys make good perfume. The story with leverage is that demand for a limited, artisan-made fragrance has already outpaced supply, before a single dollar of paid distribution was spent.</p>
+      <p>That is the version that supports premium pricing, earns press and shelf conversations with names like Harrods and Selfridges, and gives influencers something worth talking about beyond another new fragrance.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 2 THE APPROACH -->
+<section class="section" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The approach</span>
+    <h2 class="statement rv d1">Two phases, in sequence.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.7rem">You said it yourself: you want this to be an asset you are proud of at 65, not a hobby that got lucky. That kind of longevity is not built by running paid distribution before the story is set. <b>Positioning first, then distribution, so every dollar of visibility lands on something that converts and compounds.</b></p>
+  </div>
+</section>
+
+<!-- 3 PHASE 1 -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; Phase one</span>
+    <div class="phase rv d1">
+      <div class="phase-head">
+        <div>
+          <div class="pn">Phase 1</div>
+          <h3>Brand positioning and story foundation</h3>
+        </div>
+        <div class="pmeta">
+          <div class="pprice">$3,000</div>
+          <div class="ptime">One-time &middot; 30 to 45 days</div>
+        </div>
+      </div>
+      <ul class="deliver">
+        <li>
+          <div class="dt">Brand narrative and positioning</div>
+          <div class="dd">Reframing the brand around proven scarcity and organic demand rather than a generic product story. This is the foundation every other asset is built on: packaging, content, and influencer conversations.</div>
+        </li>
+        <li>
+          <div class="dt">Packaging and visual identity alignment</div>
+          <div class="dd">Guidance so the new box and bottle direction you are finalising with your Turkey partner matches the upgraded story, including the unboxing details that turn a purchase into something worth keeping and sharing: insert card, story note, presentation.</div>
+        </li>
+        <li>
+          <div class="dt">Organic content build-out</div>
+          <div class="dd">Producing content and building a visible track record before any paid distribution goes live, so the campaign in Phase 2 has real momentum behind it rather than a cold start.</div>
+        </li>
+        <li>
+          <div class="dt">Measurement foundation</div>
+          <div class="dd">Basic tracking in place for CAC, click-through and conversion, so Phase 2 results are measurable from day one.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4 PHASE 2 -->
+<section class="section" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Phase two</span>
+    <div class="phase rv d1">
+      <div class="phase-head">
+        <div>
+          <div class="pn">Phase 2</div>
+          <h3>Clipping and distribution campaign</h3>
+        </div>
+        <div class="pmeta">
+          <div class="pprice">From $3,000</div>
+          <div class="ptime">Total &middot; launches after Phase 1</div>
+        </div>
+      </div>
+      <ul class="deliver">
+        <li>
+          <div class="dt">Structure</div>
+          <div class="dd">For campaign spend under $5,000 the retainer is a flat $1,000, one-time. A sensible opening campaign is $2,000 in spend plus $1,000 retainer, $3,000 in total.</div>
+        </li>
+        <li>
+          <div class="dt">Speed to launch</div>
+          <div class="dd">A live performance dashboard is built within 48 to 72 hours of kickoff. Editors are briefed and content is in production inside that same window.</div>
+        </li>
+        <li>
+          <div class="dt">Pricing benchmark</div>
+          <div class="dd">$1,000 per 1,000,000 views generated across platforms.</div>
+        </li>
+        <li>
+          <div class="dt">Expected performance</div>
+          <div class="dd">A floor of 0.5 to 1% of viewers clicking through to your site at this budget tier. Larger budgets typically move that closer to 2 to 3%.</div>
+        </li>
+      </ul>
+
+      <div class="calc">
+        <div class="calc-head">
+          <span class="cl">Campaign spend</span>
+          <span class="cv" id="spendVal">$2,000</span>
+        </div>
+        <input type="range" id="spend" min="1000" max="5000" step="250" value="2000" aria-label="Campaign spend">
+        <div class="range-ends"><span>$1,000</span><span>$5,000</span></div>
+        <div class="calc-out">
+          <div class="co"><div class="cov" id="outViews">2,000,000</div><div class="col2">Views generated</div></div>
+          <div class="co"><div class="cov" id="outVisits">10,000&ndash;20,000</div><div class="col2">Site visits at 0.5 to 1%</div></div>
+          <div class="co"><div class="cov" id="outTotal">$3,000</div><div class="col2">Total, spend plus $1,000 retainer</div></div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">Why this compounds</span>
+        <p>Under contract, our editors cannot remove campaign content once it is live. Paid ads stop delivering the moment spend stops. Clipped content keeps gaining views and engagement indefinitely, and it is yours to keep either way.</p>
+      </div>
+    </div>
+
+    <div class="optional rv d2">
+      <span class="label">Looking further ahead, optional</span>
+      <p>You mentioned wanting the option to eventually bring content production in-house, so the brand's marketing pipeline is fully owned by you rather than rented. That is a separate, later-stage engagement: we source, vet and train your own editor pipeline instead of running it for you. Scope depends on the size of the network, 100 editors against 1,000 or more, landing anywhere from <b>$5,000 to $10,000 and up</b>. It is not part of this proposal, and sits here as the natural next step once Phases 1 and 2 have proven out.</p>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 5 TIMELINE -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; Timeline</span>
+    <h2 class="statement rv d1">How the six weeks run.</h2>
+    <div class="tl rv d2">
+      <div class="tl-item"><span class="tl-when">Weeks 1 to 6</span><p>Phase 1: brand positioning, packaging alignment, and the organic content build-out.</p></div>
+      <div class="tl-item"><span class="tl-when">In parallel</span><p>Your team finalises packaging and production with the Turkey partner ahead of the next drop, targeted for October.</p></div>
+      <div class="tl-item"><span class="tl-when">After Phase 1</span><p>Phase 2 campaign launches. Dashboard live and content in production within 48 to 72 hours of kickoff.</p></div>
+    </div>
+  </div>
+</section>
+<hr class="rule">
+
+<!-- 6 INVESTMENT -->
+<section class="section" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Investment</span>
+    <h2 class="statement rv d1">What it costs to start.</h2>
+    <div class="inv-wrap rv d2">
+      <table class="inv">
+        <thead><tr><th>Item</th><th>Timing</th><th>Investment</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Phase 1, brand positioning</td><td class="t">30 to 45 days, starts now</td><td class="v">$3,000 one-time</td></tr>
+          <tr><td class="k">Phase 2, opening campaign</td><td class="t">After Phase 1</td><td class="v">$2,000 spend + $1,000 retainer</td></tr>
+          <tr class="total"><td class="k">Total to get started</td><td class="t">Phases 1 and 2</td><td class="v">$6,000</td></tr>
+          <tr><td class="k">In-house pipeline build-out, optional</td><td class="t">When ready</td><td class="v">$5,000 to $10,000+</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="inv-note rv d3">Phase 2 spend scales with your budget and readiness. The figures above reflect the opening-campaign floor discussed on our call, not a ceiling.</p>
+  </div>
+</section>
+
+<!-- 7 NEXT STEPS -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <div class="cta">
+      <div class="wrap">
+        <span class="snum rv">07 &middot; Next steps</span>
+        <h2 class="statement rv d1">Four moves.</h2>
+        <ol class="steps rv d2">
+          <li><p>Review this proposal and the call recording with your business partner and your Turkey partner.</p></li>
+          <li><p>Give us a go or a no-go, so we have clarity on timing.</p></li>
+          <li><p>We send the formal Scope of Work and contract, laid out in concrete deliverables.</p></li>
+          <li><p>We schedule a short onboarding call to sign, invoice and kick off. Onboarding itself takes about 30 minutes. <a href="https://book.maisondelites.com">book.maisondelites.com</a></p></li>
+        </ol>
+        <p class="body-lg rv d3" style="margin-top:2.2rem;color:var(--text)">You said the price point is not the issue, and that what you want is a structure you can trust before deploying capital. <b>That is what the sequencing above is built to give you.</b></p>
+        <div class="signoff rv d4">
+          <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+          <div class="s-r">Jacques &middot; Founder</div>
+        </div>
+        <p class="fineprint rv d4">This proposal reflects the scope and figures discussed on our 29 August 2026 call. It is a summary for review, not a binding agreement. Final deliverables and terms will be set out in the Scope of Work and contract to follow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:0.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  },{passive:true});
+
+  const dots=Array.from(document.querySelectorAll('#dots a'));
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const secIO=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const i=secs.indexOf(e.target);
+        dots.forEach((d,j)=>d.classList.toggle('on',j===i));
+      }
+    });
+  },{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&secIO.observe(s));
+
+  (function(){
+    const sl=document.getElementById('spend');
+    const sv=document.getElementById('spendVal');
+    const ov=document.getElementById('outViews');
+    const oc=document.getElementById('outVisits');
+    const ot=document.getElementById('outTotal');
+    const money=n=>'$'+Math.round(n).toLocaleString('en-US');
+    const num=n=>Math.round(n).toLocaleString('en-US');
+    function calc(){
+      const spend=parseFloat(sl.value);
+      const views=spend*1000;          // $1,000 per 1,000,000 views
+      sv.textContent=money(spend);
+      ov.textContent=num(views);
+      oc.textContent=num(views*0.005)+'–'+num(views*0.01);
+      ot.textContent=money(spend+1000); // flat $1,000 retainer under $5,000 spend
+    }
+    sl.addEventListener('input',calc); calc();
+  })();
+</script>
+</body>
+</html>
