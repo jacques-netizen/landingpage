@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brand Sheets · Admin</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14110D; --bg:#100E0A; --surface:#191510; --surface-2:#20190F;
+    --cream:#F4EEE2; --text:#EFE7D5; --muted:#9E9278;
+    --line:rgba(199,168,103,.16); --line-strong:rgba(199,168,103,.30);
+    --gold:#C7A867; --gold-bright:#E1BF73; --danger:#E58C77;
+    --serif:'EB Garamond', Garamond, serif; --sans:'Archivo', system-ui, sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg); color:var(--text); font-family:var(--sans); font-weight:300; line-height:1.6; -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+  .wrap{max-width:820px; margin:0 auto; padding:32px 20px 80px}
+  .eyebrow{font-weight:600; font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold)}
+  header{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:8px}
+  h1{font-family:var(--serif); font-weight:500; font-size:2rem; margin:8px 0 0; letter-spacing:-.01em}
+  .sub{color:var(--muted); font-size:13.5px; margin:4px 0 26px}
+  .lock{font-size:12px; color:var(--muted); text-decoration:none; border:1px solid var(--line-strong); padding:8px 14px; border-radius:8px; cursor:pointer}
+  .lock:hover{color:var(--text); border-color:var(--text)}
+
+  /* gate */
+  .gate{max-width:380px; margin:8vh auto 0; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:30px 26px}
+  .gate label{display:block; font-size:12px; letter-spacing:.04em; color:var(--muted); margin-bottom:8px}
+  input[type=password]{width:100%; padding:13px 14px; border-radius:10px; border:1px solid var(--line-strong); background:#0e0b07; color:var(--cream); font-size:1rem; font-family:var(--sans)}
+  input:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 20%, transparent)}
+  .btn{font-family:var(--sans); font-weight:500; font-size:14px; border:1px solid var(--gold); background:var(--gold); color:#1b1407; border-radius:10px; padding:12px 22px; cursor:pointer; transition:.16s}
+  .btn:hover{background:var(--gold-bright); border-color:var(--gold-bright)}
+  .btn.ghost{background:transparent; color:var(--gold); }
+  .gateMsg{color:var(--danger); font-size:12.5px; min-height:16px; margin-top:10px}
+  .hint{color:var(--muted); font-size:11.5px; margin-top:14px; line-height:1.5}
+
+  /* list */
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:12px; cursor:pointer; transition:.16s; display:flex; align-items:center; gap:14px}
+  .card:hover{border-color:var(--line-strong); background:var(--surface-2)}
+  .card .who{flex:1; min-width:0}
+  .card .nm{font-family:var(--serif); font-size:1.28rem; color:var(--text)}
+  .card .em{font-size:12.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .card .dt{font-size:11.5px; color:var(--muted); letter-spacing:.03em; text-align:right; flex:none; font-variant-numeric:tabular-nums}
+  .card .chev{color:var(--gold); flex:none; font-size:20px}
+  .empty{text-align:center; color:var(--muted); padding:60px 20px; font-family:var(--serif); font-size:1.15rem}
+
+  /* detail */
+  .back{background:none; border:none; color:var(--gold); font-family:var(--sans); font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; padding:6px 0; margin-bottom:8px}
+  .back:hover{color:var(--gold-bright)}
+  .det-head{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px 22px; margin:10px 0 8px}
+  .det-head .nm{font-family:var(--serif); font-size:1.7rem; color:var(--text)}
+  .det-head .nm span{color:var(--gold)}
+  .det-head .meta{font-size:13px; color:var(--muted); margin-top:6px; display:flex; gap:18px; flex-wrap:wrap}
+  .det-head a{color:var(--gold-bright); text-decoration:none}
+  .sec{border-top:1px solid var(--line); padding:20px 0}
+  .sec-h{font-weight:600; font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); margin-bottom:14px}
+  .qa{padding:8px 0}
+  .qa .l{font-size:12px; color:var(--muted)}
+  .qa .v{font-family:var(--serif); font-size:1.1rem; line-height:1.5; color:var(--text); white-space:pre-wrap; word-break:break-word; margin-top:2px}
+  .qa .v.empty{color:color-mix(in srgb,var(--muted) 70%, transparent); font-style:italic}
+  .tools{display:flex; gap:10px; margin:18px 0 4px; flex-wrap:wrap}
+  .status{font-size:12.5px; color:var(--muted); margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- gate -->
+  <div id="gate" class="gate" hidden>
+    <div class="eyebrow">Maison d'Élites</div>
+    <h1 style="font-size:1.5rem;margin-bottom:18px">Brand Sheets</h1>
+    <label for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••••">
+    <div class="gateMsg" id="gateMsg"></div>
+    <button class="btn" id="unlock" style="margin-top:14px;width:100%">Unlock</button>
+    <p class="hint">Same password as <b>/admin</b>. Kept only in this tab, sent over HTTPS.</p>
+  </div>
+
+  <!-- app -->
+  <div id="app" hidden>
+    <header>
+      <div>
+        <div class="eyebrow">Maison d'Élites</div>
+        <h1>Brand Sheets</h1>
+      </div>
+      <a class="lock" id="lock">Lock</a>
+    </header>
+    <p class="sub" id="sub">Every completed client brand sheet.</p>
+    <div id="view"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s,r){return (r||document).querySelector(s);};
+  function pw(){ try{return sessionStorage.getItem('mde_pw')||'';}catch(e){return '';} }
+  function setPw(v){ try{sessionStorage.setItem('mde_pw',v);}catch(e){} }
+  function clearPw(){ try{sessionStorage.removeItem('mde_pw');}catch(e){} }
+  function auth(){ return {'Authorization':'Bearer '+pw()}; }
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function fmtDate(s){ try{return new Date(s).toLocaleString();}catch(e){return s||'';} }
+
+  function showGate(msg){ $('#app').hidden=true; $('#gate').hidden=false; $('#gateMsg').textContent=msg||''; $('#pw').focus(); }
+  function showApp(){ $('#gate').hidden=true; $('#app').hidden=false; }
+
+  async function loadList(){
+    if(!pw()){ showGate(); return; }
+    var res;
+    try{ res=await fetch('/api/brandsheet',{headers:auth()}); }
+    catch(e){ showGate('Network error — try again.'); return; }
+    if(res.status===401){ clearPw(); showGate('Wrong password.'); return; }
+    if(!res.ok){ showGate('Error '+res.status); return; }
+    var data=await res.json();
+    showApp();
+    var subs=data.submissions||[];
+    $('#sub').textContent = subs.length ? (subs.length+' submission'+(subs.length>1?'s':'')+' · newest first') : '';
+    var view=$('#view');
+    if(!subs.length){ view.innerHTML='<div class="empty">No brand sheets yet.<br>Share <b>/brand-sheet</b> with your client to collect the first one.</div>'; return; }
+    view.innerHTML=subs.map(function(s){
+      return '<div class="card" data-id="'+esc(s.id)+'">'
+        +'<div class="who"><div class="nm">'+(esc(s.client_name)||'Unnamed')+(s.brand_name?' <span style="color:var(--gold)">· '+esc(s.brand_name)+'</span>':'')+'</div>'
+        +'<div class="em">'+(esc(s.client_email)||'—')+'</div></div>'
+        +'<div class="dt">'+esc(fmtDate(s.submittedAt))+'</div><span class="chev">›</span></div>';
+    }).join('');
+    Array.prototype.forEach.call(view.querySelectorAll('.card'),function(c){
+      c.onclick=function(){ loadOne(c.getAttribute('data-id')); };
+    });
+  }
+
+  async function loadOne(id){
+    var view=$('#view');
+    view.innerHTML='<div class="status">Loading…</div>';
+    var res;
+    try{ res=await fetch('/api/brandsheet?id='+encodeURIComponent(id),{headers:auth()}); }
+    catch(e){ view.innerHTML='<div class="status">Network error.</div>'; return; }
+    if(res.status===401){ clearPw(); showGate('Session expired.'); return; }
+    if(!res.ok){ view.innerHTML='<div class="status">Error '+res.status+'</div>'; return; }
+    var rec=(await res.json()).submission||{};
+    var secHtml=(rec.sections||[]).map(function(s){
+      var items=(s.items||[]).map(function(it){
+        var v=(it.value||'').trim();
+        return '<div class="qa"><div class="l">'+esc(it.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):'— not answered')+'</div></div>';
+      }).join('');
+      return '<div class="sec"><div class="sec-h">'+esc(s.title)+'</div>'+items+'</div>';
+    }).join('');
+    view.innerHTML='<button class="back" id="back">‹ All submissions</button>'
+      +'<div class="det-head"><div class="nm">'+(esc(rec.client_name)||'Unnamed')+(rec.brand_name?' <span>— '+esc(rec.brand_name)+'</span>':'')+'</div>'
+      +'<div class="meta">'
+        +(rec.client_email?'<span><a href="mailto:'+esc(rec.client_email)+'">'+esc(rec.client_email)+'</a></span>':'')
+        +'<span>'+esc(fmtDate(rec.submittedAt))+'</span>'
+      +'</div></div>'
+      +'<div class="tools"><button class="btn ghost" id="copyOne">Copy as text</button></div>'
+      +secHtml;
+    $('#back').onclick=loadList;
+    $('#copyOne').onclick=function(){
+      var lines=[];
+      if(rec.client_name) lines.push('Name: '+rec.client_name);
+      if(rec.brand_name) lines.push('Brand: '+rec.brand_name);
+      if(rec.client_email) lines.push('Email: '+rec.client_email);
+      lines.push('Submitted: '+fmtDate(rec.submittedAt)); lines.push('');
+      (rec.sections||[]).forEach(function(s){
+        lines.push('=== '+(s.title||'').toUpperCase()+' ===');
+        (s.items||[]).forEach(function(it){ lines.push((it.label||'')+':'); lines.push('  '+((it.value||'').trim()||'—')); lines.push(''); });
+        lines.push('');
+      });
+      var txt=lines.join('\n');
+      try{ navigator.clipboard.writeText(txt); }catch(e){}
+      this.textContent='Copied ✓'; var b=this; setTimeout(function(){b.textContent='Copy as text';},1600);
+    };
+    window.scrollTo(0,0);
+  }
+
+  $('#unlock').onclick=function(){ var v=$('#pw').value.trim(); if(!v){$('#gateMsg').textContent='Enter the password.';return;} setPw(v); loadList(); };
+  $('#pw').addEventListener('keydown',function(e){ if(e.key==='Enter') $('#unlock').click(); });
+  $('#lock').onclick=function(e){ e.preventDefault(); clearPw(); showGate(); };
+
+  loadList();
+})();
+</script>
+</body>
+</html>
