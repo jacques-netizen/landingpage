@@ -73,9 +73,16 @@
   .progress-track{height:3px; width:100%; background:transparent}
   .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--gold),var(--gold-bright)); transition:width .5s cubic-bezier(.4,0,.1,1)}
   .topbar-row{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 20px; max-width:900px; margin:0 auto}
-  .wordmark{font-family:var(--serif); font-size:1.05rem; letter-spacing:.01em; color:var(--text); display:flex; align-items:baseline; gap:8px}
+  .wordmark{font-family:var(--serif); font-size:1.05rem; letter-spacing:.01em; color:var(--text); display:flex; align-items:center; gap:9px}
   .wordmark b{font-weight:500}
   .wordmark .mark{font-family:var(--sans); font-weight:600; font-size:9.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold)}
+  .wordmark .txt{display:flex; align-items:baseline; gap:8px}
+
+  /* engraved monogram crest */
+  .crest{color:var(--gold); flex:none}
+  .crest.sm{width:26px; height:26px}
+  .crest.lg{width:64px; height:64px; margin:0 auto 4px; display:block}
+  .hero .crest.lg{color:var(--hero-gold)}
   .stepcount{font-family:var(--sans); font-weight:500; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-variant-numeric:tabular-nums}
 
   /* ---- layout ---- */
@@ -143,6 +150,10 @@
   .hero .meta .mv{font-family:var(--serif); font-size:1.5rem; color:var(--hero-gold); line-height:1}
   .hero .meta .ml{font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:color-mix(in srgb,var(--hero-text) 60%, transparent); margin-top:7px}
 
+  /* optional intro video (shows only if one is uploaded to /v/brand-intro) */
+  .intro-video{margin-top:26px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#000; box-shadow:var(--shadow); aspect-ratio:16/9}
+  .intro-video video{display:block; width:100%; height:100%; object-fit:cover}
+
   .about{margin-top:30px; font-family:var(--serif); font-size:1.06rem; line-height:1.6; color:var(--muted)}
   .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:26px 22px; margin-top:26px; box-shadow:0 1px 0 rgba(0,0,0,.02)}
   .card .card-h{font-family:var(--sans); font-weight:600; font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); margin-bottom:20px}
@@ -179,6 +190,9 @@
   .done .seal{width:78px; height:78px; margin:0 auto 26px; border-radius:50%; background:radial-gradient(circle at 50% 38%, color-mix(in srgb,var(--hero-gold) 30%, var(--hero-bg)), var(--hero-bg)); border:1px solid color-mix(in srgb,var(--gold) 45%, transparent); display:flex; align-items:center; justify-content:center; color:var(--gold-bright); font-size:34px; box-shadow:var(--shadow)}
   .done h1{font-family:var(--serif); font-weight:500; font-size:clamp(2rem,6vw,2.8rem); margin:0; color:var(--text)}
   .done p{font-family:var(--serif); font-size:1.14rem; color:var(--muted); max-width:40ch; margin:16px auto 0; line-height:1.55}
+  .done .cta-row{margin-top:30px; display:flex; flex-direction:column; align-items:center; gap:14px}
+  .done .redir{font-family:var(--sans); font-size:12px; color:var(--muted); letter-spacing:.02em}
+  .done .redir a{color:var(--gold); text-decoration:underline; cursor:pointer}
 
   /* fallback / status */
   .status{font-family:var(--sans); font-size:13px; margin-top:16px; padding:12px 16px; border-radius:10px; line-height:1.55; display:none}
@@ -195,7 +209,10 @@
   <div class="topbar">
     <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
     <div class="topbar-row">
-      <span class="wordmark"><span class="mark">Maison d'Élites</span> <b>Brand Discovery</b></span>
+      <span class="wordmark">
+        <svg class="crest sm" viewBox="0 0 64 64" aria-hidden="true" fill="none"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.2"/><circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="0.6" opacity="0.5"/><text x="32" y="41.5" text-anchor="middle" font-family="EB Garamond, serif" font-size="27" font-style="italic" fill="currentColor">M</text><text x="43.5" y="27" text-anchor="middle" font-family="EB Garamond, serif" font-size="13" font-style="italic" fill="currentColor">é</text></svg>
+        <span class="txt"><span class="mark">Maison d'Élites</span> <b>Brand Discovery</b></span>
+      </span>
       <span class="stepcount" id="stepcount"></span>
     </div>
   </div>
@@ -219,6 +236,8 @@
   // ---- where completed sheets are sent (same-origin Cloudflare endpoint) ----
   var ENDPOINT = "/api/brandsheet";
   var STORAGE_KEY = "mde_brandsheet_v1";
+  var BOOK_URL = "https://book.maisondelites.com"; // thank-you funnel
+  var REDIRECT_SECONDS = 12; // gentle auto-redirect after submit (0 = off)
 
   // ---------- questionnaire definition ----------
   var CHAPTERS = [
@@ -384,6 +403,7 @@
   function renderWelcome(){
     return ''
       +'<div class="hero">'
+        +'<svg class="crest lg" viewBox="0 0 64 64" aria-hidden="true" fill="none"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.2"/><circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="0.6" opacity="0.5"/><text x="32" y="41.5" text-anchor="middle" font-family="EB Garamond, serif" font-size="27" font-style="italic" fill="currentColor">M</text><text x="43.5" y="27" text-anchor="middle" font-family="EB Garamond, serif" font-size="13" font-style="italic" fill="currentColor">é</text></svg>'
         +'<div class="eyebrow"><span class="bar"></span> Client Brand Sheet <span class="bar"></span></div>'
         +'<h1>Let’s build <em>your</em> brand.</h1>'
         +'<p>A short, guided discovery. Answer honestly — the sharper your answers, the sharper the strategy we build around you.</p>'
@@ -392,6 +412,11 @@
           +'<div class="m"><div class="mv">≈10</div><div class="ml">Minutes</div></div>'
           +'<div class="m"><div class="mv">✓</div><div class="ml">Auto-saves</div></div>'
         +'</div>'
+      +'</div>'
+      +'<div class="intro-video" id="introVideo" hidden>'
+        +'<video id="introVid" playsinline controls preload="metadata" poster="/media/welcome-poster.jpg">'
+          +'<source src="/v/brand-intro" type="video/mp4">'
+        +'</video>'
       +'</div>'
       +'<div class="card">'
         +'<div class="card-h">First, your details</div>'
@@ -453,11 +478,28 @@
 
   function renderDone(){
     document.getElementById("navbar").hidden=true;
+    var redir = REDIRECT_SECONDS>0
+      ? '<p class="redir">Taking you to book your call in <span id="cd">'+REDIRECT_SECONDS+'</span>s · <a id="stay">stay here</a></p>'
+      : '';
     return '<div class="done">'
-      +'<div class="seal">✓</div>'
+      +'<svg class="crest lg" viewBox="0 0 64 64" aria-hidden="true" fill="none" style="color:var(--gold)"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.2"/><circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="0.6" opacity="0.5"/><text x="32" y="41.5" text-anchor="middle" font-family="EB Garamond, serif" font-size="27" font-style="italic" fill="currentColor">M</text><text x="43.5" y="27" text-anchor="middle" font-family="EB Garamond, serif" font-size="13" font-style="italic" fill="currentColor">é</text></svg>'
       +'<h1>Received. Thank you.</h1>'
-      +'<p>Your brand sheet is on its way to the Maison d’Élites team. We’ll be in touch shortly — keep an eye on your inbox.</p>'
+      +'<p>Your brand sheet is on its way to the Maison d’Élites team. The natural next step is a call — let’s turn these answers into a plan.</p>'
+      +'<div class="cta-row">'
+        +'<a class="btn btn-primary wide" href="'+BOOK_URL+'">Book your discovery call →</a>'
+        + redir
+      +'</div>'
       +'</div>';
+  }
+  function startRedirect(){
+    if(REDIRECT_SECONDS<=0) return;
+    var left=REDIRECT_SECONDS, cd=document.getElementById("cd"), stay=document.getElementById("stay"), stopped=false;
+    if(stay) stay.onclick=function(){ stopped=true; var r=document.querySelector(".done .redir"); if(r) r.textContent="You can book whenever you’re ready."; };
+    var t=setInterval(function(){
+      if(stopped){ clearInterval(t); return; }
+      left--; if(cd) cd.textContent=left;
+      if(left<=0){ clearInterval(t); if(!stopped) window.location.href=BOOK_URL; }
+    },1000);
   }
 
   // ---------- build ordered sections (for review + payload) ----------
@@ -535,6 +577,17 @@
     // focus first control
     var first=stage.querySelector("input,textarea,button.rev-edit");
     if(first && stepIndex!==0 && first.focus) { try{first.focus({preventScroll:true});}catch(e){} }
+    if(stepIndex===0) wireIntroVideo();
+  }
+
+  // Show the welcome video only if one has actually been uploaded to /v/brand-intro.
+  // If it 404s, the <video> fires 'error' and the frame stays hidden.
+  function wireIntroVideo(){
+    var box=document.getElementById("introVideo"), vid=document.getElementById("introVid");
+    if(!box||!vid) return;
+    vid.addEventListener("loadedmetadata", function(){ box.hidden=false; }, {once:true});
+    vid.addEventListener("error", function(){ box.hidden=true; }, {once:true});
+    try{ vid.load(); }catch(e){}
   }
 
   function next(){
@@ -588,6 +641,7 @@
         document.getElementById("stage").innerHTML=renderDone();
         document.getElementById("pfill").style.width="100%";
         document.getElementById("stepcount").textContent="Complete";
+        window.scrollTo(0,0); startRedirect();
       })
       .catch(function(err){
         next.disabled=false; next.innerHTML="Send my brand sheet";
