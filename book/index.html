@@ -39,16 +39,14 @@
     // ── Paste your Cal.com booking link here to switch over (e.g. "jacques/discovery-call").
     //    While this is empty, the page uses the existing Calendly embed.
     var CAL_ACCOUNT = "maison-d-elites-tvxf8y";
-    var CAL_DEFAULT = "discovery-call";
-    var SOURCE_MAP  = {
-      "matta": "matt"
-    };
-    var CAL_LINK = CAL_ACCOUNT + "/" + (function () {
+    var CAL_EVENT = "discovery-call";
+    var CAL_LINK = CAL_ACCOUNT + "/" + CAL_EVENT + (function () {
       try {
         var src = new URLSearchParams(window.location.search).get("utm_source");
-        return (src && SOURCE_MAP[src.trim().toLowerCase()]) || CAL_DEFAULT;
+        src = src ? src.trim().slice(0, 60) : "";
+        return src ? ("?utmSource=" + encodeURIComponent(src)) : "";
       } catch (e) {
-        return CAL_DEFAULT;
+        return "";
       }
     })();
     var CALENDLY  = "https://calendly.com/jacques-maisondelitesagency/discovery-call";
