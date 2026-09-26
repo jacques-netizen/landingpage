@@ -113,7 +113,7 @@
     if(!pw()){ showGate(); return; }
     var res;
     try{ res=await fetch('/api/brandsheet',{headers:auth()}); }
-    catch(e){ showGate('Network error — try again.'); return; }
+    catch(e){ showGate('Network error. Try again.'); return; }
     if(res.status===401){ clearPw(); showGate('Wrong password.'); return; }
     if(!res.ok){ showGate('Error '+res.status); return; }
     var data=await res.json();
@@ -125,7 +125,7 @@
     view.innerHTML=subs.map(function(s){
       return '<div class="card" data-id="'+esc(s.id)+'">'
         +'<div class="who"><div class="nm">'+(esc(s.client_name)||'Unnamed')+(s.brand_name?' <span style="color:var(--gold)">· '+esc(s.brand_name)+'</span>':'')+'</div>'
-        +'<div class="em">'+(esc(s.client_email)||'—')+'</div></div>'
+        +'<div class="em">'+(esc(s.client_email)||'No email')+'</div></div>'
         +'<div class="dt">'+esc(fmtDate(s.submittedAt))+'</div><span class="chev">›</span></div>';
     }).join('');
     Array.prototype.forEach.call(view.querySelectorAll('.card'),function(c){
@@ -145,12 +145,12 @@
     var secHtml=(rec.sections||[]).map(function(s){
       var items=(s.items||[]).map(function(it){
         var v=(it.value||'').trim();
-        return '<div class="qa"><div class="l">'+esc(it.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):'— not answered')+'</div></div>';
+        return '<div class="qa"><div class="l">'+esc(it.label)+'</div><div class="v'+(v?'':' empty')+'">'+(v?esc(v):'Not answered')+'</div></div>';
       }).join('');
       return '<div class="sec"><div class="sec-h">'+esc(s.title)+'</div>'+items+'</div>';
     }).join('');
     view.innerHTML='<button class="back" id="back">‹ All submissions</button>'
-      +'<div class="det-head"><div class="nm">'+(esc(rec.client_name)||'Unnamed')+(rec.brand_name?' <span>— '+esc(rec.brand_name)+'</span>':'')+'</div>'
+      +'<div class="det-head"><div class="nm">'+(esc(rec.client_name)||'Unnamed')+(rec.brand_name?' <span>· '+esc(rec.brand_name)+'</span>':'')+'</div>'
       +'<div class="meta">'
         +(rec.client_email?'<span><a href="mailto:'+esc(rec.client_email)+'">'+esc(rec.client_email)+'</a></span>':'')
         +'<span>'+esc(fmtDate(rec.submittedAt))+'</span>'
@@ -166,7 +166,7 @@
       lines.push('Submitted: '+fmtDate(rec.submittedAt)); lines.push('');
       (rec.sections||[]).forEach(function(s){
         lines.push('=== '+(s.title||'').toUpperCase()+' ===');
-        (s.items||[]).forEach(function(it){ lines.push((it.label||'')+':'); lines.push('  '+((it.value||'').trim()||'—')); lines.push(''); });
+        (s.items||[]).forEach(function(it){ lines.push((it.label||'')+':'); lines.push('  '+((it.value||'').trim()||'-')); lines.push(''); });
         lines.push('');
       });
       var txt=lines.join('\n');

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Brand Discovery · Maison d'Élites</title>
-<meta name="description" content="A guided brand-discovery questionnaire — tell us who you are, who you serve, and what makes you different.">
+<meta name="description" content="A guided brand-discovery questionnaire: who you are, who you serve, and what makes you different.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -243,7 +243,7 @@
   var CHAPTERS = [
     {
       id:"personal", no:"01", kicker:"Who you are", title:"Personal Brand",
-      lede:"Start with the human behind the brand — in your own words.",
+      lede:"Start with the human behind the brand, in your own words.",
       fields:[
         {k:"my_brand", q:"Your brand, in one line", type:"text", ph:"e.g. I help ambitious founders build a magnetic personal brand"},
         {k:"known_for", q:"The things people know you for", type:"list", help:"Add at least 4.", start:4, min:1, max:7, ph:"Something you’re recognised for…"},
@@ -253,7 +253,7 @@
     },
     {
       id:"dream", no:"02", kicker:"Who you’re for", title:"Dream Follower & ICP",
-      lede:"Your <em>dream follower</em> is broader than your ICP — but shares the same values and belief system.",
+      lede:"Your <em>dream follower</em> is broader than your ICP, but shares the same values and belief system.",
       groups:[
         {h:"Dream Follower", fields:[
           {k:"df_story", q:"Who are they? What’s their story?", type:"textarea"},
@@ -262,7 +262,7 @@
           {k:"df_fears", q:"Their deepest fears?", type:"textarea"},
           {k:"df_struggles", q:"Their biggest struggles right now?", type:"textarea"}
         ]},
-        {h:"ICP — Ideal Customer Profile", fields:[
+        {h:"ICP · Ideal Customer Profile", fields:[
           {k:"icp_income", q:"How much are they currently making?", type:"text"},
           {k:"icp_business", q:"What business are they in?", type:"text"},
           {k:"icp_current", q:"Current situation", type:"textarea"},
@@ -278,7 +278,7 @@
       lede:"The story, values and personality people will fall for.",
       groups:[
         {fields:[
-          {k:"bi_origin", q:"Origin story — why will people love you for you?", type:"long"},
+          {k:"bi_origin", q:"Origin story: why will people love you for you?", type:"long"},
           {k:"bi_values", q:"What are your values?", type:"textarea"},
           {k:"bi_beliefs", q:"What are your beliefs?", type:"textarea"},
           {k:"bi_personality", q:"Your personality?", type:"textarea"},
@@ -299,7 +299,7 @@
         {k:"biz_offer", q:"What’s your offer?", type:"textarea"},
         {k:"biz_mrr", q:"Monthly recurring revenue (MRR)", type:"text", ph:"e.g. £12k / month"},
         {k:"biz_margin", q:"Profit margin", type:"text", ph:"e.g. ~70%"},
-        {k:"biz_proof", q:"Case studies & testimonials", type:"long", help:"Names, numbers, results — whatever you can point to."},
+        {k:"biz_proof", q:"Case studies & testimonials", type:"long", help:"Names, numbers, results, whatever you can point to."},
         {k:"biz_promise", q:"What do you promise your customers?", type:"textarea"}
       ]
     },
@@ -406,7 +406,7 @@
         +'<svg class="crest lg" viewBox="0 0 64 64" aria-hidden="true" fill="none"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.2"/><circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="0.6" opacity="0.5"/><text x="32" y="41.5" text-anchor="middle" font-family="EB Garamond, serif" font-size="27" font-style="italic" fill="currentColor">M</text><text x="43.5" y="27" text-anchor="middle" font-family="EB Garamond, serif" font-size="13" font-style="italic" fill="currentColor">é</text></svg>'
         +'<div class="eyebrow"><span class="bar"></span> Client Brand Sheet <span class="bar"></span></div>'
         +'<h1>Let’s build <em>your</em> brand.</h1>'
-        +'<p>A short, guided discovery. Answer honestly — the sharper your answers, the sharper the strategy we build around you.</p>'
+        +'<p>A short, guided discovery. Answer honestly. The sharper your answers, the sharper the strategy we build around you.</p>'
         +'<div class="meta">'
           +'<div class="m"><div class="mv">6</div><div class="ml">Chapters</div></div>'
           +'<div class="m"><div class="mv">≈10</div><div class="ml">Minutes</div></div>'
@@ -426,7 +426,7 @@
           +fieldHTML({k:"client_email", q:"Your email", type:"email", required:true, help:"So we can follow up with you directly.", ph:"you@email.com"})
         +'</div>'
       +'</div>'
-      +'<p class="about">Everything you type is saved on this device as you go — you can close the tab and pick up where you left off.</p>';
+      +'<p class="about">Everything you type is saved on this device as you go, so you can close the tab and pick up where you left off.</p>';
   }
 
   function renderChapter(ch){
@@ -453,7 +453,7 @@
     var secs = buildSections();
     var html = '<div class="eyebrow"><span class="no">✓</span><span class="bar"></span>Final look</div>'
       +'<h1 class="chapter">Review & send</h1>'
-      +'<p class="lede">Give it a once-over. You can jump back into any section — nothing sends until you hit <em>Send my brand sheet</em>.</p>'
+      +'<p class="lede">Give it a once-over. You can jump back into any section. Nothing sends until you hit <em>Send my brand sheet</em>.</p>'
       +'<div style="margin-top:30px">';
     secs.forEach(function(s){
       html += '<div class="rev-sec"><div class="rev-head"><h3>'+esc(s.title)+'</h3>'
@@ -462,14 +462,14 @@
       s.items.forEach(function(it){
         var v=(it.value||"").trim();
         html += '<div class="rev-item"><span class="rl">'+esc(it.label)+'</span>'
-          + '<span class="rv'+(v?'':' empty')+'">'+(v?esc(v):"— not answered")+'</span></div>';
+          + '<span class="rv'+(v?'':' empty')+'">'+(v?esc(v):"Not answered")+'</span></div>';
       });
       html += '</div>';
     });
     html += '</div>'
       + '<div class="status err" id="status"></div>'
       + '<div class="fallback" id="fallback" hidden>'
-        + '<p class="help" style="margin-bottom:8px">Couldn’t send automatically. Copy everything below and email it to us — nothing is lost.</p>'
+        + '<p class="help" style="margin-bottom:8px">Couldn’t send automatically. Copy everything below and email it to us. Nothing is lost.</p>'
         + '<textarea id="fallbackText" readonly></textarea>'
         + '<button type="button" class="btn btn-ghost" id="copyBtn" style="margin-top:10px">Copy all answers</button>'
       + '</div>';
@@ -484,7 +484,7 @@
     return '<div class="done">'
       +'<svg class="crest lg" viewBox="0 0 64 64" aria-hidden="true" fill="none" style="color:var(--gold)"><circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="1.2"/><circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="0.6" opacity="0.5"/><text x="32" y="41.5" text-anchor="middle" font-family="EB Garamond, serif" font-size="27" font-style="italic" fill="currentColor">M</text><text x="43.5" y="27" text-anchor="middle" font-family="EB Garamond, serif" font-size="13" font-style="italic" fill="currentColor">é</text></svg>'
       +'<h1>Received. Thank you.</h1>'
-      +'<p>Your brand sheet is on its way to the Maison d’Élites team. The natural next step is a call — let’s turn these answers into a plan.</p>'
+      +'<p>Your brand sheet is on its way to the Maison d’Élites team. The natural next step is a call, so let’s turn these answers into a plan.</p>'
       +'<div class="cta-row">'
         +'<a class="btn btn-primary wide" href="'+BOOK_URL+'">Book your discovery call →</a>'
         + redir
@@ -516,7 +516,7 @@
       if(ch.type==="competitors"){
         state.competitors.forEach(function(c,i){
           if((c.name||"").trim()||(c.likes||"").trim()){
-            items.push({label:"Competitor "+(i+1)+(c.name?" — "+c.name:""), value:c.likes});
+            items.push({label:"Competitor "+(i+1)+(c.name?" · "+c.name:""), value:c.likes});
           }
         });
         if(!items.length) items.push({label:"Competitors", value:""});
@@ -604,12 +604,12 @@
 
   // ---------- submit ----------
   function plainText(){
-    var lines=["MAISON D’ÉLITES — BRAND SHEET","", "Submitted: "+new Date().toLocaleString(),""];
+    var lines=["MAISON D’ÉLITES · BRAND SHEET","", "Submitted: "+new Date().toLocaleString(),""];
     buildSections().forEach(function(s){
       lines.push("─── "+s.title.toUpperCase()+" ───");
       s.items.forEach(function(it){
         lines.push(it.label+":");
-        lines.push("  "+((it.value||"").trim()||"—"));
+        lines.push("  "+((it.value||"").trim()||"-"));
         lines.push("");
       });
       lines.push("");
@@ -645,7 +645,7 @@
       })
       .catch(function(err){
         next.disabled=false; next.innerHTML="Send my brand sheet";
-        if(status){ status.textContent="We couldn’t send it automatically ("+err.message+"). Your answers are safe — copy them below and email us."; status.classList.add("show"); }
+        if(status){ status.textContent="We couldn’t send it automatically ("+err.message+"). Your answers are safe. Copy them below and email us."; status.classList.add("show"); }
         if(fb){ fb.hidden=false; var t=document.getElementById("fallbackText"); if(t) t.value=plainText(); }
         var cb=document.getElementById("copyBtn");
         if(cb) cb.onclick=function(){ var t=document.getElementById("fallbackText"); t.select();
