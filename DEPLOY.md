@@ -137,6 +137,36 @@ Once the right query is known, it gets baked into the cron sync alongside the
 CSV path. If the API does not expose the data, the fallback is a scheduled
 headless-login scraper that POSTs to `/api/campaign/import`.
 
+## Client Brand Sheet
+
+A guided brand-discovery questionnaire to send a client, and a private page to
+read what they submit.
+
+| URL | Who | What |
+|-----|-----|------|
+| `/brand-sheet` | The client (share the link) | A polished, multi-step brand sheet (personal brand, dream follower/ICP, brand + business + industry identity, competitors). Auto-saves as they type; on submit it's stored and you're notified. |
+| `/brand-sheet-admin` | You (password-gated) | Reads every submission. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/api/brandsheet` | — | `POST` (public) stores + notifies; `GET` (authed) lists/returns submissions. |
+
+**How you get the answers** — each submission is:
+1. **Stored in R2** (`brandsheets/…json`) — the durable record, always readable
+   at `/brand-sheet-admin`. Works out of the box (needs the `MEDIA` binding).
+2. **Pinged to Discord** — if `DISCORD_WEBHOOK_URL` is set (already used by
+   `/api/notify`), you get an instant ping with the client's name/email and a
+   pointer to the admin page.
+3. **Emailed to you** — once you add two variables on the Worker
+   (Settings → Variables and Secrets):
+   - Secret **`RESEND_API_KEY`** — a key from [resend.com](https://resend.com)
+     (free tier). To send from your own domain, verify `maisondelites.com`
+     there; until then Resend only delivers to the address on your Resend
+     account.
+   - Plaintext **`BRANDSHEET_TO`** — the inbox to receive sheets at.
+   - Optional **`BRANDSHEET_FROM`** — e.g. `Maison d'Élites <brand@maisondelites.com>`
+     (a verified sender). Defaults to Resend's onboarding sender.
+
+   Email is best-effort: if it isn't configured, storage + Discord still capture
+   every answer, so nothing is ever lost.
+
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the
   `functions/` folder) if you ever switch — same handlers power both.
