@@ -120,6 +120,8 @@
   .vids.two{grid-template-columns:repeat(2,1fr)}
   .vids.one{grid-template-columns:1fr;max-width:760px}
   .vids.shorts{grid-template-columns:repeat(2,minmax(0,290px));justify-content:start}
+  .vids.tt{grid-template-columns:repeat(auto-fit,minmax(0,320px));justify-content:start}
+  .vid .frame.tt{aspect-ratio:325/740}
   .vid{border:1px solid var(--hair-soft);background:#000}
   .vid .frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden}
   .vid .frame.vert{aspect-ratio:9/16}
@@ -244,10 +246,19 @@
     <p class="body-lg rv d3">That conversation is still unowned. The opposition is loud but runs on unpaid volunteers who post in bursts. The campaign's own assets, the City Boy Movement's ward structures, the planned 4,000-influencer network and the campaign council's youth framework, are strong on the ground but have no engine to keep them supplied with content every day.</p>
     <p class="body-lg rv d3"><b>We are that engine.</b> We take every speech, interview and moment of the President, cut it into thousands of short videos, and distribute them daily through a large network of Nigerian creators on TikTok, Instagram, YouTube and Facebook, in English, Pidgin, Yoruba and Hausa. The same content feeds the influencer network, the City Boy Movement and WhatsApp.</p>
 
-    <div class="figs rv d4">
-      <div class="fig"><div class="fv"><span class="cu" data-target="100">100</span> to <span class="cu" data-target="150">150</span>M</div><div class="fl">Guaranteed views before 15 January 2027</div></div>
-      <div class="fig"><div class="fv">USD <span class="cu" data-target="500" data-comma="1">500</span>,000</div><div class="fl">Investment, paid in full before launch</div></div>
-      <div class="fig"><div class="fv"><span id="weeksLeft">15</span> weeks</div><div class="fl">Between launch and the close of campaigning</div></div>
+    <div class="calc rv d4">
+      <div class="calc-head">
+        <span class="cl">Campaign budget</span>
+        <span class="cv" id="budgetVal">USD 500,000</span>
+      </div>
+      <input type="range" id="budget" min="100000" max="1000000" step="25000" value="500000" aria-label="Campaign budget">
+      <div class="range-ends"><span>USD 100,000</span><span>USD 1,000,000</span></div>
+      <div class="calc-out">
+        <div class="co"><div class="cov" id="cpmViews">166.7M</div><div class="col2">Views delivered at a $3 CPM</div></div>
+        <div class="co"><div class="cov">$3.00</div><div class="col2">Cost per thousand views</div></div>
+        <div class="co"><div class="cov" id="cpmDaily">1.6M</div><div class="col2">Views per day across the window</div></div>
+      </div>
+      <p class="calc-note">Distribution is priced at a flat <b>$3 CPM</b>, three dollars per thousand verified views. Creators are paid only for views that clear review, so the budget converts directly into reach rather than into fees.</p>
     </div>
   </div>
 </section>
@@ -367,13 +378,13 @@
         <dd>He joined TikTok on 1 June 2024 at a UFC event, passed a million followers within hours, and his first video drew more than 24 million views. The Adin Ross livestream peaked above 500,000 live viewers. <b>The Joe Rogan interview drew nearly 30 million YouTube views in its first 24 hours.</b> Allied influencer operations claimed a combined reach of more than 140 million people.</dd>
       </dl>
 
-      <div class="vids one">
+      <div class="vids tt">
         <div class="vid">
-          <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/hBMoPUAeLnY" title="Joe Rogan Experience #2219, Donald Trump" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-          <div class="vcap"><div class="vt">Joe Rogan Experience #2219, Donald Trump</div><div class="vs">The source appearance &middot; three hours &middot; nearly 30M views in 24 hours</div></div>
+          <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7432830083397635361" title="Trump Clips, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+          <div class="vcap"><div class="vt">@trumpclipsusa</div><div class="vs">A clip account, not the campaign &middot; TikTok</div></div>
         </div>
       </div>
-      <p class="vid-note">That is the source. The clip layer is what made him inescapable: every long-form appearance cut into thousands of short clips by the campaign's own accounts, allied accounts and fans, then posted across TikTok, Reels, Shorts and X for weeks. Coverage at the time called 2024 the clippers' election. Moments were built to be clipped: the fryer at a McDonald's in Pennsylvania, the garbage truck the day after an opponent's remark. Each travelled far beyond anyone who watched live.</p>
+      <p class="vid-note">That account is not the campaign. It is one of thousands that formed the clip layer, and it is what made him inescapable: every long-form appearance cut into thousands of short clips by the campaign's own accounts, allied accounts and fans, then posted across TikTok, Reels, Shorts and X for weeks. Coverage at the time called 2024 the clippers' election. Moments were built to be clipped: the fryer at a McDonald's in Pennsylvania, the garbage truck the day after an opponent's remark. Each travelled far beyond anyone who watched live.</p>
 
       <dl>
         <dt>The result</dt>
@@ -400,14 +411,10 @@
         <dd>One video reached 4.5 million views on Instagram, <b>56% of them from people who did not follow him</b>. A video about Manhattan traffic reached 2.3 million, almost half from non-followers. The campaign's stated goal: if you are on your phone in New York City, you are going to see him.</dd>
       </dl>
 
-      <div class="vids shorts">
+      <div class="vids tt">
         <div class="vid">
-          <div class="frame vert"><iframe src="https://www.youtube-nocookie.com/embed/8MLuQuquutY" title="Mamdani on recruiting Trump voters" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-          <div class="vcap"><div class="vt">Mamdani on recruiting Trump voters</div><div class="vs">NBC New York</div></div>
-        </div>
-        <div class="vid">
-          <div class="frame vert"><iframe src="https://www.youtube-nocookie.com/embed/EQWvKXK0L9c" title="Mamdani's focus on the Bronx" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-          <div class="vcap"><div class="vt">The Bronx, days before the vote</div><div class="vs">NBC News</div></div>
+          <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7524525601084984606" title="Zohran Mamdani, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+          <div class="vcap"><div class="vt">@zohran_k_mamdani</div><div class="vs">The campaign's own daily vertical &middot; TikTok</div></div>
         </div>
       </div>
 
@@ -454,23 +461,19 @@
       </div>
     </div>
 
-    <h3 class="sub rv d3">The source material</h3>
-    <p class="body-lg rv d3">Every national address, interview and appearance is raw material. Each one below is a full-length broadcast that the engine turns into hundreds of vertical clips, in four languages, on the same day it airs.</p>
-    <div class="vids three rv d3">
+    <h3 class="sub rv d3">The clip layer already exists</h3>
+    <p class="body-lg rv d3">Clips of the President already circulate on Nigerian TikTok, cut and captioned by individual creators with no brief, no budget and no coordination. The raw appetite is there. What is missing is direction, volume and measurement.</p>
+    <div class="vids tt rv d3">
       <div class="vid">
-        <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/6AKnu_W9SGk" title="Democracy Day 2026 address" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <div class="vcap"><div class="vt">Democracy Day address, 12 June 2026</div><div class="vs">Channels Television</div></div>
+        <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7515055218770447623" title="Tinubu clip, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+        <div class="vcap"><div class="vt">@a_ayofee</div><div class="vs">Responding to the one-party-state line</div></div>
       </div>
       <div class="vid">
-        <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/Q3W9F4Ue34E" title="Independence Day speech" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <div class="vcap"><div class="vt">Independence Day speech</div><div class="vs">TVC News Nigeria</div></div>
-      </div>
-      <div class="vid">
-        <div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/E6cruMPhCHI" title="New Year address to the nation" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <div class="vcap"><div class="vt">Welcoming Nigerians to 2026</div><div class="vs">NTA Network</div></div>
+        <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7401544100404595974" title="Tinubu campaign speech clip, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+        <div class="vcap"><div class="vt">@a_ayofee</div><div class="vs">A campaign speech, cut and captioned</div></div>
       </div>
     </div>
-    <p class="vid-note">Three broadcasts. Under the current setup they reach the people who already watch national television. Under this engine, the same three become several thousand clips in English, Pidgin, Yoruba and Hausa, on the feeds of people who have never watched a national address in their lives.</p>
+    <p class="vid-note">Two creators, working unpaid and unprompted. An engine does this at the scale of thousands of clips a week, in English, Pidgin, Yoruba and Hausa, aimed at the states and age groups that decide the race, with every view counted.</p>
 
     <h3 class="sub rv">Audiences by region and language</h3>
     <div class="tw rv">
@@ -557,10 +560,10 @@
       <div class="range-ends"><span>1 Oct 2026</span><span>15 Dec 2026</span></div>
       <div class="calc-out">
         <div class="co"><div class="cov" id="outWeeks">15.1</div><div class="col2">Weeks of distribution</div></div>
-        <div class="co"><div class="cov" id="outViews">100M to 150M</div><div class="col2">Views delivered before 15 January</div></div>
+        <div class="co"><div class="cov" id="outViews">166.7M</div><div class="col2">Views delivered before 15 January</div></div>
         <div class="co"><div class="cov" id="outLost">0</div><div class="col2">Views lost to a later start</div></div>
       </div>
-      <p class="calc-note">The guarantee of 100 to 150 million assumes distribution from 1 October. The engine delivers at a steady weekly rate, so a later start does not compress into the same total. <b>Every week before launch is reach the campaign will not get back before 15 January.</b></p>
+      <p class="calc-note">The figure assumes distribution from 1 October at a $3 CPM on a USD 500,000 budget. The engine delivers at a steady weekly rate, so a later start does not compress into the same total. <b>Every week before launch is reach the campaign will not get back before 15 January.</b></p>
     </div>
   </div>
 </section>
@@ -614,8 +617,8 @@
     <div class="terms rv d3">
       <div class="term">
         <div class="tl">Guarantee</div>
-        <div class="tv">100 to 150M views</div>
-        <div class="td2">Before 15 January 2027.</div>
+        <div class="tv">166.7M views</div>
+        <div class="td2">At a $3 CPM on a USD 500,000 budget, delivered before 15 January 2027.</div>
       </div>
       <div class="term">
         <div class="tl">Investment</div>
@@ -701,19 +704,40 @@
   },{threshold:0.4});
   const bars=document.getElementById('bars'); if(bars) barIO.observe(bars);
 
+  /* budget at a $3 CPM */
+  (function(){
+    const CPM=3, DAYS=106;                              // 1 Oct 2026 to 15 Jan 2027
+    const sl=document.getElementById('budget');
+    const bOut=document.getElementById('budgetVal');
+    const vOut=document.getElementById('cpmViews');
+    const dOut=document.getElementById('cpmDaily');
+    const m=n=>{
+      if(n>=1e6) return (n/1e6).toFixed(n>=1e8?1:1).replace(/\.0$/,'')+'M';
+      if(n>=1e3) return Math.round(n/1e3)+'K';
+      return String(Math.round(n));
+    };
+    function calc(){
+      const b=parseFloat(sl.value);
+      const views=b/CPM*1000;
+      bOut.textContent='USD '+Math.round(b).toLocaleString('en-US');
+      vOut.textContent=m(views);
+      dOut.textContent=m(views/DAYS);
+    }
+    sl.addEventListener('input',calc); calc();
+  })();
+
   /* launch-date calculator */
   (function(){
     const EARLIEST=new Date(Date.UTC(2026,9,1));      // 1 Oct 2026
     const DEADLINE=new Date(Date.UTC(2027,0,15));     // 15 Jan 2027
     const DAY=86400000;
     const FULL_DAYS=(DEADLINE-EARLIEST)/DAY;          // 106
-    const LOW=100e6, HIGH=150e6;                      // guarantee across the full window
+    const TOTAL=500000/3*1000;                        // USD 500,000 at a $3 CPM, across the full window
     const sl=document.getElementById('launch');
     const dOut=document.getElementById('launchDate');
     const wOut=document.getElementById('outWeeks');
     const vOut=document.getElementById('outViews');
     const lOut=document.getElementById('outLost');
-    const wk=document.getElementById('weeksLeft');
     const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
     const m=n=>{
       if(n>=1e6) return (n/1e6).toFixed(n>=1e8?0:1).replace(/\.0$/,'')+'M';
@@ -724,12 +748,12 @@
       const off=parseInt(sl.value,10);
       const launch=new Date(EARLIEST.getTime()+off*DAY);
       const days=(DEADLINE-launch)/DAY;
-      const lo=LOW*days/FULL_DAYS, hi=HIGH*days/FULL_DAYS;
+      const got=TOTAL*days/FULL_DAYS;
       dOut.textContent=launch.getUTCDate()+' '+MON[launch.getUTCMonth()]+' '+launch.getUTCFullYear();
       wOut.textContent=(days/7).toFixed(1);
-      vOut.textContent=m(lo)+' to '+m(hi);
-      lOut.textContent=off===0?'0':m(LOW-lo)+' to '+m(HIGH-hi);
-      if(wk) wk.textContent=(days/7).toFixed(0);
+      vOut.textContent=m(got);
+      lOut.textContent=off===0?'0':m(TOTAL-got);
+
     }
     sl.addEventListener('input',calc); calc();
   })();
