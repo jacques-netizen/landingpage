@@ -221,15 +221,41 @@
   .case-clip .why b{color:var(--text);font-weight:500}
 
   /* ============ CLIPS ============ */
-  .clip{position:relative;background:#000;border:1px solid var(--hair);overflow:hidden;transition:transform .35s,border-color .35s}
-  .clip:hover{transform:translateY(-4px);border-color:var(--gold)}
-  .clip .frame{position:relative;width:100%;aspect-ratio:325/740}
-  .clip iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .clip .badge{position:absolute;top:0.7rem;left:0.7rem;z-index:3;display:flex;align-items:center;gap:0.4rem;background:rgba(21,18,13,.88);backdrop-filter:blur(6px);border:1px solid var(--hair);padding:0.38rem 0.6rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.78rem;color:var(--gold-soft);pointer-events:none}
-  .clip .badge i{width:0;height:0;border-left:7px solid var(--gold-light);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;display:inline-block}
-  .clip .cap{padding:0.8rem 0.95rem;background:var(--panel);border-top:1px solid var(--hair-soft)}
-  .clip .ca{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text)}
-  .clip .cb{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem;line-height:1.4}
+  .vtile{position:relative}
+  .vt-media{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;
+    box-shadow:0 22px 44px -22px rgba(0,0,0,.85),0 0 0 1px rgba(212,178,106,.2);
+    transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media,.vt-media:focus-visible{transform:translateY(-6px);outline:none;
+    box-shadow:0 34px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.4)}
+  .vt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media img{transform:scale(1.06)}
+  .vt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;
+    background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 20%,transparent 46%,rgba(10,8,5,.72) 70%,rgba(10,8,5,.97) 100%)}
+  .vt-views{position:absolute;top:0.85rem;left:0.85rem;z-index:3;display:flex;align-items:center;gap:0.45rem;
+    padding:0.42rem 0.72rem;border-radius:999px;background:rgba(15,12,8,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(235,214,158,.25);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.76rem;color:var(--gold-soft);transition:opacity .4s}
+  .vt-views i{width:0;height:0;border-left:7px solid var(--gold-light);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+  .vt-play{position:absolute;left:50%;top:46%;z-index:3;width:74px;height:74px;transform:translate(-50%,-50%);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.4);transition:transform .45s cubic-bezier(.2,.7,.2,1),background .45s,opacity .4s}
+  .vt-play:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(212,178,106,.55);animation:ring 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+  .vt-play > span{width:0;height:0;margin-left:6px;border-left:21px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent}
+  .vtile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9);border-color:var(--gold-soft)}
+  @keyframes ring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+  .vt-meta{position:absolute;left:1rem;right:1rem;bottom:1rem;z-index:3;transition:opacity .4s}
+  .vt-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-0.01em}
+  .vt-s{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(239,231,213,.72);margin-top:0.3rem;line-height:1.4}
+  .vt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s ease}
+  .vtile.loading .vt-play > span{border:0;width:26px;height:26px;margin:0;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vtile.playing iframe{opacity:1}
+  .vtile.playing .vt-play,.vtile.playing .vt-meta,.vtile.playing .vt-views{opacity:0;pointer-events:none}
+  .vtile.playing .vt-media:after{opacity:0}
+  .vtile.playing .vt-media{cursor:default}
+  .vt-open{display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.8rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.62rem;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .25s}
+  .vt-open:hover{color:var(--gold-soft)}
+  .vt-open span{font-size:0.85rem}
   .clip-wall{display:grid;grid-template-columns:repeat(2,minmax(0,310px)) 1fr;gap:1.3rem;align-items:start;margin-top:1.2rem}
   .clip-wall .wall-note{align-self:center}
   .clip-wall .wall-note .big{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.6rem,6vw,4.2rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
@@ -357,7 +383,7 @@
     .tickets,.story,.split,.assets,.supply,.scope,.proof-grid,.engine,.engine.five,.machine,.aud{grid-template-columns:1fr}
     .case-clip{grid-template-columns:1fr}
     .clip-wall{grid-template-columns:1fr}
-    .clip-wall .clip,.case-clip .clip{max-width:320px}
+    .clip-wall .vtile,.case-clip .vtile{max-width:320px}
     .tl-rail{grid-template-columns:1fr 1fr;row-gap:1.6rem}
     .tl-rail:before,.tl-fill{display:none}
     .bar-row{grid-template-columns:86px 1fr 64px;gap:0.7rem}
@@ -367,7 +393,7 @@
   }
   @media(prefers-reduced-motion:reduce){
     .rv{transition:none;opacity:1;transform:none}
-    .hero-bg img,.scrollcue{animation:none}
+    .hero-bg img,.scrollcue,.vt-play:before{animation:none}
     .bar-fill,.sb-seg,svg.donut .fg,svg.line .path,svg.line .area{transition:none}
     html{scroll-behavior:auto}
   }
@@ -615,11 +641,15 @@
             <dd>Nearly a dozen long-form conversations on podcasts and streams that rarely cover politics: Joe Rogan, Theo Von, Logan Paul, the Nelk Boys, Adin Ross. Not policy interviews. One adviser called it a numbers game: an hour with someone who reaches 15 million people is worth more than any rally.</dd>
           </dl>
           <div class="case-clip">
-            <div class="clip">
-              <span class="badge"><i></i>1.6M views</span>
-              <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7432830083397635361" title="Trump clip by @trumpclipsusa" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
-              <div class="cap"><div class="ca">@trumpclipsusa</div><div class="cb">A clip account, not the campaign &middot; 55.6K likes</div></div>
-            </div>
+            <div class="vtile" data-id="7432830083397635361">
+  <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @trumpclipsusa">
+    <img src="img/clips/trump.jpg" alt="Trump dancing at a Virginia rally" loading="lazy">
+    <span class="vt-views"><i></i>1.6M views</span>
+    <span class="vt-play" aria-hidden="true"><span></span></span>
+    <div class="vt-meta"><div class="vt-h">@trumpclipsusa</div><div class="vt-s">A clip account, not the campaign &middot; 55.6K likes</div></div>
+  </div>
+  <a class="vt-open" href="https://www.tiktok.com/@trumpclipsusa/video/7432830083397635361" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+</div>
             <div class="why">
               <p><b>This is what made him inescapable.</b> That account is not the campaign. It is one of thousands that cut every long-form appearance into short clips and posted them across TikTok, Reels, Shorts and X for weeks.</p>
               <p style="margin-top:1rem">Coverage at the time called 2024 the clippers' election. Moments were built to be clipped: the fryer at a McDonald's in Pennsylvania, the garbage truck the day after an opponent's remark.</p>
@@ -654,11 +684,15 @@
             <dd>Instead of matching that money, the campaign built a small in-house team that published short vertical videos every day. The breakout format: the candidate on Fordham Road in the Bronx with a sign, asking people who had voted Trump why. His creative director: the style is downstream from the substance.</dd>
           </dl>
           <div class="case-clip">
-            <div class="clip">
-              <span class="badge"><i></i>256K views</span>
-              <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7629149589781646605" title="Mamdani on Sidetalk" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
-              <div class="cap"><div class="ca">@sidetalknyc</div><div class="cb">An independent NYC clip account &middot; 19.6K likes</div></div>
-            </div>
+            <div class="vtile" data-id="7629149589781646605">
+  <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @sidetalknyc">
+    <img src="img/clips/mamdani.jpg" alt="Mamdani on Sidetalk" loading="lazy">
+    <span class="vt-views"><i></i>256K views</span>
+    <span class="vt-play" aria-hidden="true"><span></span></span>
+    <div class="vt-meta"><div class="vt-h">@sidetalknyc</div><div class="vt-s">An independent NYC clip account &middot; 19.6K likes</div></div>
+  </div>
+  <a class="vt-open" href="https://www.tiktok.com/@sidetalknyc/video/7629149589781646605" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+</div>
             <div class="why">
               <p><b>The reach did not come from his own page.</b> Sidetalk is one of New York's biggest street-content accounts, and it put him in front of an audience that follows basketball and the city, not politics.</p>
               <p style="margin-top:1rem">A creator network took the content further: creators from 20,000 to 35 million followers opted in through automated message flows. The goal, in the campaign's words: if you are on your phone in New York City, you are going to see him.</p>
@@ -693,16 +727,24 @@
 
     <h3 class="sub rv">The clip layer already exists</h3>
     <div class="clip-wall">
-      <div class="clip rv d1">
-        <span class="badge"><i></i>1.4M views</span>
-        <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7529086045179202822" title="Tinubu dancing, by @amos.vlogs3" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
-        <div class="cap"><div class="ca">@amos.vlogs3</div><div class="cb">Storyline 03 &middot; 115K likes</div></div>
-      </div>
-      <div class="clip rv d2">
-        <span class="badge"><i></i>439K views</span>
-        <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7401544100404595974" title="Tinubu campaign speech, by @a_ayofee" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
-        <div class="cap"><div class="ca">@a_ayofee</div><div class="cb">A campaign speech, cut and captioned &middot; 13.2K likes</div></div>
-      </div>
+      <div class="vtile rv d1" data-id="7529086045179202822">
+  <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @amos.vlogs3">
+    <img src="img/clips/tinubu-dance.jpg" alt="Tinubu dancing" loading="lazy">
+    <span class="vt-views"><i></i>1.4M views</span>
+    <span class="vt-play" aria-hidden="true"><span></span></span>
+    <div class="vt-meta"><div class="vt-h">@amos.vlogs3</div><div class="vt-s">Storyline 03 &middot; 115K likes</div></div>
+  </div>
+  <a class="vt-open" href="https://www.tiktok.com/@amos.vlogs3/video/7529086045179202822" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+</div>
+      <div class="vtile rv d2" data-id="7401544100404595974">
+  <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @a_ayofee">
+    <img src="img/clips/tinubu-speech.jpg" alt="Tinubu campaign speech" loading="lazy">
+    <span class="vt-views"><i></i>439K views</span>
+    <span class="vt-play" aria-hidden="true"><span></span></span>
+    <div class="vt-meta"><div class="vt-h">@a_ayofee</div><div class="vt-s">A campaign speech, cut and captioned &middot; 13.2K likes</div></div>
+  </div>
+  <a class="vt-open" href="https://www.tiktok.com/@a_ayofee/video/7401544100404595974" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+</div>
       <div class="wall-note rv d3">
         <div class="big"><span class="cu" data-target="1.8" data-dec="1">1.8</span>M</div>
         <div class="bl">Views across two unpaid, unprompted posts</div>
@@ -951,6 +993,30 @@
   }
   steps.forEach((s,i)=>s.addEventListener('click',()=>setTL(i)));
   setTL(0);
+
+  /* clip tiles: tap to load TikTok's lightweight player */
+  const P='?autoplay=1&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=1&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0';
+  function playTile(t){
+    if(t.classList.contains('playing')||t.classList.contains('loading')) return;
+    t.classList.add('loading');
+    const f=document.createElement('iframe');
+    f.src='https://www.tiktok.com/player/v1/'+t.dataset.id+P;
+    f.title='TikTok clip';
+    f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
+    f.setAttribute('allowfullscreen','');
+    f.addEventListener('load',()=>{t.classList.remove('loading');t.classList.add('playing');});
+    t.querySelector('.vt-media').appendChild(f);
+    setTimeout(()=>{t.classList.remove('loading');t.classList.add('playing');},4000);
+  }
+  document.querySelectorAll('.vtile').forEach(t=>{
+    const m=t.querySelector('.vt-media');
+    m.addEventListener('click',()=>playTile(t));
+    m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});
+  });
+  window.addEventListener('message',e=>{
+    if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
+    try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
+  });
 
   /* model: budget at a $3 CPM */
   const CPM=3, DAY=86400000;
