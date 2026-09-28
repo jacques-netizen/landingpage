@@ -7,198 +7,368 @@
 <title>Owning the Feed &middot; Maison d'&Eacute;lites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#19150F; --panel:#211A12; --panel-2:#241D14;
-    --text:#ECE4D2; --mute:#9C8F75;
-    --gold:#A88A4F; --gold-light:#C8A85A; --gold-soft:#E2CC92;
-    --hair:rgba(200,168,90,.20); --hair-soft:rgba(200,168,90,.12);
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --green:#3E8E5A; --red:#B5553F;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.045;
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
   ::selection{background:var(--gold);color:var(--bg)}
+  img{display:block;max-width:100%}
 
   .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
-  .label.dim{color:var(--mute)}
-  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.85rem,4.2vw,3.1rem);line-height:1.13;letter-spacing:-0.01em;max-width:24ch}
-  .statement.wide{max-width:32ch}
-  .body-lg{font-size:clamp(1.02rem,1.45vw,1.17rem);color:var(--mute);max-width:66ch;line-height:1.72}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:26ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
   .body-lg b{color:var(--text);font-weight:500}
-  .body-lg + .body-lg{margin-top:1.15rem}
-  .section{padding:clamp(4rem,9.5vh,7rem) clamp(1.4rem,7vw,7.5rem);position:relative}
-  .wrap{max-width:1100px;margin:0 auto}
-  .rule{height:1px;background:var(--hair-soft);border:0}
-  .snum{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.67rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:block;margin-bottom:1.3rem}
-  h3.sub{font-family:'Archivo',sans-serif;font-weight:600;font-size:1.02rem;color:var(--text);margin:2.4rem 0 0.9rem;letter-spacing:0.01em}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .section{padding:clamp(4.2rem,10vh,7.5rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3.2rem 0 1.2rem}
+  .alt{background:var(--panel)}
 
-  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
   .rv.in{opacity:1;transform:none}
-  .rv.d1{transition-delay:.07s}.rv.d2{transition-delay:.14s}.rv.d3{transition-delay:.21s}.rv.d4{transition-delay:.28s}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
 
-  #progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
-  #dots{position:fixed;right:1.3rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.75rem}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
   #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
-  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.25)}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
   #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
   #dots a:hover span{opacity:1}
-  @media(max-width:1060px){#dots{display:none}}
+  @media(max-width:1080px){#dots{display:none}}
 
-  /* cover */
-  .cover{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(2rem,5vw,3.4rem) clamp(1.4rem,7vw,7.5rem)}
-  .cover-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
-  .mark{font-family:'EB Garamond',serif;font-size:1.1rem;letter-spacing:0.04em}
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden}
+  .hero-bg{position:absolute;inset:0;z-index:0}
+  .hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 62%;transform:scale(1.08);animation:drift 28s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.14) translateY(-2%)}}
+  .hero-bg:after{content:"";position:absolute;inset:0;background:
+    linear-gradient(180deg,rgba(21,18,13,.55) 0%,rgba(21,18,13,.35) 35%,rgba(21,18,13,.82) 72%,var(--bg) 100%),
+    linear-gradient(90deg,rgba(21,18,13,.75) 0%,rgba(21,18,13,.1) 65%)}
+  .hero > *:not(.hero-bg){position:relative;z-index:2}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em}
   .mark b{color:var(--gold-soft);font-weight:500}
-  .cover-mid{max-width:920px;padding:2.4rem 0}
-  .cover-mid .label{display:block;margin-bottom:1.6rem}
-  .cover h1{font-family:'EB Garamond',serif;font-weight:400;letter-spacing:-0.015em;font-size:clamp(2.4rem,7vw,5rem);line-height:1.02}
-  .cover-sub{font-size:clamp(1.02rem,1.8vw,1.26rem);color:var(--mute);margin-top:1.7rem;max-width:52ch;line-height:1.55;font-weight:300}
-  .cover-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .hero-mid{max-width:880px;padding:3rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.035em;font-size:clamp(3rem,10vw,7.6rem);line-height:0.92;text-transform:uppercase}
+  .hero h1 span{display:block;color:var(--gold-soft)}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.35rem);color:var(--text);opacity:.85;margin-top:1.8rem;max-width:46ch;line-height:1.5}
+  .countdown{display:flex;gap:1.6rem;margin-top:2.4rem;flex-wrap:wrap}
+  .cd{min-width:74px}
+  .cd .n{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1;color:var(--gold-soft);font-variant-numeric:tabular-nums}
+  .cd .l{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin-top:0.45rem}
+  .cd-cap{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);margin-top:1rem}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
   .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-  /* headline figures */
-  .figs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.6rem}
-  .fig{background:var(--panel);padding:1.6rem 1.3rem}
-  .fig .fv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--gold-soft);line-height:1}
-  .fig .fl{font-family:'Archivo',sans-serif;font-size:0.65rem;letter-spacing:0.08em;color:var(--mute);margin-top:0.6rem;line-height:1.45}
+  /* ============ SUMMARY w/ portrait ============ */
+  .sum-grid{display:grid;grid-template-columns:1.25fr 0.75fr;gap:clamp(2rem,5vw,4.5rem);align-items:start}
+  .portrait-card{position:relative;overflow:hidden;border:1px solid var(--hair);background:#0b0906}
+  .portrait-card img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 20%;filter:saturate(.95) contrast(1.03);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+  .portrait-card:hover img{transform:scale(1.04)}
+  .portrait-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(21,18,13,.92) 100%);pointer-events:none}
+  .portrait-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:1.2rem 1.3rem}
+  .portrait-cap .pn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.95rem;color:var(--text)}
+  .portrait-cap .pr{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);margin-top:0.25rem}
+  .sticky{position:sticky;top:2rem}
 
-  /* data tables */
-  .tw{margin-top:1.6rem;overflow-x:auto;border:1px solid var(--hair-soft)}
-  table.dt{width:100%;border-collapse:collapse;min-width:520px}
-  .dt th,.dt td{padding:0.95rem 1.2rem;text-align:left;border-bottom:1px solid var(--hair-soft);font-size:0.96rem}
-  .dt thead th{background:var(--panel);font-family:'Archivo',sans-serif;font-size:0.63rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--hair)}
-  .dt td.k{color:var(--text)}
-  .dt td.v{font-family:'Archivo',sans-serif;font-weight:700;color:var(--gold-soft);white-space:nowrap}
-  .dt td.m{color:var(--mute);font-size:0.92rem}
-  .dt tr:last-child td{border-bottom:0}
+  /* ============ TICKETS ============ */
+  .tickets{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .ticket{background:var(--panel);border:1px solid var(--hair-soft);padding:1.4rem 1.4rem 1.3rem;position:relative;overflow:hidden;transition:.35s}
+  .ticket:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .ticket.us{border-color:var(--gold);background:linear-gradient(160deg,var(--panel-3),var(--panel))}
+  .ticket .party{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.9rem;letter-spacing:-0.02em;line-height:1}
+  .ticket.us .party{color:var(--gold-soft)}
+  .ticket .names{font-size:0.98rem;color:var(--mute);margin-top:0.6rem;line-height:1.5}
+  .ticket .tag{position:absolute;top:1rem;right:1rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.28rem 0.55rem;border:1px solid var(--hair);color:var(--mute)}
+  .ticket.us .tag{background:var(--gold);color:var(--bg);border-color:var(--gold)}
 
-  /* platform bars */
-  .bars{margin-top:1.6rem}
-  .bar-row{display:grid;grid-template-columns:110px 1fr 110px;gap:1rem;align-items:center;padding:0.75rem 0}
-  .bar-row .bn{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.9rem;color:var(--text)}
-  .bar-track{height:10px;background:var(--panel);border:1px solid var(--hair-soft);overflow:hidden}
-  .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
-  .bar-row .bv{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.9rem;color:var(--gold-soft);text-align:right}
+  /* ============ SENTIMENT CHART ============ */
+  .chart-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:1.2rem;margin-top:1.2rem}
+  .chart-card{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.3rem,2.6vw,1.9rem)}
+  .chart-card .ch{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+  .chart-card .ct{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;color:var(--text)}
+  .chart-card .cs{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+  .bigdelta{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2rem,4.4vw,3rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em}
+  .bigdelta small{font-size:0.4em;color:var(--mute);font-weight:600;letter-spacing:0.08em;margin-left:0.4rem}
+  svg.line{width:100%;height:auto;overflow:visible}
+  svg.line .grid{stroke:rgba(212,178,106,.12);stroke-width:1}
+  svg.line .zero{stroke:rgba(212,178,106,.4);stroke-width:1;stroke-dasharray:4 4}
+  svg.line .path{fill:none;stroke:var(--gold-light);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:900;stroke-dashoffset:900;transition:stroke-dashoffset 2.2s cubic-bezier(.3,.6,.2,1)}
+  svg.line .area{fill:url(#ga);opacity:0;transition:opacity 1.4s ease .9s}
+  svg.line.on .path{stroke-dashoffset:0}
+  svg.line.on .area{opacity:1}
+  svg.line .dot{fill:var(--bg);stroke:var(--gold-soft);stroke-width:2.5;opacity:0;transition:opacity .4s ease}
+  svg.line.on .dot{opacity:1}
+  svg.line.on .dot.d2{transition-delay:2s}
+  svg.line text{font-family:'Archivo',sans-serif;font-size:11px;fill:var(--mute)}
+  svg.line text.v{font-weight:700;font-size:13px;fill:var(--gold-soft)}
 
-  /* split lists */
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:2rem}
-  .col{border-top:2px solid var(--gold);padding-top:1.2rem}
-  .col.mutecol{border-top-color:var(--hair)}
-  .col .ck{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.9rem}
-  .col.mutecol .ck{color:var(--mute)}
+  .split-bars .sb{margin-bottom:1.4rem}
+  .split-bars .sb:last-child{margin-bottom:0}
+  .sb-head{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-bottom:0.55rem}
+  .sb-track{display:flex;height:34px;background:var(--panel-2);overflow:hidden;border:1px solid var(--hair-soft)}
+  .sb-seg{display:flex;align-items:center;padding:0 0.6rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;white-space:nowrap;width:0;transition:width 1.5s cubic-bezier(.2,.7,.2,1);overflow:hidden}
+  .sb-seg.apc{background:var(--gold);color:var(--bg)}
+  .sb-seg.ndc{background:#5E5445;color:var(--text);justify-content:flex-end}
+
+  /* ============ STAT TILES ============ */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft)}
+  .tile{background:var(--panel);padding:1.5rem 1.2rem;transition:background .3s}
+  .tile:hover{background:var(--panel-2)}
+  .tile .tv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.4vw,2.35rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em}
+  .tile .tl{font-family:'Archivo',sans-serif;font-size:0.64rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.6rem;line-height:1.45}
+  .tile .arrow{font-size:0.8em;color:var(--green);margin-left:0.25rem}
+
+  /* ============ YOUTH ============ */
+  .youth{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(2rem,4vw,3.5rem);align-items:center;margin-top:1rem}
+  .huge{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(4rem,12vw,8.5rem);line-height:0.85;letter-spacing:-0.05em;color:var(--gold-soft)}
+  .huge small{display:block;font-size:0.14em;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:1rem}
+  .donut-wrap{display:flex;align-items:center;gap:1.4rem;margin-top:1.6rem}
+  svg.donut{width:96px;height:96px;transform:rotate(-90deg)}
+  svg.donut circle{fill:none;stroke-width:12}
+  svg.donut .bg{stroke:var(--panel-3)}
+  svg.donut .fg{stroke:var(--gold-light);stroke-dasharray:0 302;transition:stroke-dasharray 1.6s cubic-bezier(.2,.7,.2,1)}
+  .donut-cap{font-size:0.98rem;color:var(--mute);line-height:1.5}
+  .donut-cap b{color:var(--text);font-weight:500;font-family:'Archivo',sans-serif}
+
+  /* ============ PLATFORM BARS ============ */
+  .bars{margin-top:0.4rem}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 90px;gap:1.1rem;align-items:center;padding:0.8rem 0;border-bottom:1px solid var(--hair-soft)}
+  .bar-row:last-child{border-bottom:0}
+  .bar-row .bn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.95rem}
+  .bar-track{height:14px;background:var(--panel-2);overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-soft));width:0;transition:width 1.5s cubic-bezier(.2,.7,.2,1)}
+  .bar-row.x .bar-fill{background:#5E5445}
+  .bar-row .bv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:var(--gold-soft);text-align:right}
+  .bar-row.x .bv{color:var(--mute)}
+
+  /* ============ STRONG / FRAGILE ============ */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1rem}
+  .col{background:var(--panel);border:1px solid var(--hair-soft);border-top:3px solid var(--gold);padding:1.4rem 1.5rem}
+  .col.mutecol{border-top-color:var(--red)}
+  .col .ck{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.64rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.8rem}
+  .col.mutecol .ck{color:#D98A73}
   .col ul{list-style:none}
-  .col li{padding:0.8rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.95rem;color:var(--mute);line-height:1.6}
+  .col li{padding:0.75rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.97rem;color:var(--mute);line-height:1.58}
   .col li:last-child{border-bottom:0}
   .col li b{color:var(--text);font-weight:500}
 
-  /* numbered engine list */
-  .eng{list-style:none;counter-reset:eg;margin-top:1.6rem}
-  .eng li{display:grid;grid-template-columns:42px 1fr;gap:1.1rem;padding:1.05rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
-  .eng li:last-child{border-bottom:1px solid var(--hair-soft)}
-  .eng li:before{counter-increment:eg;content:counter(eg,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:700;font-size:0.78rem;color:var(--gold)}
-  .eng li p{font-size:0.99rem;color:var(--mute);line-height:1.62}
-  .eng li p b{color:var(--text);font-weight:500}
+  .quote{margin-top:2.6rem;display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:start;background:linear-gradient(135deg,var(--panel-3),var(--panel));border:1px solid var(--hair);padding:clamp(1.6rem,3.4vw,2.4rem)}
+  .quote .qm{font-family:'EB Garamond',serif;font-size:5rem;line-height:0.7;color:var(--gold)}
+  .quote p{font-size:clamp(1.15rem,2.2vw,1.45rem);color:var(--text);line-height:1.45}
+  .quote .qs{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:1rem}
+  .quote .qturn{font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem;color:var(--gold-soft);margin-top:1.2rem}
 
-  /* case study */
-  .case{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.6rem,3.2vw,2.4rem);margin-top:1.6rem}
-  .case-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;padding-bottom:1.1rem;border-bottom:1px solid var(--hair);margin-bottom:1.3rem}
-  .case-head .cn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.64rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
-  .case-head h4{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.35rem,2.6vw,1.85rem);line-height:1.15;margin-top:0.35rem}
-  .case-head .cres{font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem;color:var(--gold-soft);text-align:right}
-  .case dl{margin:0}
-  .case dt{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.82rem;color:var(--text);margin-top:1.1rem}
-  .case dd{font-size:0.97rem;color:var(--mute);line-height:1.65;margin-top:0.25rem}
-  .case dd b{color:var(--text);font-weight:500}
+  /* ============ ASSETS / ENGINE ============ */
+  .assets{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .asset{background:var(--panel);border:1px solid var(--hair-soft);padding:1.5rem 1.4rem;transition:.35s}
+  .asset:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .asset .an{font-family:'Archivo',sans-serif;font-weight:800;font-size:2rem;color:var(--gold-soft);line-height:1;letter-spacing:-0.02em}
+  .asset .at{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.9rem;margin-top:0.8rem}
+  .asset p{font-size:0.94rem;color:var(--mute);margin-top:0.5rem;line-height:1.55}
+  .engine{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1rem;counter-reset:en}
+  .eng{position:relative;background:var(--panel-2);border:1px solid var(--hair-soft);padding:1.4rem 1.3rem 1.3rem;transition:.35s}
+  .eng:hover{background:var(--panel-3);border-color:var(--hair)}
+  .eng:before{counter-increment:en;content:counter(en,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:800;font-size:1.6rem;color:var(--gold);display:block;line-height:1;margin-bottom:0.8rem}
+  .eng p{font-size:0.95rem;color:var(--mute);line-height:1.55}
+  .eng p b{color:var(--text);font-weight:500}
+  .engine.five{grid-template-columns:repeat(5,1fr)}
+  .eng:not(:last-child):after{content:"";position:absolute;right:-0.65rem;top:50%;width:0.3rem;height:1px;background:var(--gold)}
 
-  /* video embeds */
-  .vids{display:grid;gap:1.1rem;margin-top:1.5rem}
-  .vids.three{grid-template-columns:repeat(3,1fr)}
-  .vids.two{grid-template-columns:repeat(2,1fr)}
-  .vids.one{grid-template-columns:1fr;max-width:760px}
-  .vids.shorts{grid-template-columns:repeat(2,minmax(0,290px));justify-content:start}
-  .vids.tt{grid-template-columns:repeat(auto-fit,minmax(0,320px));justify-content:start}
-  .vid .frame.tt{aspect-ratio:325/740}
-  .vid{border:1px solid var(--hair-soft);background:#000}
-  .vid .frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden}
-  .vid .frame.vert{aspect-ratio:9/16}
-  .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .vid .vcap{padding:0.75rem 0.95rem;background:var(--panel);border-top:1px solid var(--hair-soft)}
-  .vid .vt{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.8rem;color:var(--text);line-height:1.35}
-  .vid .vs{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
-  .vid-note{font-size:0.92rem;color:var(--mute);font-style:italic;margin-top:1rem;line-height:1.6;max-width:70ch}
+  /* ============ TABS / CASE STUDIES ============ */
+  .tabs{display:flex;gap:0.5rem;margin-bottom:1.4rem;flex-wrap:wrap}
+  .tab{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.04em;padding:0.95rem 1.4rem;background:transparent;color:var(--mute);border:1px solid var(--hair-soft);cursor:pointer;transition:.25s;display:flex;align-items:center;gap:0.7rem}
+  .tab img{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:center 18%;filter:grayscale(1);transition:.25s}
+  .tab .ty{font-size:0.6rem;letter-spacing:0.14em;color:var(--dim);display:block;text-transform:uppercase;font-weight:600}
+  .tab:hover{color:var(--text);border-color:var(--hair)}
+  .tab.on{background:var(--panel-2);color:var(--text);border-color:var(--gold)}
+  .tab.on img{filter:none}
+  .panel{display:none;animation:fadeup .55s ease}
+  .panel.on{display:block}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .case{display:grid;grid-template-columns:320px 1fr;gap:clamp(1.6rem,3.4vw,2.8rem);background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.3rem,2.8vw,2rem)}
+  .case-side .cportrait{position:relative;overflow:hidden;border:1px solid var(--hair-soft)}
+  .case-side .cportrait img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 18%}
+  .case-side .cportrait:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(21,18,13,.9))}
+  .case-side .cp-cap{position:absolute;left:1rem;bottom:1rem;right:1rem;z-index:2}
+  .case-side .cp-cap .k{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light)}
+  .case-side .cp-cap .h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.35rem;margin-top:0.2rem;line-height:1.1}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .kpi{background:var(--panel-2);padding:1rem 0.9rem}
+  .kpi .kv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.35rem;color:var(--gold-soft);line-height:1}
+  .kpi .kl{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.08em;color:var(--mute);margin-top:0.4rem;line-height:1.35}
+  .case-main .result{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.5rem,3.2vw,2.3rem);line-height:1.05;letter-spacing:-0.02em;color:var(--gold-soft)}
+  .case-main .result small{display:block;font-size:0.36em;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-top:0.6rem}
+  .case-main dt{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.64rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);margin-top:1.4rem}
+  .case-main dd{font-size:1rem;color:var(--mute);line-height:1.65;margin-top:0.35rem}
+  .case-main dd b{color:var(--text);font-weight:500}
+  .case-clip{display:grid;grid-template-columns:300px 1fr;gap:1.6rem;align-items:center;margin-top:1.8rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft)}
+  .case-clip .why{font-size:0.98rem;color:var(--mute);line-height:1.62}
+  .case-clip .why b{color:var(--text);font-weight:500}
 
-  /* storylines */
-  .story{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:1.6rem}
-  .st{background:var(--panel);border:1px solid var(--hair-soft);padding:1.4rem 1.4rem}
-  .st .sn2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.16em;color:var(--gold-light);margin-bottom:0.6rem}
-  .st h4{font-family:'EB Garamond',serif;font-weight:400;font-size:1.25rem;line-height:1.2;margin-bottom:0.55rem}
-  .st p{font-size:0.93rem;color:var(--mute);line-height:1.6}
+  /* ============ CLIPS ============ */
+  .clip{position:relative;background:#000;border:1px solid var(--hair);overflow:hidden;transition:transform .35s,border-color .35s}
+  .clip:hover{transform:translateY(-4px);border-color:var(--gold)}
+  .clip .frame{position:relative;width:100%;aspect-ratio:325/740}
+  .clip iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .clip .badge{position:absolute;top:0.7rem;left:0.7rem;z-index:3;display:flex;align-items:center;gap:0.4rem;background:rgba(21,18,13,.88);backdrop-filter:blur(6px);border:1px solid var(--hair);padding:0.38rem 0.6rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.78rem;color:var(--gold-soft);pointer-events:none}
+  .clip .badge i{width:0;height:0;border-left:7px solid var(--gold-light);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent;display:inline-block}
+  .clip .cap{padding:0.8rem 0.95rem;background:var(--panel);border-top:1px solid var(--hair-soft)}
+  .clip .ca{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text)}
+  .clip .cb{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem;line-height:1.4}
+  .clip-wall{display:grid;grid-template-columns:repeat(2,minmax(0,310px)) 1fr;gap:1.3rem;align-items:start;margin-top:1.2rem}
+  .clip-wall .wall-note{align-self:center}
+  .clip-wall .wall-note .big{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.6rem,6vw,4.2rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .clip-wall .wall-note .bl{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem}
+  .clip-wall .wall-note p{font-size:1.02rem;color:var(--mute);margin-top:1.4rem;line-height:1.62}
+  .clip-wall .wall-note p b{color:var(--text);font-weight:500}
 
-  /* callouts */
-  .callout{margin-top:1.8rem;background:var(--panel-2);border-left:3px solid var(--gold);padding:clamp(1.4rem,3vw,2rem)}
-  .callout .label{display:block;margin-bottom:0.8rem}
-  .callout p{font-size:1.01rem;color:var(--text);line-height:1.68;max-width:70ch}
-  .callout p + p{margin-top:0.8rem;color:var(--mute);font-size:0.97rem}
+  /* ============ STORYLINES ============ */
+  .story{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+  .st{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.7rem 1.5rem 1.6rem;overflow:hidden;transition:.4s;min-height:280px}
+  .st:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .st:hover{transform:translateY(-6px);border-color:var(--hair);background:var(--panel-2)}
+  .st:hover:before{width:100%}
+  .st .sn2{font-family:'Archivo',sans-serif;font-weight:800;font-size:3.2rem;line-height:0.85;color:var(--panel-3);transition:color .4s}
+  .st:hover .sn2{color:var(--gold)}
+  .st h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem;line-height:1.15;margin:1rem 0 0.7rem;letter-spacing:-0.01em}
+  .st p{font-size:0.97rem;color:var(--mute);line-height:1.6}
 
-  /* calculator */
-  .calc{margin-top:2.4rem;background:var(--panel);border:1px solid var(--hair);padding:clamp(1.6rem,3.4vw,2.6rem)}
-  .calc-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem}
-  .calc-head .cl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)}
-  .calc-head .cv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.15rem,2.6vw,1.6rem);color:var(--gold)}
-  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--hair);outline:none}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold);border:4px solid var(--panel);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
-  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
-  .calc-out{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1.9rem}
-  .co{background:var(--panel-2);padding:1.4rem 1rem;text-align:center}
-  .co .cov{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.2rem,2.9vw,1.75rem);color:var(--gold-soft);line-height:1}
-  .co .col2{font-family:'Archivo',sans-serif;font-size:0.57rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.55rem;line-height:1.4}
-  .calc-note{font-size:0.9rem;color:var(--mute);margin-top:1.3rem;line-height:1.6;max-width:66ch}
-  .calc-note b{color:var(--gold-soft);font-weight:500}
+  /* ============ AUDIENCE MAP ============ */
+  .aud{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1rem}
+  .au{background:var(--panel);border:1px solid var(--hair-soft);padding:1.3rem 1.2rem;transition:.3s}
+  .au:hover{border-color:var(--hair);background:var(--panel-2)}
+  .au .goal{display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.3rem 0.6rem;background:var(--gold);color:var(--bg)}
+  .au .goal.t{background:transparent;color:var(--gold-light);border:1px solid var(--gold)}
+  .au h5{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.98rem;line-height:1.25;margin-top:0.9rem}
+  .au p{font-size:0.9rem;color:var(--mute);margin-top:0.55rem;line-height:1.5}
 
-  /* calendar */
-  .cal-item{display:grid;grid-template-columns:190px 1fr;gap:1.4rem;padding:1.3rem 0;border-top:1px solid var(--hair-soft);align-items:baseline}
-  .cal-item:last-child{border-bottom:1px solid var(--hair-soft)}
-  .cal-when{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light)}
-  .cal-item p{font-size:0.98rem;color:var(--mute);line-height:1.65}
+  /* ============ SUPPLY / RESPONSE ============ */
+  .supply{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .callout{margin-top:2rem;background:var(--panel-2);border-left:3px solid var(--gold);padding:clamp(1.3rem,3vw,1.9rem)}
+  .callout .label{display:block;margin-bottom:0.7rem}
+  .callout p{font-size:1.02rem;color:var(--text);line-height:1.65;max-width:72ch}
+  .callout p + p{margin-top:0.7rem;color:var(--mute)}
 
-  /* scope */
-  .scope{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:2rem}
+  /* ============ MACHINE ============ */
+  .machine{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  .mc{background:var(--panel);border:1px solid var(--hair-soft);padding:1.5rem 1.3rem;transition:.35s}
+  .mc:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .mc .ic{width:42px;height:42px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+  .mc .ic svg{width:20px;height:20px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .mc h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem}
+  .mc p{font-size:0.93rem;color:var(--mute);margin-top:0.55rem;line-height:1.55}
+  .mc .mv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.7rem;color:var(--gold-soft);line-height:1;margin-bottom:0.2rem}
+
+  /* ============ TIMELINE ============ */
+  .tl-rail{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:1.4rem}
+  .tl-rail:before{content:"";position:absolute;left:0;right:0;top:19px;height:2px;background:var(--panel-3)}
+  .tl-fill{position:absolute;left:0;top:19px;height:2px;background:var(--gold);width:25%;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .tl-step{position:relative;background:none;border:0;cursor:pointer;text-align:left;padding:0 1rem 0 0;color:inherit}
+  .tl-step .node{width:40px;height:40px;border-radius:50%;background:var(--bg);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--mute);transition:.3s;position:relative;z-index:2}
+  .tl-step.on .node,.tl-step.done .node{border-color:var(--gold);color:var(--gold-soft)}
+  .tl-step.on .node{background:var(--gold);color:var(--bg)}
+  .tl-step .when{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:1rem;transition:.3s}
+  .tl-step.on .when{color:var(--gold-light)}
+  .tl-step .what{font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem;margin-top:0.3rem;color:var(--text)}
+  .tl-panel{margin-top:2rem;background:var(--panel);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:clamp(1.4rem,3vw,2rem);min-height:120px}
+  .tl-panel p{font-size:1.06rem;color:var(--text);line-height:1.65;max-width:70ch;animation:fadeup .45s ease}
+
+  /* ============ PROOF ============ */
+  .proof-band{position:relative;overflow:hidden;background:var(--panel)}
+  .proof-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .pf{background:var(--bg);padding:clamp(1.6rem,3.4vw,2.5rem) clamp(1.2rem,2.6vw,1.8rem)}
+  .pf .pv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,4.4rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .pf.lead .pv{font-size:clamp(3.2rem,8.5vw,6.4rem)}
+  .pf .pl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.9rem;line-height:1.45}
+  .clients{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.8rem;align-items:center}
+  .clients .cl-l{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-right:0.4rem}
+  .chip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;padding:0.55rem 1rem;border:1px solid var(--hair);color:var(--text)}
+
+  /* ============ SCOPE ============ */
+  .scope{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem}
   .scope ul{list-style:none}
-  .scope li{padding:0.8rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.95rem;color:var(--mute);line-height:1.55}
+  .scope li{display:flex;gap:0.8rem;align-items:baseline;padding:0.8rem 0;border-bottom:1px solid var(--hair-soft);font-size:0.97rem;color:var(--mute);line-height:1.55}
   .scope li:last-child{border-bottom:0}
-  .terms{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair);margin-top:2rem}
-  .term{background:var(--panel-2);padding:1.8rem 1.6rem}
-  .term .tl{font-family:'Archivo',sans-serif;font-size:0.64rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-bottom:0.7rem}
-  .term .tv{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.5rem,3.4vw,2.2rem);color:var(--gold);line-height:1.1}
-  .term .td2{font-size:0.93rem;color:var(--mute);margin-top:0.6rem;line-height:1.55}
+  .scope li .m{flex-shrink:0;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--gold-light)}
+  .scope .mutecol li .m{color:var(--dim)}
 
-  .cta{background:var(--panel);border:1px solid var(--hair-soft)}
-  .cta .wrap{padding:clamp(2.6rem,6vw,4.2rem) clamp(1.6rem,4vw,3.5rem)}
-  .closer{font-family:'EB Garamond',serif;font-size:clamp(1.3rem,2.8vw,1.8rem);color:var(--gold-soft);line-height:1.4;max-width:38ch;margin-top:1.6rem}
-  .signoff{margin-top:2.4rem;padding-top:1.7rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
-  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.25rem}
+  /* ============ MODEL (final calculator) ============ */
+  .model{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 55%);border:1px solid var(--hair);padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl{margin-top:1.8rem}
+  .ctrl:first-of-type{margin-top:0}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,50%),var(--panel-3) var(--p,50%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .o{background:var(--bg);padding:1.5rem 1.1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(2rem,5vw,3.4rem)}
+  .o.warn .ov{color:#D98A73}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .progress-weeks{margin-top:1.6rem;display:flex;gap:3px}
+  .progress-weeks span{flex:1;height:22px;background:var(--gold);transition:background .3s,opacity .3s}
+  .progress-weeks span.lost{background:var(--panel-3);opacity:.7}
+  .pw-legend{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.55rem}
+  .model-note{font-size:0.98rem;color:var(--mute);margin-top:1.6rem;line-height:1.6;max-width:70ch}
+  .model-note b{color:var(--gold-soft);font-weight:500}
+
+  .close-cta{margin-top:3rem;padding-top:2.4rem;border-top:1px solid var(--hair)}
+  .close-cta h2{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.7rem,4vw,2.8rem);line-height:1.05;letter-spacing:-0.025em;max-width:22ch}
+  .close-cta p{font-size:clamp(1.1rem,2.2vw,1.35rem);color:var(--gold-soft);margin-top:1.1rem;max-width:44ch;line-height:1.45}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
   .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
   .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
 
-  @media(max-width:860px){
-    .vids.three{grid-template-columns:1fr 1fr}
+  @media(max-width:980px){
+    .sum-grid,.youth,.chart-grid,.case{grid-template-columns:1fr}
+    .sticky{position:static}
+    .engine,.engine.five,.machine,.aud{grid-template-columns:1fr 1fr}
+    .eng:after{display:none}
+    .tiles{grid-template-columns:1fr 1fr}
+    .clip-wall{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .clip-wall .wall-note{grid-column:1/-1}
+    .case-clip{grid-template-columns:minmax(0,280px) 1fr}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+    .case-side{max-width:360px}
   }
-  @media(max-width:700px){
-    .figs,.split,.story,.calc-out,.scope,.terms,.vids.three,.vids.two{grid-template-columns:1fr}
-    .vids.shorts{grid-template-columns:minmax(0,260px)}
-    .cal-item,.eng li{grid-template-columns:1fr;gap:0.4rem}
-    .bar-row{grid-template-columns:90px 1fr 80px;gap:0.7rem}
-    .cover h1{font-size:2.3rem}
+  @media(max-width:680px){
+    .tickets,.story,.split,.assets,.supply,.scope,.proof-grid,.engine,.engine.five,.machine,.aud{grid-template-columns:1fr}
+    .case-clip{grid-template-columns:1fr}
+    .clip-wall{grid-template-columns:1fr}
+    .clip-wall .clip,.case-clip .clip{max-width:320px}
+    .tl-rail{grid-template-columns:1fr 1fr;row-gap:1.6rem}
+    .tl-rail:before,.tl-fill{display:none}
+    .bar-row{grid-template-columns:86px 1fr 64px;gap:0.7rem}
+    .quote{grid-template-columns:1fr;gap:0.4rem}
+    .countdown{gap:1.1rem}
+    .cd{min-width:60px}
   }
   @media(prefers-reduced-motion:reduce){
     .rv{transition:none;opacity:1;transform:none}
-    .scrollcue{animation:none}
-    .bar-fill{transition:none}
+    .hero-bg img,.scrollcue{animation:none}
+    .bar-fill,.sb-seg,svg.donut .fg,svg.line .path,svg.line .area{transition:none}
     html{scroll-behavior:auto}
   }
 </style>
@@ -216,286 +386,347 @@
   <a href="#s6"><span>The machine</span></a>
   <a href="#s7"><span>Calendar</span></a>
   <a href="#s8"><span>Proof</span></a>
-  <a href="#s9"><span>Investment</span></a>
+  <a href="#s9"><span>Scope</span></a>
+  <a href="#s10"><span>Model the campaign</span></a>
 </nav>
 
-<!-- COVER -->
-<header class="cover" id="s0">
-  <div class="cover-top">
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-bg"><img src="img/lagos.jpg" alt="Lagos skyline across the lagoon at dusk"></div>
+  <div class="hero-top">
     <div class="mark">Maison <b>d'&Eacute;lites</b></div>
-    <div class="label dim">Private &amp; Confidential</div>
+    <div class="label" style="color:var(--mute)">Private &amp; Confidential</div>
   </div>
-  <div class="cover-mid">
-    <span class="label rv">A short-form distribution strategy for the 2027 re-election campaign</span>
-    <h1 class="rv d1">Owning the Feed</h1>
-    <p class="cover-sub rv d2">On 16 January 2027, Nigeria votes. Campaigning closes on 15 January. This is how the President becomes impossible to avoid on a phone screen before then.</p>
+  <div class="hero-mid">
+    <span class="label rv">The 2027 re-election campaign &middot; Short-form distribution</span>
+    <h1 class="rv d1">Owning<span>the Feed</span></h1>
+    <p class="hero-sub rv d2">Nigeria votes on 16 January 2027. Campaigning closes the day before. This is how the President becomes impossible to avoid on a phone screen before then.</p>
+    <div class="rv d3">
+      <div class="countdown" id="countdown">
+        <div class="cd"><div class="n" id="cdD">--</div><div class="l">Days</div></div>
+        <div class="cd"><div class="n" id="cdW">--</div><div class="l">Weeks</div></div>
+        <div class="cd"><div class="n" id="cdH">--</div><div class="l">Hours</div></div>
+      </div>
+      <div class="cd-cap">Until campaigning closes, 15 January 2027</div>
+    </div>
   </div>
-  <div class="cover-bot">
-    <div class="label dim rv d3">Prepared September 2026</div>
+  <div class="hero-bot">
+    <div class="label rv d4" style="color:var(--mute)">Prepared September 2026</div>
     <div class="scrollcue">Scroll &darr;</div>
   </div>
 </header>
 
-<!-- 1 SUMMARY -->
+<!-- ============ 1 SUMMARY ============ -->
 <section class="section" id="s1">
-  <div class="wrap">
-    <span class="snum rv">01 &middot; Summary</span>
-    <h2 class="statement wide rv d1">The campaign has said it intends to win the social media war.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.7rem">The question is no longer whether to fight online. It is who can turn that intent into daily, measurable reach before campaigning closes.</p>
-    <p class="body-lg rv d2">The race is moving. Since May, the President's net favourability has climbed from -58.5 to -3.3, the sharpest shift of any candidate in the field. One gap has not closed: young voters in the cities. They favour the main opposition ticket by more than two to one, and they are the group that decides who wins the online conversation.</p>
-    <p class="body-lg rv d3">That conversation is still unowned. The opposition is loud but runs on unpaid volunteers who post in bursts. The campaign's own assets, the City Boy Movement's ward structures, the planned 4,000-influencer network and the campaign council's youth framework, are strong on the ground but have no engine to keep them supplied with content every day.</p>
-    <p class="body-lg rv d3"><b>We are that engine.</b> We take every speech, interview and moment of the President, cut it into thousands of short videos, and distribute them daily through a large network of Nigerian creators on TikTok, Instagram, YouTube and Facebook, in English, Pidgin, Yoruba and Hausa. The same content feeds the influencer network, the City Boy Movement and WhatsApp.</p>
-
-    <div class="calc rv d4">
-      <div class="calc-head">
-        <span class="cl">Campaign budget</span>
-        <span class="cv" id="budgetVal">USD 500,000</span>
+  <div class="wrap sum-grid">
+    <div>
+      <span class="snum rv">01 &middot; Summary</span>
+      <h2 class="statement rv d1">The campaign has said it intends to win the social media war.</h2>
+      <p class="body-lg rv d2" style="margin-top:1.8rem">The question is no longer whether to fight online. It is who can turn that intent into daily, measurable reach before campaigning closes.</p>
+      <p class="body-lg rv d2">The race is moving. Since May, the President's net favourability has climbed from -58.5 to -3.3, the sharpest shift of any candidate in the field. One gap has not closed: young voters in the cities. They favour the main opposition ticket by more than two to one, and they are the group that decides who wins the online conversation.</p>
+      <p class="body-lg rv d3">That conversation is still unowned. The opposition is loud but runs on unpaid volunteers who post in bursts. The City Boy Movement's ward structures, the planned 4,000-influencer network and the campaign council's youth framework are strong on the ground, but none of them has an engine keeping it supplied with content every day.</p>
+      <p class="body-lg rv d3"><b>We are that engine.</b> We take every speech, interview and moment of the President, cut it into thousands of short videos, and distribute them daily through a large network of Nigerian creators on TikTok, Instagram, YouTube and Facebook. The same content feeds the influencer network and the City Boy Movement.</p>
+    </div>
+    <div class="sticky rv d2">
+      <div class="portrait-card">
+        <img src="img/tinubu.jpg" alt="President Bola Ahmed Tinubu">
+        <div class="portrait-cap">
+          <div class="pn">President Bola Ahmed Tinubu</div>
+          <div class="pr">APC &middot; Seeking a second term</div>
+        </div>
       </div>
-      <input type="range" id="budget" min="100000" max="1000000" step="25000" value="500000" aria-label="Campaign budget">
-      <div class="range-ends"><span>USD 100,000</span><span>USD 1,000,000</span></div>
-      <div class="calc-out">
-        <div class="co"><div class="cov" id="cpmViews">166.7M</div><div class="col2">Views delivered at a $3 CPM</div></div>
-        <div class="co"><div class="cov">$3.00</div><div class="col2">Cost per thousand views</div></div>
-        <div class="co"><div class="cov" id="cpmDaily">1.6M</div><div class="col2">Views per day across the window</div></div>
-      </div>
-      <p class="calc-note">Distribution is priced at a flat <b>$3 CPM</b>, three dollars per thousand verified views. Creators are paid only for views that clear review, so the budget converts directly into reach rather than into fees.</p>
     </div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 2 THE ONLINE RACE -->
-<section class="section" id="s2">
+<!-- ============ 2 THE ONLINE RACE ============ -->
+<section class="section alt" id="s2">
   <div class="wrap">
     <span class="snum rv">02 &middot; The online race today</span>
-    <h2 class="statement wide rv d1">A three-way contest, with a split opposition.</h2>
+    <h2 class="statement rv d1">A three-way contest, with a split opposition.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.4rem">INEC has published a final list of 18 presidential candidates. The contest that matters has three tickets, and the opposition failed to unite behind one of them. Its vote is split.</p>
 
-    <h3 class="sub rv d2">The field</h3>
-    <p class="body-lg rv d2">INEC has published a final list of 18 presidential candidates. The contest that matters is three-way: the President and Vice President Shettima for the APC, Atiku Abubakar and Rotimi Amaechi for the ADC, and Peter Obi and Rabiu Kwankwaso for the NDC. The opposition failed to unite behind one ticket. Its vote is split.</p>
-
-    <h3 class="sub rv d2">Where sentiment stands</h3>
-    <p class="body-lg rv d2">The most rigorous public voter tracker, published 21 September 2026, shows a race that is narrowing.</p>
-    <div class="tw rv d3">
-      <table class="dt">
-        <thead><tr><th>Measure</th><th>Reading</th><th>Note</th></tr></thead>
-        <tbody>
-          <tr><td class="k">President's net favourability</td><td class="v">-58.5 to -3.3</td><td class="m">May to September. No other candidate moved as far.</td></tr>
-          <tr><td class="k">Party vote intention</td><td class="v">NDC 42.2% / APC 25.5%</td><td class="m">National</td></tr>
-          <tr><td class="k">Countryside</td><td class="v">APC 35.2% / NDC 27.6%</td><td class="m">APC leads</td></tr>
-          <tr><td class="k">Cities</td><td class="v">NDC 49.5% / APC 20.9%</td><td class="m">The gap this campaign has to close</td></tr>
-          <tr><td class="k">Approval among those better off</td><td class="v">70.7%</td><td class="m">Approval tracks personal circumstances almost exactly</td></tr>
-        </tbody>
-      </table>
+    <h3 class="sub rv">The field</h3>
+    <div class="tickets rv d1">
+      <div class="ticket us"><span class="tag">Incumbent</span><div class="party">APC</div><div class="names">Bola Ahmed Tinubu<br>Kashim Shettima</div></div>
+      <div class="ticket"><span class="tag">Opposition</span><div class="party">ADC</div><div class="names">Atiku Abubakar<br>Rotimi Amaechi</div></div>
+      <div class="ticket"><span class="tag">Opposition</span><div class="party">NDC</div><div class="names">Peter Obi<br>Rabiu Kwankwaso</div></div>
     </div>
-    <p class="body-lg rv d3" style="margin-top:1.5rem">The economy is the tailwind. Inflation has fallen from 34.8% in December 2024 to 15.39% in August 2026. Growth reached 4.43% in the second quarter. Reserves passed USD 52 billion, and all three major rating agencies have upgraded Nigeria. Petrol remains the sharpest grievance, and food prices are still rising at close to 20% a year.</p>
 
-    <h3 class="sub rv d3">The youth gap</h3>
-    <p class="body-lg rv d3">Almost 6.9 million new voters registered for 2027, and about two thirds of them are aged 18 to 34. These voters did not live through the fuel subsidy debate as policy. They lived it as prices. They rarely watch the news. They see politics on their phones, between football, music and comedy.</p>
-    <p class="body-lg rv d3">In 2023, this group made the opposition's online movement. It won the online conversation outright and carried Lagos, and still finished third nationally. The lesson runs both ways: online dominance alone does not win elections, but a campaign that cedes the online space lets the other side define it.</p>
+    <h3 class="sub rv">Where sentiment stands</h3>
+    <div class="chart-grid">
+      <div class="chart-card rv d1">
+        <div class="ch">
+          <div><div class="ct">The President's net favourability</div><div class="cs">Public voter tracker, 21 September 2026</div></div>
+          <div class="bigdelta">+55.2<small>points since May</small></div>
+        </div>
+        <svg class="line" id="lineChart" viewBox="0 0 600 240" preserveAspectRatio="none" aria-label="Net favourability rising from -58.5 in May to -3.3 in September">
+          <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D4B26A" stop-opacity=".32"/><stop offset="1" stop-color="#D4B26A" stop-opacity="0"/></linearGradient></defs>
+          <line class="grid" x1="40" y1="30" x2="590" y2="30"/>
+          <line class="grid" x1="40" y1="100" x2="590" y2="100"/>
+          <line class="grid" x1="40" y1="170" x2="590" y2="170"/>
+          <line class="zero" x1="40" y1="30" x2="590" y2="30"/>
+          <text x="0" y="34">0</text><text x="0" y="104">-25</text><text x="0" y="174">-50</text>
+          <path class="area" d="M60,193.8 C160,188 220,160 300,122 C380,86 470,52 570,39.2 L570,220 L60,220 Z"/>
+          <path class="path" d="M60,193.8 C160,188 220,160 300,122 C380,86 470,52 570,39.2"/>
+          <circle class="dot" cx="60" cy="193.8" r="6"/>
+          <circle class="dot d2" cx="570" cy="39.2" r="6"/>
+          <text class="v" x="60" y="222" text-anchor="start">-58.5</text>
+          <text class="v" x="570" y="68" text-anchor="end">-3.3</text>
+          <text x="60" y="238">May</text><text x="570" y="238" text-anchor="end">September</text>
+        </svg>
+        <p class="body-lg" style="font-size:0.95rem;margin-top:0.8rem">No other candidate moved as far. Among people who say they are somewhat better off, <b>70.7%</b> approve of the President.</p>
+      </div>
+      <div class="chart-card rv d2">
+        <div class="ch"><div><div class="ct">Party vote intention</div><div class="cs">APC against NDC</div></div></div>
+        <div class="split-bars" id="splitBars">
+          <div class="sb">
+            <div class="sb-head"><span>National</span><span>NDC leads</span></div>
+            <div class="sb-track"><div class="sb-seg apc" data-w="37.7">APC 25.5%</div><div class="sb-seg ndc" data-w="62.3">NDC 42.2%</div></div>
+          </div>
+          <div class="sb">
+            <div class="sb-head"><span>Countryside</span><span>APC leads</span></div>
+            <div class="sb-track"><div class="sb-seg apc" data-w="56">APC 35.2%</div><div class="sb-seg ndc" data-w="44">NDC 27.6%</div></div>
+          </div>
+          <div class="sb">
+            <div class="sb-head"><span>Cities</span><span style="color:#D98A73">The gap to close</span></div>
+            <div class="sb-track"><div class="sb-seg apc" data-w="29.7">APC 20.9%</div><div class="sb-seg ndc" data-w="70.3">NDC 49.5%</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <h3 class="sub rv d4">Where young Nigerians actually are</h3>
-    <div class="bars rv d4" id="bars">
+    <h3 class="sub rv">The economy is the tailwind</h3>
+    <div class="tiles rv d1">
+      <div class="tile"><div class="tv"><span class="cu" data-target="15.39" data-dec="2">15.39</span>%</div><div class="tl">Inflation in August 2026, down from 34.8% in December 2024</div></div>
+      <div class="tile"><div class="tv"><span class="cu" data-target="4.43" data-dec="2">4.43</span>%<span class="arrow">&#9650;</span></div><div class="tl">GDP growth, second quarter</div></div>
+      <div class="tile"><div class="tv">$<span class="cu" data-target="52">52</span>B+</div><div class="tl">Foreign reserves, highest in years</div></div>
+      <div class="tile"><div class="tv"><span class="cu" data-target="3">3</span> of 3</div><div class="tl">Major rating agencies have upgraded Nigeria</div></div>
+    </div>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;font-size:0.98rem">Petrol remains the sharpest grievance, and food prices are still rising at close to 20% a year.</p>
+
+    <h3 class="sub rv">The youth gap</h3>
+    <div class="youth">
+      <div class="rv d1">
+        <div class="huge"><span class="cu" data-target="6.9" data-dec="1">6.9</span>M<small>New voters registered for 2027</small></div>
+        <div class="donut-wrap">
+          <svg class="donut" id="donut" viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="48"/><circle class="fg" cx="60" cy="60" r="48"/></svg>
+          <div class="donut-cap"><b>About two thirds</b><br>are aged 18 to 34</div>
+        </div>
+      </div>
+      <div class="rv d2">
+        <p class="body-lg">These voters did not live through the fuel subsidy debate as policy. They lived it as prices. They rarely watch the news. They see politics on their phones, between football, music and comedy.</p>
+        <p class="body-lg">In 2023, this group made the opposition's online movement. It won the online conversation outright and carried Lagos, and still finished third nationally. <b>Online dominance alone does not win elections, but a campaign that cedes the online space lets the other side define it.</b></p>
+      </div>
+    </div>
+
+    <h3 class="sub rv">Where young Nigerians actually are</h3>
+    <div class="bars rv d1" id="bars">
       <div class="bar-row"><span class="bn">TikTok</span><div class="bar-track"><div class="bar-fill" data-pct="100"></div></div><span class="bv">47.8M</span></div>
       <div class="bar-row"><span class="bn">Facebook</span><div class="bar-track"><div class="bar-fill" data-pct="79.5"></div></div><span class="bv">38.0M</span></div>
       <div class="bar-row"><span class="bn">YouTube</span><div class="bar-track"><div class="bar-fill" data-pct="63.8"></div></div><span class="bv">30.5M</span></div>
-      <div class="bar-row"><span class="bn">X</span><div class="bar-track"><div class="bar-fill" data-pct="14.6"></div></div><span class="bv">~7M</span></div>
+      <div class="bar-row x"><span class="bn">X</span><div class="bar-track"><div class="bar-fill" data-pct="14.6"></div></div><span class="bv">~7M</span></div>
     </div>
-    <p class="body-lg rv d4" style="margin-top:1.2rem">WhatsApp is used by 96.5% of internet users. X is where political arguments happen and where journalists look. TikTok, Reels, Shorts and WhatsApp are where young voters actually spend their time.</p>
+    <p class="body-lg rv d2" style="margin-top:1.2rem;font-size:0.98rem">X is where political arguments happen and where journalists look. TikTok, Reels and Shorts are where young voters actually spend their time.</p>
 
-    <div class="split rv">
+    <h3 class="sub rv">The opposition online</h3>
+    <div class="split rv d1">
       <div class="col">
-        <div class="ck">The opposition online, strong</div>
+        <div class="ck">Where it is strong</div>
         <ul>
-          <li>Organic and passionate movement behind the NDC ticket.</li>
-          <li>Strongest in <b>English and Pidgin, on X</b>, and around big news moments.</li>
+          <li>An organic, passionate movement behind the NDC ticket.</li>
+          <li>Strongest <b>on X</b> and around big news moments.</li>
         </ul>
       </div>
       <div class="col mutecol">
-        <div class="ck">The opposition online, fragile</div>
+        <div class="ck">Where it is fragile</div>
         <ul>
           <li>Its own founders describe it as <b>underfunded and run by unpaid volunteers</b>, and a breakaway faction has publicly split from the candidate.</li>
           <li>Its candidate has said he will never insult the President, which limits attack content from the top. The ADC runs largely on press statements.</li>
-          <li>Weak in Hausa, weak outside the big cities, and it <b>cannot produce thousands of edited videos every day for fifteen weeks</b>. It spikes and fades.</li>
+          <li>Weak outside the big cities, and it <b>cannot produce thousands of edited videos every day for fifteen weeks</b>. It spikes and fades.</li>
         </ul>
       </div>
     </div>
 
-    <div class="callout rv">
-      <span class="label">The campaign's own assessment</span>
-      <p>In May 2026, a sitting APC governor said publicly that if the election were decided on social media, the President would lose. That is the prevailing assumption inside the party.</p>
-      <p>It is also the opportunity. The campaign does not have to lose online.</p>
+    <div class="quote rv">
+      <div class="qm">&ldquo;</div>
+      <div>
+        <p>If the election were decided on social media, the President would lose.</p>
+        <div class="qs">A sitting APC governor, speaking publicly, May 2026</div>
+        <div class="qturn">That is the prevailing assumption inside the party. It is also the opportunity.</div>
+      </div>
     </div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 3 WHAT IS MISSING -->
+<!-- ============ 3 WHAT IS MISSING ============ -->
 <section class="section" id="s3">
   <div class="wrap">
     <span class="snum rv">03 &middot; What the campaign has, and what is missing</span>
-    <h2 class="statement wide rv d1">The right pieces, with no supply behind them.</h2>
-    <div class="tw rv d2">
-      <table class="dt">
-        <thead><tr><th>Asset</th><th>What it is</th></tr></thead>
-        <tbody>
-          <tr><td class="k">The campaign council</td><td class="m">Finalising a nationwide youth outreach framework across social media, community networks and grassroots structures. Its Director-General: every young Nigerian with a phone and a voice is a potential messenger.</td></tr>
-          <tr><td class="k">The City Boy Movement</td><td class="m">Structures in all 36 states and the FCT down to ward level, with a target of 10 million youth votes.</td></tr>
-          <tr><td class="k">The Federal Government</td><td class="m">A network of 4,000 social media influencers announced to tell the administration's story.</td></tr>
-        </tbody>
-      </table>
+    <h2 class="statement rv d1">The right pieces, with no supply behind them.</h2>
+    <div class="assets rv d2" style="margin-top:2.4rem">
+      <div class="asset"><div class="an"><span class="cu" data-target="4000" data-comma="1">4,000</span></div><div class="at">Influencer network</div><p>Announced by the Federal Government to tell the administration's story.</p></div>
+      <div class="asset"><div class="an"><span class="cu" data-target="10">10</span>M</div><div class="at">City Boy Movement target</div><p>Youth votes, with structures in all 36 states and the FCT down to ward level.</p></div>
+      <div class="asset"><div class="an">36+1</div><div class="at">Campaign council framework</div><p>A nationwide youth outreach plan. Its Director-General: every young Nigerian with a phone and a voice is a potential messenger.</p></div>
     </div>
-    <p class="body-lg rv d3" style="margin-top:1.6rem">An influencer network with nothing new to post goes quiet. Ward coordinators need something to share every morning. Announcements do not become reach on their own. What is missing is an engine that does four things.</p>
-    <ol class="eng rv d3">
-      <li><p>Turns <b>every appearance by the President</b> into a steady stream of short videos, every day, until 15 January.</p></li>
-      <li><p>Puts those videos on <b>hundreds of thousands of feeds</b> through creators with real audiences.</p></li>
-      <li><p>Hands the same material to the influencer network, the City Boy Movement and WhatsApp groups, <b>ready to post</b>.</p></li>
-      <li><p>Measures what is working, <b>state by state and language by language</b>, and adjusts weekly.</p></li>
-    </ol>
+    <p class="body-lg rv d3" style="margin-top:2rem">An influencer network with nothing new to post goes quiet. Ward coordinators need something to share every morning. Announcements do not become reach on their own. What is missing is an engine that does four things.</p>
+    <div class="engine rv d3">
+      <div class="eng"><p>Turns <b>every appearance by the President</b> into a steady stream of short videos, every day, until 15 January.</p></div>
+      <div class="eng"><p>Puts those videos on <b>hundreds of thousands of feeds</b> through creators with real audiences.</p></div>
+      <div class="eng"><p>Hands the same material to the influencer network and the City Boy Movement, <b>ready to post</b>.</p></div>
+      <div class="eng"><p>Measures what is working <b>state by state</b>, and adjusts weekly.</p></div>
+    </div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 4 THE PLAYBOOK -->
-<section class="section" id="s4">
+<!-- ============ 4 THE PLAYBOOK ============ -->
+<section class="section alt" id="s4">
   <div class="wrap">
     <span class="snum rv">04 &middot; The playbook</span>
-    <h2 class="statement wide rv d1">Two campaigns that became impossible to avoid.</h2>
+    <h2 class="statement rv d1">Two campaigns that became impossible to avoid.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Different countries, different parties, the same mechanism. Switch between them.</p>
 
-    <div class="case rv d1">
-      <div class="case-head">
-        <div>
-          <div class="cn">Case study 01 &middot; United States, 2024</div>
-          <h4>The Trump campaign and the clip layer</h4>
-        </div>
-        <div class="cres">Young men 56% to 42%</div>
-      </div>
-      <dl>
-        <dt>The problem</dt>
-        <dd>In 2020, young American voters backed the Democratic candidate by about 25 points. The campaign concluded that people who watch cable news had already made up their minds. The persuadable voters, especially young men, were not watching the news at all.</dd>
-        <dt>The move</dt>
-        <dd>Over the summer and autumn of 2024, the candidate sat down for nearly a dozen long-form conversations on podcasts and streams that rarely cover politics: Joe Rogan, Theo Von, Logan Paul, the Nelk Boys and the streamer Adin Ross. These were not policy interviews. One adviser described it as a numbers game: an hour of conversation with someone who reaches 15 million people is worth more than any rally.</dd>
-        <dt>The scale</dt>
-        <dd>He joined TikTok on 1 June 2024 at a UFC event, passed a million followers within hours, and his first video drew more than 24 million views. The Adin Ross livestream peaked above 500,000 live viewers. <b>The Joe Rogan interview drew nearly 30 million YouTube views in its first 24 hours.</b> Allied influencer operations claimed a combined reach of more than 140 million people.</dd>
-      </dl>
-
-      <div class="vids tt">
-        <div class="vid">
-          <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7432830083397635361" title="Trump Clips, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-          <div class="vcap"><div class="vt">@trumpclipsusa</div><div class="vs">A clip account, not the campaign &middot; TikTok</div></div>
-        </div>
-      </div>
-      <p class="vid-note">That account is not the campaign. It is one of thousands that formed the clip layer, and it is what made him inescapable: every long-form appearance cut into thousands of short clips by the campaign's own accounts, allied accounts and fans, then posted across TikTok, Reels, Shorts and X for weeks. Coverage at the time called 2024 the clippers' election. Moments were built to be clipped: the fryer at a McDonald's in Pennsylvania, the garbage truck the day after an opponent's remark. Each travelled far beyond anyone who watched live.</p>
-
-      <dl>
-        <dt>The result</dt>
-        <dd>Young men backed him 56% to 42%. The Democrats' lead among all voters aged 18 to 29 collapsed from about 25 points in 2020 to about 4.</dd>
-        <dt>Why it worked, and its limit</dt>
-        <dd>It reached voters who ignore political media, it showed a person rather than a platform, and it faced almost no competition in that space. By 2026 his approval among young voters had fallen sharply. Attention wins the campaign. Delivery keeps it.</dd>
-      </dl>
+    <div class="tabs rv d2" role="tablist">
+      <button class="tab on" data-tab="trump" role="tab"><img src="img/trump.jpg" alt=""><span><span class="ty">United States, 2024</span>The Trump campaign</span></button>
+      <button class="tab" data-tab="mamdani" role="tab"><img src="img/mamdani.jpg" alt=""><span><span class="ty">New York, 2025</span>The Mamdani campaign</span></button>
     </div>
 
-    <div class="case rv d2">
-      <div class="case-head">
-        <div>
-          <div class="cn">Case study 02 &middot; New York, 2025</div>
-          <h4>The Mamdani campaign and daily vertical video</h4>
+    <!-- TRUMP -->
+    <div class="panel on" id="p-trump" role="tabpanel">
+      <div class="case">
+        <div class="case-side">
+          <div class="cportrait">
+            <img src="img/trump.jpg" alt="Donald Trump">
+            <div class="cp-cap"><div class="k">Case study 01</div><div class="h">The clip layer</div></div>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><div class="kv">24M+</div><div class="kl">Views on his first TikTok</div></div>
+            <div class="kpi"><div class="kv">~30M</div><div class="kl">Rogan views in 24 hours</div></div>
+            <div class="kpi"><div class="kv">500K+</div><div class="kl">Live on the Adin Ross stream</div></div>
+            <div class="kpi"><div class="kv">140M+</div><div class="kl">Allied influencer reach</div></div>
+          </div>
         </div>
-        <div class="cres">Won, outspent throughout</div>
-      </div>
-      <dl>
-        <dt>The problem</dt>
-        <dd>Zohran Mamdani entered the New York mayoral race as a little-known state assemblyman polling in single digits. His main rival was a former governor with name recognition, establishment backing and a super PAC that spent more than USD 28 million on his behalf.</dd>
-        <dt>The move</dt>
-        <dd>Instead of trying to match that money, the campaign built a small in-house video team that published short vertical videos every day. The breakout format started after the 2024 election: the candidate on Fordham Road in the Bronx, holding a sign and asking people who had voted Trump why. His creative director summed up the philosophy: the style is downstream from the substance.</dd>
-        <dt>The scale</dt>
-        <dd>One video reached 4.5 million views on Instagram, <b>56% of them from people who did not follow him</b>. A video about Manhattan traffic reached 2.3 million, almost half from non-followers. The campaign's stated goal: if you are on your phone in New York City, you are going to see him.</dd>
-      </dl>
-
-      <div class="vids tt">
-        <div class="vid">
-          <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7524525601084984606" title="Zohran Mamdani, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-          <div class="vcap"><div class="vt">@zohran_k_mamdani</div><div class="vs">The campaign's own daily vertical &middot; TikTok</div></div>
+        <div class="case-main">
+          <div class="result">Young men 56% to 42%<small>A 25-point youth deficit in 2020 collapsed to about 4</small></div>
+          <dl>
+            <dt>The problem</dt>
+            <dd>In 2020, young American voters backed the Democratic candidate by about 25 points. The campaign concluded that people who watch cable news had already made up their minds. The persuadable voters, especially young men, were not watching the news at all.</dd>
+            <dt>The move</dt>
+            <dd>Nearly a dozen long-form conversations on podcasts and streams that rarely cover politics: Joe Rogan, Theo Von, Logan Paul, the Nelk Boys, Adin Ross. Not policy interviews. One adviser called it a numbers game: an hour with someone who reaches 15 million people is worth more than any rally.</dd>
+          </dl>
+          <div class="case-clip">
+            <div class="clip">
+              <span class="badge"><i></i>1.6M views</span>
+              <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7432830083397635361" title="Trump clip by @trumpclipsusa" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+              <div class="cap"><div class="ca">@trumpclipsusa</div><div class="cb">A clip account, not the campaign &middot; 55.6K likes</div></div>
+            </div>
+            <div class="why">
+              <p><b>This is what made him inescapable.</b> That account is not the campaign. It is one of thousands that cut every long-form appearance into short clips and posted them across TikTok, Reels, Shorts and X for weeks.</p>
+              <p style="margin-top:1rem">Coverage at the time called 2024 the clippers' election. Moments were built to be clipped: the fryer at a McDonald's in Pennsylvania, the garbage truck the day after an opponent's remark.</p>
+              <p style="margin-top:1rem;color:var(--dim);font-size:0.9rem">The limit: by 2026 his approval among young voters had fallen sharply. Attention wins the campaign. Delivery keeps it.</p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <dl>
-        <dt>The multiplier</dt>
-        <dd>A creator network took the content further. Creators with anywhere from 20,000 to 35 million followers opted in through automated message flows. The campaign turned 45,000 social media messages into volunteers on the ground.</dd>
-        <dt>Why it worked</dt>
-        <dd>Short-form reach outran paid advertising because it was daily, human and native to the platforms. And the online reach did not stay online. It fed a volunteer army that knocked doors.</dd>
-      </dl>
     </div>
 
-    <h3 class="sub rv d3">What this means for Nigeria</h3>
-    <ol class="eng rv d3">
-      <li><p><b>Go where the voters are, not where the media is.</b> TikTok, Reels, Shorts and WhatsApp, not X and television.</p></li>
-      <li><p><b>Show the person.</b> Long, relaxed conversations produce the moments that travel.</p></li>
-      <li><p><b>Build the clip layer.</b> One appearance becomes thousands of clips across thousands of accounts.</p></li>
-      <li><p><b>Be there every day.</b> Presence has to be constant, not event-driven.</p></li>
-      <li><p><b>Connect online reach to the ground.</b> Nigeria already has the ground structure in the City Boy Movement. What it needs is the clip layer.</p></li>
-    </ol>
+    <!-- MAMDANI -->
+    <div class="panel" id="p-mamdani" role="tabpanel">
+      <div class="case">
+        <div class="case-side">
+          <div class="cportrait">
+            <img src="img/mamdani.jpg" alt="Zohran Mamdani">
+            <div class="cp-cap"><div class="k">Case study 02</div><div class="h">Daily vertical video</div></div>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><div class="kv">4.5M</div><div class="kl">Views on one Instagram video</div></div>
+            <div class="kpi"><div class="kv">56%</div><div class="kl">Of those from non-followers</div></div>
+            <div class="kpi"><div class="kv">$28M+</div><div class="kl">Super PAC money against him</div></div>
+            <div class="kpi"><div class="kv">45K</div><div class="kl">Messages turned into volunteers</div></div>
+          </div>
+        </div>
+        <div class="case-main">
+          <div class="result">Won, outspent throughout<small>From single digits to the mayoralty</small></div>
+          <dl>
+            <dt>The problem</dt>
+            <dd>Zohran Mamdani entered the New York mayoral race as a little-known state assemblyman polling in single digits. His main rival was a former governor with name recognition, establishment backing and a super PAC that spent more than USD 28 million on his behalf.</dd>
+            <dt>The move</dt>
+            <dd>Instead of matching that money, the campaign built a small in-house team that published short vertical videos every day. The breakout format: the candidate on Fordham Road in the Bronx with a sign, asking people who had voted Trump why. His creative director: the style is downstream from the substance.</dd>
+          </dl>
+          <div class="case-clip">
+            <div class="clip">
+              <span class="badge"><i></i>256K views</span>
+              <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7629149589781646605" title="Mamdani on Sidetalk" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+              <div class="cap"><div class="ca">@sidetalknyc</div><div class="cb">An independent NYC clip account &middot; 19.6K likes</div></div>
+            </div>
+            <div class="why">
+              <p><b>The reach did not come from his own page.</b> Sidetalk is one of New York's biggest street-content accounts, and it put him in front of an audience that follows basketball and the city, not politics.</p>
+              <p style="margin-top:1rem">A creator network took the content further: creators from 20,000 to 35 million followers opted in through automated message flows. The goal, in the campaign's words: if you are on your phone in New York City, you are going to see him.</p>
+              <p style="margin-top:1rem">And the online reach did not stay online. <b>It fed a volunteer army that knocked doors.</b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub rv">What this means for Nigeria</h3>
+    <div class="engine five rv d1">
+      <div class="eng"><p><b>Go where the voters are.</b> TikTok, Reels and Shorts, not X and television.</p></div>
+      <div class="eng"><p><b>Show the person.</b> Relaxed conversations produce the moments that travel.</p></div>
+      <div class="eng"><p><b>Build the clip layer.</b> One appearance becomes thousands of clips.</p></div>
+      <div class="eng"><p><b>Be there every day.</b> Constant presence, not event-driven.</p></div>
+      <div class="eng"><p><b>Connect it to the ground.</b> The City Boy Movement is the ground. It needs the clip layer.</p></div>
+    </div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 5 THE STRATEGY -->
+<!-- ============ 5 THE STRATEGY ============ -->
 <section class="section" id="s5">
   <div class="wrap">
     <span class="snum rv">05 &middot; The strategy</span>
-    <h2 class="statement wide rv d1">Three storylines. Every clip serves one.</h2>
-    <div class="story rv d2">
-      <div class="st">
-        <div class="sn2">Storyline 01</div>
-        <h4>The hard call is paying off</h4>
-        <p>The President took decisions others avoided, and the results are arriving: inflation down by more than half from its peak, growth rising, reserves at their highest in years. Told honestly, with respect for what people went through, never pretending things are easy.</p>
+    <h2 class="statement rv d1">Three storylines. Every clip serves one.</h2>
+    <div class="story rv d2" style="margin-top:2.4rem">
+      <div class="st"><div class="sn2">01</div><h4>The hard call is paying off</h4><p>The President took decisions others avoided, and the results are arriving: inflation down by more than half from its peak, growth rising, reserves at their highest in years. Told honestly, with respect for what people went through.</p></div>
+      <div class="st"><div class="sn2">02</div><h4>It is working for people like me</h4><p>1.39 million students have received government student loans. Their stories, in their own words, are more persuasive than any statistic or minister. The same goes for every programme with real beneficiaries.</p></div>
+      <div class="st"><div class="sn2">03</div><h4>The man behind the office</h4><p>Humour, family, Lagos, football, music, history. Most young Nigerians have never seen the President unscripted. Every relaxed moment is content.</p></div>
+    </div>
+
+    <h3 class="sub rv">The clip layer already exists</h3>
+    <div class="clip-wall">
+      <div class="clip rv d1">
+        <span class="badge"><i></i>1.4M views</span>
+        <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7529086045179202822" title="Tinubu dancing, by @amos.vlogs3" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+        <div class="cap"><div class="ca">@amos.vlogs3</div><div class="cb">Storyline 03 &middot; 115K likes</div></div>
       </div>
-      <div class="st">
-        <div class="sn2">Storyline 02</div>
-        <h4>It is working for people like me</h4>
-        <p>1.39 million students have received government student loans. Their stories, in their own words and their own languages, are more persuasive than any statistic or minister. The same goes for every programme with real beneficiaries.</p>
+      <div class="clip rv d2">
+        <span class="badge"><i></i>439K views</span>
+        <div class="frame"><iframe src="https://www.tiktok.com/embed/v2/7401544100404595974" title="Tinubu campaign speech, by @a_ayofee" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+        <div class="cap"><div class="ca">@a_ayofee</div><div class="cb">A campaign speech, cut and captioned &middot; 13.2K likes</div></div>
       </div>
-      <div class="st">
-        <div class="sn2">Storyline 03</div>
-        <h4>The man behind the office</h4>
-        <p>Humour, family, Lagos, football, music, history. Most young Nigerians have never seen the President unscripted. Every relaxed moment is content.</p>
+      <div class="wall-note rv d3">
+        <div class="big"><span class="cu" data-target="1.8" data-dec="1">1.8</span>M</div>
+        <div class="bl">Views across two unpaid, unprompted posts</div>
+        <p>Clips of the President already travel on Nigerian TikTok, cut and captioned by individual creators with <b>no brief, no budget and no coordination</b>.</p>
+        <p>The appetite is there. What is missing is direction, volume and measurement: thousands of clips a week instead of two, aimed at the states and age groups that decide the race, with every view counted.</p>
       </div>
     </div>
 
-    <h3 class="sub rv d3">The clip layer already exists</h3>
-    <p class="body-lg rv d3">Clips of the President already circulate on Nigerian TikTok, cut and captioned by individual creators with no brief, no budget and no coordination. The raw appetite is there. What is missing is direction, volume and measurement.</p>
-    <div class="vids tt rv d3">
-      <div class="vid">
-        <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7515055218770447623" title="Tinubu clip, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <div class="vcap"><div class="vt">@a_ayofee</div><div class="vs">Responding to the one-party-state line</div></div>
-      </div>
-      <div class="vid">
-        <div class="frame tt"><iframe src="https://www.tiktok.com/embed/v2/7401544100404595974" title="Tinubu campaign speech clip, TikTok" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <div class="vcap"><div class="vt">@a_ayofee</div><div class="vs">A campaign speech, cut and captioned</div></div>
-      </div>
-    </div>
-    <p class="vid-note">Two creators, working unpaid and unprompted. An engine does this at the scale of thousands of clips a week, in English, Pidgin, Yoruba and Hausa, aimed at the states and age groups that decide the race, with every view counted.</p>
-
-    <h3 class="sub rv">Audiences by region and language</h3>
-    <div class="tw rv">
-      <table class="dt">
-        <thead><tr><th>Audience</th><th>Goal</th><th>Language and format</th></tr></thead>
-        <tbody>
-          <tr><td class="k">City youth, especially Lagos, Abuja and Port Harcourt</td><td class="v">Persuade</td><td class="m">English and Pidgin; humour, beneficiary stories, the man</td></tr>
-          <tr><td class="k">Rural and small-town youth</td><td class="v">Turn out</td><td class="m">Pidgin, Yoruba, Hausa; local creators, WhatsApp</td></tr>
-          <tr><td class="k">The South-West</td><td class="v">Hold the base</td><td class="m">Yoruba; pride, record, Lagos</td></tr>
-          <tr><td class="k">The North-West and North-East</td><td class="v">Contest</td><td class="m">Hausa; local creators, security and economy</td></tr>
-        </tbody>
-      </table>
+    <h3 class="sub rv">Audiences by region</h3>
+    <div class="aud rv d1">
+      <div class="au"><span class="goal">Persuade</span><h5>City youth</h5><p>Lagos, Abuja and Port Harcourt. Humour, beneficiary stories, the man.</p></div>
+      <div class="au"><span class="goal t">Turn out</span><h5>Rural and small-town youth</h5><p>Local creators with local audiences.</p></div>
+      <div class="au"><span class="goal t">Hold the base</span><h5>The South-West</h5><p>Pride, the record, Lagos.</p></div>
+      <div class="au"><span class="goal">Contest</span><h5>The North-West and North-East</h5><p>Local creators. Security and the economy.</p></div>
     </div>
 
-    <h3 class="sub rv">Content supply, integration and response</h3>
-    <div class="split rv">
+    <h3 class="sub rv">Supply and distribution</h3>
+    <div class="supply rv d1">
       <div class="col">
         <div class="ck">What we recommend filming</div>
         <ul>
           <li><b>At least one relaxed long-form conversation each month</b> on a show young Nigerians already watch. Each one feeds the network for weeks.</li>
           <li><b>A beneficiary series</b> filmed across the regions: students, traders, workers, in their own words.</li>
-          <li><b>Capture of every campaign event, rally and City Boy Movement gathering</b>, shot with short-form in mind.</li>
+          <li><b>Every campaign event, rally and City Boy Movement gathering</b>, shot with short-form in mind.</li>
         </ul>
       </div>
       <div class="col">
@@ -503,7 +734,6 @@
         <ul>
           <li>Ready-to-post packs for the <b>4,000-influencer network</b>.</li>
           <li><b>City Boy Movement coordinators</b> at state and ward level.</li>
-          <li><b>WhatsApp distribution</b>, where 96.5% of Nigerian internet users already are.</li>
           <li>When an attack lands, the answer is <b>a clip, not a press statement</b>. Factual, calm, on feeds within hours.</li>
         </ul>
       </div>
@@ -516,247 +746,256 @@
     </div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 6 THE MACHINE -->
-<section class="section" id="s6">
+<!-- ============ 6 THE MACHINE ============ -->
+<section class="section alt" id="s6">
   <div class="wrap">
     <span class="snum rv">06 &middot; The machine</span>
-    <h2 class="statement wide rv d1">Built for this job, paid on results.</h2>
-    <div class="tw rv d2">
-      <table class="dt">
-        <thead><tr><th>Component</th><th>How it works</th></tr></thead>
-        <tbody>
-          <tr><td class="k">The network</td><td class="m">About 3,000 clippers today, expanded for this campaign with established Nigerian creators selected for real audiences in English, Pidgin, Yoruba and Hausa, plus Nigerians abroad who shape conversation at home.</td></tr>
-          <tr><td class="k">The platform</td><td class="m">Creator sign-up and vetting, a library of approved footage, video submission and review, view tracking and payouts, in one place.</td></tr>
-          <tr><td class="k">Paid on results</td><td class="m">Creators are paid only for verified views. No views, no pay. Every video is reviewed before payment. Botted views, recycled accounts and off-message content are rejected and not paid.</td></tr>
-          <tr><td class="k">Reporting</td><td class="m">A live dashboard, open to the campaign at any time, showing views, clips, platforms, languages, states and the best-performing moments.</td></tr>
-        </tbody>
-      </table>
+    <h2 class="statement rv d1">Built for this job, paid on results.</h2>
+    <div class="machine rv d2" style="margin-top:2.4rem">
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3 19c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5M14.5 14.2c3 .2 5.5 2 5.5 4.8"/></svg></div>
+        <div class="mv">~3,000</div>
+        <h5>The network</h5>
+        <p>Clippers today, expanded for this campaign with established Nigerian creators selected for real audiences, plus Nigerians abroad who shape conversation at home.</p>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="1.5"/><path d="M3 8h18M8 21h8"/></svg></div>
+        <h5>The platform</h5>
+        <p>Creator sign-up and vetting, a library of approved footage, submission and review, view tracking and payouts, in one place.</p>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+        <h5>Paid on results</h5>
+        <p>Creators are paid only for verified views. No views, no pay. Botted views, recycled accounts and off-message content are rejected and not paid.</p>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h5>Reporting</h5>
+        <p>A live dashboard, open to the campaign at any time: views, clips, platforms, states and the best-performing moments.</p>
+      </div>
     </div>
-    <p class="body-lg rv d3" style="margin-top:1.6rem">Before launch we measure the online race as it stands: how often each candidate is seen, where, in which language, and with what sentiment. From then on the campaign receives a live dashboard and a weekly report on share of voice against the other candidates, sentiment by region and language, the moments that travelled furthest, and what we are changing as a result. <b>No public poll tracks the online race. The campaign will have its own scoreboard.</b></p>
+    <p class="body-lg rv d3" style="margin-top:2.2rem">Before launch we measure the online race as it stands: how often each candidate is seen, where, and with what sentiment. From then on, a weekly report on share of voice against the other candidates, sentiment by region, and the moments that travelled furthest. <b>No public poll tracks the online race. The campaign will have its own scoreboard.</b></p>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 7 CALENDAR -->
+<!-- ============ 7 CALENDAR ============ -->
 <section class="section" id="s7">
   <div class="wrap">
     <span class="snum rv">07 &middot; The calendar to 15 January</span>
-    <h2 class="statement wide rv d1">Fifteen weeks, if it starts now.</h2>
-    <div class="rv d2" style="margin-top:2rem">
-      <div class="cal-item"><span class="cal-when">Weeks 1 and 2, October</span><p>Baseline measurement of the online race. Platform live. Creator recruitment in four languages. Content library loaded. First clips posted within days of launch.</p></div>
-      <div class="cal-item"><span class="cal-when">Late October to November</span><p>Full scale. First long-form sit-down clipped and distributed. Beneficiary series begins. Daily packs to the influencer network and the City Boy Movement. Rapid response live.</p></div>
-      <div class="cal-item"><span class="cal-when">December</span><p>Peak volume through the festive season, with young Nigerians home, online and in a celebrating mood. Year-in-review content on the turnaround. Second and third long-form moments.</p></div>
-      <div class="cal-item"><span class="cal-when">1 to 15 January</span><p>The final push. Maximum daily output across every platform and language. All distribution stops at the end of 15 January, in line with the law.</p></div>
+    <h2 class="statement rv d1">Fifteen weeks, if it starts now.</h2>
+    <div class="tl-rail rv d2" id="tlRail">
+      <div class="tl-fill" id="tlFill"></div>
+      <button class="tl-step on" data-i="0"><div class="node">1</div><div class="when">October</div><div class="what">Launch</div></button>
+      <button class="tl-step" data-i="1"><div class="node">2</div><div class="when">Late Oct to Nov</div><div class="what">Full scale</div></button>
+      <button class="tl-step" data-i="2"><div class="node">3</div><div class="when">December</div><div class="what">Peak volume</div></button>
+      <button class="tl-step" data-i="3"><div class="node">4</div><div class="when">1 to 15 January</div><div class="what">Final push</div></button>
     </div>
-
-    <div class="calc rv d3">
-      <div class="calc-head">
-        <span class="cl">If distribution starts on</span>
-        <span class="cv" id="launchDate">1 October 2026</span>
-      </div>
-      <input type="range" id="launch" min="0" max="75" step="1" value="0" aria-label="Launch date">
-      <div class="range-ends"><span>1 Oct 2026</span><span>15 Dec 2026</span></div>
-      <div class="calc-out">
-        <div class="co"><div class="cov" id="outWeeks">15.1</div><div class="col2">Weeks of distribution</div></div>
-        <div class="co"><div class="cov" id="outViews">166.7M</div><div class="col2">Views delivered before 15 January</div></div>
-        <div class="co"><div class="cov" id="outLost">0</div><div class="col2">Views lost to a later start</div></div>
-      </div>
-      <p class="calc-note">The figure assumes distribution from 1 October at a $3 CPM on a USD 500,000 budget. The engine delivers at a steady weekly rate, so a later start does not compress into the same total. <b>Every week before launch is reach the campaign will not get back before 15 January.</b></p>
-    </div>
+    <div class="tl-panel rv d3"><p id="tlText"></p></div>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 8 PROOF -->
-<section class="section" id="s8">
+<!-- ============ 8 PROOF ============ -->
+<section class="section proof-band" id="s8">
   <div class="wrap">
     <span class="snum rv">08 &middot; Proof</span>
-    <h2 class="statement wide rv d1">This is the volume we already move.</h2>
-    <div class="figs rv d2">
-      <div class="fig"><div class="fv"><span class="cu" data-target="1.3" data-dec="1">1.3</span>B+</div><div class="fl">Total views generated to date</div></div>
-      <div class="fig"><div class="fv"><span class="cu" data-target="160">160</span>M+</div><div class="fl">Views in the last 90 days alone</div></div>
-      <div class="fig"><div class="fv"><span class="cu" data-target="11">11</span>M</div><div class="fl">Views on one campaign, from over 6,000 clip submissions</div></div>
+    <h2 class="statement rv d1">This is the volume we already move.</h2>
+    <div class="proof-grid rv d2">
+      <div class="pf lead"><div class="pv"><span class="cu" data-target="1.3" data-dec="1">1.3</span>B+</div><div class="pl">Total views generated to date</div></div>
+      <div class="pf"><div class="pv"><span class="cu" data-target="160">160</span>M+</div><div class="pl">Views in the last 90 days alone</div></div>
+      <div class="pf"><div class="pv"><span class="cu" data-target="11">11</span>M</div><div class="pl">Views on one campaign, from over 6,000 clip submissions</div></div>
     </div>
-    <p class="body-lg rv d3" style="margin-top:1.8rem">Clients include Walmart, Wale, and Jake and Logan Paul. For the Paul brothers' reality series, a single campaign generated more than 11 million views from over 6,000 clip submissions. The machinery described in this proposal is the same machinery, pointed at a different job.</p>
+    <div class="clients rv d3">
+      <span class="cl-l">Clients include</span>
+      <span class="chip">Walmart</span><span class="chip">Wale</span><span class="chip">Jake Paul</span><span class="chip">Logan Paul</span>
+    </div>
+    <p class="body-lg rv d3" style="margin-top:1.6rem">For the Paul brothers' reality series, a single campaign generated more than 11 million views from over 6,000 clip submissions. The machinery in this proposal is the same machinery, pointed at a different job.</p>
   </div>
 </section>
-<hr class="rule">
 
-<!-- 9 SCOPE AND INVESTMENT -->
+<!-- ============ 9 SCOPE ============ -->
 <section class="section" id="s9">
   <div class="wrap">
-    <span class="snum rv">09 &middot; Scope and investment</span>
-    <h2 class="statement wide rv d1">What is included, and what is not.</h2>
-    <div class="scope rv d2">
+    <span class="snum rv">09 &middot; Scope</span>
+    <h2 class="statement rv d1">What is included, and what is not.</h2>
+    <div class="scope rv d2" style="margin-top:2.2rem">
       <div class="col">
         <div class="ck">Included</div>
         <ul>
-          <li>Short-form clipping and distribution from launch to 15 January 2027</li>
-          <li>Recruitment, vetting and management of the creator network</li>
-          <li>Our platform, run for this campaign</li>
-          <li>Review of every clip before payment</li>
-          <li>Content in English, Pidgin, Yoruba and Hausa</li>
-          <li>Daily content packs for the influencer network, the City Boy Movement and WhatsApp</li>
-          <li>Rapid response clipping</li>
-          <li>Baseline measurement, live dashboard and weekly reports</li>
+          <li><span class="m">+</span>Short-form clipping and distribution from launch to 15 January 2027</li>
+          <li><span class="m">+</span>Recruitment, vetting and management of the creator network</li>
+          <li><span class="m">+</span>Our platform, run for this campaign</li>
+          <li><span class="m">+</span>Review of every clip before payment</li>
+          <li><span class="m">+</span>Daily content packs for the influencer network and the City Boy Movement</li>
+          <li><span class="m">+</span>Rapid response clipping</li>
+          <li><span class="m">+</span>Baseline measurement, live dashboard and weekly reports</li>
         </ul>
       </div>
       <div class="col mutecol">
         <div class="ck">Not included</div>
         <ul>
-          <li>Filming new footage, including the beneficiary series and event capture, quoted separately</li>
-          <li>Paid advertising on the platforms</li>
-          <li>Booking the President's appearances on shows</li>
-          <li>Any activity after 15 January 2027</li>
+          <li><span class="m">&minus;</span>Filming new footage, including the beneficiary series and event capture, quoted separately</li>
+          <li><span class="m">&minus;</span>Paid advertising on the platforms</li>
+          <li><span class="m">&minus;</span>Booking the President's appearances on shows</li>
+          <li><span class="m">&minus;</span>Any activity after 15 January 2027</li>
         </ul>
-      </div>
-    </div>
-
-    <div class="terms rv d3">
-      <div class="term">
-        <div class="tl">Guarantee</div>
-        <div class="tv">166.7M views</div>
-        <div class="td2">At a $3 CPM on a USD 500,000 budget, delivered before 15 January 2027.</div>
-      </div>
-      <div class="term">
-        <div class="tl">Investment</div>
-        <div class="tv">USD 500,000</div>
-        <div class="td2">For the full campaign. One payment, in full, before launch.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CLOSE -->
-<section class="section">
+<!-- ============ 10 MODEL THE CAMPAIGN (final) ============ -->
+<section class="section alt" id="s10">
   <div class="wrap">
-    <div class="cta">
-      <div class="wrap">
-        <span class="snum rv">Next step</span>
-        <h2 class="statement rv d1">Sign the agreement and make the payment. We go live within 7 days.</h2>
-        <p class="closer rv d2">Every week before launch is reach the campaign will not get back before 15 January.</p>
-        <div class="signoff rv d3">
-          <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
-          <div class="s-r">Jacques &middot; Founder</div>
-        </div>
+    <span class="snum rv">10 &middot; Model the campaign</span>
+    <h2 class="statement rv d1">Set the budget and the start date.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at a flat <b>$3 CPM</b>, three dollars per thousand verified views, delivered at a steady weekly rate until campaigning closes.</p>
+
+    <div class="model rv d2">
+      <div class="ctrl">
+        <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">USD 500,000</span></div>
+        <input type="range" id="budget" min="100000" max="1000000" step="25000" value="500000" aria-label="Campaign budget">
+        <div class="range-ends"><span>USD 100,000</span><span>USD 1,000,000</span></div>
+      </div>
+      <div class="ctrl">
+        <div class="ctrl-head"><span class="cl">Distribution starts</span><span class="cv" id="startVal">1 October 2026</span></div>
+        <input type="range" id="start" min="0" max="75" step="1" value="0" aria-label="Start date">
+        <div class="range-ends"><span>1 Oct 2026</span><span>15 Dec 2026</span></div>
+      </div>
+
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oViews">166.7M</div><div class="ol">Views delivered before 15 January</div></div>
+        <div class="o"><div class="ov" id="oDaily">1.6M</div><div class="ol">Views per day</div></div>
+        <div class="o"><div class="ov" id="oWeeks">15.1</div><div class="ol">Weeks of distribution</div></div>
+        <div class="o warn"><div class="ov" id="oLost">0</div><div class="ol">Views lost to a later start</div></div>
+      </div>
+
+      <div class="progress-weeks" id="weekBar"></div>
+      <div class="pw-legend"><span>1 October</span><span>15 January</span></div>
+
+      <p class="model-note">The engine runs at a steady weekly rate, so a later start does not compress into the same total. <b>Every week before launch is reach the campaign will not get back before 15 January.</b></p>
+    </div>
+
+    <div class="close-cta">
+      <span class="snum rv">Next step</span>
+      <h2 class="rv d1">Sign the agreement and make the payment. We go live within 7 days.</h2>
+      <p class="rv d2">Every week before launch is reach the campaign will not get back.</p>
+      <div class="signoff rv d3">
+        <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+        <div class="s-r">Jacques &middot; Founder</div>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  const io=new IntersectionObserver(es=>{
-    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
-  },{threshold:0.1,rootMargin:'0px 0px -6% 0px'});
-  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-
-  const prog=document.getElementById('progress');
-  addEventListener('scroll',()=>{
-    const h=document.documentElement;
-    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
-  },{passive:true});
-
-  const dots=Array.from(document.querySelectorAll('#dots a'));
-  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
-  const secIO=new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        const i=secs.indexOf(e.target);
-        dots.forEach((d,j)=>d.classList.toggle('on',j===i));
-      }
-    });
-  },{rootMargin:'-45% 0px -45% 0px'});
-  secs.forEach(s=>s&&secIO.observe(s));
-
-  /* count-up figures */
+(function(){
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function fmt(n,el){
-    if(el.dataset.dec) return n.toFixed(parseInt(el.dataset.dec,10));
-    return Math.round(n).toLocaleString('en-US');
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+
+  /* reveal */
+  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+
+  /* progress + dots */
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=[...document.querySelectorAll('#dots a')];
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  /* countdown to close of campaigning */
+  const CLOSE=new Date('2027-01-15T23:59:59+01:00');
+  const cdD=document.getElementById('cdD'),cdW=document.getElementById('cdW'),cdH=document.getElementById('cdH');
+  function tickCD(){
+    const ms=Math.max(0,CLOSE-new Date());
+    const d=Math.floor(ms/86400000);
+    cdD.textContent=d; cdW.textContent=Math.floor(d/7); cdH.textContent=Math.floor(ms/3600000).toLocaleString('en-US');
   }
-  function countUp(el){
+  tickCD(); setInterval(tickCD,60000);
+
+  /* count-ups */
+  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
+  once(document.querySelectorAll('.cu'),el=>{
     const t=parseFloat(el.dataset.target);
-    if(reduce||isNaN(t)){el.textContent=fmt(t,el);return;}
-    const dur=1100,start=performance.now();
-    (function tick(now){
-      const p=Math.min((now-start)/dur,1), e=1-Math.pow(1-p,3);
-      el.textContent=fmt(t*e,el);
-      if(p<1) requestAnimationFrame(tick);
-    })(start);
-  }
-  const cuIO=new IntersectionObserver(es=>{
-    es.forEach(e=>{if(e.isIntersecting){countUp(e.target);cuIO.unobserve(e.target);}});
-  },{threshold:0.4});
-  document.querySelectorAll('.cu').forEach(el=>cuIO.observe(el));
+    if(reduce){el.textContent=fmt(t,el);return;}
+    const dur=1300,s=performance.now();
+    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
+  },0.5);
+
+  /* sentiment line */
+  once([document.getElementById('lineChart')],el=>el.classList.add('on'),0.4);
+
+  /* split bars */
+  once([document.getElementById('splitBars')],el=>{
+    el.querySelectorAll('.sb-seg').forEach((s,i)=>setTimeout(()=>{s.style.width=s.dataset.w+'%';},i*120));
+  },0.3);
+
+  /* donut: two thirds */
+  once([document.getElementById('donut')],el=>{
+    const c=2*Math.PI*48, f=el.querySelector('.fg');
+    f.style.strokeDasharray=(c*0.667)+' '+c;
+  },0.5);
 
   /* platform bars */
-  const barIO=new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.querySelectorAll('.bar-fill').forEach((b,i)=>{
-          setTimeout(()=>{b.style.width=b.dataset.pct+'%';}, i*140);
-        });
-        barIO.unobserve(e.target);
-      }
-    });
-  },{threshold:0.4});
-  const bars=document.getElementById('bars'); if(bars) barIO.observe(bars);
+  once([document.getElementById('bars')],el=>{
+    el.querySelectorAll('.bar-fill').forEach((b,i)=>setTimeout(()=>{b.style.width=b.dataset.pct+'%';},i*150));
+  },0.3);
 
-  /* budget at a $3 CPM */
-  (function(){
-    const CPM=3, DAYS=106;                              // 1 Oct 2026 to 15 Jan 2027
-    const sl=document.getElementById('budget');
-    const bOut=document.getElementById('budgetVal');
-    const vOut=document.getElementById('cpmViews');
-    const dOut=document.getElementById('cpmDaily');
-    const m=n=>{
-      if(n>=1e6) return (n/1e6).toFixed(n>=1e8?1:1).replace(/\.0$/,'')+'M';
-      if(n>=1e3) return Math.round(n/1e3)+'K';
-      return String(Math.round(n));
-    };
-    function calc(){
-      const b=parseFloat(sl.value);
-      const views=b/CPM*1000;
-      bOut.textContent='USD '+Math.round(b).toLocaleString('en-US');
-      vOut.textContent=m(views);
-      dOut.textContent=m(views/DAYS);
-    }
-    sl.addEventListener('input',calc); calc();
-  })();
+  /* case study tabs */
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.tab));
+  }));
 
-  /* launch-date calculator */
-  (function(){
-    const EARLIEST=new Date(Date.UTC(2026,9,1));      // 1 Oct 2026
-    const DEADLINE=new Date(Date.UTC(2027,0,15));     // 15 Jan 2027
-    const DAY=86400000;
-    const FULL_DAYS=(DEADLINE-EARLIEST)/DAY;          // 106
-    const TOTAL=500000/3*1000;                        // USD 500,000 at a $3 CPM, across the full window
-    const sl=document.getElementById('launch');
-    const dOut=document.getElementById('launchDate');
-    const wOut=document.getElementById('outWeeks');
-    const vOut=document.getElementById('outViews');
-    const lOut=document.getElementById('outLost');
-    const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const m=n=>{
-      if(n>=1e6) return (n/1e6).toFixed(n>=1e8?0:1).replace(/\.0$/,'')+'M';
-      if(n>=1e3) return Math.round(n/1e3)+'K';
-      return String(Math.round(n));
-    };
-    function calc(){
-      const off=parseInt(sl.value,10);
-      const launch=new Date(EARLIEST.getTime()+off*DAY);
-      const days=(DEADLINE-launch)/DAY;
-      const got=TOTAL*days/FULL_DAYS;
-      dOut.textContent=launch.getUTCDate()+' '+MON[launch.getUTCMonth()]+' '+launch.getUTCFullYear();
-      wOut.textContent=(days/7).toFixed(1);
-      vOut.textContent=m(got);
-      lOut.textContent=off===0?'0':m(TOTAL-got);
+  /* timeline */
+  const TL=[
+    'Baseline measurement of the online race. Platform live. Creator recruitment across the country. Content library loaded. First clips posted within days of launch.',
+    'Full scale. The first long-form sit-down is clipped and distributed. The beneficiary series begins. Daily packs go to the influencer network and the City Boy Movement. Rapid response goes live.',
+    'Peak volume through the festive season, with young Nigerians home, online and in a celebrating mood. Year-in-review content on the turnaround. The second and third long-form moments.',
+    'The final push. Maximum daily output across every platform. All distribution stops at the end of 15 January, in line with the law.'
+  ];
+  const steps=[...document.querySelectorAll('.tl-step')],tlText=document.getElementById('tlText'),tlFill=document.getElementById('tlFill');
+  function setTL(i){
+    steps.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i);});
+    tlFill.style.width=((i+1)/steps.length*100)+'%';
+    tlText.style.animation='none';void tlText.offsetWidth;tlText.style.animation='';
+    tlText.textContent=TL[i];
+  }
+  steps.forEach((s,i)=>s.addEventListener('click',()=>setTL(i)));
+  setTL(0);
 
-    }
-    sl.addEventListener('input',calc); calc();
-  })();
+  /* model: budget at $3 CPM x start date */
+  const CPM=3, DAY=86400000;
+  const EARLIEST=Date.UTC(2026,9,1), DEADLINE=Date.UTC(2027,0,15);
+  const FULL=(DEADLINE-EARLIEST)/DAY, WEEKS=Math.ceil(FULL/7);
+  const bS=document.getElementById('budget'), sS=document.getElementById('start');
+  const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const m=n=>n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
+  const wb=document.getElementById('weekBar');
+  for(let i=0;i<WEEKS;i++) wb.appendChild(document.createElement('span'));
+  const fill=el=>el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%');
+  function calc(){
+    const budget=+bS.value, off=+sS.value;
+    const total=budget/CPM*1000;
+    const launch=EARLIEST+off*DAY, days=(DEADLINE-launch)/DAY;
+    const got=total*days/FULL;
+    document.getElementById('budgetVal').textContent='USD '+budget.toLocaleString('en-US');
+    const d=new Date(launch);
+    document.getElementById('startVal').textContent=d.getUTCDate()+' '+MON[d.getUTCMonth()]+' '+d.getUTCFullYear();
+    document.getElementById('oViews').textContent=m(got);
+    document.getElementById('oDaily').textContent=m(total/FULL);
+    document.getElementById('oWeeks').textContent=(days/7).toFixed(1);
+    document.getElementById('oLost').textContent=off===0?'0':m(total-got);
+    const lostWeeks=Math.round(off/7);
+    [...wb.children].forEach((s,i)=>s.classList.toggle('lost',i<lostWeeks));
+    fill(bS); fill(sS);
+  }
+  bS.addEventListener('input',calc); sS.addEventListener('input',calc); calc();
+})();
 </script>
 </body>
 </html>
