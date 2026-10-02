@@ -22,7 +22,7 @@ export default {
     if (path === '/api/img') return handleImageProxy(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
     if (path.startsWith('/api/runitbak/')) return handleRunItBakApi(request, env);
-    if (path === '/runitbak' || path.startsWith('/runitbak/')) return handleRunItBakPage(request, env);
+    if (path === '/runitbak' || path.startsWith('/runitbak/') || (path === '/' && url.hostname.startsWith('runitbak.'))) return handleRunItBakPage(request, env);
 
     // On the booking subdomain (book.*), the root IS the calendar.
     if (url.hostname.startsWith('book.') && path === '/') {
