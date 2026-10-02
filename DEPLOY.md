@@ -53,6 +53,33 @@ any host). The landing page's "Book a discovery call" buttons link to
 `https://book.maisondelites.com`. Email lives on a separate domain
 (`maisondelitesagency.com` at Google Workspace) and is unaffected.
 
+## Run It Bak (`/runitbak`)
+
+A password-gated content bank for the Run It Bak athletes. The gate shows the
+portrait, and the right password plays a goal animation and opens the page.
+Athletes watch the original, copy their script, film it and upload it straight
+from the page.
+
+| Path | What it is |
+|------|-----------|
+| `/runitbak` | The gate, or the content bank once the password is entered (30 day cookie) |
+| `/runitbak/files` | Admin page listing every video uploaded, newest first (uses `ADMIN_PASSWORD`) |
+
+- **Password:** add a Worker secret **`RUNITBAK_PASSWORD`** (Settings, Variables
+  and Secrets). Until it is set the password is the default `runitbak`, so set
+  it before sharing the link. Changing it signs everyone out.
+- **Uploads** go to the same R2 bucket under `runitbak/<script>/`, so you can
+  also see them in the R2 dashboard.
+- **Content** lives in the `ENTRIES` list in `runitbak/app.html`. The header
+  comment in that file explains how to add a script. An empty `uploadUrl` uses
+  the built in uploader.
+- `app.html` is only ever served through `/runitbak` after the cookie check, so
+  it cannot be read from its own path.
+- **Domain:** `maisondelites.com` itself is on Framer, so `maisondelites.com/runitbak`
+  has to be pointed at this Worker (a Cloudflare route on that path) or redirected
+  to `proposals.maisondelites.com/runitbak`. The Worker answers `/runitbak` on any
+  hostname attached to it.
+
 ## Using it
 
 Open **`https://<your-worker-url>/admin`**, enter the password, pick a slot,

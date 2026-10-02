@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Run It Bak uploads</title>
+<style>
+:root{--bg:#F5F3EC;--ink:#111110;--mut:#6B6862;--line:rgba(17,17,16,.14);--lime:#D8F26B}
+@media(prefers-color-scheme:dark){:root{--bg:#0E0E0D;--ink:#F3F0E8;--mut:#A29E94;--line:rgba(243,240,232,.18)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:36px 18px 80px}
+h1{font:600 clamp(36px,8vw,56px)/1 Georgia,serif;letter-spacing:-.03em;margin:0 0 8px}
+p{color:var(--mut);margin:0 0 22px}
+input,button{font:inherit;height:50px;border-radius:999px;border:1.5px solid var(--line);padding:0 18px;background:transparent;color:var(--ink)}
+button{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600;cursor:pointer}
+form{display:flex;gap:10px;margin-bottom:22px}input{flex:1;min-width:0}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:16px 0;border-top:1px solid var(--line)}
+.row b{font-weight:600}.row small{color:var(--mut)}
+.row a{align-self:center;display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:999px;background:var(--lime);color:#111110;font-weight:600;text-decoration:none}
+.err{color:#b3321f}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Run It Bak uploads</h1>
+  <p>Every video the athletes have sent, newest first. Use the same password as the upload admin page.</p>
+  <form id="f"><input id="pw" type="password" placeholder="Admin password" autocomplete="current-password" required><button>Show uploads</button></form>
+  <p class="err" id="err"></p>
+  <div id="list"></div>
+</div>
+<script>
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = n => n > 1e9 ? (n / 1e9).toFixed(2) + " GB" : n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.round(n / 1e3) + " KB";
+document.getElementById("f").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const err = document.getElementById("err"), list = document.getElementById("list"); err.textContent = "";
+  const r = await fetch("/api/runitbak/files", { headers: { Authorization: "Bearer " + document.getElementById("pw").value } });
+  if (!r.ok) { err.textContent = r.status === 401 ? "Wrong password." : "Could not load the uploads."; list.innerHTML = ""; return; }
+  const { files } = await r.json();
+  list.innerHTML = files.length ? files.map(f => `<div class="row"><div><b>${esc(f.script.replace(/-/g, " "))}</b><br><small>${esc(f.who || "No name given")} &middot; ${fmt(f.size)} &middot; ${new Date(f.uploaded).toLocaleString()}</small></div><a href="${esc(f.url)}" target="_blank" rel="noopener">Open</a></div>`).join("") : "<p>No uploads yet.</p>";
+});
+</script>
+</body>
+</html>
