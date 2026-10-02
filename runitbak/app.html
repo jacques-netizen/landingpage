@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<!--
+HOW TO ADD A NEW ENTRY (everything lives in the ENTRIES list in the script at the bottom of this file)
+1. Script type: add an object with title, originalUrl, uploadUrl, original: [lines] and yours: [lines]. [Brackets] become highlighted fill-ins and a line starting "clip:" becomes a call clip.
+2. Shot type: add an object with title, kind: "shots", how, originalUrl, uploadUrl, shots: [rows] and caption: { original, yours }. In a row, <text> adds the on-screen text and | splits its big and small lines.
+3. Paste the object at the end of the ENTRIES list, after a comma. Nothing else on the page needs to change.
+UPLOAD LINKS: leave uploadUrl empty ("") and the built in uploader opens for that script (videos go to the Run It Bak storage). Or paste any other link and it opens that instead.
+
+Script example:
+  { title: "Example script", originalUrl: "https://...", uploadUrl: "",
+    original: ["Line one.", "clip:A short call clip."],
+    yours: ["Line one with [your number].", "clip:[Short clip of the real call]"] },
+
+Shot example:
+  { title: "Example shots", kind: "shots", how: "One sentence on the pacing.", originalUrl: "https://...", uploadUrl: "",
+    shots: [ { time: "0 to 3s", clock: "", original: "What happens in the original.<text>Big text|small text", yours: "What you film.<text>[Your big text]|[your small text]" } ],
+    caption: { original: "The original caption.", yours: "Your caption with [a fill-in]." } },
+-->
+<html lang="en" data-layout="side">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Run It Bak Content Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F3EC;--stage:#F8F6F0;--card:#FFFFFF;--ink:#111110;--mut:#6B6862;--line:rgba(17,17,16,.12);--lime:#D8F26B;--on:#111110;--soft:#EEEBE2;--sh:0 14px 34px -16px rgba(30,25,10,.28),0 1px 0 rgba(30,25,10,.06);
+--hf:"Newsreader",Georgia,serif;--bf:"DM Sans",system-ui,sans-serif;--px:14px;--r:28px;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E0E0D;--card:#1A1A18;--ink:#F3F0E8;--mut:#A29E94;--line:rgba(243,240,232,.16);--soft:#222220;--sh:0 14px 34px -16px rgba(0,0,0,.7);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E0E0D;--card:#1A1A18;--ink:#F3F0E8;--mut:#A29E94;--line:rgba(243,240,232,.16);--soft:#222220;--sh:0 14px 34px -16px rgba(0,0,0,.7);color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scroll-padding-top:20px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);font-size:var(--fs,16.5px);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:10px}
+h1,h2,h3,h4{font-family:var(--hf);margin:0;font-weight:600;letter-spacing:-.03em}
+em{font-style:italic;font-weight:450}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--px)}
+
+/* ---------- stage (hero) ---------- */
+.stage{position:relative;margin:12px auto 0;max-width:1240px;width:calc(100% - 24px);min-height:800px;border-radius:var(--r);background:#F8F6F0;color:#111110;overflow:hidden;box-shadow:var(--sh);isolation:isolate}
+.bar{position:relative;z-index:5;display:flex;justify-content:center;padding:16px 12px 0}
+.pill{display:flex;gap:2px;padding:5px;border:1px solid rgba(17,17,16,.12);border-radius:999px;background:rgba(255,255,255,.55);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.pill::-webkit-scrollbar{display:none}
+.pill a{flex:none;min-width:34px;height:34px;display:grid;place-items:center;padding:0 10px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:#111110}
+.pill a:first-child{background:#E9E6DC}
+.pill a:hover{background:#E9E6DC}
+.stage h1{position:relative;z-index:4;text-align:center;font-size:clamp(50px,15.2vw,138px);line-height:.94;margin:clamp(26px,5vw,44px) 10px 0;color:#111110}
+.stage h1 span,.stage h1 em{display:block}
+.stage h1 em{letter-spacing:-.035em}
+.photo{position:absolute;z-index:1;left:50%;bottom:0;height:73%;width:auto;max-width:none;transform:translateX(-50%);mix-blend-mode:multiply;filter:contrast(1.04);animation:rise 2.2s cubic-bezier(.16,.8,.2,1) .2s both;pointer-events:none;user-select:none}
+.fc{position:absolute;z-index:3;width:min(158px,40%);padding:14px 14px 15px;border-radius:22px;background:#fff;box-shadow:var(--sh);font-size:12.5px;line-height:1.45;color:#111110;animation:bob 9s ease-in-out infinite}
+.fc p{margin:0}
+.fc.l{left:10px;top:430px;transform:rotate(-4.5deg)}
+.fc.r{right:10px;top:575px;transform:rotate(4deg);animation-delay:-4s}
+.fc b{display:block;font-family:var(--hf);font-size:16px;line-height:1.1;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.orbit{display:none}
+.badge{display:none;position:absolute;z-index:3;right:12px;top:68px;width:64px;height:64px;animation:spin 48s linear infinite}
+.badge text{font:600 9.6px var(--bf);letter-spacing:.2em;fill:#111110}
+.star{position:absolute;z-index:3;right:12px;top:68px;width:64px;height:64px;display:none;place-items:center;pointer-events:none}
+.star::before{content:"";width:16px;height:16px;background:#111110;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+@keyframes rise{from{opacity:0;transform:translateX(-50%) translateY(40px)}to{opacity:1;transform:translateX(-50%)}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -7px}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.stage h1,.bar{animation:up 1.8s cubic-bezier(.16,.8,.2,1) .1s both}
+
+/* ---------- index ---------- */
+nav.index{display:grid;grid-template-columns:1fr;gap:10px;padding:34px 0 18px}
+nav.index a{display:flex;align-items:center;gap:14px;min-height:64px;padding:12px 18px 12px 12px;background:var(--card);border-radius:22px;box-shadow:var(--sh);text-decoration:none;font-family:var(--hf);font-weight:600;font-size:21px;line-height:1.1;letter-spacing:-.02em;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+nav.index a:hover{transform:translateY(-3px)}
+nav.index span{flex:none;min-width:40px;height:40px;display:grid;place-items:center;border-radius:999px;background:var(--lime);color:var(--onl,#111110);font:600 13px var(--bf);font-variant-numeric:tabular-nums}
+
+/* ---------- entries ---------- */
+article.entry{padding:calc(clamp(44px,9vw,92px) * var(--sp,1)) 0 calc(clamp(20px,5vw,50px) * var(--sp,1));scroll-margin-top:0}
+.entry-head{margin-bottom:clamp(22px,4vw,36px)}
+.entry-head .n{display:inline-grid;place-items:center;height:34px;padding:0 14px;border:1px solid var(--line);border-radius:999px;font:500 13px var(--bf);font-variant-numeric:tabular-nums;margin-bottom:16px}
+.entry-head h2{font-size:calc(clamp(40px,11.4vw,92px) * var(--hs,1));line-height:.96;max-width:11em;text-wrap:balance}
+.entry-head h2 span,.entry-head h2 em{display:block}
+.how{margin:0 0 22px;max-width:36em;color:var(--mut);font-size:16px}
+.entry>.how{margin-bottom:clamp(22px,4vw,34px)}
+.pair{display:grid;grid-template-columns:1fr;gap:14px}
+.col{min-width:0;border-radius:var(--r);padding:clamp(20px,3vw,34px)}
+.col.original{background:transparent;border:1px solid var(--line)}
+.col.yours{background:var(--card);box-shadow:var(--sh)}
+.col h3{display:inline-flex;align-items:center;gap:9px;height:34px;padding:0 15px 0 12px;border-radius:999px;font:600 13.5px var(--bf);letter-spacing:0;margin:0 0 14px;background:var(--soft)}
+.col h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink);opacity:.5}
+.col.yours h3{background:var(--lime);color:var(--onl,#111110)}
+.col.yours h3::before{background:#111110;opacity:1}
+.col .how{font-size:14.5px;margin-bottom:18px}
+.script{font-size:1em;line-height:1.66;max-width:36em}
+.script p{margin:0 0 .95em}
+.original .script{color:var(--mut)}
+.script .clip{padding:11px 14px;border-radius:16px;background:var(--soft);font-style:normal}
+.yours .script .clip{background:color-mix(in srgb,var(--lime) 34%,var(--card))}
+.who{font-weight:700;color:var(--ink);margin-right:.4em}
+.original .who{color:var(--mut)}
+.fill{background:var(--lime);color:var(--onl,#111110);padding:.06em .42em .1em;border-radius:8px;font-weight:600;font-size:.94em;white-space:nowrap;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 26px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 15.5px var(--bf);text-decoration:none;transition:background .6s,color .6s,opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.btn:hover{transform:translateY(-2px);background:var(--soft)}
+.btn:not(.solid){padding-left:14px}
+.btn:not(.solid)::before{content:"";order:-2;flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink)}
+.btn:not(.solid)::after{content:"";order:-1;flex:none;width:0;height:0;margin-left:-35px;margin-right:13px;border-left:8px solid var(--bg);border-top:5px solid transparent;border-bottom:5px solid transparent;transform:translateX(1px)}
+.btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.solid::after{content:"";width:9px;height:9px;border-top:2px solid currentColor;border-right:2px solid currentColor;transform:rotate(45deg);margin-left:2px}
+.btn.solid:hover{background:var(--ink);opacity:.88}
+.note{color:var(--mut);font-size:14.5px;margin:12px 0 0}
+.shots{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:6px clamp(18px,3vw,34px)}
+.shot-head{display:none}
+.shot{display:grid;grid-template-columns:1fr;gap:12px;padding:24px 0;border-top:1px solid var(--line)}
+.shot:first-of-type{border-top:0}
+.shot .when b{display:block;font-family:var(--hf);font-weight:600;font-size:clamp(30px,8vw,40px);line-height:1;letter-spacing:-.03em}
+.shot .when span{color:var(--mut);font-size:14px}
+.shot .o,.shot .y{min-width:0;font-size:16px;line-height:1.55}
+.shot .o{color:var(--mut)}
+.shot .tag{display:flex;width:max-content;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:var(--soft);font:600 12.5px var(--bf);letter-spacing:0;margin-bottom:8px;color:var(--ink)}
+.shot .y .tag{background:var(--lime);color:var(--onl,#111110)}
+.textblock{margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--soft)}
+.textblock .big{font-family:var(--hf);font-weight:600;font-size:21px;line-height:1.15;letter-spacing:-.02em}
+.textblock .small{font-size:13.5px;margin-top:4px;color:var(--mut)}
+.sub{margin-top:clamp(34px,6vw,56px)}
+.sub h4{font-size:calc(clamp(34px,9vw,56px) * var(--hs,1));line-height:1;margin:0 0 16px}
+footer{padding:36px 0 24px;color:var(--mut);font-size:14px}
+
+/* ---------- dock ---------- */
+#dock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;max-width:760px;margin:0 auto;background:var(--card);border-radius:26px;box-shadow:0 18px 44px -14px rgba(20,16,6,.42),0 0 0 1px var(--line);padding:10px 10px 10px;transform:translateY(140%);transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+#dock.on{transform:none}
+.dk-t{font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 8px 8px}
+.dk-t b{margin-right:8px;color:var(--ink);font-variant-numeric:tabular-nums}
+.dk-b{display:flex;gap:8px}
+.dk-b .btn{flex:1 1 0;min-width:0;padding:0 14px;font-size:15px}
+
+.dk-b .note{margin:0;flex:1;align-self:center;padding:0 8px}
+
+/* ---------- motion ---------- */
+.js .rv{opacity:0;transform:translateY(28px);transition:opacity 1.4s cubic-bezier(.16,.8,.2,1),transform 1.4s cubic-bezier(.16,.8,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.js .rv{opacity:1;transform:none;transition:none}.photo,.stage h1,.bar,.fc,.badge{animation:none}.photo{transform:translateX(-50%)}#dock{transition:none}.btn,nav.index a{transition:none}}
+
+/* ---------- desktop ---------- */
+@media(min-width:900px){
+ :root{--px:clamp(28px,4vw,56px)}
+ body{font-size:calc(var(--fs,16.5px) + 1px)}
+ .stage{min-height:min(860px,calc(100vh - 24px));width:calc(100% - 40px);margin-top:20px}
+ .stage h1{font-size:clamp(84px,9.4vw,142px)}
+ .photo{height:72%}
+ .fc{width:200px;font-size:14px;padding:18px 18px 20px}
+ .fc b{font-size:19px}
+ .fc.l{left:9%;top:34%}
+ .fc.r{right:9%;top:52%}
+ .orbit{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+ .orbit path{fill:none;stroke:#111110;stroke-opacity:.3;stroke-width:1}
+ .badge{display:block}.star{display:grid}.badge,.star{right:44px;top:120px;width:96px;height:96px}
+ .badge text{font-size:9.8px}
+ nav.index{grid-template-columns:1fr 1fr 1fr}
+ .pair{grid-template-columns:1fr 1fr;gap:18px}
+ .shot-head,.shot{grid-template-columns:150px 1fr 1fr;gap:0 clamp(26px,3.5vw,54px)}
+ .shot-head{display:grid;padding:26px 0 12px}
+ .shot-head h3{display:inline-flex;width:max-content;height:30px;padding:0 14px;font:600 13px var(--bf);background:var(--soft);border-radius:999px;align-items:center;letter-spacing:0}
+ .shot-head h3:nth-child(3){background:var(--lime);color:var(--onl,#111110)}
+ .shot-head h3:first-child{background:transparent;padding:0}
+ .shot .tag{display:none}
+ #dock{padding:10px 12px;border-radius:999px;display:flex}
+ #dock .dk{display:flex;align-items:center;gap:20px;width:100%}
+ .dk-t{flex:1;padding:0 8px 0 14px;margin:0;font-size:14px}
+ .dk-b{flex:0 0 auto}
+ .dk-b .btn{flex:0 0 auto;min-width:200px}
+}
+
+/* ---------- layout B: lines (each original line sits above or beside the same line of yours) ---------- */
+.lines{display:block}
+.lines-head{display:none}
+.ln{display:grid;grid-template-columns:1fr;gap:0;margin:0 0 14px;border-radius:24px;overflow:hidden;box-shadow:var(--sh)}
+.ln .lo,.ln .ly{padding:16px 20px 6px;min-width:0}
+.ln .lo{background:var(--soft);color:var(--mut);font-size:15.5px}
+.ln .ly{background:var(--card);font-size:17px;padding-top:16px}
+.ln .tag{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font:600 12px var(--bf);background:var(--card);color:var(--ink);margin-bottom:8px}
+.ln .ly .tag{background:var(--lime);color:var(--onl,#111110)}
+.ln p{margin:0 0 .6em;line-height:1.6}
+.ln .clip{background:transparent;padding:0}
+.ln .lo .who{color:var(--mut)}
+[data-layout="lines"] nav.index{display:flex;overflow-x:auto;gap:8px;padding:18px 0 10px;position:sticky;top:0;z-index:20;background:var(--bg);scrollbar-width:none;margin:0 calc(var(--px) * -1);padding-left:var(--px);padding-right:var(--px)}
+[data-layout="lines"] nav.index::-webkit-scrollbar{display:none}
+[data-layout="lines"] nav.index a{flex:none;min-height:44px;padding:6px 16px 6px 6px;border-radius:999px;font-size:16px;white-space:nowrap}
+[data-layout="lines"] nav.index span{min-width:32px;height:32px}
+.shots.lines{padding:6px clamp(18px,3vw,34px) 6px 46px;position:relative;background:transparent;box-shadow:none}
+.shots.lines::before{content:"";position:absolute;left:19px;top:34px;bottom:34px;width:2px;background:var(--line)}
+.shots.lines .shot{border:0;padding:20px 0;position:relative;background:var(--card);border-radius:24px;box-shadow:var(--sh);margin:0 0 14px;padding:18px 20px}
+.shots.lines .shot::before{content:"";position:absolute;left:-34px;top:30px;width:14px;height:14px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px var(--bg)}
+.shots.lines .shot .when{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.shots.lines .shot .when b{font-size:30px}
+
+/* ---------- layout C: rail (sticky index at the side, shots as a card grid) ---------- */
+[data-layout="rail"] nav.index{display:block;padding:22px 0 6px}
+[data-layout="rail"] nav.index details{background:var(--card);border-radius:24px;box-shadow:var(--sh);padding:4px 8px}
+[data-layout="rail"] nav.index summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 12px;font:600 15px var(--bf)}
+[data-layout="rail"] nav.index summary::-webkit-details-marker{display:none}
+[data-layout="rail"] nav.index summary::after{content:"";width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .6s}
+[data-layout="rail"] nav.index details:not([open]) summary::after{transform:rotate(-45deg)}
+.idx-list{display:grid;gap:2px;padding:0 0 8px}
+[data-layout="rail"] nav.index a{box-shadow:none;border-radius:16px;min-height:50px;padding:6px 12px 6px 6px;font-size:17px;background:transparent}
+[data-layout="rail"] nav.index a:hover{background:var(--soft);transform:none}
+[data-layout="rail"] nav.index span{min-width:34px;height:34px}
+.shots.rail{background:transparent;box-shadow:none;padding:0;display:grid;gap:14px}
+.shots.rail .shot{background:var(--card);border-radius:26px;box-shadow:var(--sh);border:0;padding:20px}
+.shots.rail .shot .when{margin-bottom:6px}
+.shots.rail .shot .o{background:var(--soft);border-radius:18px;padding:12px 14px}
+.shots.rail .shot .y{padding:4px 2px 0}
+.shots.rail .shot .when span{display:inline-block;margin-left:10px}
+.shots.rail .shot .when b{display:inline-block}
+
+@media(min-width:900px){
+ .lines-head{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:0 0 12px}
+ .lines-head h3{display:inline-flex;width:max-content;height:34px;align-items:center;padding:0 15px;border-radius:999px;background:var(--soft);font:600 13.5px var(--bf);letter-spacing:0}
+ .lines-head h3.y{background:var(--lime);color:var(--onl,#111110)}
+ .ln{grid-template-columns:1fr 1fr;border-radius:26px}
+ .ln .tag{display:none}
+ .ln .lo,.ln .ly{padding:22px 26px 12px}
+ [data-layout="lines"] nav.index{justify-content:flex-start}
+ .shots.lines .shot{grid-template-columns:150px 1fr 1fr}
+ .shots.lines .shot .tag{display:flex}
+ .shots.lines .shot-head{display:none}
+ [data-layout="rail"] .wrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:0 clamp(28px,4vw,56px);align-items:start}
+ [data-layout="rail"] nav.index{position:sticky;top:20px;grid-row:1/span 3;padding-top:34px}
+ [data-layout="rail"] nav.index summary{pointer-events:none}
+ [data-layout="rail"] nav.index summary::after{display:none}
+ [data-layout="rail"] #bank,[data-layout="rail"] footer{grid-column:2}
+ [data-layout="rail"] .entry-head h2{font-size:calc(clamp(40px,5.4vw,76px) * var(--hs,1))}
+ .shots.rail{grid-template-columns:1fr 1fr}
+ .shots.rail .shot-head{display:none}
+ .shots.rail .shot{grid-template-columns:1fr;gap:10px}
+ .shots.rail .shot .tag{display:flex}
+ .shots.rail .shot .when{grid-column:auto}
+}
+
+/* ---------- extras ---------- */
+.stage{--mx:0;--my:0;--sy:0}
+.photo{translate:calc(var(--mx) * -14px) calc(var(--my) * -8px + var(--sy) * -.05px)}
+.fc.l{translate:calc(var(--mx) * 26px) calc(var(--my) * 18px + var(--sy) * -.12px)}
+.fc.r{translate:calc(var(--mx) * 34px) calc(var(--my) * 22px + var(--sy) * -.16px)}
+.stage h1{translate:calc(var(--mx) * 10px) calc(var(--sy) * .08px)}
+.ticker{overflow:hidden;margin:14px 0 0;padding:14px 0;background:var(--lime);color:var(--onl,#111110);transform:rotate(-1.2deg);width:calc(100% + 24px);margin-left:-12px}
+.tk-in{display:flex;width:max-content;align-items:center;gap:28px;animation:tick 70s linear infinite;font:italic 500 clamp(22px,4vw,34px)/1 var(--hf);letter-spacing:-.02em;white-space:nowrap}
+.tk-in span{flex:none}
+.tk-in i{flex:none;width:14px;height:14px;border-radius:50%;background:#111110}
+@keyframes tick{to{transform:translateX(-50%)}}
+.entry-head{position:relative}
+.entry-head::before{content:attr(data-n);position:absolute;right:-.02em;top:-.28em;z-index:-1;font:600 clamp(150px,34vw,360px)/1 var(--hf);letter-spacing:-.06em;color:transparent;-webkit-text-stroke:1px var(--line);translate:0 var(--d,0px);pointer-events:none;user-select:none}
+article.entry{position:relative;overflow:visible}
+.wrap{overflow-x:clip}
+.col .script p[data-k],.ln p[data-k]{transition:background .5s,opacity .5s;border-radius:12px;cursor:default}
+.pair.focus .script p:not(.hl),.lines.focus .ln p:not(.hl){opacity:.42}
+.pair .script p.hl,.lines .ln p.hl{opacity:1}
+.original .script p.hl{background:var(--soft);color:var(--ink)}
+.dk-bar{position:absolute;left:22px;right:22px;top:0;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.dk-bar::after{content:"";position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(var(--p,0));transition:transform .5s linear}
+#dock{overflow:hidden}
+.btn{translate:var(--bx,0) var(--by,0)}
+.btn.mag{transition:background .6s,color .6s,opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1),translate .25s ease-out}
+.btn.solid{position:relative;overflow:hidden}
+.btn.solid:hover::after{transform:rotate(45deg) translate(3px,-3px)}
+.btn.solid::after{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+@media(prefers-reduced-motion:reduce){.tk-in{animation:none}.photo,.fc,.stage h1,.btn{translate:none}.dk-bar::after{transition:none}}
+@media(min-width:900px){.ticker{margin-top:22px}}
+html,body{overflow-x:clip}.ticker{margin-left:-12px;width:calc(100% + 24px)}
+
+/* sticky index option */
+[data-sticky="1"]:not([data-layout="rail"]) nav.index{display:flex;overflow-x:auto;gap:8px;padding:14px var(--px) 10px;position:sticky;top:0;z-index:20;background:var(--bg);scrollbar-width:none;margin:0 calc(var(--px) * -1)}
+[data-sticky="1"]:not([data-layout="rail"]) nav.index::-webkit-scrollbar{display:none}
+[data-sticky="1"]:not([data-layout="rail"]) nav.index a{flex:none;min-height:44px;padding:6px 16px 6px 6px;border-radius:999px;font-size:16px;white-space:nowrap}
+[data-sticky="1"]:not([data-layout="rail"]) nav.index span{min-width:32px;height:32px}
+[data-sticky="0"][data-layout="rail"] nav.index{position:static}
+/* short title: one line on desktop, sized to clear his head */
+@media(min-width:900px){.stage h1 span,.stage h1 em{display:inline}.stage h1{font-size:clamp(96px,12.5vw,190px)}.stage h1 em{margin-left:.12em}}
+
+
+
+/* ================= football layer ================= */
+.fb{display:block;width:100%;height:100%}
+
+/* pitch bar: the ball dribbles along as you scroll, goal at the end */
+#pitchbar{position:fixed;top:0;left:0;right:0;z-index:60;height:50px;display:flex;align-items:center;gap:14px;padding:0 max(14px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transform:translateY(-110%);transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+#pitchbar.on{transform:none}
+.pb-t{flex:none;font:italic 600 19px/1 var(--hf);letter-spacing:-.02em;text-decoration:none}
+.pb-track{position:relative;flex:1;height:34px;min-width:0}
+.pb-line{position:absolute;left:0;right:34px;top:50%;height:2px;margin-top:-1px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
+.pb-fill{position:absolute;left:0;top:50%;height:3px;margin-top:-1.5px;background:var(--ink);width:0;border-radius:3px}
+.pb-tick{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;padding:0;border-radius:50%;border:2px solid var(--ink);background:var(--bg);cursor:pointer;transition:background .6s,transform .6s}
+.pb-tick::after{content:"";position:absolute;inset:-14px}
+.pb-tick:hover{transform:scale(1.35)}
+.pb-tick.done{background:var(--lime)}
+.pb-ball{position:absolute;left:0;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;will-change:transform;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
+.pb-goal{position:absolute;right:0;top:50%;width:36px;height:24px;margin-top:-12px;color:var(--ink)}
+.pb-goal svg{display:block;width:100%;height:100%;overflow:visible}
+.pb-goal.hit .net{animation:netpop 1s ease-out}
+.pb-c{flex:none;font:600 14px var(--bf);font-variant-numeric:tabular-nums;color:var(--mut);min-width:40px;text-align:right}
+.pb-c b{color:var(--ink)}
+@keyframes netpop{30%{transform:scale(1.18,1.3)}60%{transform:scale(.95)}100%{transform:none}}
+.net{transform-box:fill-box;transform-origin:50% 50%}
+
+/* hero: a ball you can flick, a goal to flick it into */
+.hball{position:absolute;z-index:6;left:0;top:0;width:var(--bs,54px);height:var(--bs,54px);padding:0;border:0;background:none;cursor:grab;touch-action:none;will-change:transform;filter:drop-shadow(0 12px 8px rgba(30,25,10,.28));-webkit-tap-highlight-color:transparent}
+.hball:active{cursor:grabbing}
+.hball .fb{pointer-events:none}
+.hgoal{position:absolute;z-index:2;right:10px;bottom:0;width:136px;padding:8px 8px 6px;border-radius:16px 16px 0 0;background:#F8F6F0;box-shadow:0 -6px 24px -12px rgba(30,25,10,.35);color:#111110}
+.hgoal svg{display:block;width:100%;height:auto;overflow:visible}
+.hgoal.hit .net{animation:netpop 1.1s ease-out}
+.score{position:absolute;z-index:5;left:50%;bottom:14px;translate:-50% 0;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 16px 0 8px;border-radius:999px;background:#fff;box-shadow:var(--sh);font:600 13px var(--bf);white-space:nowrap;color:#111110;max-width:calc(100% - 24px)}
+.score b{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:999px;background:var(--lime);font-variant-numeric:tabular-nums}
+.score b.pop{animation:scorepop .7s cubic-bezier(.2,1.4,.4,1)}
+@keyframes scorepop{40%{transform:scale(1.5)}}
+.goaltxt{position:absolute;z-index:7;font:italic 600 34px/1 var(--hf);letter-spacing:-.02em;color:#111110;pointer-events:none;animation:gt 1.4s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes gt{from{opacity:0;transform:translateY(10px) scale(.7)}25%{opacity:1;transform:translateY(-8px) scale(1.1)}to{opacity:0;transform:translateY(-70px) scale(1)}}
+@media(min-width:900px){.hgoal{right:40px;width:214px;padding:10px 10px 8px;border-radius:20px 20px 0 0}.score{height:44px;font-size:14px;bottom:18px}.goaltxt{font-size:52px}}
+
+/* fx layer */
+#fxl{position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden}
+.fxp{position:absolute;left:0;top:0;will-change:transform,opacity}
+#goalfx{position:fixed;inset:0;z-index:190;display:none;place-items:center;pointer-events:none;overflow:hidden}
+#goalfx.on{display:grid}
+#goalfx .dim{position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 50%,rgba(10,50,34,.0),rgba(10,40,28,.72));opacity:0}
+#goalfx.on .dim{animation:dim 2.8s ease forwards}
+@keyframes dim{15%{opacity:1}75%{opacity:1}100%{opacity:0}}
+#goalfx .big{position:relative;font:italic 600 clamp(110px,34vw,380px)/.84 var(--hf);letter-spacing:-.045em;color:var(--lime);text-shadow:0 10px 0 rgba(0,0,0,.18);text-align:center}
+#goalfx .big i{display:inline-block;font-style:inherit;opacity:0;transform:translateY(70%) scale(.5) rotate(-8deg)}
+#goalfx.on .big i{animation:letter 1s cubic-bezier(.2,1.4,.4,1) forwards}
+#goalfx .small{position:absolute;left:0;right:0;top:calc(50% + clamp(60px,17vw,190px) + 22px);text-align:center;font:600 15px var(--bf);letter-spacing:.22em;text-transform:uppercase;color:#fff;opacity:0}
+#goalfx.on .small{animation:smallin 2.6s .5s ease forwards}
+@keyframes letter{to{opacity:1;transform:none}}
+@keyframes smallin{20%,80%{opacity:1}100%{opacity:0}}
+
+/* steps: tick off where you are with each video */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 clamp(20px,3.5vw,30px)}
+.chk{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:0 18px 0 8px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 14.5px var(--bf);cursor:pointer;transition:background .7s,border-color .7s,color .7s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.chk:hover{transform:translateY(-2px)}
+.chk i{position:relative;flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);overflow:hidden;transition:border-color .7s}
+.chk i svg{position:absolute;inset:-1px;width:calc(100% + 2px);height:calc(100% + 2px);transform:translateX(-130%) rotate(-260deg);transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+.chk[aria-pressed="true"]{background:var(--lime);border-color:transparent;color:var(--onl,#111110)}
+.chk[aria-pressed="true"] i{border-color:transparent}
+.chk[aria-pressed="true"] i svg{transform:none}
+nav.index a.done span{background:var(--ink);color:var(--bg)}
+nav.index a.done span::after{content:""}
+
+/* titles slide up out of a mask */
+.js .entry-head h2 > span,.js .entry-head h2 > em{display:block;overflow:hidden}
+.js .entry-head h2 .ttl{display:block;transform:translateY(105%);transition:transform 1.5s cubic-bezier(.16,.8,.2,1)}
+.js .entry-head.in h2 .ttl{transform:none}
+.js .entry-head h2 > em .ttl{transition-delay:.14s}
+.entry-head h2{line-height:1}
+.entry-head h2 .ttl{padding-bottom:.06em}
+
+/* shot lists: a ball rolls down the timeline as you read */
+.shots{position:relative;padding-left:clamp(38px,6vw,52px)}
+.shots .pass{position:absolute;left:clamp(10px,2vw,16px);top:30px;bottom:30px;width:2px;background:repeating-linear-gradient(180deg,var(--line) 0 8px,transparent 8px 14px)}
+.shots .pass::before{content:"";position:absolute;left:0;top:0;width:2px;height:var(--ph,0%);background:var(--ink)}
+.shots .pball{position:absolute;left:50%;top:var(--ph,0%);width:24px;height:24px;margin:-12px 0 0 -12px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25))}
+.shots .shot{position:relative}
+.shots .shot::before{content:"";position:absolute;left:calc(-1 * clamp(38px,6vw,52px) + clamp(10px,2vw,16px) - 4px);top:30px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--ink);transition:background .8s,transform .8s}
+.shots .shot.seen::before{background:var(--lime);transform:scale(1.25)}
+
+/* copy buttons */
+.btn.copy{min-height:48px;font-size:14.5px}
+.btn.copy::before,.btn.copy::after{display:none}
+.btn.copy{padding:0 20px}
+
+/* finale */
+.ft{position:relative;margin:clamp(40px,8vw,90px) 0 0;padding:clamp(34px,6vw,70px) clamp(18px,4vw,50px);border-radius:var(--r);background:#0b3a28;color:#fff;overflow:hidden;isolation:isolate}
+.ft::before{content:"";position:absolute;inset:0;z-index:-1;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 64px,transparent 64px 128px),radial-gradient(90% 90% at 50% 0%,rgba(216,242,107,.18),transparent 70%)}
+.ft h2{font-size:clamp(46px,12vw,120px);line-height:.94;max-width:9em}
+.ft h2 em{display:block;color:var(--lime)}
+.ft p{max-width:30em;margin:18px 0 26px;color:rgba(255,255,255,.78);font-size:17px}
+.ft .btn{border-color:rgba(255,255,255,.4);color:#fff;background:transparent}
+.ft .btn.solid{background:var(--lime);color:#111110;border-color:var(--lime)}
+.ft .btn:hover{background:rgba(255,255,255,.12)}
+.ft .btn.solid:hover{background:var(--lime);opacity:.9}
+.ft-scene{position:relative;margin-top:clamp(26px,5vw,44px);height:clamp(150px,30vw,260px)}
+.ft-goal{position:absolute;right:2%;bottom:0;width:clamp(150px,36%,300px);color:#fff}
+.ft-goal svg{display:block;width:100%;height:auto;overflow:visible}
+.ft-ball{position:absolute;left:0;top:0;width:clamp(34px,6vw,54px);aspect-ratio:1;margin:calc(clamp(34px,6vw,54px) / -2) 0 0 calc(clamp(34px,6vw,54px) / -2);offset-rotate:0deg;offset-distance:0%;opacity:0;filter:drop-shadow(0 8px 6px rgba(0,0,0,.35))}
+.ft-turf{position:absolute;left:0;right:0;bottom:-2px;height:2px;background:rgba(255,255,255,.35)}
+.ft.in .ft-ball{animation:shoot 2.4s 1s cubic-bezier(.3,.05,.6,1) infinite}
+.ft.in .ft-goal .net{animation:netshot 2.4s 1s ease-out infinite}
+@keyframes shoot{0%{opacity:0;offset-distance:0%;scale:1.4;rotate:0deg}6%{opacity:1}60%{opacity:1;offset-distance:100%;scale:.7;rotate:900deg}72%{opacity:1;offset-distance:100%;translate:6px 18px;scale:.68;rotate:960deg}90%{opacity:1;translate:0 28px;offset-distance:100%;scale:.68;rotate:980deg}100%{opacity:0;offset-distance:100%;translate:0 28px;scale:.68;rotate:980deg}}
+@keyframes netshot{0%,58%{transform:none}64%{transform:scale(1.14,1.22)}72%{transform:scale(.96)}80%{transform:scale(1.03)}90%,100%{transform:none}}
+.ft-note{font-size:13.5px;color:rgba(255,255,255,.6);margin-top:14px}
+
+/* ================= upload sheet ================= */
+#sheet{position:fixed;inset:0;z-index:150;display:none}
+#sheet.on{display:block}
+.sh-back{position:absolute;inset:0;background:rgba(10,12,8,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .8s ease}
+#sheet.show .sh-back{opacity:1}
+.sh-card{position:absolute;left:0;right:0;bottom:0;max-height:94svh;overflow:auto;background:var(--card);color:var(--ink);border-radius:30px 30px 0 0;padding:22px 18px calc(24px + env(safe-area-inset-bottom,0px));box-shadow:0 -24px 60px -20px rgba(0,0,0,.5);transform:translateY(105%);transition:transform 1s cubic-bezier(.16,.8,.2,1)}
+#sheet.show .sh-card{transform:none}
+@media(min-width:700px){.sh-card{left:50%;right:auto;bottom:auto;top:50%;width:min(560px,calc(100% - 40px));border-radius:32px;padding:28px 28px 30px;transform:translate(-50%,-40%) scale(.96);opacity:0;transition:transform 1s cubic-bezier(.16,.8,.2,1),opacity .8s}#sheet.show .sh-card{transform:translate(-50%,-50%);opacity:1}}
+.sh-x{position:absolute;right:14px;top:14px;height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);font:600 14px var(--bf);cursor:pointer}
+.sh-card h3{font-size:clamp(30px,8vw,40px);line-height:1;margin:2px 56px 6px 0}
+.sh-sub{margin:0 0 18px;color:var(--mut);font-size:15px}
+.drop{position:relative;display:grid;place-items:center;gap:6px;min-height:150px;padding:20px;border-radius:24px;border:2px dashed color-mix(in srgb,var(--ink) 30%,transparent);text-align:center;cursor:pointer;transition:background .6s,border-color .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.drop:hover,.drop.over{background:color-mix(in srgb,var(--lime) 30%,var(--card));border-color:var(--ink)}
+.drop.over{transform:scale(1.015)}
+.drop .ic{width:54px;height:54px}
+.drop b{font:600 18px var(--bf)}
+.drop span{font-size:14px;color:var(--mut)}
+.drop.has{border-style:solid;border-color:var(--ink);background:color-mix(in srgb,var(--lime) 30%,var(--card))}
+.drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.sh-who{display:block;margin:16px 0 0;font:600 13.5px var(--bf);color:var(--mut)}
+.sh-who input{display:block;width:100%;height:52px;margin-top:6px;padding:0 18px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:500 16px var(--bf)}
+.sh-who input:focus{outline:0;border-color:var(--ink)}
+#sh-go{width:100%;margin-top:18px}
+#sh-go[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.sh-prog{display:none;margin-top:20px}
+.sh-prog.on{display:block}
+.sh-lane{position:relative;height:42px}
+.sh-lane .ln0{position:absolute;left:0;right:46px;top:50%;height:3px;margin-top:-1.5px;background:var(--line);border-radius:3px}
+.sh-lane .ln1{position:absolute;left:0;top:50%;height:3px;margin-top:-1.5px;background:var(--ink);border-radius:3px;width:0;transition:width .4s linear}
+.sh-lane .bl{position:absolute;left:0;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;will-change:transform;filter:drop-shadow(0 4px 3px rgba(0,0,0,.25))}
+.sh-lane .gl{position:absolute;right:0;top:50%;width:46px;margin-top:-15px;color:var(--ink)}
+.sh-lane .gl svg{display:block;width:100%;height:auto;overflow:visible}
+.sh-info{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font:600 14px var(--bf);font-variant-numeric:tabular-nums;color:var(--mut)}
+.sh-msg{min-height:22px;margin:12px 0 0;font:500 14.5px/1.4 var(--bf);color:var(--mut)}
+.sh-msg.err{color:#b3321f}
+.sh-msg.ok{color:var(--ink);font-weight:600}
+.sh-done{display:none;text-align:center;padding:10px 0 6px}
+.sh-done.on{display:block}
+.sh-done h4{font:italic 600 clamp(56px,16vw,92px)/.9 var(--hf);letter-spacing:-.04em;margin:0 0 8px}
+.sh-done p{margin:0 0 20px;color:var(--mut)}
+@media(prefers-reduced-motion:reduce){.sh-card,.sh-back{transition:none}.ft-ball,.ft .net{animation:none!important}.chk i svg{transition:none}.js .entry-head h2 .ttl{transform:none;transition:none}#pitchbar{transition:none}}
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="fb" viewBox="0 0 100 100"><clipPath id="fbc"><circle cx="50" cy="50" r="48"/></clipPath><circle cx="50" cy="50" r="48" fill="#fff"/><g clip-path="url(#fbc)"><polygon points="50.0,33.0 66.2,44.7 60.0,63.8 40.0,63.8 33.8,44.7" fill="#111110"/><path d="M50.0 33.0L50.0 14.0M50.0 14.0L72.3 19.3M50.0 14.0L27.7 19.3M66.2 44.7L84.2 38.9M84.2 38.9L86.1 61.7M84.2 38.9L72.3 19.3M60.0 63.8L71.2 79.1M71.2 79.1L50.0 88.0M71.2 79.1L86.1 61.7M40.0 63.8L28.8 79.1M28.8 79.1L13.9 61.7M28.8 79.1L50.0 88.0M33.8 44.7L15.8 38.9M15.8 38.9L27.7 19.3M15.8 38.9L13.9 61.7" stroke="#111110" stroke-width="2.4" fill="none" stroke-linecap="round"/><polygon points="70.0,22.5 64.5,5.7 78.8,-4.6 93.1,5.7 87.6,22.5" fill="#111110"/><polygon points="82.3,60.5 96.6,50.1 110.9,60.5 105.4,77.3 87.8,77.3" fill="#111110"/><polygon points="50.0,84.0 64.3,94.4 58.8,111.1 41.2,111.1 35.7,94.4" fill="#111110"/><polygon points="17.7,60.5 12.2,77.3 -5.4,77.3 -10.9,60.5 3.4,50.1" fill="#111110"/><polygon points="30.0,22.5 12.4,22.5 6.9,5.7 21.2,-4.6 35.5,5.7" fill="#111110"/></g><circle cx="50" cy="50" r="48" fill="none" stroke="#111110" stroke-width="3"/></symbol></svg>
+<div id="pitchbar" aria-label="Progress">
+  <a class="pb-t" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Run It Bak</a>
+  <div class="pb-track"><div class="pb-line"></div><div class="pb-fill"></div><div class="pb-goal"><svg class="gsvg" viewBox="0 0 240 160" aria-hidden="true"><g class="net"><path d="M52.0 46V128M67.1 46V128M82.2 46V128M97.3 46V128M112.4 46V128M127.6 46V128M142.7 46V128M157.8 46V128M172.9 46V128M188.0 46V128M52 46.0H188M52 59.7H188M52 73.3H188M52 87.0H188M52 100.7H188M52 114.3H188M52 128.0H188M10 12L52 46M230 12L188 46M10 150L52 128M230 150L188 128M34.4 12L67.1 46M58.9 12L82.2 46M83.3 12L97.3 46M107.8 12L112.4 46M132.2 12L127.6 46M156.7 12L142.7 46M181.1 12L157.8 46M205.6 12L172.9 46M10 35.0L52 59.7M230 35.0L188 59.7M10 58.0L52 73.3M230 58.0L188 73.3M10 81.0L52 87.0M230 81.0L188 87.0M10 104.0L52 100.7M230 104.0L188 100.7M10 127.0L52 114.3M230 127.0L188 114.3" fill="none" stroke="currentColor" stroke-width=".9" stroke-opacity=".55"/></g><path d="M10 150V12H230V150" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 154H236" stroke="currentColor" stroke-opacity=".5" stroke-width="2"/></svg></div><div class="pb-ball"><svg class="fb" viewBox="0 0 100 100" aria-hidden="true"><use href="#fb"/></svg></div></div>
+  <div class="pb-c" title="Videos uploaded"></div>
+</div>
+<header class="stage" id="top">
+  <div class="bar"><nav class="pill" id="pill" aria-label="Jump to a script"></nav></div>
+  <h1><span>Run It</span> <em>Bak</em></h1>
+  <svg class="orbit" viewBox="0 0 1200 860" preserveAspectRatio="none" aria-hidden="true"><path d="M232 500 C 232 650, 330 710, 440 672"/><path d="M1006 600 C 1010 730, 900 740, 815 676"/></svg>
+  <div class="fc l"><p>Every video here already worked for someone else. Watch the original first and study the hook, the pacing and where the energy lifts.</p></div>
+  <img class="photo" src="/runitbak/chris.jpg" alt="Portrait of Chris Bak" width="1000" height="1241" fetchpriority="high">
+  <div class="fc r"><p>Then film your version. Anything highlighted gets your real numbers or a real clip before you film.</p></div>
+  <svg class="badge" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="c" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/></defs><text><textPath href="#c" textLength="236" lengthAdjust="spacing">RUN IT BAK · RUN IT BAK · RUN IT BAK · </textPath></text></svg>
+  <span class="star" aria-hidden="true"></span>
+  <div class="hgoal" aria-hidden="true"><svg class="gsvg" viewBox="0 0 240 160" aria-hidden="true"><g class="net"><path d="M52.0 46V128M67.1 46V128M82.2 46V128M97.3 46V128M112.4 46V128M127.6 46V128M142.7 46V128M157.8 46V128M172.9 46V128M188.0 46V128M52 46.0H188M52 59.7H188M52 73.3H188M52 87.0H188M52 100.7H188M52 114.3H188M52 128.0H188M10 12L52 46M230 12L188 46M10 150L52 128M230 150L188 128M34.4 12L67.1 46M58.9 12L82.2 46M83.3 12L97.3 46M107.8 12L112.4 46M132.2 12L127.6 46M156.7 12L142.7 46M181.1 12L157.8 46M205.6 12L172.9 46M10 35.0L52 59.7M230 35.0L188 59.7M10 58.0L52 73.3M230 58.0L188 73.3M10 81.0L52 87.0M230 81.0L188 87.0M10 104.0L52 100.7M230 104.0L188 100.7M10 127.0L52 114.3M230 127.0L188 114.3" fill="none" stroke="currentColor" stroke-width=".9" stroke-opacity=".55"/></g><path d="M10 150V12H230V150" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 154H236" stroke="currentColor" stroke-opacity=".5" stroke-width="2"/></svg></div>
+  <button class="hball" type="button" aria-label="Kick the ball into the goal"><svg class="fb" viewBox="0 0 100 100" aria-hidden="true"><use href="#fb"/></svg></button>
+  <div class="score" aria-live="polite"><b>0</b><span>Flick it into the goal</span></div>
+</header>
+<div class="wrap">
+  <nav class="index" id="index" aria-label="Scripts"></nav>
+  <main id="bank"></main>
+  <section class="ft" aria-labelledby="ft-h">
+    <h2 id="ft-h">Full time. <em>Now go film.</em></h2>
+    <p>Pick the next video you have not sent yet, watch the original, change only the highlighted parts and upload it. Every upload is a goal.</p>
+    <button class="btn solid" id="ft-up" type="button">Take me to my next video</button>
+    <div class="ft-scene" aria-hidden="true"><div class="ft-goal"><svg class="gsvg" viewBox="0 0 240 160" aria-hidden="true"><g class="net"><path d="M52.0 46V128M67.1 46V128M82.2 46V128M97.3 46V128M112.4 46V128M127.6 46V128M142.7 46V128M157.8 46V128M172.9 46V128M188.0 46V128M52 46.0H188M52 59.7H188M52 73.3H188M52 87.0H188M52 100.7H188M52 114.3H188M52 128.0H188M10 12L52 46M230 12L188 46M10 150L52 128M230 150L188 128M34.4 12L67.1 46M58.9 12L82.2 46M83.3 12L97.3 46M107.8 12L112.4 46M132.2 12L127.6 46M156.7 12L142.7 46M181.1 12L157.8 46M205.6 12L172.9 46M10 35.0L52 59.7M230 35.0L188 59.7M10 58.0L52 73.3M230 58.0L188 73.3M10 81.0L52 87.0M230 81.0L188 87.0M10 104.0L52 100.7M230 104.0L188 100.7M10 127.0L52 114.3M230 127.0L188 114.3" fill="none" stroke="currentColor" stroke-width=".9" stroke-opacity=".55"/></g><path d="M10 150V12H230V150" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 154H236" stroke="currentColor" stroke-opacity=".5" stroke-width="2"/></svg></div><div class="ft-ball"><svg class="fb" viewBox="0 0 100 100"><use href="#fb"/></svg></div><div class="ft-turf"></div></div>
+  </section>
+  <footer>New scripts are added to the bottom of this page.</footer>
+</div>
+<div id="dock" role="region" aria-label="Current video"></div>
+
+<div id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
+  <div class="sh-back"></div>
+  <div class="sh-card">
+    <button class="sh-x" type="button">Close</button>
+    <div class="sh-form">
+      <h3 id="sh-title"></h3>
+      <p class="sh-sub">Choose the video you filmed and send it. Large files are fine.</p>
+      <label class="drop" for="sh-file">
+        <svg class="ic" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="27" cy="27" r="25"/><path d="M27 37V18M19 25l8-8 8 8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <b>Tap to choose your video</b><span>or drop it here</span>
+        <input id="sh-file" type="file" accept="video/*">
+      </label>
+      <label class="sh-who">Your name, so we know it is yours (optional)<input id="sh-name" type="text" maxlength="80" autocomplete="name" placeholder="Name"></label>
+      <button class="btn solid" id="sh-go" type="button" disabled>Send it</button>
+      <div class="sh-prog">
+        <div class="sh-lane"><div class="ln0"></div><div class="ln1"></div><div class="gl"><svg class="gsvg" viewBox="0 0 240 160" aria-hidden="true"><g class="net"><path d="M52.0 46V128M67.1 46V128M82.2 46V128M97.3 46V128M112.4 46V128M127.6 46V128M142.7 46V128M157.8 46V128M172.9 46V128M188.0 46V128M52 46.0H188M52 59.7H188M52 73.3H188M52 87.0H188M52 100.7H188M52 114.3H188M52 128.0H188M10 12L52 46M230 12L188 46M10 150L52 128M230 150L188 128M34.4 12L67.1 46M58.9 12L82.2 46M83.3 12L97.3 46M107.8 12L112.4 46M132.2 12L127.6 46M156.7 12L142.7 46M181.1 12L157.8 46M205.6 12L172.9 46M10 35.0L52 59.7M230 35.0L188 59.7M10 58.0L52 73.3M230 58.0L188 73.3M10 81.0L52 87.0M230 81.0L188 87.0M10 104.0L52 100.7M230 104.0L188 100.7M10 127.0L52 114.3M230 127.0L188 114.3" fill="none" stroke="currentColor" stroke-width=".9" stroke-opacity=".55"/></g><path d="M10 150V12H230V150" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 154H236" stroke="currentColor" stroke-opacity=".5" stroke-width="2"/></svg></div><div class="bl"><svg class="fb" viewBox="0 0 100 100" aria-hidden="true"><use href="#fb"/></svg></div></div>
+        <div class="sh-info"><span id="sh-pct">0%</span><span id="sh-size"></span></div>
+      </div>
+      <p class="sh-msg" role="status" aria-live="polite"></p>
+    </div>
+    <div class="sh-done">
+      <h4>Goal.</h4>
+      <p>Your video is in. Nothing else to do for this one.</p>
+      <div class="actions" style="justify-content:center"><button class="btn solid sh-close2" type="button">Back to the page</button><button class="btn copy sh-again" type="button">Upload another</button></div>
+    </div>
+  </div>
+</div>
+<div id="goalfx" aria-hidden="true"><div class="dim"></div><div class="big"><i>G</i><i>O</i><i>A</i><i>L</i></div><p class="small"></p></div>
+<div id="fxl" aria-hidden="true"></div>
+<script>
+// Each entry: original video link, upload link for the finished video, and both scripts.
+// Paragraph strings starting with "clip:" render as an on-screen call clip. [Brackets] render as fill-ins.
+const ENTRIES = [
+  {
+    title: "2,000 Cold Calls",
+    originalUrl: "",
+    uploadUrl: "/runitbak?upload=2-000-cold-calls",
+    original: [
+      "Is it possible to become a millionaire by making 2,000 cold calls? Let him explain.",
+      "You're 2,000 cold calls. I don't care what in... I don't care what industry it is. You're 2,000 cold calls away from being a fucking millionaire.",
+      "Started documenting this challenge from nothing, trying to build an agency targeting the home service industry. And I'm officially 267 calls in. And honestly, I've realized something. Haven't been pushing as hard as I really should be. 137 people didn't answer. 105 people told me no. One guy literally told me no to every question I asked him.",
+      "clip:\"Hello, is this Curtis?\" \"No.\" \"Is this the owner of Stonewater Roofing?\" \"No.\" \"Take care.\" \"No.\"",
+      "I had 14 people book meetings with me and completely ghost me. I finished 5 Zoom meetings and somehow those 5 meetings turned into 3 companies almost pay me $6,000 a month. And that's what's crazy about business. You don't need everyone to say yes. You just need a few people to believe in what you're building.",
+      "This challenge has made me realize something. I've been moving way too slow. Could have made way more calls. Could have had way more conversations. Could have created way more opportunities. So now it's time to turn it up a notch. Everything is starting to click. Now it's time to see what happens when I actually go all in. So that's 267 calls in. 1,700 more to go."
+    ],
+    yours: [
+      "Is it possible to become a millionaire by making 2,000 cold calls? Let him explain.",
+      "You're 2,000 cold calls. I don't care what in... I don't care what industry it is. You're 2,000 cold calls away from being a fucking millionaire.",
+      "Started documenting this challenge from nothing, trying to build an agency while playing professional football. And I'm officially [X] calls in. And honestly, I've realized something. Haven't been pushing as hard as I really should be. [X] people didn't answer. [X] people told me no. One guy literally [your funniest rejection].",
+      "clip:[Short clip of the real call]",
+      "I had [X] people book meetings with me and completely ghost me. I finished [X] Zoom meetings and somehow those [X] meetings turned into [X] companies almost pay me $[X] a month. And that's what's crazy about business. You don't need everyone to say yes. You just need a few people to believe in what you're building.",
+      "This challenge has made me realize something. I've been moving way too slow. Could have made way more calls. Could have had way more conversations. Could have created way more opportunities. So now it's time to turn it up a notch. Everything is starting to click. Now it's time to see what happens when I actually go all in. So that's [X] calls in. [2,000 minus X] more to go."
+    ]
+  },
+  {
+    title: "My 5-9 After My 9-5",
+    kind: "shots",
+    originalUrl: "https://www.instagram.com/_jayclark_/reel/Dbtc6JFOV_y/",
+    uploadUrl: "/runitbak?upload=my-5-9-after-my-9-5",
+    how: "No talking to camera. The video runs on the title, the clock in the middle of the frame, and a new shot every second or two. Hold the first shot for about 3 seconds with no cut, then keep cutting fast to the end.",
+    shots: [
+      { time: "0 to 3s", clock: "", original: "Overhead shot of him at an office desk in uniform, headphones on, typing.<text>My 5-9 after my 9-5|31 years old | Husband | Dad | Army Officer", yours: "Overhead shot of you on the changing room bench in club training kit, lacing your boots.<text>My 5-9 after my 9-5|[age] years old | Footballer | Agency Owner | 6 Languages" },
+      { time: "3 to 6s", clock: "5:06", original: "Monitor with a chart, hands typing, a card placed by the keyboard, wide shot of him at the desk.", yours: "Tablet with your session stats, close-up of a drill, cones going down, wide shot of you on the pitch." },
+      { time: "6 to 9s", clock: "5:09 to 5:10", original: "Hat left on the desk, stairs, walking out of the building, hand on the car door.", yours: "Boots into the bag, the training ground corridor, walking out, hand on the car door." },
+      { time: "9 to 14s", clock: "5:11, 5:27, 5:36", original: "Sitting in the car in uniform, a short dance in the driver seat, the house from the driveway.", yours: "Sitting in the car in kit, a short dance in the driver seat, your building from outside." },
+      { time: "14 to 24s", clock: "5:40 to 5:57", original: "Hangs his jacket in the hall, picks up the baby, toddler at the kitchen bin.", yours: "Drop the kit bag in the hall, kit into the washing machine, laptop and headset set out on the table." },
+      { time: "24 to 37s", clock: "6:02 to 6:56", original: "The baby's plate, family dinner at the table, baby with food on her face, feeding at the high chair.", yours: "Meal prep containers, your plate, eating at the table, clearing the plate." },
+      { time: "37 to 47s", clock: "7:02 to 7:53", original: "Vacuuming, dishes, kitchen, carrying the baby.", yours: "Headset on, CRM open, dialling, mid-call, crossing off the call count, writing notes." },
+      { time: "47 to 55s", clock: "8:12 to 8:50", original: "Bath time, drying the baby, wiping the shower door and glass.", yours: "Ice bath or cold shower, towel, foam roller, stretching." },
+      { time: "55 to 60s", clock: "9:01 to 9:05", original: "Empty counter, wine bottle, two glasses poured.", yours: "Clean counter, [your wind-down drink], pouring it." },
+      { time: "60 to 63s", clock: "9:07", original: "Dark wide shot of the couch, TV and fireplace.", yours: "Dark wide shot of you on the sofa with match footage on the TV." }
+    ],
+    caption: {
+      original: "Real men know that the work doesn't stop when the 9-5 does..",
+      yours: "Real athletes know that the work doesn't stop when training does.."
+    }
+  },
+  {
+    title: "How Much Do You Make?",
+    originalUrl: "https://www.instagram.com/therealbrianmark/reel/DJpphhIhGVn/",
+    uploadUrl: "/runitbak?upload=how-much-do-you-make",
+    how: "Four players, four different spots at the training ground: the lounge, a bench, the changing room, then a new room. Same question every time. Cut to a close-up for each answer, about one cut every 1.5 to 2 seconds. Bold captions word by word in the middle of the frame. Only film players whose answers are real.",
+    original: [
+      "Interviewer: Excuse me, sir. How much money do you make as a personal trainer?",
+      "Trainer 1: $30,000 a month.",
+      "Interviewer: Excuse me. How much money do you make as a personal trainer?",
+      "Trainer 2: I only make about $20,000 a month.",
+      "Interviewer: Excuse me?",
+      "Trainer 3: Yes, sir.",
+      "Interviewer: How much money do you make as a personal trainer?",
+      "Trainer 3: Most I ever did was $73,000 in one month.",
+      "Interviewer: Excuse me, sir. How much money do you make as a personal trainer?",
+      "Trainer 4: $25,000.",
+      "Interviewer: $25,000 a month or a year?",
+      "Trainer 4: A month.",
+      "Interviewer: Yeah, let's go."
+    ],
+    yours: [
+      "You: Excuse me, sir. How much money do you make outside of football?",
+      "Player 1: $[X] a month.",
+      "You: Excuse me. How much money do you make outside of football?",
+      "Player 2: I only make about $[X] a month.",
+      "You: Excuse me?",
+      "Player 3: Yes, sir.",
+      "You: How much money do you make outside of football?",
+      "Player 3: Most I ever did was $[the biggest number] in one month.",
+      "You: Excuse me, sir. How much money do you make outside of football?",
+      "Player 4: $[X].",
+      "You: $[X] a month or a year?",
+      "Player 4: A month.",
+      "You: Yeah, let's go."
+    ],
+    caption: {
+      original: "Dm me \"10k\" to grow your fitness business. I will help you go viral, sign clients and make at least 10k online.",
+      yours: "Dm me \"[keyword]\" to build an income outside your sport. I will help you [what you do for them] and make at least [X] online."
+    }
+  },
+  {
+    "title": "Football Only or Football and Business",
+    "originalUrl": "https://www.instagram.com/_mondejour/reel/Dc6wiOVs8hO/",
+    "uploadUrl": "/runitbak?upload=football-only-or-football-and-business",
+    "how": "One take, no cuts, handheld and close. Talk straight to camera and play both sides: you, and the player you're talking to (change your voice for his lines). Keep one line of text at the top for the whole video: \"A lot of athletes are staying broke and don't want a business\". Put a football picture above it and swap the picture about every 30 seconds.",
+    "original": [
+      "A lot of men are staying single and don't want a relationship. And I'm kind of starting to see why.",
+      "It's like, let's say I'm talking to a girl and I ask them, oh, how do you want this to go? Traditional or, you know, modern or progressive? And they say, oh, modern. Okay. I'm cool with all that. Not coming crazy at you. So you want modern, which is like you work, I work, like 50-50 type deal. So 50-50, I guess you pay half, I pay half. I cook half the food. You cook half the food. I clean half the stuff. You clean half the stuff. Like Mondays and Wednesdays and Fridays, I clean this Tuesday, Thursday, Saturday. We do it like that. Okay, cool, cool. I'm fine. It's cool.",
+      "Oh, what do you say you don't want that? Oh, you want me to pay for all this stuff? Oh, because as a man, I should pay for everything. And I should be the leader. I should be the protector and the provider, right? Oh, as a man, okay. I should do. You're right. I should, a man. Okay, cool.",
+      "So you want traditional. I think you got the two mixed up, my fault. Yeah, so you want traditional because you said the man should protect, provide. He should pay for things. He should make decisions. He should be the leader. Okay, cool. If you make all the hard decisions and do the hard stuff so you don't really have to so you can be in your feminine era, I respect that. I respect you so much. Let's do that. So traditional then. Let's do that. Yeah, so I do all that. And then, you know, I guess you can help with other things, the cooking and cleaning.",
+      "Whoa, I don't cook and clean. N***a, so what you want to do? What you want? You want to do traditional or? I'm on your side right now. You want to do traditional or you want to do progressive or modern? Which one you want to do? I don't believe in the gender roles.",
+      "It seems like you do believe in gender roles because you just said a man should pay for this. A man should do that. A man should protect, a man should provide. So you do believe in gender roles because that's literally a gender role. But that's our gender role. You don't believe in the gender roles that make you work? Is that what it is? The gender roles that make you, that hold you accountable to do things on the feminine behalf? Or what are we talking about right now?",
+      "Nah, because I can still work and save all my money. I don't... Wait, so what's the point of you going to work if you're not going to spend any work at all? You can go to work if you want to, but what's the... Shouldn't you... Because my first priority is making sure the house is taken care of. If we're doing that, making sure the house is taken care of, making sure you're taken care of, making sure all this is taken care of. Shouldn't you know my priority be making sure the house is taken care of on the other standpoint? Or no, I'm... I'm wilding chat. Maybe I'm getting too deep. Maybe I'm getting too deep chat. My apologies."
+    ],
+    "yours": [
+      "A lot of athletes are staying broke and don't want a business. And I'm kind of starting to see why.",
+      "It's like, let's say I'm talking to a player and I ask them, oh, how do you want this to go? Football only or, you know, football and business? And they say, oh, football and business. Okay. I'm cool with all that. Not coming crazy at you. So you want both, which is like you train, you build, like 50-50 type deal. So 50-50, I guess you give football half, business half. You train half the day. You build half the day. You recover on this. You make calls on that. Like Mondays and Wednesdays and Fridays, calls after training, this Tuesday, Thursday, Saturday you learn the skill. We do it like that. Okay, cool, cool. I'm fine. It's cool.",
+      "Oh, what do you say you don't want that? Oh, you want the club to pay for all this stuff? Oh, because as a footballer, the club should pay for everything. And the club should be the leader. The club should be the protector and the provider, right? Oh, as a footballer, okay. The club should do. You're right. The club should, a footballer. Okay, cool.",
+      "So you want football only. I think you got the two mixed up, my fault. Yeah, so you want football only because you said the club should protect, provide. It should pay for things. It should make decisions. It should be the leader. Okay, cool. If the club makes all the hard decisions and does the hard stuff so you don't really have to so you can be in your comfort era, I respect that. I respect you so much. Let's do that. So football only then. Let's do that. Yeah, so the club does all that. And then, you know, I guess you can help with other things, the saving and building for after.",
+      "Whoa, I don't have time for that. Bro, so what you want to do? What you want? You want to do football only or? I'm on your side right now. You want to do football only or you want to do football and business? Which one you want to do? I don't believe in the online money stuff.",
+      "It seems like you do believe in making money because you just said the club should pay for this. The club should do that. The club should protect, the club should provide. So you do believe in making money because that's literally making money. But that's our contract. You don't believe in the money that makes you work? Is that what it is? The money that makes you, that holds you accountable to do things on your own behalf? Or what are we talking about right now?",
+      "Nah, because I can still play and save all my wages. I don't... Wait, so what's the point of you saving your wages if your career is not going to last at all? You can save if you want to, but what's the... Shouldn't you... Because the club's first priority is making sure the team is taken care of. If we're doing that, making sure the team is taken care of, making sure the results are taken care of, making sure all this is taken care of. Shouldn't your priority be making sure your future is taken care of on the other standpoint? Or no, I'm... I'm wilding chat. Maybe I'm getting too deep. Maybe I'm getting too deep chat. My apologies."
+    ]
+  },
+  {
+    "title": "The Rejection-Proof Athlete",
+    "originalUrl": "https://www.instagram.com/lewishatchett/reel/Ddg0wr-MTUE/",
+    "uploadUrl": "/runitbak?upload=the-rejection-proof-athlete",
+    "how": "One fixed waist-up shot, calm and steady, straight to camera. Put \"The Rejection-Proof Athlete\" in a white box on your chest from the first frame to about 4 seconds. At about 6 seconds show a title card for 2 seconds: \"Minds of Hybrid Athletes\" with \"episode 1\" underneath. Word-by-word captions the whole way through, no b-roll.",
+    "original": [
+      "There is an incredibly rare type of athlete that exists that if you can find this person or you are, then you need to hold on to them.",
+      "Welcome to the Minds of Elite Sport. If you love how athletes think and you want to be mentally tougher, then you're in the right place.",
+      "This type of athlete doesn't care what other people think or how things look because they are so focused on getting the job done. They are willing to win no matter what it looks like, how they get there. They're easy to adapt to conditions. There's no situation that irritates them. Their biggest skill is being able to see a situation and use whatever unique traits they have to work around it, find a way to get the result.",
+      "The problem sometimes for them is that they actually don't know how they get there. They don't know maybe how to replicate it time and time again. For them, it's more of a feeling. It's a personality. It's a trait of who they are. And so replicating and being consistent might be an issue.",
+      "But the biggest wins are the fact that they will be put in any scenario and they will find a way to do it and not be thinking self-consciously about all of the other things that many athletes fall down to.",
+      "So if this reminds you of an athlete in particular, then tag them in this video. But if it's you, yeah, you've got some really cool stuff going on."
+    ],
+    "yours": [
+      "There is an incredibly rare type of athlete that exists that if you can find this person or you are, then you need to hold on to them.",
+      "Welcome to the Minds of Hybrid Athletes. If you love how athletes think and you want to build something outside your sport, then you're in the right place.",
+      "This type of athlete doesn't care what other people think or how things look because they are so focused on getting the job done. They are willing to win no matter what it looks like, how they get there. They're easy to adapt to conditions. There's no situation that irritates them. Their biggest skill is being able to see a situation and use whatever unique traits they have to work around it, find a way to get the result.",
+      "The problem sometimes for them is that they actually don't know it works off the pitch. They don't know maybe how to use it outside their sport. For them, it's more of a feeling. It's a personality. It's a trait of who they are. And so turning it into income might be an issue.",
+      "But the biggest wins are the fact that they will be put in any scenario, on the pitch or on the phone, and they will find a way to do it and not be thinking self-consciously about all of the other things that many athletes fall down to.",
+      "So if this reminds you of an athlete in particular, then tag them in this video. But if it's you, yeah, you've got some really cool stuff going on."
+    ],
+    "caption": {
+      "original": "Episode 4 of Minds of Elite Athletes for those who love how athletes think and want to be mentally stronger. Send this to an athletes you think that would love it.",
+      "yours": "Episode 1 of Minds of Hybrid Athletes for those who love how athletes think and want to build something outside their sport. Send this to an athlete you think would love it."
+    }
+  },
+  {
+    "title": "Everyone Wants To",
+    "kind": "shots",
+    "firstCol": "Time",
+    "originalUrl": "https://www.instagram.com/zachnaun/reel/DbF828Pkeyv/",
+    "uploadUrl": "/runitbak?upload=everyone-wants-to",
+    "how": "No talking. One clip per line of text, and cut exactly when the text changes. Hold the first clip for about 6 seconds, then 3 to 4 seconds per line, and make the last clip the fastest. Put a music track with vocals under the whole thing.",
+    "shots": [
+      {
+        "time": "0 to 6s",
+        "original": "Night match in a floodlit stadium, filmed from the stands.<text>Everyone wants to play football ⚽ in Spain 🇪🇸",
+        "yours": "Your own match footage, ideally a night game under the lights.<text>Everyone wants to play football ⚽ and run a business 💼"
+      },
+      {
+        "time": "6 to 9s",
+        "original": "View out of a plane window, wing and blue sky.<text>But it involves being far away from family",
+        "yours": "You on the phone in the changing room, still in kit.<text>But it involves being on the phone after training"
+      },
+      {
+        "time": "9 to 13s",
+        "original": "Him working in a restaurant dining room.<text>Working part or full time",
+        "yours": "Headset on, CRM open on the screen, dialling.<text>Making [X] calls a day"
+      },
+      {
+        "time": "13 to 16.5s",
+        "original": "Him doing hanging knee raises with a weight, brick wall behind.<text>And long hours in the gym",
+        "yours": "You at the laptop late at night, lamp on.<text>And long hours on the laptop"
+      },
+      {
+        "time": "16.5 to 20s",
+        "original": "Fast, shaky sweep through a kit room: bibs, boxes, kit bags.<text>Are you willing to do this to pursue your dream?",
+        "yours": "Fast, shaky sweep through your kit room or kit bag, boots, laptop bag.<text>Are you willing to do this to pursue your dream?"
+      }
+    ],
+    "caption": {
+      "original": "A lot of people say they're willing to do this but they're not. Are you ? #roadtopro #soccer #footballers",
+      "yours": "A lot of people say they're willing to do this but they're not. Are you ? #roadtopro #footballers #business"
+    }
+  },
+  {
+    "title": "One Close, More Than a Week's Wage",
+    "originalUrl": "https://www.instagram.com/t.jdavies/reel/DYMtahXI1CP/",
+    "uploadUrl": "/runitbak?upload=one-close-more-than-a-week-s-wage",
+    "how": "One fixed shot of you and the player sitting side by side on a sofa, somewhere at the club. No cuts. Put the player's money line at the very start, then play the interview from the top and end on the same line again. Keep one headline at the top the whole time: \"Footballer turning one close into more than a [week]'s wage\". Word-by-word captions in the middle. The player has to be real and so do his numbers.",
+    "original": [
+      "Joel: On the low end, I can make £250 from one close, and that's more than I make in a day at work.",
+      "Interviewer: All right, who am I here with?",
+      "Joel: Joel.",
+      "Interviewer: Joel, what do you do at the moment?",
+      "Joel: I'm a ground worker, but I do DM setting. Trying to go full-time on it.",
+      "Interviewer: How long have you been doing that so far?",
+      "Joel: About a month. I'm on a role with someone with 940k followers.",
+      "Interviewer: What is that sort of first role like, and what has his first month consisted of?",
+      "Joel: Yeah, well, I've just been trying to get some leads at the moment. I've had one call closed. I've got another one. I've had two calls closed. I've got another today. So I'm just trying to get the lead flow and then hopefully get some more calls booked and closed. I booked someone on for a call with the owner of this deal and then he talks to them and closes the deal and I'd take a 5% commission from that. I've got a 6.8, 9.8 and a 20k offer.",
+      "Joel: On the low end, I can make £250 from one close and that's more than I make in a day at work."
+    ],
+    "yours": [
+      "Player: On the low end, I can make $[X] from one close, and that's more than I make in a [week] at the club.",
+      "You: All right, who am I here with?",
+      "Player: [Name].",
+      "You: [Name], what do you do at the moment?",
+      "Player: I'm a footballer, but I do DM setting. Trying to build it next to football.",
+      "You: How long have you been doing that so far?",
+      "Player: About [a month]. I'm on a role with someone with [X] followers.",
+      "You: What is that sort of first role like, and what has your first month consisted of?",
+      "Player: Yeah, well, I've just been trying to get some leads at the moment. I've had [one] call closed. I've got another one. I've had [two] calls closed. I've got another today. So I'm just trying to get the lead flow and then hopefully get some more calls booked and closed. I book someone on for a call with the owner of this deal and then he talks to them and closes the deal and I take a [X]% commission from that. I've got a [X], [X] and a [X] offer.",
+      "Player: On the low end, I can make $[X] from one close and that's more than I make in a [week] at the club."
+    ],
+    "caption": {
+      "original": "What a few weeks into setting looks like #onlinesidehustle #sales #makemoneyonline #entrepreneur",
+      "yours": "What a few weeks into setting looks like #footballers #sales #makemoneyonline #entrepreneur"
+    }
+  },
+  {
+    "title": "The One High-Income Skill",
+    "originalUrl": "https://www.instagram.com/t.jdavies/reel/DV_vS_UiFKQ/",
+    "uploadUrl": "/runitbak?upload=the-one-high-income-skill",
+    "how": "Split screen. Top half: you talking straight to camera in one fixed shot, no cuts, captions at the bottom of your half. Bottom half: a whiteboard or diagram that follows each step as you say it: the monthly number first, then phone, Wi-Fi and Instagram icons, profile screenshots, a simple flow from DM to call to close, and the keyword in a circle at the end.",
+    "original": [
+      "You're not going to make 7k a month by trapping, you're also not going to do it by trading, and you're definitely most likely not going to be doing it by reselling. So let me show you the one simple high-income skill that I use to buy a brand new Rolex and a Range Rover in the UK at 20 years old.",
+      "So without further ado, what was the skill called and how do you do it? The skill was called appointment setting in the form of a high-income skill. And all you need for this skill is an iPhone, Wi-Fi, and Instagram. I guarantee probably every single one of you watching this already has access to that. So what are you doing and why aren't you doing this? So pay attention.",
+      "So without further ado, how do you actually do this skill? You need to look at your Instagram to start with. We need to build a solid Instagram and a personal brand that is going to attract these course sellers, these gurus and the people that we want to be liaising with and creating a contact with to end up working with eventually. So if you know anything about the online space, the money comes from selling courses and not actually the product or the service that they teach.",
+      "So how do you know who's selling courses? How do you know who's got these products and how do you know how to reach out to? The first thing you need to look for is client wins, testimonials, personal branding, CTAs or call to actions in their Instagram bios. These will be indicating that they sell a service or a product that has a price point of over a thousand pounds and then they will require a DM setter as they putting out all this content.",
+      "As soon as you found someone that you can reach out to, send them an Instagram outreach message. It looks something like this. Has a genuine compliment in there. You taken the time to look into this individual and essentially it just one big pitch saying you would like to be their appointment setter and managing their DMs for them.",
+      "And essentially what the process looks like is something like this. You come in, you'd work on their Instagram account. You would turn DMs into sales calls. You'd hope that these sales calls end up being closed. And then essentially if the sales call ends up being closed, money is being collected from the person that's buying that product or service and you as the appointment setter will take a cut off commission typically between five and 15 percent.",
+      "And how this works in the real world and what this actually looks like: say you book in a hundred sales calls in one month as an appointment setter on an appointment setting offer. 30 of them end up closing. The rest, we don't know, they might not close, they might not turn up. If 30 of them close and you're on 10 commission and the price for this is 3k, you are taking home 9,000 pounds a month as a remote appointment setter.",
+      "And the best thing is about this, you don't have to be over 18, there is zero startup cost and it doesn't require you sat in an office or sat in a desk for 12 hours a day every single day. So for those of you that watch the end and want a full blueprint on how I've done this and how I've done this for the last two years, DM me the word sales and I'll send it over to you."
+    ],
+    "yours": [
+      "You're not going to make 7k a month by playing semi-pro, you're also not going to do it by trading, and you're definitely most likely not going to be doing it by dropshipping. So let me show you the one simple high-income skill that I use to [what it paid for] next to football at [age] years old.",
+      "So without further ado, what was the skill called and how do you do it? The skill was called appointment setting in the form of a high-income skill. And all you need for this skill is an iPhone, Wi-Fi, and Instagram. I guarantee probably every single one of you watching this already has access to that. So what are you doing and why aren't you doing this? So pay attention.",
+      "So without further ado, how do you actually do this skill? You need to look at your Instagram to start with. We need to build a solid Instagram and a personal brand that is going to attract these course sellers, these gurus and the people that we want to be liaising with and creating a contact with to end up working with eventually. So if you know anything about the online space, the money comes from selling courses and not actually the product or the service that they teach.",
+      "So how do you know who's selling courses? How do you know who's got these products and how do you know how to reach out to? The first thing you need to look for is client wins, testimonials, personal branding, CTAs or call to actions in their Instagram bios. These will be indicating that they sell a service or a product that has a price point of over a thousand dollars and then they will require a DM setter as they're putting out all this content.",
+      "As soon as you found someone that you can reach out to, send them an Instagram outreach message. It looks something like this. Has a genuine compliment in there. You've taken the time to look into this individual and essentially it's just one big pitch saying you would like to be their appointment setter and managing their DMs for them.",
+      "And essentially what the process looks like is something like this. You come in, you'd work on their Instagram account. You would turn DMs into sales calls. You'd hope that these sales calls end up being closed. And then essentially if the sales call ends up being closed, money is being collected from the person that's buying that product or service and you as the appointment setter will take a cut off commission typically between five and 15 percent.",
+      "And how this works in the real world and what this actually looks like: say you book in a hundred sales calls in one month as an appointment setter on an appointment setting offer. 30 of them end up closing. The rest, we don't know, they might not close, they might not turn up. If 30 of them close and you're on 10 commission and the price for this is 3k, you are taking home 9,000 dollars a month as a remote appointment setter.",
+      "And the best thing is about this, you don't have to be over 18, there is zero startup cost and it doesn't require you to miss a single training session or sit at a desk for 12 hours a day every single day. So for those of you that watch the end and want a full blueprint on how I've done this and how I've done this for the last [how long], DM me the word [keyword] and I'll send it over to you."
+    ],
+    "caption": {
+      "original": "Try this skill now. #sidehustle #makemoneyonline #entrepreneur #success #sales",
+      "yours": "Try this skill now. #footballers #sidehustle #makemoneyonline #entrepreneur #sales"
+    }
+  },
+  {
+    "title": "What Team Talks Sound Like",
+    "kind": "shots",
+    "firstCol": "Time",
+    "originalUrl": "https://www.instagram.com/alecamejox/reel/Dbd8GduMelL/",
+    "uploadUrl": "/runitbak?upload=what-team-talks-sound-like",
+    "how": "About 13 seconds, one close handheld shot filmed from slightly below, no cuts. Use the same sound as the original (tap the audio on the original reel and choose Use audio) and act along to it the whole way through. Keep the title line on screen from start to finish.",
+    "shots": [
+      {
+        "time": "0 to 13s",
+        "original": "Him in a car in sunglasses, a light grey suit jacket and an open white shirt, acting along to the sound. Leans in at 4s, hand to chest at 10s, looks at the camera at the end.<text>What team calls sounds like in the sales industry",
+        "yours": "You in a car in sunglasses and your club tracksuit, acting along to the same sound. Same moves: lean in at 4s, hand to chest at 10s, look at the camera at the end.<text>What team talks sound like in the football industry"
+      }
+    ],
+    "caption": {
+      "original": "Hiring! Dm me to join the team 💪 #mindset #team #wolfofwallstreet #entrepreneur",
+      "yours": "Hiring! Dm me to join the team 💪 #mindset #team #footballers #entrepreneur"
+    }
+  }
+];
+
+/* ---------- renderer: reads ENTRIES only, nothing below needs editing when a script is added ---------- */
+function esc(s) {
+  return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+const fillHtml = s => esc(s).replace(/\[([^\]]+)\]/g, '<span class="fill">$1</span>');
+function para(s, k) {
+  const isClip = s.startsWith("clip:");
+  let text = fillHtml(isClip ? s.slice(5) : s);
+  text = text.replace(/^([A-Z][a-zA-Z]+(?: \d)?):/, '<b class="who">$1:</b>');
+  return `<p${isClip ? ' class="clip"' : ""}${k !== undefined ? ` data-k="${k}"` : ""}>${text}</p>`;
+}
+function splitTitle(t) {
+  const w = t.split(" ");
+  if (w.length < 2) return `<span><span class="ttl">${esc(t)}</span></span>`;
+  const k = Math.ceil(w.length / 2);
+  return `<span><span class="ttl">${esc(w.slice(0, k).join(" "))}</span></span><em><span class="ttl">${esc(w.slice(k).join(" "))}</span></em>`;
+}
+function pad(i) { return String(i + 1).padStart(2, "0"); }
+function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+const BALL = (cls) => `<svg class="${cls || "fb"}" viewBox="0 0 100 100" aria-hidden="true"><use href="#fb"/></svg>`;
+
+const LAYOUT = document.documentElement.dataset.layout || "side";
+const nav = document.getElementById("index");
+const bank = document.getElementById("bank");
+
+/* an empty uploadUrl falls back to the built in uploader for that script */
+const upHref = e => e.uploadUrl || ("/runitbak?upload=" + slug(e.title));
+const internal = h => h.indexOf("/runitbak") === 0;
+function upBtn(e) {
+  const h = upHref(e);
+  return `<a class="btn solid" href="${esc(h)}" ${internal(h) ? `data-up="${slug(e.title)}"` : 'target="_blank" rel="noopener"'}>Upload your video</a>`;
+}
+
+nav.innerHTML = ENTRIES.map((e, i) => `<a href="#${slug(e.title)}"><span>${pad(i)}</span>${esc(e.title)}</a>`).join("");
+
+function textOverlay(t) {
+  const [big, small] = t.split("|").length > 1 ? [t.split("|")[0], t.split("|").slice(1).join("|")] : [t, ""];
+  return `<div class="textblock"><div class="big">${fillHtml(big)}</div>${small ? `<div class="small">${fillHtml(small)}</div>` : ""}</div>`;
+}
+function shotCell(s) {
+  const [desc, text] = s.split("<text>");
+  return fillHtml(desc) + (text ? textOverlay(text) : "");
+}
+const uploadBlock = e => `<div class="actions">${upBtn(e)}</div>`;
+const watchBlock = e => e.originalUrl ? `<div class="actions"><a class="btn" data-watch="${slug(e.title)}" href="${esc(e.originalUrl)}" target="_blank" rel="noopener">Watch the original</a></div>` : "";
+const copyBtn = (kind, label) => `<button class="btn copy" type="button" data-copy="${kind}">${label}</button>`;
+const steps = e => `<div class="steps rv" data-s="${slug(e.title)}">` +
+  [["watched", "Watched the original"], ["filmed", "Filmed it"], ["uploaded", "Uploaded"]]
+    .map(([k, t]) => `<button class="chk" type="button" data-k="${k}" aria-pressed="false"><i>${BALL()}</i>${t}</button>`).join("") + `</div>`;
+
+function renderShots(e) {
+  return `
+    ${watchBlock(e)}
+    <p class="how rv">${esc(e.how)}</p>
+    <div class="shots ${LAYOUT}">
+      <div class="pass" aria-hidden="true"><span class="pball">${BALL()}</span></div>
+      <div class="shot-head"><h3>${esc(e.firstCol || "Clock")}</h3><h3>The original</h3><h3>Your version</h3></div>
+      ${e.shots.map(s => `
+        <div class="shot rv">
+          <div class="when">${e.firstCol ? `<b>${esc(s.time)}</b>` : `<b>${s.clock ? esc(s.clock) : "No clock"}</b><span>${esc(s.time)}</span>`}</div>
+          <div class="o"><div class="tag">The original</div>${shotCell(s.original)}</div>
+          <div class="y"><div class="tag">Your version</div>${shotCell(s.yours)}</div>
+        </div>`).join("")}
+    </div>
+    <div class="actions" style="margin-top:18px">${copyBtn("shots", "Copy your shot list")}</div>
+    <div class="sub">
+      <h4>Caption</h4>
+      <div class="pair">
+        <div class="col original"><div class="script"><p>${esc(e.caption.original)}</p></div></div>
+        <div class="col yours"><div class="script">${para(e.caption.yours)}</div><div class="actions">${copyBtn("caption", "Copy your caption")}</div>${uploadBlock(e)}</div>
+      </div>
+    </div>`;
+}
+
+bank.innerHTML = ENTRIES.map((e, i) => e.kind === "shots" ? `
+  <article class="entry" id="${slug(e.title)}" data-i="${i}">
+    <div class="entry-head rv"><span class="n">${pad(i)}</span><h2>${splitTitle(e.title)}</h2></div>
+    ${steps(e)}
+    ${renderShots(e)}
+  </article>` : `
+  <article class="entry" id="${slug(e.title)}" data-i="${i}">
+    <div class="entry-head rv">
+      <span class="n">${pad(i)}</span>
+      <h2>${splitTitle(e.title)}</h2>
+    </div>
+    ${steps(e)}
+    ${e.how ? `<p class="how rv">${esc(e.how)}</p>` : ""}
+    <div class="pair">
+      <section class="col original rv">
+        <h3>The original</h3>
+        <p class="how">Watch it twice before you read the script below.</p>
+        ${watchBlock(e)}
+        <div class="script">${e.original.map((s, k) => para(s, k)).join("")}</div>
+      </section>
+      <section class="col yours rv">
+        <h3>Your script</h3>
+        <p class="how">Same lines, same order. Only the highlighted parts change.</p>
+        <div class="script">${e.yours.map((s, k) => para(s, k)).join("")}</div>
+        <div class="actions" style="margin-top:6px">${copyBtn("script", "Copy your script")}</div>
+        ${e.caption ? "" : uploadBlock(e)}
+      </section>
+    </div>
+    ${e.caption ? `<div class="sub rv"><h4>Caption</h4><div class="pair">
+      <div class="col original"><div class="script"><p>${esc(e.caption.original)}</p></div></div>
+      <div class="col yours"><div class="script">${para(e.caption.yours)}</div><div class="actions">${copyBtn("caption", "Copy your caption")}</div>${uploadBlock(e)}</div>
+    </div></div>` : ""}
+  </article>`).join("");
+
+/* ---------- motion basics + the always visible Upload bar ---------- */
+document.documentElement.classList.add("js");
+const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { threshold: 0.08 });
+document.querySelectorAll(".rv, .ft").forEach(el => io.observe(el));
+
+const dock = document.getElementById("dock");
+const entryEls = [...document.querySelectorAll("article.entry")];
+let shown = -2;
+function dockHtml(e, i) {
+  return `<div class="dk"><div class="dk-t"><b>${pad(i)}</b>${esc(e.title)}</div><div class="dk-b">` +
+    (e.originalUrl ? `<a class="btn" data-watch="${slug(e.title)}" href="${esc(e.originalUrl)}" target="_blank" rel="noopener">Watch the original</a>` : "") +
+    upBtn(e) + `</div></div>`;
+}
+function syncDock() {
+  const mid = innerHeight * 0.45;
+  let c = -1;
+  entryEls.forEach((el, i) => { const r = el.getBoundingClientRect(); if (r.top < mid && r.bottom > mid) c = i; });
+  if (c !== shown) {
+    shown = c;
+    if (c >= 0) dock.innerHTML = dockHtml(ENTRIES[c], c);
+    dock.classList.toggle("on", c >= 0);
+  }
+}
+addEventListener("scroll", syncDock, { passive: true });
+addEventListener("resize", syncDock);
+syncDock();
+
+const pill = document.getElementById("pill");
+pill.innerHTML = ENTRIES.map((e, i) => `<a href="#${slug(e.title)}" aria-label="${esc(e.title)}">${pad(i)}</a>`).join("");
+
+/* ---------- extras: ticker, parallax, line focus, dock progress, magnetic buttons ---------- */
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+const tk = document.createElement("div");
+tk.className = "ticker"; tk.setAttribute("aria-hidden", "true");
+const run = ENTRIES.map(e => `<span>${esc(e.title)}</span>`).join("<i></i>") + "<i></i>";
+tk.innerHTML = `<div class="tk-in">${run}${run}</div>`;
+document.querySelector(".stage").after(tk);
+
+document.querySelectorAll(".entry-head").forEach((h, i) => { h.dataset.n = pad(i); });
+
+document.querySelectorAll(".pair, .lines").forEach(box => {
+  const on = (p) => {
+    const k = p.dataset.k; if (k === undefined) return;
+    box.querySelectorAll(".hl").forEach(x => x.classList.remove("hl"));
+    box.querySelectorAll(`[data-k="${k}"]`).forEach(x => x.classList.add("hl"));
+    box.classList.add("focus");
+  };
+  box.addEventListener("pointerover", ev => { const p = ev.target.closest("p[data-k]"); if (p && fine) on(p); });
+  box.addEventListener("click", ev => { const p = ev.target.closest("p[data-k]"); if (p) on(p); });
+  box.addEventListener("pointerleave", () => { if (fine) { box.classList.remove("focus"); box.querySelectorAll(".hl").forEach(x => x.classList.remove("hl")); } });
+});
+
+const dkBar = document.createElement("div"); dkBar.className = "dk-bar"; dock.prepend(dkBar);
+const entryProgress = () => {
+  const c = shown; if (c < 0) return;
+  const r = entryEls[c].getBoundingClientRect();
+  dkBar.style.setProperty("--p", Math.min(1, Math.max(0, (innerHeight * 0.45 - r.top) / r.height)).toFixed(3));
+};
+addEventListener("scroll", entryProgress, { passive: true });
+
+if (!reduce) {
+  const stage = document.querySelector(".stage");
+  let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+  const loop = () => {
+    cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06;
+    stage.style.setProperty("--mx", cx.toFixed(3)); stage.style.setProperty("--my", cy.toFixed(3));
+    raf = (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001) ? requestAnimationFrame(loop) : 0;
+  };
+  if (fine) {
+    stage.addEventListener("pointermove", ev => {
+      const r = stage.getBoundingClientRect();
+      tx = (ev.clientX - r.left) / r.width - 0.5; ty = (ev.clientY - r.top) / r.height - 0.5;
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    stage.addEventListener("pointerleave", () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(loop); });
+    document.addEventListener("pointermove", ev => {
+      const b = ev.target.closest && ev.target.closest(".btn");
+      document.querySelectorAll(".btn.mag").forEach(x => { if (x !== b) { x.classList.remove("mag"); x.style.removeProperty("--bx"); x.style.removeProperty("--by"); } });
+      if (!b) return;
+      const r = b.getBoundingClientRect();
+      b.classList.add("mag");
+      b.style.setProperty("--bx", ((ev.clientX - r.left - r.width / 2) * 0.12).toFixed(1) + "px");
+      b.style.setProperty("--by", ((ev.clientY - r.top - r.height / 2) * 0.2).toFixed(1) + "px");
+    });
+  }
+  const drift = () => {
+    const y = scrollY;
+    if (y < innerHeight * 1.4) stage.style.setProperty("--sy", y.toFixed(0));
+    document.querySelectorAll(".entry-head").forEach(h => {
+      const r = h.getBoundingClientRect();
+      if (r.bottom > -200 && r.top < innerHeight + 200) h.style.setProperty("--d", ((r.top - innerHeight / 2) * -0.08).toFixed(1) + "px");
+    });
+  };
+  addEventListener("scroll", drift, { passive: true }); drift();
+}
+
+/* ---------- fx: confetti and the GOAL banner ---------- */
+const fxl = document.getElementById("fxl");
+const CONF = ["#D8F26B", "#ffffff", "#F4C542", "#8EE3B5", "#111110", "#FF6A3D"];
+function burst(x, y, n, spread, power) {
+  if (reduce) return;
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement("span"); p.className = "fxp";
+    const w = 6 + Math.random() * 8, h = 10 + Math.random() * 12;
+    p.style.cssText = `width:${w}px;height:${h}px;background:${CONF[i % CONF.length]};border-radius:${Math.random() < .3 ? "50%" : "2px"}`;
+    fxl.appendChild(p);
+    const a = -Math.PI / 2 + (Math.random() - .5) * spread, v = power * (.45 + Math.random() * .8);
+    const dx = Math.cos(a) * v, dy = Math.sin(a) * v, g = power * 1.25, r = (Math.random() - .5) * 900;
+    const kf = [0, .25, .55, 1].map(t => ({ transform: `translate(${x + dx * t}px,${y + dy * t + g * t * t}px) rotate(${r * t}deg)`, opacity: t > .75 ? 1 - (t - .75) * 4 : 1 }));
+    p.animate(kf, { duration: 1500 + Math.random() * 1100, easing: "cubic-bezier(.2,.6,.3,1)", fill: "forwards" }).onfinish = () => p.remove();
+  }
+}
+const gfx = document.getElementById("goalfx");
+function goalBanner(line) {
+  gfx.querySelector(".small").textContent = line || "";
+  gfx.classList.remove("on"); void gfx.offsetWidth; gfx.classList.add("on");
+  [...gfx.querySelectorAll(".big i")].forEach((l, i) => l.style.animationDelay = (i * 90) + "ms");
+  burst(innerWidth / 2, innerHeight * .55, 90, Math.PI * 1.6, Math.min(innerWidth, 760) * .8);
+  setTimeout(() => burst(innerWidth * .1, innerHeight * .85, 40, Math.PI * .7, innerHeight * .8), 200);
+  setTimeout(() => burst(innerWidth * .9, innerHeight * .85, 40, Math.PI * .7, innerHeight * .8), 320);
+  setTimeout(() => gfx.classList.remove("on"), reduce ? 1600 : 3000);
+}
+
+/* ---------- progress: tick off each video, ball dribbles along the pitch bar ---------- */
+let P = {};
+try { P = JSON.parse(localStorage.getItem("rib-progress") || "{}") || {}; } catch (e) {}
+const saveP = () => { try { localStorage.setItem("rib-progress", JSON.stringify(P)); } catch (e) {} };
+const slugs = ENTRIES.map(e => slug(e.title));
+const done = (s, k) => !!(P[s] && P[s][k]);
+function setStep(s, k, v) { P[s] = P[s] || {}; P[s][k] = v === undefined ? !P[s][k] : v; saveP(); paintSteps(); }
+
+const pb = document.getElementById("pitchbar"), pbTrack = pb.querySelector(".pb-track"), pbBall = pb.querySelector(".pb-ball"), pbFill = pb.querySelector(".pb-fill"), pbGoal = pb.querySelector(".pb-goal"), pbC = pb.querySelector(".pb-c");
+pbTrack.insertAdjacentHTML("afterbegin", slugs.map((s, i) => `<button class="pb-tick" type="button" data-i="${i}" aria-label="Go to ${esc(ENTRIES[i].title)}"></button>`).join(""));
+const ticks = [...pbTrack.querySelectorAll(".pb-tick")];
+function paintSteps() {
+  document.querySelectorAll(".steps").forEach(st => {
+    const s = st.dataset.s;
+    st.querySelectorAll(".chk").forEach(b => b.setAttribute("aria-pressed", String(done(s, b.dataset.k))));
+  });
+  document.querySelectorAll("#index a").forEach((a, i) => a.classList.toggle("done", done(slugs[i], "uploaded")));
+  ticks.forEach((t, i) => t.classList.toggle("done", done(slugs[i], "uploaded")));
+  const n = slugs.filter(s => done(s, "uploaded")).length;
+  pbC.innerHTML = `<b>${n}</b>/${slugs.length}`;
+}
+let tw = 0, maxScroll = 1, scored = false;
+function layoutBar() {
+  tw = Math.max(0, pbTrack.clientWidth - 34);
+  maxScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  ticks.forEach((t, i) => {
+    const top = entryEls[i].getBoundingClientRect().top + scrollY - innerHeight * .2;
+    t.style.left = (Math.min(.96, Math.max(0, top / maxScroll)) * tw) + "px";
+  });
+  moveBar();
+}
+function moveBar() {
+  const p = Math.min(1, Math.max(0, scrollY / maxScroll)), x = p * tw;
+  pbBall.style.transform = `translateX(${x}px) rotate(${(x / 13) * 57.3}deg)`;
+  pbFill.style.width = x + "px";
+  pb.classList.toggle("on", scrollY > document.querySelector(".stage").offsetHeight * .55);
+  if (p > .985 && !scored) { scored = true; pbGoal.classList.remove("hit"); void pbGoal.getBoundingClientRect(); pbGoal.classList.add("hit"); const r = pbGoal.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height, 26, Math.PI * 1.2, 260); }
+  if (p < .9) scored = false;
+}
+addEventListener("scroll", moveBar, { passive: true });
+addEventListener("resize", layoutBar);
+addEventListener("load", layoutBar);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutBar);
+setTimeout(layoutBar, 600); setTimeout(layoutBar, 2500);
+pbTrack.addEventListener("click", ev => { const t = ev.target.closest(".pb-tick"); if (t) entryEls[+t.dataset.i].scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
+paintSteps(); layoutBar();
+
+/* shot lists: a ball rolls down the timeline as you read */
+document.querySelectorAll(".shots").forEach(box => {
+  const rows = [...box.querySelectorAll(".shot")];
+  const tick = () => {
+    const r = box.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight * .55 - r.top) / Math.max(1, r.height)));
+    box.style.setProperty("--ph", (p * 100).toFixed(1) + "%");
+    rows.forEach(s => s.classList.toggle("seen", s.getBoundingClientRect().top < innerHeight * .55));
+  };
+  addEventListener("scroll", tick, { passive: true }); tick();
+});
+
+/* ---------- clicks: steps, watch, copy ---------- */
+function copyText(txt, done) {
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, () => {});
+  else { const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); done(); } catch (x) {} t.remove(); }
+}
+const plain = s => s.replace(/<text>/g, "\n").replace(/\|/g, " | ");
+function textFor(e, kind) {
+  if (kind === "caption") return e.caption.yours;
+  if (kind === "shots") return e.shots.map(s => `${s.clock ? s.clock + " " : ""}${s.time}\n${plain(s.yours)}`).join("\n\n") + (e.caption ? "\n\nCaption:\n" + e.caption.yours : "");
+  return e.yours.map(p => p.startsWith("clip:") ? "(On screen: " + p.slice(5) + ")" : p).join("\n\n");
+}
+document.addEventListener("click", ev => {
+  const chk = ev.target.closest(".chk");
+  if (chk) { const s = chk.closest(".steps").dataset.s, k = chk.dataset.k; setStep(s, k); if (done(s, k)) { const r = chk.getBoundingClientRect(); burst(r.left + 30, r.top + r.height / 2, 14, Math.PI * 1.4, 140); } return; }
+  const w = ev.target.closest("[data-watch]"); if (w) setStep(w.dataset.watch, "watched", true);
+  const c = ev.target.closest("[data-copy]");
+  if (c) {
+    const e = ENTRIES[+c.closest("article").dataset.i], old = c.textContent;
+    copyText(textFor(e, c.dataset.copy), () => { c.textContent = "Copied"; setTimeout(() => c.textContent = old, 1600); });
+  }
+  const up = ev.target.closest("a[data-up]");
+  if (up) { ev.preventDefault(); openSheet(up.dataset.up); }
+});
+
+/* ---------- hero: a ball you can flick into the goal ---------- */
+(function () {
+  const st = document.querySelector(".stage"), hb = st.querySelector(".hball"), gl = st.querySelector(".hgoal"), sc = st.querySelector(".score b"), scNote = st.querySelector(".score span");
+  let W, H, B, gx, gy, gw, gh, fl, x = 0, y = -200, vx = 0, vy = 0, rot = 0, drag = false, running = false, locked = false, last = 0, goals = 0, sx = 0;
+  const put = () => { hb.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${rot.toFixed(1)}deg)`; };
+  function dims() {
+    const r = st.getBoundingClientRect(), g = gl.getBoundingClientRect();
+    W = r.width; H = r.height; B = hb.offsetWidth; gx = g.left - r.left; gy = g.top - r.top; gw = g.width; gh = g.height; fl = H - B - 8;
+    sx = W < 700 ? 18 : W * .1;
+    if (!running && !drag && !locked) { x = Math.min(Math.max(0, x), W - B); y = Math.min(y, fl); put(); }
+  }
+  function startDrop() { x = sx; y = -B - 60; vx = 0; vy = 0; locked = false; if (reduce) { y = fl; put(); return; } kick(); }
+  function kick() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(step); } }
+  function scored() {
+    locked = true; goals++; sc.textContent = goals; sc.classList.remove("pop"); void sc.offsetWidth; sc.classList.add("pop");
+    scNote.textContent = goals === 1 ? "Goal. Do it again" : goals < 5 ? "Goal. Keep going" : "Goal. You can stop now";
+    gl.classList.remove("hit"); void gl.getBoundingClientRect(); gl.classList.add("hit");
+    hb.style.transition = "transform .55s cubic-bezier(.2,.8,.3,1)";
+    x = gx + gw * .52 - B / 2; y = gy + gh * .62 - B / 2; vx = vy = 0; put();
+    const r = st.getBoundingClientRect();
+    const t = document.createElement("div"); t.className = "goaltxt"; t.textContent = "Goal!"; t.style.left = (gx + gw / 2 - 52) + "px"; t.style.top = (gy - 10) + "px"; st.appendChild(t); setTimeout(() => t.remove(), 1500);
+    burst(r.left + gx + gw / 2, r.top + gy + gh * .4, 46, Math.PI * 1.5, Math.min(innerWidth, 600) * .6);
+    setTimeout(() => { hb.style.transition = ""; startDrop(); }, 1500);
+  }
+  function step(ts) {
+    const dt = Math.min(2.2, (ts - last) / 16.7); last = ts;
+    if (!drag && !locked) {
+      vy += .55 * dt; x += vx * dt; y += vy * dt;
+      if (x < 0) { x = 0; vx = -vx * .72; } else if (x > W - B) { x = W - B; vx = -vx * .72; }
+      if (y < 0) { y = 0; vy = -vy * .5; }
+      if (y > fl) { y = fl; vy = Math.abs(vy) > 1.4 ? -vy * .62 : 0; vx *= Math.pow(.975, dt); }
+      rot += vx * dt * (57.3 / (B / 2));
+      const cx = x + B / 2, cy = y + B / 2;
+      if (cx > gx + gw * .1 && cx < gx + gw - 4 && cy > gy + 4) { put(); scored(); }
+      else put();
+      if (y >= fl && Math.abs(vx) < .06 && Math.abs(vy) < .06) { running = false; vx = vy = 0; return; }
+    } else if (locked) { running = false; return; }
+    requestAnimationFrame(step);
+  }
+  let samples = [], dx0 = 0, dy0 = 0, moved = 0;
+  hb.addEventListener("pointerdown", ev => {
+    if (locked) return;
+    drag = true; hb.setPointerCapture(ev.pointerId);
+    const r = st.getBoundingClientRect(); dx0 = ev.clientX - r.left - x; dy0 = ev.clientY - r.top - y; samples = [{ t: ev.timeStamp, x, y }]; moved = 0; vx = vy = 0;
+  });
+  hb.addEventListener("pointermove", ev => {
+    if (!drag) return;
+    const r = st.getBoundingClientRect();
+    const nx = ev.clientX - r.left - dx0, ny = ev.clientY - r.top - dy0;
+    moved += Math.abs(nx - x) + Math.abs(ny - y);
+    x = Math.min(Math.max(0, nx), W - B); y = Math.min(Math.max(0, ny), fl); put();
+    samples.push({ t: ev.timeStamp, x, y }); if (samples.length > 6) samples.shift();
+  });
+  const release = () => {
+    if (!drag) return; drag = false;
+    if (moved < 8) { vx = (gx + gw / 2 - (x + B / 2)) / 52 + (Math.random() - .5) * 3; vy = -15 - Math.random() * 3; }
+    else {
+      const a = samples[0], b = samples[samples.length - 1], dt = Math.max(16, b.t - a.t);
+      vx = Math.max(-40, Math.min(40, (b.x - a.x) / dt * 16.7 * 1.15)); vy = Math.max(-44, Math.min(30, (b.y - a.y) / dt * 16.7 * 1.15));
+    }
+    if (reduce) { vx = vy = 0; return; }
+    kick();
+  };
+  hb.addEventListener("pointerup", release); hb.addEventListener("pointercancel", release);
+  hb.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); if (!locked) { vx = (gx + gw / 2 - (x + B / 2)) / 50; vy = -16; kick(); } } });
+  addEventListener("resize", dims);
+  dims();
+  setTimeout(() => { dims(); startDrop(); }, reduce ? 0 : 900);
+})();
+
+/* ---------- upload sheet ---------- */
+const sheet = document.getElementById("sheet"), shFile = document.getElementById("sh-file"), shGo = document.getElementById("sh-go"), shDrop = sheet.querySelector(".drop");
+const shProg = sheet.querySelector(".sh-prog"), shMsg = sheet.querySelector(".sh-msg"), shBall = sheet.querySelector(".sh-lane .bl"), shFill = sheet.querySelector(".ln1"), shPct = document.getElementById("sh-pct"), shSize = document.getElementById("sh-size");
+let curSlug = "", file = null, busy = false, lastFocus = null;
+const fmt = n => n > 1e9 ? (n / 1e9).toFixed(2) + " GB" : n > 1e6 ? (n / 1e6).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1e3)) + " KB";
+function resetSheet() {
+  file = null; shFile.value = ""; shDrop.classList.remove("has"); shDrop.querySelector("b").textContent = "Tap to choose your video"; shDrop.querySelector("span").textContent = "or drop it here";
+  shGo.disabled = true; shGo.textContent = "Send it"; shProg.classList.remove("on"); shMsg.textContent = ""; shMsg.className = "sh-msg";
+  sheet.querySelector(".sh-form").hidden = false; sheet.querySelector(".sh-done").classList.remove("on"); setProg(0, 0);
+}
+function openSheet(s) {
+  const i = Math.max(0, slugs.indexOf(s)); curSlug = slugs[i]; lastFocus = document.activeElement;
+  document.getElementById("sh-title").textContent = ENTRIES[i].title;
+  resetSheet(); sheet.classList.add("on"); document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add("show")));
+  setTimeout(() => sheet.querySelector(".sh-x").focus(), 50);
+}
+function closeSheet() {
+  if (busy && !confirm("Your video is still uploading. Close and stop it?")) return;
+  if (busy) { abortUpload = true; }
+  sheet.classList.remove("show"); document.body.style.overflow = "";
+  setTimeout(() => sheet.classList.remove("on"), reduce ? 0 : 900);
+  const u = new URL(location.href); if (u.searchParams.has("upload")) { u.searchParams.delete("upload"); history.replaceState(null, "", u.pathname + u.search + u.hash); }
+  if (lastFocus) lastFocus.focus();
+}
+sheet.querySelector(".sh-x").addEventListener("click", closeSheet);
+sheet.querySelector(".sh-back").addEventListener("click", closeSheet);
+sheet.querySelector(".sh-again").addEventListener("click", resetSheet);
+sheet.querySelector(".sh-close2").addEventListener("click", closeSheet);
+addEventListener("keydown", ev => { if (ev.key === "Escape" && sheet.classList.contains("on")) closeSheet(); });
+function pick(f) {
+  if (!f) return;
+  if (f.type && !/^video\//.test(f.type) && !/\.(mp4|mov|m4v|webm|avi|mkv)$/i.test(f.name)) { shMsg.className = "sh-msg err"; shMsg.textContent = "That does not look like a video. Choose a video file."; return; }
+  file = f; shDrop.classList.add("has"); shDrop.querySelector("b").textContent = f.name; shDrop.querySelector("span").textContent = fmt(f.size) + ". Tap to change"; shGo.disabled = false; shMsg.textContent = ""; shMsg.className = "sh-msg";
+}
+shFile.addEventListener("change", () => pick(shFile.files[0]));
+["dragenter", "dragover"].forEach(t => shDrop.addEventListener(t, ev => { ev.preventDefault(); shDrop.classList.add("over"); }));
+["dragleave", "drop"].forEach(t => shDrop.addEventListener(t, ev => { ev.preventDefault(); shDrop.classList.remove("over"); }));
+shDrop.addEventListener("drop", ev => pick(ev.dataTransfer.files[0]));
+
+function setProg(p, bytes) {
+  const lane = sheet.querySelector(".sh-lane"), w = Math.max(0, lane.clientWidth - 46) * p;
+  shFill.style.width = w + "px"; shBall.style.transform = `translateX(${w}px) rotate(${(w / 17) * 57.3}deg)`;
+  shPct.textContent = Math.round(p * 100) + "%"; shSize.textContent = file ? `${fmt(bytes)} of ${fmt(file.size)}` : "";
+}
+let abortUpload = false;
+const CHUNK = 8 * 1024 * 1024;
+function api(action, qs, body, headers) {
+  return fetch("/api/runitbak/upload?action=" + action + (qs ? "&" + qs : ""), { method: "POST", body, headers: headers || {}, credentials: "same-origin" })
+    .then(async r => { const j = await r.json().catch(() => ({})); if (r.status === 401) { const e = new Error("locked"); e.locked = true; throw e; } if (!r.ok) throw new Error(j.error || "Upload failed"); return j; });
+}
+function putPart(base, blob, onProg) {
+  return new Promise((res, rej) => {
+    const x = new XMLHttpRequest(); x.open("POST", base); x.withCredentials = true;
+    x.upload.onprogress = ev => { if (ev.lengthComputable) onProg(ev.loaded); };
+    x.onload = () => { let j = {}; try { j = JSON.parse(x.responseText); } catch (e) {} x.status >= 200 && x.status < 300 ? res(j) : rej(Object.assign(new Error(j.error || "Upload failed"), { locked: x.status === 401 })); };
+    x.onerror = () => rej(new Error("Connection lost")); x.onabort = () => rej(new Error("Stopped"));
+    abortUpload && x.abort(); x.send(blob);
+  });
+}
+async function send() {
+  if (!file || busy) return;
+  busy = true; abortUpload = false; shGo.disabled = true; shGo.textContent = "Sending"; shProg.classList.add("on"); shMsg.className = "sh-msg"; shMsg.textContent = "Keep this screen open until it finishes."; setProg(0, 0);
+  const who = document.getElementById("sh-name").value.trim();
+  let key = "", uploadId = "";
+  const warn = ev => { ev.preventDefault(); ev.returnValue = ""; };
+  addEventListener("beforeunload", warn);
+  try {
+    const c = await api("create", `v=${encodeURIComponent(curSlug)}&name=${encodeURIComponent(file.name)}&who=${encodeURIComponent(who)}`, null, { "x-file-type": file.type || "video/mp4" });
+    key = c.key; uploadId = c.uploadId;
+    const parts = [], total = Math.max(1, Math.ceil(file.size / CHUNK));
+    let sent = 0;
+    for (let n = 1; n <= total; n++) {
+      const blob = file.slice((n - 1) * CHUNK, n * CHUNK); let tries = 0;
+      for (;;) {
+        try {
+          const j = await putPart(`/api/runitbak/upload?action=part&key=${encodeURIComponent(key)}&uploadId=${encodeURIComponent(uploadId)}&part=${n}`, blob, l => setProg((sent + l) / file.size, sent + l));
+          parts.push({ partNumber: j.partNumber, etag: j.etag }); break;
+        } catch (e) { if (e.locked || abortUpload || ++tries >= 3) throw e; await new Promise(r => setTimeout(r, 900 * tries)); }
+      }
+      sent += blob.size; setProg(sent / file.size, sent);
+    }
+    await api("complete", `key=${encodeURIComponent(key)}&uploadId=${encodeURIComponent(uploadId)}`, JSON.stringify({ parts }), { "content-type": "application/json" });
+    setProg(1, file.size);
+    removeEventListener("beforeunload", warn); busy = false;
+    setStep(curSlug, "uploaded", true); setStep(curSlug, "filmed", true);
+    setTimeout(() => {
+      sheet.querySelector(".sh-form").hidden = true; sheet.querySelector(".sh-done").classList.add("on");
+      goalBanner("Your video is in");
+    }, reduce ? 0 : 500);
+  } catch (e) {
+    removeEventListener("beforeunload", warn); busy = false;
+    if (key && uploadId) fetch(`/api/runitbak/upload?action=abort&key=${encodeURIComponent(key)}&uploadId=${encodeURIComponent(uploadId)}`, { method: "POST", credentials: "same-origin" }).catch(() => {});
+    shGo.disabled = false; shGo.textContent = "Try again"; shMsg.className = "sh-msg err";
+    shMsg.textContent = e.locked ? "Your session ended. Reload the page and enter the password again." : abortUpload ? "Stopped." : "That did not go through (" + e.message + "). Check your connection and try again.";
+  }
+}
+shGo.addEventListener("click", send);
+const q = new URLSearchParams(location.search).get("upload");
+if (q && slugs.includes(q)) setTimeout(() => openSheet(q), 600);
+
+/* ---------- finale ---------- */
+document.getElementById("ft-up").addEventListener("click", () => {
+  const i = slugs.findIndex(s => !done(s, "uploaded"));
+  if (i < 0) { goalBanner("Every video is in"); } else { entryEls[i].scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); }
+});
+
+function layoutFinale() {
+  const sc = document.querySelector(".ft-scene"), g = sc.querySelector(".ft-goal"), ball = sc.querySelector(".ft-ball");
+  const R = sc.getBoundingClientRect(), G = g.getBoundingClientRect();
+  if (!R.width) return;
+  const sx = R.width * .06, sy = R.height * .9, tx = G.left - R.left + G.width * .64, ty = G.top - R.top + G.height * .46;
+  ball.style.setProperty("offset-path", `path("M ${sx.toFixed(0)} ${sy.toFixed(0)} C ${(sx + (tx - sx) * .15).toFixed(0)} ${(-R.height * .55).toFixed(0)}, ${(sx + (tx - sx) * .7).toFixed(0)} ${(-R.height * .55).toFixed(0)}, ${tx.toFixed(0)} ${ty.toFixed(0)}")`);
+}
+addEventListener("resize", layoutFinale); addEventListener("load", layoutFinale);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutFinale);
+layoutFinale();
+</script>
+</body>
+</html>

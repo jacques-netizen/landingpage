@@ -1,5 +1,6 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
+import { handleRunItBakApi, handleRunItBakPage } from './lib/runitbak.js';
 import { handleUpload, handleList, handleMedia, handleNotify, handleBrandSheet, handleCampaign, handleCampaignList, handleCampaignImport, handleCampaignBanner, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
@@ -20,6 +21,8 @@ export default {
     if (path === '/api/campaign/resolve') return handleResolveThumbs(request, env);
     if (path === '/api/img') return handleImageProxy(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
+    if (path.startsWith('/api/runitbak/')) return handleRunItBakApi(request, env);
+    if (path === '/runitbak' || path.startsWith('/runitbak/') || (path === '/' && url.hostname.startsWith('runitbak.'))) return handleRunItBakPage(request, env);
 
     // On the booking subdomain (book.*), the root IS the calendar.
     if (url.hostname.startsWith('book.') && path === '/') {

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F8F6F0">
+<title>Run It Bak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F8F6F0;--ink:#111110;--mut:#6B6862;--lime:#D8F26B;--hf:"Newsreader",Georgia,serif;--bf:"DM Sans",system-ui,sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--bf);-webkit-font-smoothing:antialiased;overflow:hidden}
+.gate{position:fixed;inset:0;background:var(--paper);display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.gate h1{position:relative;z-index:3;margin:clamp(28px,6vh,64px) 12px 0;text-align:center;font:600 clamp(64px,19vw,170px)/.9 var(--hf);letter-spacing:-.035em}
+.gate h1 em{font-style:italic;font-weight:450;display:block}
+@media(min-width:900px){.gate h1 em{display:inline;margin-left:.12em}.gate h1{font-size:clamp(96px,12vw,190px)}}
+.gate h1 span,.gate h1 em{display:inline-block;animation:up 1.8s cubic-bezier(.16,.8,.2,1) both}
+.gate h1 em{animation-delay:.15s}
+@media(max-width:899px){.gate h1 span,.gate h1 em{display:block}}
+.portrait{position:absolute;z-index:1;left:50%;bottom:0;height:min(76vh,860px);width:auto;max-width:none;transform:translateX(-50%);mix-blend-mode:multiply;filter:contrast(1.05);animation:rise 2.4s cubic-bezier(.16,.8,.2,1) .15s both;pointer-events:none;user-select:none}
+@keyframes up{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateX(-50%) translateY(50px)}to{opacity:1;transform:translateX(-50%)}}
+.glow{position:absolute;inset:auto 0 0 0;height:46%;z-index:0;background:radial-gradient(60% 80% at 50% 100%,rgba(216,242,107,.55),transparent 70%);animation:fade 3s ease both}
+@keyframes fade{from{opacity:0}}
+form{position:absolute;z-index:5;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));width:min(430px,calc(100% - 28px));transform:translateX(-50%);padding:16px;border-radius:28px;background:#fff;box-shadow:0 22px 50px -18px rgba(20,16,6,.5),0 0 0 1px rgba(17,17,16,.08);animation:formin 1.6s cubic-bezier(.16,.8,.2,1) .7s both}
+@keyframes formin{from{opacity:0;transform:translateX(-50%) translateY(40px)}}
+form label{display:block;margin:2px 4px 8px;font:600 14px var(--bf)}
+.row{display:flex;gap:10px}
+input{flex:1;min-width:0;height:56px;padding:0 18px;border-radius:999px;border:1.5px solid rgba(17,17,16,.18);background:#F8F6F0;color:var(--ink);font:500 17px var(--bf);letter-spacing:.02em;transition:border-color .5s,box-shadow .5s}
+input:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 4px rgba(216,242,107,.7)}
+button{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 24px;border:0;border-radius:999px;background:var(--ink);color:#F8F6F0;font:600 16px var(--bf);cursor:pointer;transition:opacity .5s,transform .8s cubic-bezier(.2,.7,.2,1)}
+button:hover{opacity:.9;transform:translateY(-2px)}
+button[disabled]{opacity:.55;cursor:wait;transform:none}
+.msg{min-height:20px;margin:10px 6px 0;font:500 14px var(--bf);color:#9b2b1d}
+.shake{animation:shake .7s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(calc(-50% - 2px))}20%,80%{transform:translateX(calc(-50% + 5px))}30%,50%,70%{transform:translateX(calc(-50% - 9px))}40%,60%{transform:translateX(calc(-50% + 9px))}}
+.ball{position:absolute;z-index:6;left:max(16px,calc(50% - 250px));bottom:calc(178px + env(safe-area-inset-bottom,0px));width:58px;height:58px;animation:ballbob 3.2s ease-in-out infinite;filter:drop-shadow(0 10px 8px rgba(0,0,0,.25))}
+@keyframes ballbob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-26px) rotate(80deg)}50%{transform:translateY(0) rotate(140deg)}62%{transform:translateY(-8px) rotate(190deg)}72%{transform:translateY(0) rotate(230deg)}}
+@media(min-width:900px){.ball{left:calc(50% - 330px);bottom:160px;width:84px;height:84px}}
+.ball svg{display:block;width:100%;height:100%}
+
+/* ---------- the goal ---------- */
+#fx{position:fixed;inset:0;z-index:50;display:none;overflow:hidden;background:radial-gradient(90% 70% at 50% 20%,#14583b 0%,#0a3a28 45%,#06231a 100%);color:#fff}
+#fx.on{display:block}
+#fx::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 90px,transparent 90px 180px);opacity:0;animation:fade 1.2s .1s forwards}
+#fx::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(0deg,rgba(0,0,0,.45),transparent)}
+.beam{position:absolute;top:-20%;width:50vmax;height:90vmax;background:linear-gradient(180deg,rgba(255,255,230,.5),transparent 70%);filter:blur(24px);opacity:0;transform-origin:50% 0}
+.beam.a{left:-12vmax;transform:rotate(-24deg)}.beam.b{right:-12vmax;transform:rotate(24deg)}
+#fx.on .beam{animation:beam 2.4s .2s ease forwards}
+@keyframes beam{to{opacity:.55}}
+.gw{position:absolute;left:50%;top:44%;width:min(92vw,680px);aspect-ratio:240/160;transform:translate(-50%,-50%) scale(.82);opacity:0;color:#fff}
+#fx.on .gw{animation:gwin 1.1s .25s cubic-bezier(.16,.8,.2,1) forwards}
+@keyframes gwin{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.gw .gsvg{display:block;width:100%;height:100%;overflow:visible}
+.gball{position:absolute;left:0;top:0;width:100px;height:100px;margin:-50px 0 0 -50px;z-index:4;opacity:0;will-change:transform;filter:drop-shadow(0 14px 10px rgba(0,0,0,.35))}
+.gball svg{display:block;width:100%;height:100%}
+.flash{position:absolute;inset:0;z-index:7;background:#fff;opacity:0;pointer-events:none}
+.word{position:absolute;left:0;right:0;top:63%;z-index:6;text-align:center;font:italic 600 clamp(88px,26vw,260px)/.85 var(--hf);letter-spacing:-.04em;color:var(--lime);pointer-events:none}
+.word i{display:inline-block;font-style:inherit;opacity:0;transform:translateY(60%) scale(.6) rotate(-6deg)}
+.word.on i{animation:letter .9s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes letter{to{opacity:1;transform:none}}
+.sub{position:absolute;left:0;right:0;top:calc(63% + clamp(88px,22vw,215px));z-index:6;text-align:center;font:600 15px var(--bf);letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.8);opacity:0;transition:opacity 1s}
+.sub.on{opacity:1}
+.fxp{position:absolute;left:0;top:0;z-index:5;pointer-events:none;will-change:transform,opacity}
+.wipe{position:absolute;inset:0;z-index:9;background:var(--paper);opacity:0;pointer-events:none;transition:opacity .9s ease}
+.wipe.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.gate h1 span,.gate h1 em,.portrait,.glow,form,.ball{animation:none}.portrait{transform:translateX(-50%)}form{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="fb" viewBox="0 0 100 100"><clipPath id="fbc"><circle cx="50" cy="50" r="48"/></clipPath><circle cx="50" cy="50" r="48" fill="#fff"/><g clip-path="url(#fbc)"><polygon points="50.0,33.0 66.2,44.7 60.0,63.8 40.0,63.8 33.8,44.7" fill="#111110"/><path d="M50.0 33.0L50.0 14.0M50.0 14.0L72.3 19.3M50.0 14.0L27.7 19.3M66.2 44.7L84.2 38.9M84.2 38.9L86.1 61.7M84.2 38.9L72.3 19.3M60.0 63.8L71.2 79.1M71.2 79.1L50.0 88.0M71.2 79.1L86.1 61.7M40.0 63.8L28.8 79.1M28.8 79.1L13.9 61.7M28.8 79.1L50.0 88.0M33.8 44.7L15.8 38.9M15.8 38.9L27.7 19.3M15.8 38.9L13.9 61.7" stroke="#111110" stroke-width="2.4" fill="none" stroke-linecap="round"/><polygon points="70.0,22.5 64.5,5.7 78.8,-4.6 93.1,5.7 87.6,22.5" fill="#111110"/><polygon points="82.3,60.5 96.6,50.1 110.9,60.5 105.4,77.3 87.8,77.3" fill="#111110"/><polygon points="50.0,84.0 64.3,94.4 58.8,111.1 41.2,111.1 35.7,94.4" fill="#111110"/><polygon points="17.7,60.5 12.2,77.3 -5.4,77.3 -10.9,60.5 3.4,50.1" fill="#111110"/><polygon points="30.0,22.5 12.4,22.5 6.9,5.7 21.2,-4.6 35.5,5.7" fill="#111110"/></g><circle cx="50" cy="50" r="48" fill="none" stroke="#111110" stroke-width="3"/></symbol></svg>
+<main class="gate" id="gate">
+  <div class="glow"></div>
+  <h1><span>Run It</span> <em>Bak</em></h1>
+  <img class="portrait" src="/runitbak/chris.jpg" alt="Portrait of Chris Bak" width="1000" height="1241" fetchpriority="high">
+  <div class="ball" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#fb"/></svg></div>
+  <form id="f" autocomplete="off">
+    <label for="pw">Enter the password to get in</label>
+    <div class="row">
+      <input id="pw" name="password" type="password" inputmode="text" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Password" required>
+      <button id="go" type="submit">Kick off</button>
+    </div>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+  </form>
+</main>
+
+<div id="fx" aria-hidden="true">
+  <div class="beam a"></div><div class="beam b"></div>
+  <div class="gw" id="gw"><svg class="gsvg" viewBox="0 0 240 160" aria-hidden="true"><g class="net"><path d="M52.0 46V128M67.1 46V128M82.2 46V128M97.3 46V128M112.4 46V128M127.6 46V128M142.7 46V128M157.8 46V128M172.9 46V128M188.0 46V128M52 46.0H188M52 59.7H188M52 73.3H188M52 87.0H188M52 100.7H188M52 114.3H188M52 128.0H188M10 12L52 46M230 12L188 46M10 150L52 128M230 150L188 128M34.4 12L67.1 46M58.9 12L82.2 46M83.3 12L97.3 46M107.8 12L112.4 46M132.2 12L127.6 46M156.7 12L142.7 46M181.1 12L157.8 46M205.6 12L172.9 46M10 35.0L52 59.7M230 35.0L188 59.7M10 58.0L52 73.3M230 58.0L188 73.3M10 81.0L52 87.0M230 81.0L188 87.0M10 104.0L52 100.7M230 104.0L188 100.7M10 127.0L52 114.3M230 127.0L188 114.3" fill="none" stroke="currentColor" stroke-width=".9" stroke-opacity=".55"/></g><path d="M10 150V12H230V150" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 154H236" stroke="currentColor" stroke-opacity=".5" stroke-width="2"/></svg></div>
+  <div class="gball" id="gball"><svg viewBox="0 0 100 100"><use href="#fb"/></svg></div>
+  <div class="word" id="word"><i>G</i><i>O</i><i>A</i><i>L</i></div>
+  <p class="sub" id="sub">Welcome in</p>
+  <div class="flash" id="flash"></div>
+  <div class="wipe" id="wipe"></div>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rip" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".022 .04" numOctaves="2" seed="4" result="n"/><feDisplacementMap id="dm" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const f = $("f"), pw = $("pw"), msg = $("msg"), go = $("go");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) pw.focus();
+
+  f.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    if (go.disabled) return;
+    go.disabled = true; msg.textContent = "";
+    let ok = false;
+    try {
+      const r = await fetch("/api/runitbak/unlock", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password: pw.value }), credentials: "same-origin" });
+      ok = r.ok;
+    } catch (e) { msg.textContent = "Could not reach the server. Check your connection and try again."; go.disabled = false; return; }
+    if (!ok) {
+      msg.textContent = "That password is not right. Try again.";
+      f.classList.remove("shake"); void f.offsetWidth; f.classList.add("shake");
+      pw.select(); go.disabled = false; return;
+    }
+    celebrate();
+  });
+
+  const enter = () => location.replace(location.pathname + location.search + location.hash);
+
+  /* confetti */
+  const COLORS = ["#D8F26B", "#ffffff", "#F4C542", "#8EE3B5", "#111110"];
+  function burst(x, y, n, spread, power) {
+    const fx = $("fx");
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement("span"); p.className = "fxp";
+      const w = 6 + Math.random() * 8, h = 10 + Math.random() * 12;
+      p.style.cssText = `width:${w}px;height:${h}px;background:${COLORS[i % COLORS.length]};border-radius:${Math.random() < .3 ? "50%" : "2px"}`;
+      fx.appendChild(p);
+      const a = -Math.PI / 2 + (Math.random() - .5) * spread, v = power * (.45 + Math.random() * .8);
+      const dx = Math.cos(a) * v, dy = Math.sin(a) * v, g = power * 1.25, r = (Math.random() - .5) * 900;
+      const kf = [0, .25, .55, 1].map(t => ({ transform: `translate(${x + dx * t}px,${y + dy * t + g * t * t}px) rotate(${r * t}deg)`, opacity: t > .75 ? 1 - (t - .75) * 4 : 1 }));
+      p.animate(kf, { duration: 1500 + Math.random() * 1100, easing: "cubic-bezier(.2,.6,.3,1)", fill: "forwards" }).onfinish = () => p.remove();
+    }
+  }
+
+  /* net ripple: tween the displacement filter and pulse the net */
+  function ripple(net) {
+    const dm = $("dm"); net.setAttribute("filter", "url(#rip)");
+    const t0 = performance.now(), D = 1300;
+    (function tick(t) {
+      const k = Math.min(1, (t - t0) / D), amp = Math.sin(k * Math.PI * 3) * (1 - k) * 34;
+      dm.setAttribute("scale", amp.toFixed(2));
+      if (k < 1) requestAnimationFrame(tick); else { dm.setAttribute("scale", "0"); net.removeAttribute("filter"); }
+    })(t0);
+    net.animate([{ transform: "scale(1)" }, { transform: "scale(1.07,1.1)" }, { transform: "scale(.985)" }, { transform: "scale(1.02)" }, { transform: "scale(1)" }], { duration: 1100, easing: "ease-out" });
+  }
+
+  function celebrate() {
+    const fx = $("fx");
+    fx.classList.add("on"); document.querySelector(".gate").style.visibility = "hidden";
+    if (reduce) { $("wipe").classList.add("on"); setTimeout(enter, 500); return; }
+    const gw = $("gw"), ball = $("gball"), net = gw.querySelector(".net");
+    const W = innerWidth, H = innerHeight;
+    // wait for the goal to scale in, then shoot
+    setTimeout(() => {
+      const r = gw.getBoundingClientRect();
+      const S = { x: W * (W < 700 ? .18 : .22), y: H + 70 };
+      const T = { x: r.left + r.width * .66, y: r.top + r.height * .43 };
+      const C = { x: (S.x + T.x) / 2 - (W < 700 ? 40 : 90), y: Math.min(S.y, T.y) - H * .42 };
+      const N = 28, kf = [];
+      for (let i = 0; i <= N; i++) {
+        const t = i / N, u = 1 - t;
+        const x = u * u * S.x + 2 * u * t * C.x + t * t * T.x, y = u * u * S.y + 2 * u * t * C.y + t * t * T.y;
+        const sc = (W < 700 ? 1.7 : 2.1) * (1 - t) + (W < 700 ? .55 : .62) * t;
+        kf.push({ offset: t, opacity: 1, transform: `translate(${x}px,${y}px) scale(${sc}) rotate(${t * 1080}deg)` });
+      }
+      ball.style.opacity = 1;
+      const a = ball.animate(kf, { duration: 1200, easing: "cubic-bezier(.3,.05,.6,1)", fill: "forwards" });
+      a.onfinish = () => {
+        const end = kf[N].transform;
+        // hit the back of the net, settle
+        ball.animate([{ transform: end }, { transform: `translate(${T.x + 6}px,${T.y + 26}px) scale(.58) rotate(1180deg)` }, { transform: `translate(${T.x - 4}px,${T.y + r.height * .17}px) scale(.56) rotate(1240deg)` }, { transform: `translate(${T.x}px,${T.y + r.height * .2}px) scale(.55) rotate(1260deg)` }], { duration: 900, easing: "ease-out", fill: "forwards" });
+        ripple(net);
+        const fl = $("flash"); fl.animate([{ opacity: .85 }, { opacity: 0 }], { duration: 700, easing: "ease-out" });
+        $("word").classList.add("on");
+        [...$("word").children].forEach((l, i) => l.style.animationDelay = (i * 90) + "ms");
+        burst(T.x, T.y, 70, Math.PI * 1.5, Math.min(W, 700) * .75);
+        setTimeout(() => burst(W * .12, H * .78, 34, Math.PI * .7, H * .8), 220);
+        setTimeout(() => burst(W * .88, H * .78, 34, Math.PI * .7, H * .8), 330);
+        setTimeout(() => $("sub").classList.add("on"), 800);
+        setTimeout(() => $("wipe").classList.add("on"), 2700);
+        setTimeout(enter, 3500);
+      };
+    }, 950);
+  }
+})();
+</script>
+</body>
+</html>
