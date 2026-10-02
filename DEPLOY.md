@@ -66,8 +66,8 @@ from the page.
 | `/runitbak/files` | Admin page listing every video uploaded, newest first (uses `ADMIN_PASSWORD`) |
 
 - **Password:** add a Worker secret **`RUNITBAK_PASSWORD`** (Settings, Variables
-  and Secrets). Until it is set the password is the default `runitbak`, so set
-  it before sharing the link. Changing it signs everyone out.
+  and Secrets). Until it is set the password is `Steallikeanartist` (capitals do not
+  matter). Set the secret to use a different one. Changing it signs everyone out.
 - **Uploads** go to the same R2 bucket under `runitbak/<script>/`, so you can
   also see them in the R2 dashboard.
 - **Content** lives in the `ENTRIES` list in `runitbak/app.html`. The header
