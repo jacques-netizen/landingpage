@@ -10,9 +10,11 @@
     "generate": "drizzle-kit generate",
     "check": "drizzle-kit check",
     "migrate": "tsx src/migrate.ts",
-    "seed": "tsx src/seed/index.ts"
+    "seed": "tsx src/seed/index.ts",
+    "reset": "tsx src/reset.ts"
   },
   "dependencies": {
+    "@mde/config": "workspace:*",
     "drizzle-orm": "^0.45.3",
     "postgres": "^3.4.9"
   },

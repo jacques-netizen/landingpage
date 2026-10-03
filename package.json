@@ -16,7 +16,8 @@
     "db:migrate": "pnpm --filter @mde/db migrate",
     "db:seed": "pnpm --filter @mde/db seed",
     "dev": "pnpm --filter @mde/web dev",
-    "build": "pnpm --filter @mde/web build"
+    "build": "pnpm --filter @mde/web build",
+    "db:reset": "pnpm --filter @mde/db reset"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

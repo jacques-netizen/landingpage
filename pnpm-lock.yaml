@@ -98,6 +98,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@mde/config':
+        specifier: workspace:*
+        version: link:../config
       drizzle-orm:
         specifier: ^0.45.3
         version: 0.45.3(postgres@3.4.9)
