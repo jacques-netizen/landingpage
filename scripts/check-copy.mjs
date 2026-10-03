@@ -3,7 +3,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 const roots = ['apps', 'packages']
-const skip = new Set(['node_modules', '.next', 'dist', 'drizzle'])
+const skip = new Set(['node_modules', '.next', 'dist', 'drizzle', 'AGENTS.md', 'CLAUDE.md'])
 const exts = new Set(['.ts', '.tsx', '.md', '.mdx', '.json', '.html', '.css'])
 const EM_DASH = String.fromCharCode(0x2014)
 const bad = []
