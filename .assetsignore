@@ -9,3 +9,17 @@ worker.js
 lib
 functions
 *.md
+apps
+packages
+docs
+scripts
+node_modules
+.github
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+tsconfig.base.json
+eslint.config.mjs
+.prettierrc.json
+.prettierignore
+.env.example
