@@ -43,6 +43,7 @@ async function funded(setup = SETUP_A) {
     clientId: w.client.id,
     amountCents: setup.budgetCents + fee,
     reference: `r-${w.campaign.id}`,
+    campaignId: w.campaign.id,
     actorId: null,
   })
   await fundCampaign(db, { campaignId: w.campaign.id, actorId: null })
