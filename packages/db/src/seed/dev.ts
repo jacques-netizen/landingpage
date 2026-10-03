@@ -185,16 +185,14 @@ export async function seedDev(db: Database) {
       termsAcceptedAt: new Date(now - 60 * day),
     }))
     const creators = await tx.insert(users).values(creatorRows).returning()
-    await tx
-      .insert(authIdentities)
-      .values(
-        creators.map((u) => ({
-          userId: u.id,
-          type: 'email',
-          provider: 'email',
-          providerAccountId: u.email,
-        })),
-      )
+    await tx.insert(authIdentities).values(
+      creators.map((u) => ({
+        userId: u.id,
+        type: 'email',
+        provider: 'email',
+        providerAccountId: u.email,
+      })),
+    )
     await tx.insert(creatorProfiles).values(
       creators.map((u, i) => ({
         userId: u.id,
@@ -271,15 +269,13 @@ export async function seedDev(db: Database) {
         .insert(ledgerTransactions)
         .values({ kind, idempotencyKey: key, memo: refs.memo ?? 'SEED DATA', ...refs })
         .returning()
-      await tx
-        .insert(ledgerEntries)
-        .values(
-          entries.map(([accountId, amountCents]) => ({
-            transactionId: t!.id,
-            accountId,
-            amountCents,
-          })),
-        )
+      await tx.insert(ledgerEntries).values(
+        entries.map(([accountId, amountCents]) => ({
+          transactionId: t!.id,
+          accountId,
+          amountCents,
+        })),
+      )
     }
     const external = await account('external', null, null)
     const revenue = await account('platform_revenue', 'platform', null)
@@ -484,13 +480,11 @@ export async function seedDev(db: Database) {
       const memberKey = `${camp.id}|${creator}`
       if (!joined.has(memberKey)) {
         joined.add(memberKey)
-        await tx
-          .insert(campaignMembers)
-          .values({
-            campaignId: camp.id,
-            creatorId: creator,
-            joinedAt: new Date(submittedAt.getTime() - 3_600_000),
-          })
+        await tx.insert(campaignMembers).values({
+          campaignId: camp.id,
+          creatorId: creator,
+          joinedAt: new Date(submittedAt.getTime() - 3_600_000),
+        })
       }
 
       // View snapshots, with a scripted jump on flagged posts.
@@ -521,23 +515,19 @@ export async function seedDev(db: Database) {
       }
 
       if (state === 'flagged')
-        await tx
-          .insert(fraudFlags)
-          .values({
-            submissionId: sub!.id,
-            kind: 'view_jump',
-            detail: { seed: true, note: 'Scripted jump' },
-          })
+        await tx.insert(fraudFlags).values({
+          submissionId: sub!.id,
+          kind: 'view_jump',
+          detail: { seed: true, note: 'Scripted jump' },
+        })
       if (reason && ['rejected', 'removed'].includes(state))
-        await tx
-          .insert(reviewDecisions)
-          .values({
-            submissionId: sub!.id,
-            reviewerId: reviewer.id,
-            outcome: state === 'removed' ? 'remove' : 'reject',
-            reasonCode: reason,
-            note: 'SEED DATA',
-          })
+        await tx.insert(reviewDecisions).values({
+          submissionId: sub!.id,
+          reviewerId: reviewer.id,
+          outcome: state === 'removed' ? 'remove' : 'reject',
+          reasonCode: reason,
+          note: 'SEED DATA',
+        })
       if (state === 'appealed')
         await tx.insert(appeals).values({
           submissionId: sub!.id,
