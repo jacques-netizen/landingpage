@@ -98,3 +98,90 @@
     --text-body-lg: 17px;
   }
 }
+
+/* Frosted card with a solid fallback. */
+.mde-frosted {
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-card);
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .mde-frosted {
+    background: var(--surface-glass);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+  }
+}
+
+/* Calm motion. Durations drop to 0 under reduced motion through the tokens. */
+@keyframes mde-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes mde-pop-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+@keyframes mde-slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes mde-drift {
+  0%,
+  100% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+@keyframes mde-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.mde-fade {
+  animation: mde-fade-in var(--dur-panel) var(--ease) both;
+}
+.mde-pop {
+  animation: mde-pop-in var(--dur-panel) var(--ease) both;
+}
+.mde-slide {
+  animation: mde-slide-in var(--dur-panel) var(--ease) both;
+}
+.mde-page {
+  animation: mde-fade-in var(--dur-page) var(--ease) both;
+}
+.mde-drift {
+  animation: mde-drift 7s ease-in-out infinite;
+}
+.mde-pulse {
+  animation: mde-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mde-drift,
+  .mde-pulse,
+  .mde-spin {
+    animation: none;
+  }
+}
