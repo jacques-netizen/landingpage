@@ -8,5 +8,19 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@mde/config": "workspace:*",
+    "@mde/db": "workspace:*",
+    "drizzle-orm": "^0.45.3"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2",
+    "postgres": "^3.4.9",
+    "tsx": "^4.23.15"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./ledger": "./src/ledger/index.ts"
   }
 }
