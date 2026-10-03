@@ -674,17 +674,15 @@ describe('concurrency', () => {
     for (let i = 0; i < 8; i++) subs.push(await post(w, (await makeCreator(db)).id, 2_000))
     await Promise.all([...subs.map((s) => applyEarnings(db, s.id))])
     await Promise.all([
-      ...subs
-        .slice(0, 4)
-        .map((s) =>
-          reverseEarnings(db, {
-            submissionId: s.id,
-            toState: 'rejected',
-            outcome: 'reject',
-            reasonCode: 'other',
-            actorId: reviewer.id,
-          }),
-        ),
+      ...subs.slice(0, 4).map((s) =>
+        reverseEarnings(db, {
+          submissionId: s.id,
+          toState: 'rejected',
+          outcome: 'reject',
+          reasonCode: 'other',
+          actorId: reviewer.id,
+        }),
+      ),
       ...subs.slice(4).map((s) => applyEarnings(db, s.id)),
     ])
     const b = await budget(w)
