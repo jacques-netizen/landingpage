@@ -1,4 +1,10 @@
+import { existsSync } from 'node:fs'
 import { defineConfig } from '@playwright/test'
+
+// The cloud sandbox ships Chromium here. CI installs its own through Playwright.
+const localChromium = existsSync('/opt/pw-browsers/chromium')
+  ? '/opt/pw-browsers/chromium'
+  : undefined
 
 const PORT = 3100
 const TEST_DB =
@@ -13,7 +19,7 @@ export default defineConfig({
   globalSetup: './e2e/global-setup.ts',
   use: {
     baseURL: `http://localhost:${PORT}`,
-    launchOptions: { executablePath: '/opt/pw-browsers/chromium' },
+    launchOptions: localChromium ? { executablePath: localChromium } : {},
   },
   webServer: {
     command: `pnpm exec next dev -p ${PORT}`,

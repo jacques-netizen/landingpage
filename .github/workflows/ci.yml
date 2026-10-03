@@ -33,3 +33,6 @@ jobs:
       - run: pnpm format:check
       - run: pnpm db:check
       - run: pnpm test
+      - run: pnpm exec playwright install --with-deps chromium
+        if: ${{ hashFiles('/opt/pw-browsers/chromium') == '' }}
+      - run: pnpm --filter @mde/web e2e
