@@ -89,15 +89,13 @@ export async function postTransaction(tx: Executor, input: PostInput): Promise<P
   }
   const transactionId = inserted[0].id
 
-  await tx
-    .insert(ledgerEntries)
-    .values(
-      input.entries.map((e) => ({
-        transactionId,
-        accountId: e.accountId,
-        amountCents: e.amountCents,
-      })),
-    )
+  await tx.insert(ledgerEntries).values(
+    input.entries.map((e) => ({
+      transactionId,
+      accountId: e.accountId,
+      amountCents: e.amountCents,
+    })),
+  )
 
   // Fail early with a clear message. The database trigger is the backstop.
   for (const e of input.entries.filter((x) => x.amountCents < 0n)) {
