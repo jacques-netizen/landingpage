@@ -11,7 +11,9 @@ import {
   DrawerSection,
   EmptyState,
   ErrorState,
+  Footer,
   FrostedCard,
+  SiteHeader,
   IconChip,
   Input,
   LineChart,
@@ -247,6 +249,33 @@ function Demo() {
             Resize wider than 768 pixels to see the pill.
           </p>
         </Sample>
+      </Section>
+
+      <Section
+        title="Header, container and footer"
+        note="The header collapses to a menu button on mobile. The footer shows the legal entity from config."
+      >
+        <div className="-mx-6 border-y border-line">
+          <SiteHeader
+            brandName="BRAND_NAME"
+            links={[
+              { href: '#', label: 'Campaigns', active: true },
+              { href: '#', label: 'How it works' },
+              { href: '#', label: 'Fees' },
+            ]}
+            cta={{ href: '#', label: 'Start earning' }}
+          />
+        </div>
+        <div className="-mt-32 -mx-6">
+          <Footer
+            brandName="BRAND_NAME"
+            legalEntity="LEGAL_ENTITY"
+            links={[
+              { href: '#', label: 'Terms' },
+              { href: '#', label: 'Privacy' },
+            ]}
+          />
+        </div>
       </Section>
 
       <Section title="Inputs">
