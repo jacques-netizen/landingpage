@@ -26,10 +26,10 @@ import {
 const RUNS = 10_000
 const { db, sql: pg } = testDb(12)
 
-let worlds: Awaited<ReturnType<typeof makeCampaign>>[] = []
+const worlds: Awaited<ReturnType<typeof makeCampaign>>[] = []
 let campaignIds: string[] = []
 let creatorIds: string[] = []
-let submissionIds: string[] = []
+const submissionIds: string[] = []
 let reviewerId = ''
 
 beforeAll(async () => {
