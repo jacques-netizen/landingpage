@@ -1,3 +1,6 @@
 export * as schema from './schema'
 export * from './schema'
 export * from './client'
+export * from './audit'
+export * from './settings'
+export * from './staff'
