@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+@import '@mde/ui/tokens.css';
+
+@source '../../../packages/ui/src';
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--ink);
+    color: var(--bg);
+  }
+}
+
+.font-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}

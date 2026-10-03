@@ -1,0 +1,100 @@
+/* Design tokens from docs/05_DESIGN_SYSTEM.md. Single source for colour, type, radii, shadow and motion. */
+:root {
+  --bg: #f6f4ef;
+  --surface: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.68);
+  --ink: #111111;
+  --ink-2: #5f5c57;
+  --ink-3: #8c8983;
+  --line: #e4e0d8;
+  --line-strong: #cfcac0;
+
+  --chip-lime: #ddf59a;
+  --chip-lavender: #d3c7ff;
+  --chip-peach: #ffd3b0;
+  --chip-sky: #cde6ff;
+
+  --ok: #2f7d4f;
+  --warn: #b26a00;
+  --bad: #b3261e;
+  --focus: #111111;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-hover: 150ms;
+  --dur-panel: 220ms;
+  --dur-page: 400ms;
+
+  --shadow-card: 0 24px 60px rgba(17, 17, 17, 0.08);
+  --shadow-dialog: 0 32px 80px rgba(17, 17, 17, 0.14);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-hover: 0ms;
+    --dur-panel: 0ms;
+    --dur-page: 0ms;
+  }
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-glass: var(--surface-glass);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-lime: var(--chip-lime);
+  --color-lavender: var(--chip-lavender);
+  --color-peach: var(--chip-peach);
+  --color-sky: var(--chip-sky);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+
+  --font-serif: 'Instrument Serif', 'Newsreader', Georgia, serif;
+  --font-sans: 'Geist Variable', Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, monospace;
+
+  --radius-pill: 999px;
+  --radius-card: 24px;
+  --radius-input: 14px;
+  --radius-chip: 12px;
+  --radius-drawer: 28px;
+
+  --shadow-glass: var(--shadow-card);
+  --shadow-dialog: var(--shadow-dialog);
+
+  --spacing: 4px;
+
+  --text-display-xl: 96px;
+  --text-display-xl--line-height: 0.95;
+  --text-display-lg: 64px;
+  --text-display-lg--line-height: 1;
+  --text-display-md: 40px;
+  --text-display-md--line-height: 1.05;
+  --text-display-sm: 28px;
+  --text-display-sm--line-height: 1.1;
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 1.5;
+  --text-body: 15px;
+  --text-body--line-height: 1.5;
+  --text-body-sm: 13px;
+  --text-body-sm--line-height: 1.45;
+  --text-label: 13px;
+  --text-label--line-height: 1.2;
+
+  --ease-calm: var(--ease);
+}
+
+/* Mobile sizes for the display scale. Unlayered, so they override the theme layer. */
+@media (max-width: 767px) {
+  :root {
+    --text-display-xl: 56px;
+    --text-display-lg: 40px;
+    --text-display-md: 32px;
+    --text-display-sm: 24px;
+    --text-body-lg: 17px;
+  }
+}

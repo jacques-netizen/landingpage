@@ -34,3 +34,4 @@ docs
 /worker.js
 /DEPLOY.md
 /SOP.md
+**/next-env.d.ts
