@@ -31,3 +31,19 @@ describe('splitUsd', () => {
     expect(splitUsd(-5)).toEqual({ sign: '-', dollars: '$0', cents: '.05' })
   })
 })
+
+import { formatBps } from './format'
+
+describe('formatBps', () => {
+  it('formats basis points as a percent without floats', () => {
+    expect(formatBps(0)).toBe('0%')
+    expect(formatBps(100)).toBe('1%')
+    expect(formatBps(500)).toBe('5%')
+    expect(formatBps(250)).toBe('2.5%')
+    expect(formatBps(1)).toBe('0.01%')
+    expect(formatBps(10000)).toBe('100%')
+  })
+  it('rejects non integers', () => {
+    expect(() => formatBps(2.5)).toThrow()
+  })
+})

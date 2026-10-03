@@ -29,7 +29,14 @@ export const settingsDefaults = {
 } as const
 
 export type SettingKey = keyof typeof settingsDefaults
-export type Settings = typeof settingsDefaults
+type Widen<T> = T extends number
+  ? number
+  : T extends boolean
+    ? boolean
+    : T extends string
+      ? string
+      : { -readonly [K in keyof T]: Widen<T[K]> }
+export type Settings = Widen<typeof settingsDefaults>
 
 export const settingKeys = Object.keys(settingsDefaults) as SettingKey[]
 

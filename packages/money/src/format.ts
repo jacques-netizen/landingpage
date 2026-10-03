@@ -30,3 +30,14 @@ export function formatUsd(cents: Cents, options: { dropZeroCents?: boolean } = {
   if (options.dropZeroCents && c === '.00') return `${sign}${dollars}`
   return `${sign}${dollars}${c}`
 }
+
+/** Basis points as a percent string, for example 250 becomes "2.5%". Integer maths only. */
+export function formatBps(bps: number): string {
+  if (!Number.isSafeInteger(bps)) throw new Error(`Basis points must be a whole number, got ${bps}`)
+  const sign = bps < 0 ? '-' : ''
+  const abs = Math.abs(bps)
+  const whole = Math.floor(abs / 100)
+  const frac = abs % 100
+  if (frac === 0) return `${sign}${whole}%`
+  return `${sign}${whole}.${frac.toString().padStart(2, '0').replace(/0$/, '')}%`
+}

@@ -185,3 +185,12 @@
     animation: none;
   }
 }
+
+@keyframes mde-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mde-spin {
+  animation: mde-turn 40s linear infinite;
+}

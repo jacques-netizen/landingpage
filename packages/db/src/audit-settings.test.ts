@@ -91,9 +91,8 @@ describe('settings', () => {
 
   it('rejects an unknown key', async () => {
     const admin = await makeUser(db, 'admin')
-    // @ts-expect-error not a setting key
     await expect(
-      updateSetting(db, { key: 'made_up', value: 1, actorId: admin.id }),
+      updateSetting(db, { key: 'made_up' as never, value: 1, actorId: admin.id }),
     ).rejects.toThrow()
   })
 })
