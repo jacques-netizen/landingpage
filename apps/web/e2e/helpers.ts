@@ -30,3 +30,25 @@ export async function latestLink(to: string, timeoutMs = 10_000): Promise<string
 export function sql() {
   return postgres(TEST_DB, { max: 1, onnotice: () => {} })
 }
+
+import type { Page } from '@playwright/test'
+
+/** Creates a confirmed user (and optional staff role) directly in the test database. */
+export async function makeUser(email: string, role?: 'reviewer' | 'finance' | 'admin') {
+  const db = sql()
+  const [u] = await db`
+    insert into users (email, is_adult_confirmed, adult_confirmed_at, terms_accepted_at)
+    values (${email}, true, now(), now()) returning id`
+  if (role) await db`insert into staff_roles (user_id, role) values (${u!.id}, ${role})`
+  await db.end()
+}
+
+/** Signs in through the real form and the emailed link. */
+export async function signInAs(page: Page, email: string) {
+  await page.goto('/sign-in')
+  await page.getByLabel('Email').fill(email)
+  await page.getByRole('button', { name: 'Email me a link' }).click()
+  await page.getByRole('heading', { name: 'Check your email' }).waitFor()
+  await page.goto(await latestLink(email))
+  await page.getByRole('heading', { name: 'You are signed in' }).waitFor()
+}
