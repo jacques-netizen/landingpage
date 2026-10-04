@@ -1,6 +1,6 @@
 // Usage: node docs/design/capture-reference-screens.mjs [filter]. Needs Playwright with Chromium.
 // Renders every screen/state/theme of the two handoff mockups by seeding the
-// mockup's own initial state, then screenshots at 1440, 1024 and 390 px.
+// mockup's own initial state, then screenshots at 1440 and 1024 px.
 import { chromium } from '/opt/node-tools/node_modules/playwright/index.mjs';
 import fs from 'node:fs'; import { execFileSync } from 'node:child_process'; import crypto from 'node:crypto'; import path from 'node:path'; import http from 'node:http'; import os from 'node:os';
 
@@ -65,7 +65,7 @@ for (const [key, name, seed] of views) {
   // Later keys in an object literal win, so appending overrides the defaults.
   html = html.replace(/(state = \{ s: 'home',[^\n]*?)( \};)/, (m, a, b) => a + (extra ? ', ' + extra : '') + b);
   const vf = `${key}-${name}.dc.html`; fs.writeFileSync(path.join(VAR, vf), html);
-  for (const w of [1440, 1024, 390]) {
+  for (const w of [1440, 1024]) {
     const page = await browser.newPage({ viewport: { width: w, height: 900 } });
     await page.route(/^https:/, viaCurl); const errs = []; page.on('pageerror', e => errs.push(e.message));
     await page.goto(`http://localhost:8765/${encodeURIComponent(vf)}`, { waitUntil: 'networkidle' });
