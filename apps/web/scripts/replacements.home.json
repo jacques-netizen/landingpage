@@ -1,0 +1,11 @@
+{
+  "heroZoom": "\"var(--mde-hero-zoom)\"",
+  "$attach": {
+    "div:Start earning": {
+      "onClick": "v.startEarning"
+    },
+    "div:How it works": {
+      "onClick": "v.howItWorks"
+    }
+  }
+}
