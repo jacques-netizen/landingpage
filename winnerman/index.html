@@ -263,7 +263,7 @@
   input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
   input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
   .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
-  .out{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .out{display:grid;grid-template-columns:1.6fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
   .o{background:var(--bg);padding:1.5rem 1.1rem}
   .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
   .o.lead .ov{font-size:clamp(2rem,5vw,3.4rem)}
@@ -330,7 +330,7 @@
   <div class="hero-body">
     <div class="hero-mid">
       <span class="label rv">Creator-led clipping &middot; Nigeria and wider Africa</span>
-      <h1 class="rv d1">Winnerman<span>Into the Davido feed</span></h1>
+      <h1 class="rv d1">Winnerman<span>Into the African feed</span></h1>
       <p class="hero-sub rv d2">Pushing Winnerman's music and content to Nigerian and wider African audiences through creator-led clipping and the reach of the Davido fanbase.</p>
       <div class="hero-chips rv d3">
         <span class="hchip"><b>4</b> weeks</span>
@@ -587,7 +587,6 @@
       <div class="range-ends"><span>USD 2,000</span><span>USD 20,000</span></div>
       <div class="out">
         <div class="o lead"><div class="ov" id="oViews">1M</div><div class="ol">Verified views</div></div>
-        <div class="o"><div class="ov" id="oWeek">250K</div><div class="ol">Views per week</div></div>
         <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per thousand views</div></div>
       </div>
     </div>
@@ -689,14 +688,13 @@
   });
 
   /* model: budget at $2 per thousand verified views */
-  const CPM=2, WEEKS=4;
+  const CPM=2;
   const bS=document.getElementById('budget');
   const m=n=>n>=1e6?(n/1e6).toFixed(n>=1e7?1:2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
   function calc(){
     const b=+bS.value, views=b/CPM*1000;
     document.getElementById('budgetVal').textContent='USD '+b.toLocaleString('en-US');
     document.getElementById('oViews').textContent=m(views);
-    document.getElementById('oWeek').textContent=m(views/WEEKS);
     bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
   }
   bS.addEventListener('input',calc); calc();
