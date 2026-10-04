@@ -23,7 +23,7 @@ for (const width of WIDTHS) {
       await page.goto('/')
       await settle(page)
       const result = await compareWithReference(page, `creator-home-${width}`)
-      test.info().annotations.push({ type: "visual", description: result.message })
+      test.info().annotations.push({ type: 'visual', description: result.message })
       expect(result.ok, result.message).toBe(true)
     })
 
@@ -42,22 +42,26 @@ for (const width of WIDTHS) {
           // "Paste link" and "Add video" controls here. Preview tooling, not product.
           ...(await rectsOf(page, 'div[style*="width:300px"][style*="height:500px"]')),
           // "Add clip" pickers on the four frames (bottom left of each frame).
-          ...(await rectsOf(page, 'img[src^="/designed/story-"][src$="-s.png"]', (r) => ({
-            x: r.x + 8,
-            y: r.y + r.height - 44,
-            width: 96,
-            height: 40,
-          }))).slice(-4),
+          ...(
+            await rectsOf(page, 'img[src^="/designed/story-"][src$="-s.png"]', (r) => ({
+              x: r.x + 8,
+              y: r.y + r.height - 44,
+              width: 96,
+              height: 40,
+            }))
+          ).slice(-4),
           // "Add testimonial video" picker (bottom right of the testimonial).
-          ...(await rectsOf(page, 'img[src="/designed/proof/poster-kojo-blak.png"]', (r) => ({
-            x: r.x + r.width - 200,
-            y: r.y + r.height - 52,
-            width: 196,
-            height: 48,
-          }))).slice(-1),
+          ...(
+            await rectsOf(page, 'img[src="/designed/proof/poster-kojo-blak.png"]', (r) => ({
+              x: r.x + r.width - 200,
+              y: r.y + r.height - 52,
+              width: 196,
+              height: 48,
+            }))
+          ).slice(-1),
         ]
         const result = await compareWithReference(page, `platform-brands-${slug}-${width}`, masks)
-        test.info().annotations.push({ type: "visual", description: result.message })
+        test.info().annotations.push({ type: 'visual', description: result.message })
         expect(result.ok, result.message).toBe(true)
       })
     }
