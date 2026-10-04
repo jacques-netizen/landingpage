@@ -1,0 +1,30 @@
+{
+  "heroZoom": "\"var(--mde-hero-zoom)\"",
+  "wallScale": "\"var(--mde-wall-scale)\"",
+  "$authoring": [
+    "Paste link",
+    "Add video",
+    "Add clip",
+    "Add testimonial video"
+  ],
+  "$attach": {
+    "div:Book a call": {
+      "onClick": "v.bookCall"
+    },
+    "div:See the results": {
+      "onClick": "v.toCaseStudies"
+    },
+    "span:Case studies": {
+      "onClick": "v.toCaseStudies"
+    },
+    "span:Pricing": {
+      "onClick": "v.toPricing"
+    },
+    "div:Case studies": {
+      "id": "case-studies"
+    },
+    "div:Pricing": {
+      "id": "pricing"
+    }
+  }
+}
