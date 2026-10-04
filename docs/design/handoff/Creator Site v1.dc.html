@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F2EEE6;color:#1A1510;font-family:'Archivo',Inter,system-ui,sans-serif}
+a{color:#1A1510}a:hover{color:#6E675C}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:0.5}}
+@keyframes blink{50%{opacity:0}}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-6px) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#F2EEE6;font-family:'Archivo',system-ui,sans-serif;color:#1A1510">
+  
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#F2EEE6">
+  <div style="position:relative;width:1440px;margin:0 auto;height:1040px;overflow:hidden;background:#F2EEE6;zoom:{{ heroZoom }}">
+    <div style="position:absolute;left:0;right:0;top:0;padding:30px 48px;display:grid;grid-template-columns:1fr auto 1fr;column-gap:16px;align-items:center;z-index:6">
+      <img onClick="{{ goHome }}" src="assets/logo-nav-clear.png" alt="Maison d'Élites" style="height:26px;width:auto;max-width:100%;object-fit:contain;object-position:left;display:block;justify-self:start;cursor:pointer">
+      <div style="display:flex;gap:6px;padding:5px 8px;border:1px solid #E0D6C6;border-radius:999px;font-size:13px;background:rgba(255,255,255,0.55)">
+        <sc-for list="{{ navLinks }}" as="n" hint-placeholder-count="4"><span onClick="{{ n.go }}" style="padding:9px 16px;cursor:pointer">{{ n.label }}</span></sc-for>
+      </div>
+      <div style="justify-self:end;height:44px;padding:0 22px;border-radius:999px;background:#1A1510;color:#fff;display:flex;align-items:center;gap:8px;font:500 13px Archivo">Start earning <span>↗</span></div>
+    </div>
+    <div style="position:absolute;left:0;right:0;top:128px;text-align:center;z-index:3">
+      <div style="font:400 104px/0.92 'EB Garamond',Georgia,serif;letter-spacing:-0.035em">Post it. Watch it grow.<br><em>Get paid for every view.</em></div>
+      <p style="max-width:520px;margin:30px auto 0;font-size:18px;line-height:1.45;color:#8A8378">Join a campaign, post on your own account, and earn for every view that counts. See the rules and the budget before you join.</p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:28px">
+        <div style="height:50px;padding:0 26px;border-radius:999px;background:#1A1510;color:#fff;display:flex;align-items:center;gap:12px;font:500 15px Archivo">Start earning <span>→</span></div>
+        <div style="height:50px;padding:0 24px 0 14px;border-radius:999px;border:1px solid #E0D6C6;background:rgba(255,255,255,0.6);display:flex;align-items:center;gap:10px;font:500 15px Archivo"><span style="width:26px;height:26px;border-radius:50%;background:#1A1510;color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px">▶</span>How it works</div>
+      </div>
+    </div>
+    <div style="position:absolute;left:130px;top:340px;width:206px;min-height:214px;box-sizing:border-box;padding:20px;border-radius:26px;background:#FFFFFF;box-shadow:0 20px 50px rgba(26,21,16,0.09);--r:-6deg;transform:rotate(-6deg);animation:drift 7s ease-in-out 0s infinite;z-index:4;display:flex;flex-direction:column"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#1A1510" stroke-width="1.6" stroke-linecap="round"><path d="M5 11v6M9.5 7v14M14 4v20M18.5 9v10M23 12v4"></path></svg><div style="margin-top:auto;font:600 18px/1.2 Archivo,sans-serif;letter-spacing:-0.01em">Turn clips<br>into income.</div><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#8A8378">Pick a campaign, post, get paid.</div></div>
+    <div style="position:absolute;right:130px;top:380px;width:206px;min-height:214px;box-sizing:border-box;padding:20px;border-radius:26px;background:#FFFFFF;box-shadow:0 20px 50px rgba(26,21,16,0.09);--r:5deg;transform:rotate(5deg);animation:drift 7s ease-in-out -3s infinite;z-index:4;display:flex;flex-direction:column"><div style="align-self:flex-start;height:30px;padding:0 12px;border-radius:999px;background:#F2EEE6;display:flex;align-items:center;font:600 13px Archivo,sans-serif;font-variant-numeric:tabular-nums">+ $48.20</div><div style="margin-top:auto;font:600 18px/1.2 Archivo,sans-serif;letter-spacing:-0.01em">Paid on every<br>view.</div><div style="margin-top:6px;font-size:13px;line-height:1.35;color:#8A8378">Tracked across TikTok, Reels and Shorts.</div></div>
+    <svg style="position:absolute;left:225px;top:552px;z-index:3" width="140" height="230" viewBox="0 0 140 230" fill="none"><path d="M0 0 C 0 130, 40 215, 140 222" stroke="#BDB4A4" stroke-width="1"></path></svg>
+    <svg style="position:absolute;left:1085px;top:596px;z-index:3" width="150" height="160" viewBox="0 0 150 160" fill="none"><path d="M150 0 C 150 100, 110 152, 0 156" stroke="#BDB4A4" stroke-width="1"></path></svg>
+    <img src="assets/hero-generated.png" alt="Creator portrait with floating campaign panels" style="position:absolute;left:70px;bottom:-110px;width:1300px;height:auto;z-index:2;display:block">
+    <svg style="position:absolute;right:56px;top:150px;z-index:3;animation:spin 28s linear infinite" width="112" height="112" viewBox="0 0 112 112"><defs><path id="orb" d="M56 56 m-41 0 a41 41 0 1 1 82 0 a41 41 0 1 1 -82 0"></path></defs><text font-family="Archivo" font-size="9.5" letter-spacing="2.2" fill="#1A1510"><textPath href="#orb">POST MORE · GET PAID · EVERY VIEW ·</textPath></text></svg>
+    <svg style="position:absolute;right:56px;top:150px;z-index:3" width="112" height="112" viewBox="0 0 112 112"><path d="M56 40 L59.5 52.5 L72 56 L59.5 59.5 L56 72 L52.5 59.5 L40 56 L52.5 52.5 Z" fill="#1A1510"></path></svg>
+    <div style="position:absolute;left:100px;bottom:48px;z-index:5;font-size:15px;line-height:1.45;color:#8A8378"><div style="width:26px;height:1px;background:#BDB4A4;margin-bottom:12px"></div>1B+ views generated for<br>the biggest brands and<br>artists in the world.</div>
+    <div style="position:absolute;right:100px;bottom:48px;z-index:5;font-size:15px;line-height:1.45;color:#8A8378"><svg width="18" height="18" viewBox="0 0 18 18" style="display:block;margin:0 0 16px 38px"><path d="M9 0 L10.8 7.2 L18 9 L10.8 10.8 L9 18 L7.2 10.8 L0 9 L7.2 7.2 Z" fill="#1A1510"></path></svg><div style="display:flex;align-items:center;gap:12px"><span style="width:26px;height:1px;background:#BDB4A4"></span><span>Less guessing.<br>More views.</span></div></div>
+  </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isBrowse }}" hint-placeholder-val="{{ false }}">
+  <div style="font-family:'Plus Jakarta Sans',Archivo,sans-serif;min-height:100vh;box-sizing:border-box;padding:40px 24px 96px;color:{{ T.text }};background:{{ T.bPage }}">
+  <div style="zoom:{{ wz }}">
+  <div style="width:1240px;margin:0 auto;box-sizing:border-box;padding:16px;border-radius:38px;display:flex;gap:16px;background:{{ T.gBg }};border:1px solid {{ T.gLine }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 40px 100px rgba(0,0,0,0.5)">
+    <div style="width:220px;flex:none;box-sizing:border-box;padding:22px 16px;border-radius:26px;background:{{ T.side }};border:1px solid {{ T.hair }};display:flex;flex-direction:column;gap:6px">
+      <img onClick="{{ goHome }}" src="assets/logo-nav-clear.png" alt="Maison d'Élites" style="height:24px;width:auto;max-width:100%;object-fit:contain;object-position:left;display:block;margin:4px 6px 22px;filter:{{ T.logoFilter }};cursor:pointer">
+      <sc-for list="{{ sideNav }}" as="n" hint-placeholder-count="3"><div onClick="{{ n.go }}" style="height:42px;padding:0 14px;border-radius:12px;display:flex;align-items:center;font:600 14px 'Plus Jakarta Sans';cursor:pointer;background:{{ n.bg }};color:{{ n.fg }}">{{ n.label }}</div></sc-for>
+      <div style="margin:22px 8px 6px;height:1px;background:{{ T.hair }}"></div>
+      <div style="padding:8px 14px 2px;font:600 11px 'Plus Jakarta Sans';letter-spacing:0.1em;color:{{ T.muted }}">LABEL</div>
+      <sc-for list="{{ labelFilters }}" as="f" hint-placeholder-count="5"><div onClick="{{ f.go }}" style="height:36px;padding:0 14px;border-radius:10px;display:flex;align-items:center;gap:10px;font:500 13px 'Plus Jakarta Sans';cursor:pointer;background:{{ f.bg }};color:{{ f.fg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ f.dot }}"></span>{{ f.label }}</div></sc-for>
+      <div style="padding:14px 14px 2px;font:600 11px 'Plus Jakarta Sans';letter-spacing:0.1em;color:{{ T.muted }}">PLATFORM</div>
+      <sc-for list="{{ platFilters }}" as="f" hint-placeholder-count="4"><div onClick="{{ f.go }}" style="height:36px;padding:0 14px;border-radius:10px;display:flex;align-items:center;gap:10px;font:500 13px 'Plus Jakarta Sans';cursor:pointer;background:{{ f.bg }};color:{{ f.fg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ f.dot }}"></span>{{ f.label }}</div></sc-for>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="flex:1;height:48px;border-radius:14px;background:{{ T.gBg }};border:1px solid {{ T.gLine }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;gap:12px;padding:0 18px;font:500 14px 'Plus Jakarta Sans';color:{{ T.muted }}"><span>⌕</span>Search campaigns, labels or platforms</div>
+        <div style="display:flex;gap:4px;padding:4px;border-radius:999px;background:{{ T.gBg }};border:1px solid {{ T.gLine }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)"><sc-for list="{{ bstates }}" as="v" hint-placeholder-count="3"><span onClick="{{ v.go }}" style="height:32px;padding:0 14px;border-radius:999px;display:flex;align-items:center;font:600 12px 'Plus Jakarta Sans';cursor:pointer;background:{{ v.bg }};color:{{ v.fg }}">{{ v.label }}</span></sc-for></div>
+        <div style="display:flex;gap:4px;padding:4px;border-radius:999px;background:{{ T.gBg }};border:1px solid {{ T.gLine }}"><sc-for list="{{ themes }}" as="m" hint-placeholder-count="2"><span onClick="{{ m.go }}" style="height:32px;padding:0 14px;border-radius:999px;display:flex;align-items:center;font:600 12px 'Plus Jakarta Sans';cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span></sc-for></div><div style="height:48px;padding:0 22px;border-radius:14px;background:{{ T.btn }};color:{{ T.btnText }};display:flex;align-items:center;font:700 14px 'Plus Jakarta Sans'">Sign in</div>
+      </div>
+      <div style="position:relative;color:#F4F1EA;height:370px;border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,0.12)">
+        <img src="assets/camp-hero.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center">
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,10,18,0.92) 0%,rgba(12,10,18,0.55) 42%,transparent 75%)"></div>
+        <div style="position:absolute;left:36px;top:32px;height:32px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;gap:8px;font:600 12px 'Plus Jakarta Sans'"><span style="width:7px;height:7px;border-radius:50%;background:#D8C58F"></span>Featured campaign</div>
+        <div style="position:absolute;left:36px;bottom:36px;max-width:430px">
+          <div style="display:flex;gap:8px"><span style="height:28px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;font:600 12px 'Plus Jakarta Sans'">Clipping</span><span style="height:28px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;font:600 12px 'Plus Jakarta Sans'">TikTok</span></div>
+          <div style="margin-top:16px;font:700 44px/1.05 'Plus Jakarta Sans';letter-spacing:-0.02em">Sample clipping campaign</div>
+          <div style="margin-top:12px;font:500 15px/1.5 'Plus Jakarta Sans';color:rgba(244,241,234,0.78)">Cut the best moments, post on your own account, and earn $2.00 for every 1,000 counted views.</div>
+          <div style="margin-top:22px;display:flex;gap:12px;align-items:center">
+            <div style="height:48px;padding:0 26px;border-radius:14px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;gap:8px;font:700 14px 'Plus Jakarta Sans'">View campaign <span>→</span></div>
+            <div style="height:48px;padding:0 20px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;font:600 14px 'Plus Jakarta Sans';font-variant-numeric:tabular-nums">$4,800.00 left</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="font:700 22px 'Plus Jakarta Sans';letter-spacing:-0.01em">Active campaigns</div><div style="font:500 13px 'Plus Jakarta Sans';color:{{ T.muted }}">{{ countLabel }}</div></div>
+      <sc-if value="{{ bLoading }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="4"><div style="height:330px;border-radius:24px;background:{{ T.hair }};animation:pulse 1.4s ease-in-out infinite"></div></sc-for></div></sc-if>
+      <sc-if value="{{ bError }}" hint-placeholder-val="{{ false }}"><div style="padding:60px 0;border-radius:24px;background:{{ T.gBg }};border:1px solid {{ T.gLine }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);text-align:center"><div style="font:700 22px 'Plus Jakarta Sans'">Could not load campaigns.</div><div style="margin-top:8px;font:500 14px 'Plus Jakarta Sans';color:{{ T.muted }}">Check your connection and try again.</div><div onClick="{{ bRetry }}" style="margin:22px auto 0;width:150px;height:44px;border-radius:14px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;justify-content:center;font:700 14px 'Plus Jakarta Sans';cursor:pointer">Try again</div></div></sc-if>
+      <sc-if value="{{ bEmpty }}" hint-placeholder-val="{{ false }}"><div style="padding:60px 0;border-radius:24px;background:{{ T.gBg }};border:1px solid {{ T.gLine }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);text-align:center"><div style="font:700 22px 'Plus Jakarta Sans'">No campaigns match these filters.</div><div style="margin-top:8px;font:500 14px 'Plus Jakarta Sans';color:{{ T.muted }}">Clear a filter to see everything that is open.</div><div onClick="{{ clearFilters }}" style="margin:22px auto 0;width:150px;height:44px;border-radius:14px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;justify-content:center;font:700 14px 'Plus Jakarta Sans';cursor:pointer">Clear filters</div></div></sc-if>
+      <sc-if value="{{ bRows }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <sc-for list="{{ bcards }}" as="c" hint-placeholder-count="4">
+          <div style="position:relative;height:330px;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);box-shadow:0 20px 40px rgba(0,0,0,0.35)">
+            <img src="{{ c.img }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            <div style="position:absolute;left:12px;top:12px;display:flex;gap:6px"><sc-for list="{{ c.plats }}" as="p" hint-placeholder-count="1"><span style="height:26px;padding:0 10px;border-radius:999px;color:#F4F1EA;background:rgba(12,10,18,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;font:600 11px 'Plus Jakarta Sans'">{{ p }}</span></sc-for></div>
+            <div style="position:absolute;left:10px;right:10px;bottom:10px;padding:14px 14px 12px;border-radius:18px;color:#F4F1EA;background:rgba(12,10,18,0.5);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid {{ T.hair2 }}">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 15px 'Plus Jakarta Sans'">{{ c.title }}</span><span style="font:600 11px 'Plus Jakarta Sans';color:{{ T.accentInk }}">{{ c.label }}</span></div>
+              <div style="margin-top:10px;height:4px;border-radius:2px;background:{{ T.hair2 }}"><div style="width:{{ c.pct }};height:100%;border-radius:2px;background:#D8C58F"></div></div>
+              <div style="margin-top:10px;display:flex;justify-content:space-between;font:600 12px 'Plus Jakarta Sans';font-variant-numeric:tabular-nums"><span>{{ c.left }} left</span><span style="color:{{ T.muted }}">{{ c.rate }} / 1k</span></div>
+            </div>
+          </div>
+        </sc-for>
+      </div></sc-if>
+      <div style="font:500 12px 'Plus Jakarta Sans';color:rgba(244,241,234,0.5)">Sample data and artwork for layout only.</div>
+    </div>
+  </div>
+  </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isWallet }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;box-sizing:border-box;background:{{ T.pageW }}"><div style="max-width:1240px;margin:0 auto;padding:30px 24px 96px;color:#1A1510">
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;column-gap:16px;align-items:center">
+      <img onClick="{{ goHome }}" src="assets/logo-nav-clear.png" alt="Maison d'Élites" style="height:26px;width:auto;max-width:100%;object-fit:contain;object-position:left;display:block;justify-self:start;cursor:pointer">
+      <div style="display:flex;gap:6px;padding:5px 8px;border:1px solid #E0D6C6;border-radius:999px;font-size:13px;color:#1A1510;background:rgba(255,255,255,0.7)"><sc-for list="{{ navLinks }}" as="n" hint-placeholder-count="4"><span onClick="{{ n.go }}" style="padding:9px 16px;cursor:pointer">{{ n.label }}</span></sc-for></div>
+      <div style="justify-self:end;display:flex;align-items:center;gap:10px"><div style="display:flex;gap:4px;padding:4px;border-radius:999px;border:1px solid #E0D6C6;background:rgba(255,255,255,0.55)"><sc-for list="{{ themes }}" as="m" hint-placeholder-count="2"><span onClick="{{ m.go }}" style="height:30px;padding:0 14px;border-radius:999px;display:flex;align-items:center;font:600 12px Archivo;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}</span></sc-for></div><div style="height:40px;padding:0 16px;border-radius:999px;border:1px solid #E0D6C6;background:#FBF7F0;color:#1A1510;display:flex;align-items:center;font:500 14px Archivo;font-variant-numeric:tabular-nums">{{ availableFmt }}</div></div>
+    </div>
+    <div style="margin-top:36px;zoom:{{ wz }}">
+    <div style="position:relative;width:1240px;box-sizing:border-box;border-radius:36px;padding:24px 24px 40px;background:{{ T.stage }};border:1px solid {{ T.stageLine }};backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);display:flex;gap:24px;box-shadow:0 40px 90px rgba(26,21,16,0.22)">
+      <div style="width:60px;flex:none;display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:6px">
+        <div style="height:6px"></div>
+        <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(216,197,143,0.16);color:#D8C58F"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg></div>
+        <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:{{ T.muted }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"></path></svg></div>
+        <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:{{ T.muted }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 7l2-3h12M16 13h2"></path></svg></div>
+        <div style="width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:{{ T.muted }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 12h8M17 8l4 4-4 4M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"></path></svg></div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:6px;border-radius:18px;background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)">
+          <div style="display:flex;gap:4px"><sc-for list="{{ wtabs }}" as="t" hint-placeholder-count="2"><span onClick="{{ t.go }}" style="height:40px;padding:0 22px;border-radius:12px;display:flex;align-items:center;font:600 12px Archivo;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</span></sc-for></div>
+          <div style="display:flex;align-items:center;gap:6px;padding-right:6px"><sc-for list="{{ states }}" as="v" hint-placeholder-count="4"><span onClick="{{ v.go }}" style="height:30px;padding:0 12px;border-radius:999px;display:flex;align-items:center;font:500 12px Archivo;cursor:pointer;background:{{ v.bg }};color:{{ v.fg }}">{{ v.label }}</span></sc-for></div>
+        </div>
+        <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;padding:14px 20px;border-radius:16px;background:rgba(79,178,134,0.16);border:1px solid rgba(79,178,134,0.4);font-size:14px;color:{{ T.text }};display:flex;justify-content:space-between">Withdrawal requested. It appears under Withdrawals once staff review it.<span onClick="{{ closeDone }}" style="cursor:pointer;font-weight:600">Dismiss</span></div></sc-if>
+        <div style="margin-top:16px;display:grid;grid-template-columns:minmax(0,1fr) 190px 310px;grid-template-rows:330px 370px;gap:16px">
+          <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};position:relative;padding:26px 28px">
+            <div style="position:absolute;right:6px;top:-8px;width:270px;height:350px;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(#000 78%,transparent 100%);mask-image:linear-gradient(#000 78%,transparent 100%)"><img src="assets/agent-cut.png" alt="" style="position:absolute;left:50%;top:0;height:470px;width:auto;transform:translateX(-50%);filter:drop-shadow(0 18px 24px rgba(0,0,0,0.35))"></div>
+            <div style="font:600 12px Archivo,sans-serif;letter-spacing:0.06em;text-transform:uppercase;color:{{ T.muted }}">Available</div>
+            <sc-if value="{{ wLoading }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px"><div style="width:220px;height:70px;border-radius:10px;background:{{ T.soft }};animation:pulse 1.4s ease-in-out infinite"></div></div></sc-if>
+            <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}"><div style="margin-top:10px;font:700 76px/1 'Plus Jakarta Sans',Archivo,sans-serif;letter-spacing:-0.04em;font-variant-numeric:tabular-nums;color:{{ T.accentInk }}">{{ availWhole }}<span style="font-size:32px;color:{{ T.accentInk }};opacity:0.65">{{ availCents }}</span></div></sc-if>
+            <div style="margin-top:8px;font-size:13px;color:{{ T.muted }}">+ {{ pendingFmt }} pending review</div>
+            <div style="margin-top:22px;height:1px;background:{{ T.hair }};width:62%"></div>
+            <div style="margin-top:18px;display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:34px">
+              <div><div style="font-size:12px;color:{{ T.muted }}">Pending</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">{{ pendingFmt }}</div></div>
+              <div><div style="font-size:12px;color:{{ T.muted }}">Paid out</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">{{ paidFmt }}</div></div>
+              <div><div style="font-size:12px;color:{{ T.muted }}">Rate per 1k</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">$2.00</div></div>
+            </div>
+            <div style="margin-top:22px;display:flex;align-items:center;gap:14px">
+              <div onClick="{{ withdraw }}" style="height:46px;padding:0 26px;border-radius:12px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;gap:10px;font:600 14px Archivo;cursor:pointer">Withdraw <span>→</span></div>
+              <div style="font-size:12px;color:{{ T.muted }}">Bank transfer, ending 0000 <span style="text-decoration:underline;cursor:pointer;margin-left:6px">Change</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};flex:1;position:relative;overflow:hidden;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="position:absolute;inset:0;background:linear-gradient(160deg,#6b5326,#17120b)"></div>
+              <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.05) 0 10px,transparent 10px 20px)"></div>
+              <div style="position:relative;font:700 14px Archivo;letter-spacing:0.04em;color:#fff">TOP CLIP</div>
+              <div style="position:relative;color:#fff"><div style="font:600 12px Archivo;opacity:0.8">Earned</div><div style="font:600 18px Archivo">$120.00</div></div>
+            </div>
+            <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};flex:1;padding:16px;display:flex;flex-direction:column;justify-content:space-between">
+              <div style="font:700 14px Archivo;letter-spacing:0.04em">STREAK</div>
+              <div style="display:flex;gap:4px"><span style="flex:1;height:22px;border-radius:6px;background:#D8C58F"></span><span style="flex:1;height:22px;border-radius:6px;background:#D8C58F"></span><span style="flex:1;height:22px;border-radius:6px;background:#D8C58F"></span><span style="flex:1;height:22px;border-radius:6px;background:#D8C58F"></span><span style="flex:1;height:22px;border-radius:6px;background:{{ T.soft }}"></span><span style="flex:1;height:22px;border-radius:6px;background:{{ T.soft }}"></span><span style="flex:1;height:22px;border-radius:6px;background:{{ T.soft }}"></span></div>
+              <div style="font-size:12px;color:{{ T.muted }}">4 days, goal 5 posts</div>
+            </div>
+          </div>
+          <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};grid-row:span 2;padding:22px 18px 10px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px 4px"><span style="font:700 14px Archivo;letter-spacing:0.04em">LAST POSTS</span><span style="font-size:12px;color:{{ T.muted }}">Sample</span></div>
+            <sc-if value="{{ wLoading }}" hint-placeholder-val="{{ false }}"><div style="margin-top:16px;display:flex;flex-direction:column;gap:10px"><sc-for list="{{ skel }}" as="k" hint-placeholder-count="5"><div style="height:56px;border-radius:12px;background:{{ T.hair }};animation:pulse 1.4s ease-in-out infinite"></div></sc-for></div></sc-if>
+            <sc-if value="{{ wError }}" hint-placeholder-val="{{ false }}"><div style="padding:80px 8px;text-align:center"><div style="font:400 26px 'EB Garamond',serif">Could not load your wallet.</div><div style="margin-top:8px;font-size:13px;color:{{ T.muted }}">Your balance is safe. Check your connection and try again.</div><div onClick="{{ retry }}" style="margin:20px auto 0;width:140px;height:42px;border-radius:12px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;justify-content:center;font:600 13px Archivo;cursor:pointer">Try again</div></div></sc-if>
+            <sc-if value="{{ wEmptyView }}" hint-placeholder-val="{{ false }}"><div style="padding:80px 8px;text-align:center"><div style="font:400 26px 'EB Garamond',serif">{{ emptyTitle }}</div><div style="margin-top:8px;font-size:13px;color:{{ T.muted }}">{{ emptyBody }}</div><div onClick="{{ toBrowse }}" style="margin:20px auto 0;width:180px;height:42px;border-radius:12px;background:#D8C58F;color:#1A1510;display:flex;align-items:center;justify-content:center;font:600 13px Archivo;cursor:pointer">Browse campaigns</div></div></sc-if>
+            <sc-if value="{{ wRows }}" hint-placeholder-val="{{ true }}"><div>
+              <div style="display:flex;align-items:center;gap:8px;margin:12px 4px 10px;font:600 11px Archivo;letter-spacing:0.08em;color:#D8C58F"><span style="width:6px;height:6px;background:#D8C58F"></span>TODAY</div>
+              <sc-for list="{{ rowsA }}" as="r" hint-placeholder-count="3"><div style="position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px 10px 10px;margin-bottom:8px;border-radius:12px;background:{{ T.rowBg }};border-right:3px solid {{ r.dot }}"><span style="width:34px;height:34px;border-radius:50%;background:{{ T.soft }};display:flex;align-items:center;justify-content:center;font:600 10px Archivo">{{ r.pf }}</span><span><div style="font:600 13px Archivo">{{ r.name }}</div><div style="margin-top:2px;font-size:11px;color:{{ T.muted }}">{{ r.meta }}</div></span><span style="text-align:right"><div style="font:600 16px Archivo;font-variant-numeric:tabular-nums">{{ r.amt }}</div><div style="margin-top:2px;font-size:11px;color:{{ r.dot }}">{{ r.status }}</div></span></div></sc-for>
+              <div style="margin:14px 4px 10px;font:600 11px Archivo;letter-spacing:0.08em;color:{{ T.muted }}">27 SEPT</div>
+              <sc-for list="{{ rowsB }}" as="r" hint-placeholder-count="3"><div style="position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px 10px 10px;margin-bottom:8px;border-radius:12px;background:{{ T.rowBg }};border-right:3px solid {{ r.dot }}"><span style="width:34px;height:34px;border-radius:50%;background:{{ T.soft }};display:flex;align-items:center;justify-content:center;font:600 10px Archivo">{{ r.pf }}</span><span><div style="font:600 13px Archivo">{{ r.name }}</div><div style="margin-top:2px;font-size:11px;color:{{ T.muted }}">{{ r.meta }}</div></span><span style="text-align:right"><div style="font:600 16px Archivo;font-variant-numeric:tabular-nums">{{ r.amt }}</div><div style="margin-top:2px;font-size:11px;color:{{ r.dot }}">{{ r.status }}</div></span></div></sc-for>
+            </div></sc-if>
+          </div>
+          <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};padding:22px 24px;position:relative">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 14px Archivo;letter-spacing:0.04em">PAYOUT OVERVIEW</span><span style="height:34px;padding:0 14px;border-radius:10px;border:1px solid {{ T.hair2 }};display:flex;align-items:center;gap:10px;font-size:12px">This month <span style="font-size:10px">⌄</span></span></div>
+            <div style="margin-top:18px;display:flex;align-items:center;gap:20px">
+              <div style="position:relative;width:104px;height:104px;flex:none"><svg width="104" height="104" viewBox="0 0 104 104" style="transform:rotate(-90deg)"><circle cx="52" cy="52" r="44" fill="none" stroke="{{ T.soft }}" stroke-width="9"></circle><circle cx="52" cy="52" r="44" fill="none" stroke="#4FB286" stroke-width="9" stroke-linecap="round" stroke-dasharray="230 276.5"></circle></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font:600 11px Archivo;color:{{ T.muted }}">Approved</div><div style="font:700 20px Archivo">83%</div></div></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+                <div style="padding:12px 14px;border-left:3px solid #4FB286;background:linear-gradient(90deg,rgba(79,178,134,0.2),transparent);font:700 15px Archivo">5 APPROVED</div>
+                <div style="padding:12px 14px;border-left:3px solid #E26B5E;background:linear-gradient(90deg,rgba(226,107,94,0.2),transparent);font:700 15px Archivo">1 FLAGGED</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px"><div style="padding:12px 14px;border-left:2px solid #D8C58F;background:linear-gradient(90deg,rgba(216,197,143,0.12),transparent)"><div style="font-size:12px;color:{{ T.muted }}">Views</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">158,200</div></div><div style="padding:12px 14px;border-left:2px solid #D8C58F;background:linear-gradient(90deg,rgba(216,197,143,0.12),transparent)"><div style="font-size:12px;color:{{ T.muted }}">Posts</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">6</div></div><div style="padding:12px 14px;border-left:2px solid #D8C58F;background:linear-gradient(90deg,rgba(216,197,143,0.12),transparent)"><div style="font-size:12px;color:{{ T.muted }}">Best clip</div><div style="margin-top:4px;font:600 20px Archivo;font-variant-numeric:tabular-nums">$120.00</div></div></div>
+          </div>
+          <div style="background:{{ T.card }};border:1px solid {{ T.cardLine }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px;color:{{ T.text }};padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center">
+            <div style="font:600 12px Archivo,sans-serif;letter-spacing:0.06em;text-transform:uppercase;color:{{ T.muted }}">Rating</div>
+            <img src="assets/rank-cut.png" alt="" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(0,0,0,0.3))">
+            <div><div style="font:700 14px Archivo;letter-spacing:0.04em">GOLD II</div><div style="margin-top:4px;font-size:12px;color:{{ T.muted }}">68% to Platinum</div><div style="margin-top:6px;font-size:11px;color:{{ T.muted }}">Sample tiers</div></div>
+          </div>
+        </div>
+        <div style="position:absolute;right:376px;bottom:-40px;width:280px;padding:16px 20px;border-radius:24px;background:{{ T.pop }};border:1px solid rgba(216,197,143,0.3);box-shadow:0 20px 50px rgba(0,0,0,0.5);color:{{ T.text }};z-index:3">
+          <div style="font:700 15px Archivo;text-align:center;letter-spacing:0.04em">NEXT PAYOUT</div>
+          <div style="margin-top:12px;display:flex;gap:3px;align-items:flex-end;height:44px"><span style="flex:1;height:30%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:44%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:36%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:52%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:40%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:60%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:48%;border-radius:2px;background:#4FB286"></span><span style="flex:1;height:70%;border-radius:2px;background:#E0A94A"></span><span style="flex:1;height:54%;border-radius:2px;background:#E0A94A"></span><span style="flex:1;height:40%;border-radius:2px;background:#E0A94A"></span><span style="flex:1;height:30%;border-radius:2px;background:{{ T.hair2 }}"></span><span style="flex:1;height:24%;border-radius:2px;background:{{ T.hair2 }}"></span></div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:12px;color:{{ T.muted }}"><span>{{ pendingFmt }} in review</span><span>Sample</span></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isReview }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;min-height:900px">
+    <div style="width:200px;padding:32px 24px;border-right:1px solid #E0D6C6;font-size:15px;display:flex;flex-direction:column;gap:14px;color:#6E675C">
+      <img onClick="{{ goHome }}" src="assets/logo-nav-clear.png" alt="Maison d'Élites" style="width:152px;height:auto;display:block;margin-bottom:12px">
+      <span>Dashboard</span><span>Campaigns</span><span style="color:#1A1510;font-weight:500">Review queue</span><span>Creators</span><span>Appeals</span><span>Ledger</span><span>Payouts</span><span>Settings</span><span>Audit log</span>
+    </div>
+    <div style="width:340px;border-right:1px solid #E0D6C6">
+      <div style="padding:32px 24px 16px"><div style="font:400 28px 'EB Garamond',serif">Review queue</div><div style="font-size:13px;color:#6E675C;margin-top:4px">Oldest first</div></div>
+      <sc-for list="{{ queue }}" as="q" hint-placeholder-count="4">
+        <div style="padding:14px 24px;border-top:1px solid #E0D6C6;background:{{ q.bg }};font-size:13px;line-height:1.5"><div style="font-weight:500">{{ q.who }}</div><div style="color:#6E675C">{{ q.meta }}</div></div>
+      </sc-for>
+    </div>
+    <div style="flex:1;padding:32px 40px;max-width:760px">
+      <div style="font:400 28px 'EB Garamond',serif">Post detail</div>
+      <div style="margin-top:6px;font-size:13px;color:#6E675C">TikTok · Sample clipping campaign · Submitted Oct 2</div>
+      <div style="margin-top:20px;height:200px;border-radius:14px;background:repeating-linear-gradient(135deg,#E0D6C6 0 8px,#EBE2D2 8px 16px);display:flex;align-items:center;justify-content:center;font:400 12px 'Geist Mono',monospace;color:#6E675C">embedded post</div>
+      <div style="margin-top:28px;font-size:13px;color:#6E675C;padding-bottom:8px;border-bottom:1px solid #E0D6C6">Checks</div>
+      <sc-for list="{{ checks }}" as="c" hint-placeholder-count="4">
+        <div style="display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #E0D6C6;font-size:13px"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.dot }}"></span><span style="flex:1">{{ c.t }}</span><span style="color:#6E675C">{{ c.s }}</span></div>
+      </sc-for>
+      <div style="margin-top:28px;font-size:13px;color:#6E675C">Reason</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <span style="height:36px;padding:0 16px;border-radius:999px;border:1px solid #CDBFA8;display:flex;align-items:center;font-size:13px">Missing hashtag</span>
+        <span style="height:36px;padding:0 16px;border-radius:999px;border:1px solid #CDBFA8;display:flex;align-items:center;font-size:13px">Too short</span>
+        <span style="height:36px;padding:0 16px;border-radius:999px;border:1px solid #CDBFA8;display:flex;align-items:center;font-size:13px">Reused clip</span>
+      </div>
+      <div style="margin-top:20px;height:80px;border:1px solid #CDBFA8;border-radius:14px;background:#FBF7F0;padding:14px 16px;box-sizing:border-box;font-size:14px;color:#8A8378">Note to creator</div>
+      <div style="display:flex;gap:12px;margin-top:20px"><div style="height:48px;padding:0 24px;border-radius:999px;background:#1A1510;color:#fff;display:flex;align-items:center;font:500 15px Archivo">Approve</div><div style="height:48px;padding:0 24px;border-radius:999px;border:1px solid #CDBFA8;background:#FBF7F0;color:#B3261E;display:flex;align-items:center;font:500 15px Archivo">Reject</div></div>
+      <div style="margin-top:28px;font-size:13px;color:#6E675C">J next · A approve · R reject</div>
+      <div style="margin-top:8px;font-size:12px;color:#8A8378">Sample data for layout only.</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isReport }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1200px;margin:0 auto;padding:40px 24px 96px">
+    <img onClick="{{ goHome }}" src="assets/logo-nav-clear.png" alt="Maison d'Élites" style="height:22px;width:auto;display:block">
+    <div style="margin-top:56px;font:400 64px/1 'EB Garamond',serif;letter-spacing:-0.02em">Sample client<br><em style="color:#A98B56">campaign report.</em></div>
+    <div style="margin-top:40px;display:flex;gap:56px;flex-wrap:wrap">
+      <div><div style="font:400 40px/1 'EB Garamond',serif;font-variant-numeric:tabular-nums">$0<span style="font-size:20px;color:#6E675C">.00</span></div><div style="font-size:13px;color:#6E675C;margin-top:6px">Spent of $0.00</div></div>
+      <div><div style="font:400 40px/1 'EB Garamond',serif">0</div><div style="font-size:13px;color:#6E675C;margin-top:6px">Counted views</div></div>
+      <div><div style="font:400 40px/1 'EB Garamond',serif">0</div><div style="font-size:13px;color:#6E675C;margin-top:6px">Posts approved</div></div>
+      <div><div style="font:400 40px/1 'EB Garamond',serif">$0.00</div><div style="font-size:13px;color:#6E675C;margin-top:6px">Cost per 1,000 views</div></div>
+    </div>
+    <div style="margin-top:48px;height:240px;border-top:1px solid #E0D6C6;border-bottom:1px solid #E0D6C6;position:relative">
+      <svg width="100%" height="240" viewBox="0 0 1000 240" preserveAspectRatio="none"><path d="M0 210 C 200 200, 300 150, 500 120 S 800 50, 1000 30" fill="none" stroke="#1A1510" stroke-width="1.5" vector-effect="non-scaling-stroke"></path></svg>
+      <div style="position:absolute;left:16px;top:12px;font-size:12px;color:#6E675C">Views over time (illustrative shape, no data)</div>
+    </div>
+    <div style="margin-top:40px;display:flex;justify-content:space-between;align-items:center"><div style="font:400 28px 'EB Garamond',serif">Posts</div><div style="height:40px;padding:0 20px;border-radius:999px;border:1px solid #CDBFA8;display:flex;align-items:center;font-size:13px;font-weight:500">Download CSV</div></div>
+    <div style="margin-top:16px;padding:40px 0;border-top:1px solid #E0D6C6;text-align:center;font-size:15px;color:#6E675C">No approved posts yet. Posts appear here once they pass review.</div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { s: 'home', w: window.innerWidth, wv: 'data', wt: 'tx', done: false, th: 'dark', bl: 'All', bp: 'All', bv: 'data' };
+  componentDidMount() { this._r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this._r); }
+  componentWillUnmount() { window.removeEventListener('resize', this._r); }
+  renderVals() {
+    const defs = [['home','Home'],['browse','Campaigns'],['wallet','Wallet'],['review','Review queue'],['report','Client report']];
+    const s = this.state.s;
+    const cards = [];
+    const all = [['Sample clipping','Clipping','$4,800.00','$2.00','38%',['TikTok','Instagram'],'assets/camp-clip.png'],['Sample music','Music','$1,600.00','$1.25','12%',['TikTok'],'assets/camp-music.png'],['Sample logo','Logo','$6,000.00','$1.50','61%',['Instagram'],'assets/camp-logo.png'],['Sample UGC','UGC','$1,600.00','$2.00','77%',['TikTok','YouTube'],'assets/camp-ugc.png']];
+    const bl = this.state.bl, bp = this.state.bp, bv = this.state.bv;
+    const shown = all.filter(c=>(bl==='All'||c[1]===bl)&&(bp==='All'||c[5].indexOf(bp)>=0)).map(c=>({title:c[0],label:c[1],left:c[2],rate:c[3],pct:c[4],plats:c[5],img:c[6]}));
+    const filt = (list,cur,key) => list.map(n=>({label:n,go:()=>this.setState({[key]:n}),bg:cur===n?'rgba(216,197,143,0.2)':'transparent',fg:cur===n?T.accentInk:T.muted,dot:cur===n?'#D8C58F':T.hair2}));
+    const fmt = c => '$' + Math.floor(c/100).toLocaleString('en-US') + '.' + String(c%100).padStart(2,'0');
+    const wv = this.state.wv, wt = this.state.wt;
+    const AV = 18420, PE = 6240, PAID = 0;
+    const th = this.state.th, dk = th==='dark';
+    const rawRows = [['Sample clip 01','TT',31200,200,'Pending'],['Sample clip 02','IG',60000,200,'Available'],['Sample clip 03','TT',28100,200,'Available'],['Sample clip 04','YT',4000,200,'Flagged'],['Sample clip 05','IG',12400,200,'Available'],['Sample clip 06','TT',22500,200,'Available']];
+    const dots = {Pending:'#E0A94A',Available:'#4FB286',Flagged:'#E26B5E'};
+    const txns = rawRows.map(r=>({name:r[0],pf:r[1],meta:r[2].toLocaleString('en-US')+' views',status:r[4],dot:dots[r[4]],amt:(r[4]==='Flagged'?'Held ':'+')+fmt(Math.floor(r[2]*r[3]/1000))}));
+    const T = dk ? {stage:'#111117',stageLine:'rgba(255,255,255,0.04)',card:'#1C1C24',cardLine:'rgba(255,255,255,0.06)',text:'#F4F1EA',muted:'rgba(244,241,234,0.64)',hair:'rgba(255,255,255,0.08)',soft:'rgba(255,255,255,0.1)',hair2:'rgba(255,255,255,0.14)',rowBg:'linear-gradient(90deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))',pop:'#26242a',accentInk:'#D8C58F',pageW:'#F2EEE6',bPage:'radial-gradient(900px 600px at 12% 0%,rgba(120,84,210,0.38),transparent 60%),radial-gradient(800px 600px at 92% 100%,rgba(216,170,90,0.24),transparent 60%),#0c0a12',gBg:'rgba(255,255,255,0.06)',gLine:'rgba(255,255,255,0.12)',side:'rgba(10,8,16,0.55)',logoFilter:'brightness(0) invert(1)',btn:'#F4F1EA',btnText:'#1A1510'} : {stage:'linear-gradient(135deg,rgba(255,255,255,0.62),rgba(255,255,255,0.28))',stageLine:'rgba(255,255,255,0.9)',card:'rgba(255,255,255,0.58)',cardLine:'rgba(255,255,255,0.95)',text:'#17151C',muted:'rgba(23,21,28,0.66)',hair:'rgba(23,21,28,0.1)',soft:'rgba(23,21,28,0.09)',hair2:'rgba(23,21,28,0.18)',rowBg:'rgba(23,21,28,0.045)',pop:'rgba(255,255,255,0.85)',accentInk:'#86661F',pageW:'radial-gradient(900px 600px at 8% 0%,rgba(190,170,255,0.55),transparent 60%),radial-gradient(800px 600px at 96% 100%,rgba(255,200,160,0.55),transparent 60%),radial-gradient(700px 500px at 60% 35%,rgba(170,220,255,0.5),transparent 70%),#E8EAF2',bPage:'radial-gradient(900px 600px at 8% 0%,rgba(190,170,255,0.6),transparent 60%),radial-gradient(800px 600px at 96% 100%,rgba(255,200,160,0.6),transparent 60%),radial-gradient(700px 500px at 60% 35%,rgba(170,220,255,0.55),transparent 70%),#E8EAF2',gBg:'rgba(255,255,255,0.55)',gLine:'rgba(255,255,255,0.95)',side:'rgba(255,255,255,0.5)',logoFilter:'none',btn:'#17151C',btnText:'#FFFFFF'};
+    const barH=[38,52,44,60,48,66,58,72,50,64,56,78,62,70,54,82,68,74,60,86,46,40,52,36,44,30,38,28,34,26];
+    const bars = barH.map((h,i)=>({h:h+'%',bg:i<19?(dk?'rgba(79,178,134,0.38)':'rgba(79,178,134,0.45)'):(i<24?(dk?'rgba(224,169,74,0.38)':'rgba(224,169,74,0.5)'):(dk?'rgba(255,255,255,0.12)':'rgba(26,21,16,0.10)')),top:i<19?'#4FB286':(i<24?'#E0A94A':(dk?'rgba(255,255,255,0.3)':'rgba(26,21,16,0.25)'))}));
+    const tiers = ['Bronze','Silver','Gold','Platinum','Diamond'].map((n,i)=>({n,c:i<=2?T.accent:T.track}));
+    const days = ['M','T','W','T','F','S','S'].map((l,i)=>({l,bg:i<4?T.accent:'transparent'}));
+    const board = [['1','Creator A','Sample'],['2','Creator B','Sample'],['3','Creator C','Sample'],['12','You','4,200 views to next']].map((b,i)=>({n:b[0],name:b[1],note:b[2],bg:i===3?(dk?'rgba(216,197,143,0.16)':'rgba(168,132,58,0.14)'):'transparent',bd:i===3?T.accent:'transparent'}));
+    const hasRows = wv==='data' && wt==='tx';
+    const emptyView = wv==='empty' || (wv==='data' && wt==='wd');
+    const set = k => () => this.setState({wv:k});
+    const queue = [['Creator A','TikTok · Sample clipping · flagged','#fff'],['Creator B','Instagram · Sample logo','transparent'],['Creator C','YouTube · Sample music','transparent'],['Creator D','TikTok · Sample clipping','transparent']].map(a=>({who:a[0],meta:a[1],bg:a[2]}));
+    const checks = [['Posted on a linked account','Pass','#2F7D4F'],['Required hashtag present','Pass','#2F7D4F'],['Minimum duration','Pass','#2F7D4F'],['Same clip posted before','Review','#B26A00']].map(a=>({t:a[0],s:a[1],dot:a[2]}));
+    return {
+      goHome: () => this.setState({s:'home'}),
+      heroZoom: Math.min(1, this.state.w / 1440),
+      navLinks: [['Campaigns','browse'],['Wallet','wallet']].map(([l,k])=>({label:l,go:()=>this.setState({s:k})})),
+      cards, queue, checks,
+      bcards: shown, labelFilters: filt(['All','Clipping','Music','Logo','UGC'],bl,'bl'), platFilters: filt(['All','TikTok','Instagram','YouTube'],bp,'bp'),
+      bLoading: bv==='loading', bError: bv==='error', bEmpty: bv==='data' && shown.length===0, bRows: bv==='data' && shown.length>0,
+      countLabel: shown.length + (shown.length===1?' campaign':' campaigns'), bRetry: ()=>this.setState({bv:'data'}), clearFilters: ()=>this.setState({bl:'All',bp:'All'}),
+      bstates: [['data','Data'],['loading','Loading'],['error','Error']].map(([k,l])=>({label:l,go:()=>this.setState({bv:k}),bg:bv===k?'#D8C58F':'transparent',fg:bv===k?'#1A1510':T.muted})),
+      sideNav: [['Home','home'],['Campaigns','browse'],['Wallet','wallet']].map(([l,k])=>({label:l,go:()=>this.setState({s:k}),bg:k==='browse'?'rgba(216,197,143,0.2)':'transparent',fg:k==='browse'?T.accentInk:T.muted})),
+      rows: txns, rowsA: txns.slice(0,3), rowsB: txns.slice(3), skel:[1,2,3,4], T, bars, tiers, days, board, wz: Math.min(1,(this.state.w-48)/1240),
+      themes: [['dark','Dark'],['light','Glass']].map(([k,l])=>({label:l,go:()=>this.setState({th:k}),bg:th===k?(dk?'#D8C58F':'#17151C'):'transparent',fg:th===k?(dk?'#1A1510':'#FFFFFF'):'#6E675C'})),
+      availableFmt: fmt(AV), availWhole: '$' +Math.floor(AV/100).toLocaleString('en-US'), availCents: '.'+String(AV%100).padStart(2,'0'), pendingFmt: fmt(PE), paidFmt: fmt(PAID),
+      wLoading: wv==='loading', notLoading: wv!=='loading', wError: wv==='error', wEmptyView: emptyView, wRows: hasRows, done: this.state.done,
+      emptyTitle: wt==='wd' ? 'No withdrawals yet.' : 'No earnings yet.',
+      emptyBody: wt==='wd' ? 'Withdrawals you request will be listed here.' : 'Join a campaign and post to start earning.',
+      states: [['data','Data'],['loading','Loading'],['empty','Empty'],['error','Error']].map(([k,l])=>({label:l,go:set(k),bg:wv===k?'#D8C58F':'transparent',fg:wv===k?'#1A1510':T.muted})),
+      wtabs: [['tx','Overview'],['wd','Withdrawals']].map(([k,l])=>({label:l,go:()=>this.setState({wt:k}),bg:wt===k?T.soft:'transparent',fg:wt===k?T.text:T.muted})),
+      withdraw: () => this.setState({done:true}), closeDone: () => this.setState({done:false}), retry: () => this.setState({wv:'data'}), toBrowse: () => this.setState({s:'browse'}),
+      tabs: defs.map(([k,l]) => ({ label:l, go:() => this.setState({s:k}), bg:s===k?'#1A1510':'transparent', fg:s===k?'#fff':'#1A1510' })),
+      isHome: s==='home', isBrowse: s==='browse', isWallet: s==='wallet', isReview: s==='review', isReport: s==='report'
+    };
+  }
+}
+</script>
+</body>
+</html>
