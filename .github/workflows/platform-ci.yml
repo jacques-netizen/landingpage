@@ -3,7 +3,12 @@ name: Platform CI
 on:
   pull_request:
   push:
-    branches: [main]
+    paths-ignore:
+      # Changes to the existing static site alone do not need the platform checks.
+      - '*.html'
+      - 'admin/**'
+      - 'book/**'
+  workflow_dispatch:
 
 concurrency:
   group: platform-ci-${{ github.ref }}
