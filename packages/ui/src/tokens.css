@@ -61,7 +61,8 @@
   --t-row-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   --t-pop: #26242a;
   --t-accent-ink: #d8c58f;
-  --t-page: radial-gradient(900px 600px at 12% 0%, rgba(120, 84, 210, 0.38), transparent 60%),
+  --t-page:
+    radial-gradient(900px 600px at 12% 0%, rgba(120, 84, 210, 0.38), transparent 60%),
     radial-gradient(800px 600px at 92% 100%, rgba(216, 170, 90, 0.24), transparent 60%), #0c0a12;
   --t-glass-bg: rgba(255, 255, 255, 0.06);
   --t-glass-line: rgba(255, 255, 255, 0.12);
@@ -84,7 +85,8 @@
   --t-row-bg: rgba(23, 21, 28, 0.045);
   --t-pop: rgba(255, 255, 255, 0.85);
   --t-accent-ink: #86661f;
-  --t-page: radial-gradient(900px 600px at 8% 0%, rgba(190, 170, 255, 0.6), transparent 60%),
+  --t-page:
+    radial-gradient(900px 600px at 8% 0%, rgba(190, 170, 255, 0.6), transparent 60%),
     radial-gradient(800px 600px at 96% 100%, rgba(255, 200, 160, 0.6), transparent 60%),
     radial-gradient(700px 500px at 60% 35%, rgba(170, 220, 255, 0.55), transparent 70%), #e8eaf2;
   --t-glass-bg: rgba(255, 255, 255, 0.55);
@@ -93,4 +95,23 @@
   --t-logo-filter: none;
   --t-btn: #17151c;
   --t-btn-text: #ffffff;
+}
+
+/* Motion: dialogs, drawers and toasts. Off when the user asks for reduced motion. */
+@keyframes mde-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes mde-slide {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@keyframes mde-rise {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
 }
