@@ -1,0 +1,10 @@
+# Only the platform code is formatted. The existing static site and the locked docs are left as they are.
+*
+!apps/
+!apps/**
+!packages/
+!packages/**
+apps/web/.next
+apps/web/src/designed/**
+packages/db/migrations/**
+pnpm-lock.yaml

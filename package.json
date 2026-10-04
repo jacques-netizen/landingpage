@@ -1,0 +1,34 @@
+{
+  "name": "mde-platform",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @mde/web dev",
+    "build": "pnpm --filter @mde/web build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint apps packages",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @mde/web test:e2e",
+    "db:generate": "pnpm --filter @mde/db generate",
+    "db:migrate": "pnpm --filter @mde/db migrate",
+    "db:check": "pnpm --filter @mde/db check",
+    "db:seed": "pnpm --filter @mde/db seed"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

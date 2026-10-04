@@ -10,3 +10,17 @@ lib
 functions
 *.md
 docs
+# Content rewards platform (deployed separately, never served by this Worker)
+apps
+packages
+node_modules
+package.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
+tsconfig.base.json
+eslint.config.mjs
+.prettierrc.json
+.prettierignore
+.github
+.gitattributes
+.env.example
