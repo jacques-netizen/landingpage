@@ -16,7 +16,9 @@ import { parseDocument } from 'htmlparser2'
 
 const [, , file, flag, componentName, page, replacementsFile] = process.argv
 if (!file || !flag || !componentName || !page) {
-  console.error('Usage: node scripts/dc-to-tsx.mjs <mockup file> <screen flag> <ComponentName> <content page> [replacements.json]')
+  console.error(
+    'Usage: node scripts/dc-to-tsx.mjs <mockup file> <screen flag> <ComponentName> <content page> [replacements.json]',
+  )
   process.exit(1)
 }
 const HANDOFF = path.resolve(import.meta.dirname, '../../../docs/design/handoff')
@@ -37,7 +39,12 @@ const attachUsed = new Set()
 
 const src = fs.readFileSync(path.join(HANDOFF, file), 'utf8')
 const tpl = src.slice(src.indexOf('<x-dc>') + 6, src.lastIndexOf('</x-dc>'))
-const doc = parseDocument(tpl, { lowerCaseTags: false, lowerCaseAttributeNames: false, recognizeSelfClosing: true, decodeEntities: true })
+const doc = parseDocument(tpl, {
+  lowerCaseTags: false,
+  lowerCaseAttributeNames: false,
+  recognizeSelfClosing: true,
+  decodeEntities: true,
+})
 
 function find(node) {
   if (node.type === 'tag' && node.name === 'sc-if' && node.attribs.value?.replace(/[{}\s]/g, '') === flag) return node
@@ -69,7 +76,11 @@ function valueExpr(raw, scope) {
   if (whole) return expr(whole[1], scope)
   if (!raw.includes('{{')) return JSON.stringify(raw)
   const parts = raw.split(/\{\{([\s\S]+?)\}\}/g)
-  return '`' + parts.map((p, i) => (i & 1 ? '${' + expr(p, scope) + '}' : p.replace(/[`\\$]/g, (m) => '\\' + m))).join('') + '`'
+  return (
+    '`' +
+    parts.map((p, i) => (i & 1 ? '${' + expr(p, scope) + '}' : p.replace(/[`\\$]/g, (m) => '\\' + m))).join('') +
+    '`'
+  )
 }
 
 function asset(url) {
@@ -97,11 +108,16 @@ const BOOLEAN = { autoplay: 'autoPlay', muted: 'muted', loop: 'loop', playsinlin
 
 function attrs(node, scope) {
   const out = []
-  const ownText = (node.children ?? []).filter((c) => c.type === 'text').map((c) => c.data).join('').trim()
+  const ownText = (node.children ?? [])
+    .filter((c) => c.type === 'text')
+    .map((c) => c.data)
+    .join('')
+    .trim()
   const extra = attach[`${node.name}:${ownText}`]
   if (extra) {
     attachUsed.add(`${node.name}:${ownText}`)
-    for (const [k, v] of Object.entries(extra)) out.push(k === 'onClick' ? `{...clickable(${v})}` : `${k}=${JSON.stringify(v)}`)
+    for (const [k, v] of Object.entries(extra))
+      out.push(k === 'onClick' ? `{...clickable(${v})}` : `${k}=${JSON.stringify(v)}`)
   }
   for (const [name, value] of Object.entries(node.attribs)) {
     if (name === 'style') {
@@ -164,7 +180,11 @@ function emit(node, scope, depth) {
     return `{(${valueExpr(node.attribs.list, scope)} as any[]).map((${as}: any, ${idx}: number) => (<Fragment key={${idx}}>${children(node, inner, depth + 1)}</Fragment>))}`
   }
   if (node.name === 'image-slot') return '' // preview tool only (image-slot.js); never shipped
-  const ownText = (node.children ?? []).filter((c) => c.type === 'text').map((c) => c.data).join('').trim()
+  const ownText = (node.children ?? [])
+    .filter((c) => c.type === 'text')
+    .map((c) => c.data)
+    .join('')
+    .trim()
   if (authoring.has(ownText)) {
     const saved = slot
     const savedContent = { ...content }

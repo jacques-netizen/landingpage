@@ -1,0 +1,101 @@
+name: Platform CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: platform-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mde
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test
+      REDIS_URL: redis://localhost:6379
+      AUTH_SECRET: ci-only-secret-not-for-production-0123456789
+      CONTACT_EMAIL: hello@example.com
+      APP_URL: http://localhost:3100
+      # CI has no email provider: magic links go to a local file the end to end tests read.
+      EMAIL_DEV_OUTBOX: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The locked reference screenshots live in Git LFS.
+          lfs: true
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+      - name: Formatting
+        run: pnpm format:check
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Create the test database
+        run: PGPASSWORD=postgres psql -h localhost -U postgres -c 'create database mde_test'
+      - name: Unit and integration tests
+        run: pnpm test
+
+      - name: Migrations match the schema
+        run: |
+          pnpm db:check
+          pnpm --filter @mde/db generate
+          if [ -n "$(git status --porcelain packages/db/migrations)" ]; then
+            echo "The schema changed without a committed migration. Run pnpm db:generate."
+            git status --porcelain packages/db/migrations
+            exit 1
+          fi
+
+      - name: Designed screens match the locked mockups
+        working-directory: apps/web
+        run: |
+          node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isHome HomeDesign home scripts/replacements.home.json
+          node scripts/dc-to-tsx.mjs "Platform Mockups.dc.html" isBrands BrandsDesign brands scripts/replacements.brands.json
+          if [ -n "$(git status --porcelain src/designed)" ]; then
+            echo "A designed screen was edited by hand or the converter changed. The design is locked."
+            git diff --stat src/designed
+            exit 1
+          fi
+
+      - name: Migrate and seed
+        run: pnpm db:migrate && pnpm db:seed
+      - name: Build
+        run: pnpm build
+      - name: Install Chromium
+        # Same Playwright version (and so the same Chromium build) as the reference captures.
+        run: pnpm --filter @mde/web exec playwright install --with-deps chromium
+      - name: End to end and visual tests
+        run: pnpm test:e2e
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
+          retention-days: 7

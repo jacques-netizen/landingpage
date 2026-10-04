@@ -6,8 +6,9 @@ import path from 'node:path'
 
 export type Email = { to: string; subject: string; text: string; html: string }
 
-// Development without EMAIL_API_KEY writes emails to this file instead of sending them.
-// The end to end tests read magic links from it.
+// Without EMAIL_API_KEY, development writes emails to this file instead of sending them, and so
+// does a production build run with EMAIL_DEV_OUTBOX=1 (CI end to end tests only). The tests read
+// magic links from it. A real production deploy without a key fails loudly instead.
 export const DEV_OUTBOX = path.join(os.tmpdir(), 'mde-dev-outbox.jsonl')
 
 // Every email has a plain text version and the legal entity in the footer (03_SYSTEMS.md section 9).
@@ -25,7 +26,8 @@ export async function sendEmail(input: Email) {
   const e = env()
   const email = withFooter(input)
   if (!e.EMAIL_API_KEY) {
-    if (process.env.NODE_ENV === 'production') throw new Error('EMAIL_API_KEY is not set')
+    if (process.env.NODE_ENV === 'production' && process.env.EMAIL_DEV_OUTBOX !== '1')
+      throw new Error('EMAIL_API_KEY is not set')
     fs.appendFileSync(DEV_OUTBOX, JSON.stringify({ ...email, at: new Date().toISOString() }) + '\n')
     console.log(
       JSON.stringify({ level: 'info', msg: 'dev email written to outbox', to: email.to, subject: email.subject }),

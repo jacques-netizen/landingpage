@@ -20,11 +20,25 @@ function redis() {
 export async function rateLimit(key: string, limit: number, windowSeconds: number): Promise<boolean> {
   try {
     const k = `rl:${key}:${Math.floor(Date.now() / 1000 / windowSeconds)}`
-    const count = await redis().incr(k)
-    if (count === 1) await redis().expire(k, windowSeconds)
+    const count = await withTimeout(
+      redis()
+        .multi()
+        .incr(k)
+        .expire(k, windowSeconds, 'NX')
+        .exec()
+        .then((r) => Number(r?.[0]?.[1])),
+      2000,
+    )
     return count <= limit
   } catch (err) {
     console.error(JSON.stringify({ level: 'error', msg: 'rate limiter unavailable', err: String(err) }))
     return true
   }
+}
+
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error('rate limiter timed out')), ms)),
+  ])
 }

@@ -8,3 +8,4 @@ apps/web/.next
 apps/web/src/designed/**
 packages/db/migrations/**
 pnpm-lock.yaml
+apps/web/src/styles/fonts.css
