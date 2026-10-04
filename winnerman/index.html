@@ -66,22 +66,53 @@
   .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
-  /* phone collage */
-  .stack{position:relative;height:min(78vh,640px);min-height:440px}
-  .phone{position:absolute;width:44%;aspect-ratio:9/16;border-radius:22px;overflow:hidden;background:#0b0906;
-    box-shadow:0 40px 80px -30px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.25)}
-  .phone img{width:100%;height:100%;object-fit:cover}
-  .phone:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,8,5,.9))}
-  .phone .pv{position:absolute;left:0.8rem;bottom:0.8rem;z-index:2;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(0.9rem,1.5vw,1.15rem);color:#fff;line-height:1}
-  .phone .pv small{display:block;font-size:0.55em;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-soft);margin-top:0.3rem}
-  .phone.p1{left:2%;top:12%;transform:rotate(-8deg);z-index:1;animation:f1 9s ease-in-out infinite}
-  .phone.p2{left:28%;top:0;transform:rotate(1deg);z-index:3;animation:f2 10s ease-in-out infinite}
-  .phone.p3{left:54%;top:16%;transform:rotate(9deg);z-index:2;animation:f3 11s ease-in-out infinite}
-  @keyframes f1{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-14px)}}
-  @keyframes f2{0%,100%{transform:rotate(1deg) translateY(-6px)}50%{transform:rotate(-1deg) translateY(10px)}}
-  @keyframes f3{0%,100%{transform:rotate(9deg) translateY(0)}50%{transform:rotate(7deg) translateY(-12px)}}
-  .stack-cap{position:absolute;left:0;right:0;bottom:-0.4rem;text-align:center;font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);z-index:4}
-  .stack-cap b{color:var(--gold-soft)}
+  /* EP cover in hero */
+  .cover-art{position:relative;width:min(100%,470px);aspect-ratio:1;justify-self:center;isolation:isolate}
+  .ca-glow{position:absolute;inset:-14%;z-index:-1;background:radial-gradient(circle,rgba(212,178,106,.38),transparent 62%);filter:blur(24px);animation:pulse 6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+  .cover-art img{width:100%;height:100%;object-fit:cover;border-radius:16px;transform:rotate(-2.5deg);
+    box-shadow:0 50px 90px -30px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.3);animation:fl 10s ease-in-out infinite}
+  @keyframes fl{0%,100%{transform:rotate(-2.5deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-12px)}}
+  .ca-badge{position:absolute;z-index:3;display:flex;align-items:center;gap:0.55rem;padding:0.6rem 0.95rem;border-radius:999px;
+    background:rgba(21,18,13,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(235,214,158,.28);
+    font-family:'Archivo',sans-serif;font-size:0.78rem;color:var(--text);white-space:nowrap;box-shadow:0 14px 30px -12px rgba(0,0,0,.8)}
+  .ca-badge b{color:var(--gold-soft);font-weight:800}
+  .ca-badge svg{width:20px;height:20px;flex-shrink:0}
+  .ca-badge.b1{left:-6%;bottom:16%;animation:fl2 8s ease-in-out infinite}
+  .ca-badge.b2{right:-4%;bottom:4%;animation:fl2 9s ease-in-out infinite reverse}
+  @keyframes fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  /* ============ THE ARTIST ============ */
+  .artist{display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(1.8rem,4vw,3.4rem);align-items:start;margin-top:2.4rem}
+  .yt-media{position:relative;aspect-ratio:16/10;border-radius:18px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;
+    box-shadow:0 26px 50px -24px rgba(0,0,0,.9),0 0 0 1px rgba(212,178,106,.22);transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s}
+  .ytile:hover .yt-media{transform:translateY(-5px);box-shadow:0 36px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.38)}
+  .yt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .ytile:hover .yt-media img{transform:scale(1.05)}
+  .yt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;background:linear-gradient(180deg,transparent 45%,rgba(10,8,5,.92) 100%)}
+  .yt-meta{position:absolute;left:1.3rem;bottom:1.2rem;right:1.3rem;z-index:3;transition:opacity .4s}
+  .yt-meta .vt-h{font-size:1.5rem}
+  .yt-media .vt-play{top:50%}
+  .yt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s}
+  .ytile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9);border-color:var(--gold-soft)}
+  .ytile.playing iframe{opacity:1}
+  .ytile.playing .vt-play,.ytile.playing .yt-meta{opacity:0;pointer-events:none}
+  .ytile.playing .yt-media:after{opacity:0}
+  .astats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft)}
+  .as{background:var(--panel);padding:1.3rem 1.1rem;transition:background .3s}
+  .as:hover{background:var(--panel-2)}
+  .as .av{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em}
+  .as .al{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.55rem;line-height:1.4}
+  .ep-card{display:grid;grid-template-columns:110px 1fr;gap:1.1rem;margin-top:1rem;background:var(--panel);border:1px solid var(--hair-soft);padding:1.1rem}
+  .ep-card img{width:110px;height:110px;object-fit:cover;border-radius:8px}
+  .ep-k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light)}
+  .tracks{list-style:none;counter-reset:tr;margin-top:0.55rem}
+  .tracks li{counter-increment:tr;display:flex;align-items:baseline;gap:0.55rem;padding:0.28rem 0;border-bottom:1px solid var(--hair-soft);font-family:'Archivo',sans-serif;font-size:0.86rem;color:var(--text)}
+  .tracks li:last-child{border-bottom:0}
+  .tracks li:before{content:counter(tr);font-weight:800;font-size:0.68rem;color:var(--dim);width:0.9rem}
+  .tracks li em{font-style:normal;font-size:0.62rem;letter-spacing:0.06em;color:var(--mute);margin-left:auto;text-align:right}
+  .tracks li.hot span{color:var(--gold-soft);font-weight:700}
+  .tracks li.hot em{color:var(--gold-light)}
 
   /* ============ BIG NUMBER ROW ============ */
   .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.6rem}
@@ -252,7 +283,8 @@
 
   @media(max-width:1020px){
     .hero-body{grid-template-columns:1fr;gap:1rem}
-    .stack{height:420px;min-height:0;max-width:520px;width:100%;margin:0 auto}
+    .cover-art{width:min(80%,400px);margin:1rem auto 0}
+    .artist{grid-template-columns:1fr}
     .clip-wall{grid-template-columns:repeat(3,minmax(0,1fr))}
     .wall-note{grid-column:1/-1}
     .kpis{grid-template-columns:1fr 1fr}
@@ -267,13 +299,16 @@
     .flow:before,.flow-fill{display:none}
     .tl-rail{grid-template-columns:1fr;row-gap:1.4rem}
     .tl-rail:before,.tl-fill{display:none}
-    .stack{height:340px}
-    .phone{border-radius:16px}
+    .ca-badge{font-size:0.7rem;padding:0.5rem 0.8rem}
+    .ca-badge.b1{left:-4%}
+    .ca-badge.b2{right:-3%}
+    .ep-card{grid-template-columns:84px 1fr}
+    .ep-card img{width:84px;height:84px}
     .note{grid-template-columns:1fr;gap:0.8rem}
   }
   @media(prefers-reduced-motion:reduce){
     .rv{transition:none;opacity:1;transform:none}
-    .scrollcue,.phone,.vt-play:before{animation:none}
+    .scrollcue,.cover-art img,.ca-glow,.ca-badge,.vt-play:before{animation:none}
     .flow-fill{transition:none}
     html{scroll-behavior:auto}
   }
@@ -284,14 +319,15 @@
 <div id="progress"></div>
 <nav id="dots" aria-label="Sections">
   <a href="#s0"><span>Cover</span></a>
-  <a href="#s1"><span>The idea</span></a>
-  <a href="#s2"><span>Targeting</span></a>
-  <a href="#s3"><span>Content angle</span></a>
-  <a href="#s4"><span>Clipping setup</span></a>
-  <a href="#s5"><span>Timeline</span></a>
-  <a href="#s6"><span>Measurement</span></a>
-  <a href="#s7"><span>Proof</span></a>
-  <a href="#s8"><span>Model the campaign</span></a>
+  <a href="#s1"><span>The artist</span></a>
+  <a href="#s2"><span>The idea</span></a>
+  <a href="#s3"><span>Targeting</span></a>
+  <a href="#s4"><span>Content angle</span></a>
+  <a href="#s5"><span>Clipping setup</span></a>
+  <a href="#s6"><span>Timeline</span></a>
+  <a href="#s7"><span>Measurement</span></a>
+  <a href="#s8"><span>Proof</span></a>
+  <a href="#s9"><span>Model the campaign</span></a>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -311,11 +347,11 @@
         <span class="hchip">Paid per <b>verified view</b></span>
       </div>
     </div>
-    <div class="stack rv d2" aria-hidden="true">
-      <div class="phone p1"><img src="img/clips/king30bg.jpg" alt=""><div class="pv">1.9M<small>30BG fanpage</small></div></div>
-      <div class="phone p2"><img src="img/clips/samskid.jpg" alt=""><div class="pv">2.0M<small>30BG skit</small></div></div>
-      <div class="phone p3"><img src="img/clips/bigsamblog.jpg" alt=""><div class="pv">223K<small>Naija blog</small></div></div>
-      <div class="stack-cap">Real posts on the pages we target &middot; <b>4.1M views</b></div>
+    <div class="cover-art rv d2">
+      <div class="ca-glow"></div>
+      <img src="img/ep.jpg" alt="Winnerman's Universe EP cover">
+      <div class="ca-badge b1"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 1.9 3-.3.9 2.9 2.7 1.4-.8 2.9 1.2 2.8-2.4 1.8-.3 3-3 .5-1.7 2.5-2.9-1-2.8 1.2-1.8-2.4-3-.4-.5-3L1.6 12l1-2.8L1.4 6.5l2.7-1.5.8-2.9 3 .3z" fill="#4F8DF5"/><path d="M8 12.2l2.6 2.6L16.4 9" stroke="#fff" stroke-width="2" fill="none"/></svg><span><b>176K</b> on Instagram</span></div>
+      <div class="ca-badge b2"><span><b>6 tracks</b> &middot; out now</span></div>
     </div>
   </div>
   <div class="hero-bot">
@@ -324,13 +360,57 @@
   </div>
 </header>
 
-<!-- ============ 1 THE IDEA ============ -->
+<!-- ============ 1 THE ARTIST ============ -->
 <section class="section" id="s1">
   <div class="wrap">
-    <span class="snum rv">01 &middot; The idea</span>
+    <span class="snum rv">01 &middot; The artist</span>
+    <h2 class="statement rv d1">Winnerman has the music. The audience is the gap.</h2>
+    <div class="artist">
+      <div class="rv d1">
+        <div class="ytile" data-yt="prt8L0AGyFc">
+          <div class="yt-media" role="button" tabindex="0" aria-label="Play Go Crazy official music video">
+            <img src="img/gocrazy.jpg" alt="Winnerman performing live in the Go Crazy music video" loading="lazy">
+            <span class="vt-play" aria-hidden="true"><span></span></span>
+            <div class="yt-meta"><div class="vt-h">Go Crazy</div><div class="vt-s">Official music video &middot; Winnerman's Universe</div></div>
+          </div>
+          <a class="vt-open" href="https://www.youtube.com/watch?v=prt8L0AGyFc" target="_blank" rel="noopener">Watch on YouTube <span>&#8599;</span></a>
+        </div>
+        <p class="body-lg" style="margin-top:1.6rem">Ikeakhe Ehigie, performing as Winnerman. His EP, <b>Winnerman's Universe</b>, came out in April 2026 with six tracks, and his Instagram is verified with 176,000 followers.</p>
+        <p class="body-lg">The people who have found him are there. The job of this campaign is to put these songs in front of the far larger audience that has not found him yet.</p>
+      </div>
+      <div class="rv d2">
+        <div class="astats">
+          <div class="as"><div class="av"><span class="cu" data-target="176">176</span>K</div><div class="al">Instagram followers, verified</div></div>
+          <div class="as"><div class="av"><span class="cu" data-target="1.1" data-dec="1">1.1</span>M</div><div class="al">Likes on TikTok</div></div>
+          <div class="as"><div class="av"><span class="cu" data-target="34.1" data-dec="1">34.1</span>K</div><div class="al">TikTok followers</div></div>
+          <div class="as"><div class="av"><span class="cu" data-target="6">6</span></div><div class="al">Tracks on the EP</div></div>
+        </div>
+        <div class="ep-card">
+          <img src="img/ep.jpg" alt="" aria-hidden="true">
+          <div class="ep-body">
+            <div class="ep-k">Winnerman's Universe &middot; EP &middot; April 2026</div>
+            <ol class="tracks">
+              <li><span>Go Hard</span></li>
+              <li><span>Mon'ami</span></li>
+              <li><span>Give Me Chance</span><em>feat. Sabushebu</em></li>
+              <li class="hot"><span>Go Crazy</span><em>Video out now</em></li>
+              <li><span>Nobody Gat What We Gat</span><em>feat. Badboyquest</em></li>
+              <li><span>Koni</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1 THE IDEA ============ -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The idea</span>
     <h2 class="statement rv d1">The fastest discovery engine in Nigerian music already exists.</h2>
     <p class="body-lg rv d2" style="margin-top:1.8rem">It is the Davido fanbase. OBO, 30BG, and the meme, music and entertainment pages that live around it move millions of views every week, to exactly the audience Winnerman needs: young Nigerians who already listen to Afrobeats and act on what they hear.</p>
-    <p class="body-lg rv d2"><b>We put Winnerman's songs into that stream.</b> Creators on those pages cut fan edits, reaction clips and trend-led content with Winnerman's music carrying them. Every post tags @winnerman and uses the agreed hashtags and sound, so the attention does not stay on the page. It turns into follows and streams.</p>
+    <p class="body-lg rv d2"><b>We put Winnerman's songs into that stream.</b> Creators on those pages cut fan edits, reaction clips and trend-led content with Winnerman's music carrying them. Every post tags @winnermanuniverse and uses the agreed hashtags and sound, so the attention does not stay on the page. It turns into follows and streams.</p>
     <div class="tiles rv d3">
       <div class="tile"><div class="tv"><span class="cu" data-target="4.1" data-dec="1">4.1</span>M</div><div class="tl">Views across three recent posts on the pages we target</div></div>
       <div class="tile"><div class="tv"><span class="cu" data-target="3">3</span></div><div class="tl">Platforms: TikTok, Instagram Reels and X</div></div>
@@ -340,9 +420,9 @@
 </section>
 
 <!-- ============ 2 TARGETING ============ -->
-<section class="section alt" id="s2">
+<section class="section" id="s3">
   <div class="wrap">
-    <span class="snum rv">02 &middot; Targeting</span>
+    <span class="snum rv">03 &middot; Targeting</span>
     <h2 class="statement rv d1">Where the audience already is.</h2>
     <div class="tiers rv d2">
       <div class="tier">
@@ -402,21 +482,21 @@
 </section>
 
 <!-- ============ 3 CONTENT ANGLE ============ -->
-<section class="section" id="s3">
+<section class="section alt" id="s4">
   <div class="wrap">
-    <span class="snum rv">03 &middot; Content angle</span>
+    <span class="snum rv">04 &middot; Content angle</span>
     <h2 class="statement rv d1">Davido's audience, Winnerman's music.</h2>
     <div class="angles rv d2">
       <div class="ang"><div class="an">01</div><h4>Fan edits and reactions</h4><p>Fan edits, reaction clips and <span class="quote-ish">"if you like Davido, you'll like this"</span> content. The format the fanbase already shares.</p></div>
       <div class="ang"><div class="an">02</div><h4>Davido-adjacent trends</h4><p>Winnerman's songs and content paired with the trends and sounds moving through the fanbase, so his music arrives inside something the audience is already watching.</p></div>
-      <div class="ang"><div class="an">03</div><h4>Every view points back</h4><p>Every post tags @winnerman and uses the agreed hashtags and sound. Views convert into follows and streams instead of staying on someone else's page.</p></div>
+      <div class="ang"><div class="an">03</div><h4>Every view points back</h4><p>Every post tags @winnermanuniverse and uses the agreed hashtags and sound. Views convert into follows and streams instead of staying on someone else's page.</p></div>
     </div>
 
     <h3 class="sub rv">How a view becomes a fan</h3>
     <div class="flow rv d1" id="flow">
       <div class="flow-fill" id="flowFill"></div>
       <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg></div><div class="ft">Seen</div><div class="fd">On a fanpage or culture page they already follow</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 0-3.2 6.4M20 12v1.6a2.4 2.4 0 0 1-4.8 0V8.5M15.2 12a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/></svg></div><div class="ft">Tagged</div><div class="fd">@winnerman on every post, with the agreed sound</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 0-3.2 6.4M20 12v1.6a2.4 2.4 0 0 1-4.8 0V8.5M15.2 12a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/></svg></div><div class="ft">Tagged</div><div class="fd">@winnermanuniverse on every post, with the agreed sound</div></div>
       <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M18 8v6M15 11h6"/></svg></div><div class="ft">Follow</div><div class="fd">One tap through to his profile</div></div>
       <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div><div class="ft">Stream</div><div class="fd">Into the songs themselves</div></div>
     </div>
@@ -424,9 +504,9 @@
 </section>
 
 <!-- ============ 4 CLIPPING SETUP ============ -->
-<section class="section alt" id="s4">
+<section class="section" id="s5">
   <div class="wrap">
-    <span class="snum rv">04 &middot; Clipping setup</span>
+    <span class="snum rv">05 &middot; Clipping setup</span>
     <h2 class="statement rv d1">Paid on verified views, and nothing else.</h2>
     <div class="setup rv d2">
       <div class="mc">
@@ -438,7 +518,7 @@
         <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3.5v5.5c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6.5L12 3z"/></svg></div>
         <h5>Rules</h5>
         <ul>
-          <li>The @winnerman tag is required</li>
+          <li>The @winnermanuniverse tag is required</li>
           <li>A minimum quality bar on every clip</li>
           <li>No botted views</li>
           <li>No deleting posts early</li>
@@ -454,9 +534,9 @@
 </section>
 
 <!-- ============ 5 TIMELINE ============ -->
-<section class="section" id="s5">
+<section class="section alt" id="s6">
   <div class="wrap">
-    <span class="snum rv">05 &middot; Execution timeline</span>
+    <span class="snum rv">06 &middot; Execution timeline</span>
     <h2 class="statement rv d1">Four weeks, three phases.</h2>
     <div class="tl-rail rv d2">
       <div class="tl-fill" id="tlFill"></div>
@@ -469,14 +549,14 @@
 </section>
 
 <!-- ============ 6 MEASUREMENT ============ -->
-<section class="section alt" id="s6">
+<section class="section" id="s7">
   <div class="wrap">
-    <span class="snum rv">06 &middot; Measurement</span>
+    <span class="snum rv">07 &middot; Measurement</span>
     <h2 class="statement rv d1">What we track, and what you get.</h2>
     <div class="kpis rv d2">
       <div class="kpi"><div class="kn">KPI 01</div><h5>Total views and cost per thousand</h5><p>The core reach number, and what each thousand views actually cost.</p></div>
       <div class="kpi"><div class="kn">KPI 02</div><h5>Active creators and pages</h5><p>How wide the campaign is running across the target pages.</p></div>
-      <div class="kpi"><div class="kn">KPI 03</div><h5>Tags and follower growth</h5><p>@winnerman tag mentions and growth on his own profile.</p></div>
+      <div class="kpi"><div class="kn">KPI 03</div><h5>Tags and follower growth</h5><p>@winnermanuniverse tag mentions and growth on his own profile.</p></div>
       <div class="kpi"><div class="kn">KPI 04</div><h5>Top clips and pages</h5><p>What performed best, which sets up the next round.</p></div>
     </div>
     <h3 class="sub rv">Deliverables</h3>
@@ -488,9 +568,9 @@
 </section>
 
 <!-- ============ 7 PROOF ============ -->
-<section class="section" id="s7">
+<section class="section alt" id="s8">
   <div class="wrap">
-    <span class="snum rv">07 &middot; Proof</span>
+    <span class="snum rv">08 &middot; Proof</span>
     <h2 class="statement rv d1">This is the volume we already move.</h2>
     <div class="proof-grid rv d2">
       <div class="pf lead"><div class="pv"><span class="cu" data-target="1.3" data-dec="1">1.3</span>B+</div><div class="pl">Total views generated to date</div></div>
@@ -512,9 +592,9 @@
 </section>
 
 <!-- ============ 8 MODEL THE CAMPAIGN ============ -->
-<section class="section alt" id="s8">
+<section class="section" id="s9">
   <div class="wrap">
-    <span class="snum rv">08 &middot; Model the campaign</span>
+    <span class="snum rv">09 &middot; Model the campaign</span>
     <h2 class="statement rv d1">Set the budget.</h2>
     <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, creator sourcing, quality control and reporting are included.</p>
     <div class="model rv d2">
@@ -605,6 +685,23 @@
   window.addEventListener('message',e=>{
     if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
     try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
+  });
+
+  /* music video: tap to load the player */
+  document.querySelectorAll('.ytile').forEach(t=>{
+    const m=t.querySelector('.yt-media');
+    const go=()=>{
+      if(t.classList.contains('playing')) return;
+      const f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+t.dataset.yt+'?autoplay=1&playsinline=1&rel=0&modestbranding=1';
+      f.title='Go Crazy, official music video';
+      f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.setAttribute('allowfullscreen','');
+      m.appendChild(f);
+      t.classList.add('playing');
+    };
+    m.addEventListener('click',go);
+    m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
   });
 
   /* model: budget at $2 per thousand verified views */
