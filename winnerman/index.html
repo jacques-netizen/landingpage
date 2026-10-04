@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Winnerman &middot; Campaign Outline &middot; Maison d'&Eacute;lites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --green:#3E8E5A; --red:#B5553F;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+  img{display:block;max-width:100%}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:26ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .section{padding:clamp(4.2rem,10vh,7.5rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3.2rem 0 1.2rem}
+  .alt{background:var(--panel)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%),var(--bg)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.05fr 0.95fr;gap:2rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3.2rem,9.4vw,8rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.36em;letter-spacing:0.02em;color:var(--gold-soft);margin-top:0.6rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.86;margin-top:1.8rem;max-width:44ch;line-height:1.5}
+  .hero-chips{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:2rem}
+  .hchip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 0.95rem;border:1px solid var(--hair);color:var(--text);border-radius:999px;background:rgba(31,25,17,.6)}
+  .hchip b{color:var(--gold-soft)}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* phone collage */
+  .stack{position:relative;height:min(78vh,640px);min-height:440px}
+  .phone{position:absolute;width:44%;aspect-ratio:9/16;border-radius:22px;overflow:hidden;background:#0b0906;
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.25)}
+  .phone img{width:100%;height:100%;object-fit:cover}
+  .phone:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,8,5,.9))}
+  .phone .pv{position:absolute;left:0.8rem;bottom:0.8rem;z-index:2;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(0.9rem,1.5vw,1.15rem);color:#fff;line-height:1}
+  .phone .pv small{display:block;font-size:0.55em;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-soft);margin-top:0.3rem}
+  .phone.p1{left:2%;top:12%;transform:rotate(-8deg);z-index:1;animation:f1 9s ease-in-out infinite}
+  .phone.p2{left:28%;top:0;transform:rotate(1deg);z-index:3;animation:f2 10s ease-in-out infinite}
+  .phone.p3{left:54%;top:16%;transform:rotate(9deg);z-index:2;animation:f3 11s ease-in-out infinite}
+  @keyframes f1{0%,100%{transform:rotate(-8deg) translateY(0)}50%{transform:rotate(-6deg) translateY(-14px)}}
+  @keyframes f2{0%,100%{transform:rotate(1deg) translateY(-6px)}50%{transform:rotate(-1deg) translateY(10px)}}
+  @keyframes f3{0%,100%{transform:rotate(9deg) translateY(0)}50%{transform:rotate(7deg) translateY(-12px)}}
+  .stack-cap{position:absolute;left:0;right:0;bottom:-0.4rem;text-align:center;font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);z-index:4}
+  .stack-cap b{color:var(--gold-soft)}
+
+  /* ============ BIG NUMBER ROW ============ */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.6rem}
+  .tile{background:var(--panel);padding:1.6rem 1.3rem;transition:background .3s}
+  .tile:hover{background:var(--panel-2)}
+  .tile .tv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.7rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.025em}
+  .tile .tl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.65rem;line-height:1.45}
+
+  /* ============ TARGET TIERS ============ */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .tier{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.6rem 1.5rem;overflow:hidden;transition:.4s}
+  .tier:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .tier:hover{transform:translateY(-6px);border-color:var(--hair);background:var(--panel-2)}
+  .tier:hover:before{width:100%}
+  .tier .tk{display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.3rem 0.6rem;background:var(--gold);color:var(--bg)}
+  .tier .tk.s{background:transparent;color:var(--gold-light);border:1px solid var(--gold)}
+  .tier h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.22rem;line-height:1.15;margin:1rem 0 0.7rem;letter-spacing:-0.01em}
+  .tier ul{list-style:none}
+  .tier li{font-size:0.96rem;color:var(--mute);padding:0.45rem 0;border-top:1px solid var(--hair-soft);line-height:1.5}
+  .tier li:first-child{border-top:0}
+
+  /* ============ CLIP TILES ============ */
+  .clip-wall{display:grid;grid-template-columns:repeat(3,minmax(0,300px)) 1fr;gap:1.3rem;align-items:start;margin-top:1.2rem}
+  .wall-note{align-self:center}
+  .wall-note .big{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.8rem,6vw,4.4rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .wall-note .bl{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem}
+  .wall-note p{font-size:1.02rem;color:var(--mute);margin-top:1.4rem;line-height:1.62}
+  .wall-note p b{color:var(--text);font-weight:500}
+  .vtile{position:relative}
+  .vt-media{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;
+    box-shadow:0 22px 44px -22px rgba(0,0,0,.85),0 0 0 1px rgba(212,178,106,.2);
+    transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media,.vt-media:focus-visible{transform:translateY(-6px);outline:none;
+    box-shadow:0 34px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.4)}
+  .vt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media img{transform:scale(1.06)}
+  .vt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;
+    background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 20%,transparent 46%,rgba(10,8,5,.72) 70%,rgba(10,8,5,.97) 100%)}
+  .vt-views{position:absolute;top:0.85rem;left:0.85rem;z-index:3;display:flex;align-items:center;gap:0.45rem;
+    padding:0.42rem 0.72rem;border-radius:999px;background:rgba(15,12,8,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(235,214,158,.25);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.76rem;color:var(--gold-soft);transition:opacity .4s}
+  .vt-views i{width:0;height:0;border-left:7px solid var(--gold-light);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+  .vt-play{position:absolute;left:50%;top:46%;z-index:3;width:74px;height:74px;transform:translate(-50%,-50%);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.4);transition:transform .45s cubic-bezier(.2,.7,.2,1),background .45s,opacity .4s}
+  .vt-play:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(212,178,106,.55);animation:ring 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+  .vt-play > span{width:0;height:0;margin-left:6px;border-left:21px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent}
+  .vtile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9);border-color:var(--gold-soft)}
+  @keyframes ring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+  .vt-meta{position:absolute;left:1rem;right:1rem;bottom:1rem;z-index:3;transition:opacity .4s}
+  .vt-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-0.01em}
+  .vt-s{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(239,231,213,.72);margin-top:0.3rem;line-height:1.4}
+  .vt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s ease}
+  .vtile.loading .vt-play > span{border:0;width:26px;height:26px;margin:0;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vtile.playing iframe{opacity:1}
+  .vtile.playing .vt-play,.vtile.playing .vt-meta,.vtile.playing .vt-views{opacity:0;pointer-events:none}
+  .vtile.playing .vt-media:after{opacity:0}
+  .vtile.playing .vt-media{cursor:default}
+  .vt-open{display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.8rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.62rem;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .25s}
+  .vt-open:hover{color:var(--gold-soft)}
+  .vt-open span{font-size:0.85rem}
+
+  /* ============ CONTENT ANGLES ============ */
+  .angles{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .ang{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.7rem 1.5rem 1.6rem;overflow:hidden;transition:.4s;min-height:250px}
+  .ang:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .ang:hover{transform:translateY(-6px);border-color:var(--hair);background:var(--panel-2)}
+  .ang:hover:before{width:100%}
+  .ang .an{font-family:'Archivo',sans-serif;font-weight:800;font-size:3.2rem;line-height:0.85;color:var(--panel-3);transition:color .4s}
+  .ang:hover .an{color:var(--gold)}
+  .ang h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.15;margin:1rem 0 0.7rem;letter-spacing:-0.01em}
+  .ang p{font-size:0.97rem;color:var(--mute);line-height:1.6}
+  .ang .quote-ish{font-style:italic;color:var(--gold-soft)}
+
+  /* conversion flow */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:2.6rem;position:relative}
+  .flow:before{content:"";position:absolute;left:12.5%;right:12.5%;top:34px;height:2px;background:var(--panel-3)}
+  .flow-fill{position:absolute;left:12.5%;top:34px;height:2px;background:var(--gold);width:0;transition:width 2.2s cubic-bezier(.3,.6,.2,1)}
+  .fs{position:relative;text-align:center;padding:0 0.8rem;z-index:2}
+  .fs .fi{width:68px;height:68px;margin:0 auto;border-radius:50%;background:var(--bg);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;transition:border-color .5s,background .5s,transform .5s}
+  .fs .fi svg{width:26px;height:26px;stroke:var(--mute);fill:none;stroke-width:1.7;transition:stroke .5s}
+  .fs.lit .fi{border-color:var(--gold);background:var(--panel-2);transform:scale(1.06)}
+  .fs.lit .fi svg{stroke:var(--gold-soft)}
+  .fs .ft{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;margin-top:1rem;color:var(--dim);transition:color .5s}
+  .fs.lit .ft{color:var(--text)}
+  .fs .fd{font-size:0.92rem;color:var(--mute);margin-top:0.4rem;line-height:1.5}
+
+  /* ============ SETUP RULES ============ */
+  .setup{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .mc{background:var(--panel);border:1px solid var(--hair-soft);padding:1.6rem 1.4rem;transition:.35s}
+  .mc:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .mc .ic{width:44px;height:44px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem}
+  .mc .ic svg{width:21px;height:21px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .mc h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .mc p{font-size:0.95rem;color:var(--mute);margin-top:0.55rem;line-height:1.58}
+  .mc ul{list-style:none;margin-top:0.7rem}
+  .mc li{font-size:0.94rem;color:var(--mute);padding:0.42rem 0 0.42rem 1.2rem;position:relative;line-height:1.45}
+  .mc li:before{content:"";position:absolute;left:0;top:0.95rem;width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+
+  /* ============ TIMELINE ============ */
+  .tl-rail{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:2rem}
+  .tl-rail:before{content:"";position:absolute;left:0;right:0;top:19px;height:2px;background:var(--panel-3)}
+  .tl-fill{position:absolute;left:0;top:19px;height:2px;background:var(--gold);width:33.3%;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .tl-step{position:relative;background:none;border:0;cursor:pointer;text-align:left;padding:0 1rem 0 0;color:inherit}
+  .tl-step .node{width:40px;height:40px;border-radius:50%;background:var(--bg);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--mute);transition:.3s;position:relative;z-index:2}
+  .tl-step.on .node,.tl-step.done .node{border-color:var(--gold);color:var(--gold-soft)}
+  .tl-step.on .node{background:var(--gold);color:var(--bg)}
+  .tl-step .when{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:1rem;transition:.3s}
+  .tl-step.on .when{color:var(--gold-light)}
+  .tl-step .what{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;margin-top:0.3rem;color:var(--text)}
+  .tl-panel{margin-top:2rem;background:var(--panel);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:clamp(1.4rem,3vw,2rem);min-height:110px}
+  .tl-panel p{font-size:1.06rem;color:var(--text);line-height:1.65;max-width:70ch;animation:fadeup .45s ease}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* ============ KPI / DELIVERABLES ============ */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.4rem}
+  .kpi{background:var(--panel);border:1px solid var(--hair-soft);padding:1.4rem 1.3rem;transition:.35s}
+  .kpi:hover{border-color:var(--hair);background:var(--panel-2)}
+  .kpi .kn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;letter-spacing:0.16em;color:var(--gold-light)}
+  .kpi h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;margin-top:0.8rem;line-height:1.25}
+  .kpi p{font-size:0.92rem;color:var(--mute);margin-top:0.5rem;line-height:1.5}
+  .deliv{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .dv{display:flex;gap:1.2rem;align-items:flex-start;background:var(--panel-2);border:1px solid var(--hair-soft);padding:1.4rem 1.4rem}
+  .dv .di{flex-shrink:0;width:46px;height:46px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center}
+  .dv .di svg{width:22px;height:22px;stroke:var(--bg);fill:none;stroke-width:2}
+  .dv h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.02rem}
+  .dv p{font-size:0.94rem;color:var(--mute);margin-top:0.35rem;line-height:1.5}
+
+  /* ============ PROOF ============ */
+  .proof-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .pf{background:var(--bg);padding:clamp(1.6rem,3.4vw,2.5rem) clamp(1.2rem,2.6vw,1.8rem)}
+  .pf .pv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,4.4rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .pf.lead .pv{font-size:clamp(3.2rem,8.5vw,6.4rem)}
+  .pf .pl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.9rem;line-height:1.45}
+  .clients{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.8rem;align-items:center}
+  .clients .cl-l{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-right:0.4rem}
+  .chip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;padding:0.55rem 1rem;border:1px solid var(--hair);color:var(--text)}
+
+  /* ============ NOTE ============ */
+  .note{display:grid;grid-template-columns:auto 1fr;gap:1.4rem;align-items:start;background:linear-gradient(135deg,var(--panel-3),var(--panel));border:1px solid var(--hair);padding:clamp(1.5rem,3.2vw,2.2rem);margin-top:2rem}
+  .note .ni{width:48px;height:48px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center}
+  .note .ni svg{width:22px;height:22px;stroke:var(--gold-light);fill:none;stroke-width:1.7}
+  .note p{font-size:1.02rem;color:var(--mute);line-height:1.65;max-width:72ch}
+  .note p + p{margin-top:0.8rem}
+  .note p b{color:var(--text);font-weight:500}
+
+  /* ============ MODEL (final calculator) ============ */
+  .model{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 55%);border:1px solid var(--hair);padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--panel-3) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .o{background:var(--bg);padding:1.5rem 1.1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(2rem,5vw,3.4rem)}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:1rem}
+    .stack{height:420px;min-height:0;max-width:520px;width:100%;margin:0 auto}
+    .clip-wall{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .wall-note{grid-column:1/-1}
+    .kpis{grid-template-columns:1fr 1fr}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .tiers,.angles,.setup,.deliv,.proof-grid,.tiles,.kpis{grid-template-columns:1fr}
+    .clip-wall{grid-template-columns:1fr}
+    .clip-wall .vtile{max-width:320px}
+    .flow{grid-template-columns:1fr 1fr;row-gap:2rem}
+    .flow:before,.flow-fill{display:none}
+    .tl-rail{grid-template-columns:1fr;row-gap:1.4rem}
+    .tl-rail:before,.tl-fill{display:none}
+    .stack{height:340px}
+    .phone{border-radius:16px}
+    .note{grid-template-columns:1fr;gap:0.8rem}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue,.phone,.vt-play:before{animation:none}
+    .flow-fill{transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>The idea</span></a>
+  <a href="#s2"><span>Targeting</span></a>
+  <a href="#s3"><span>Content angle</span></a>
+  <a href="#s4"><span>Clipping setup</span></a>
+  <a href="#s5"><span>Timeline</span></a>
+  <a href="#s6"><span>Measurement</span></a>
+  <a href="#s7"><span>Proof</span></a>
+  <a href="#s8"><span>Model the campaign</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top">
+    <div class="mark">Maison <b>d'&Eacute;lites</b></div>
+    <div class="label" style="color:var(--mute)">Campaign Outline &middot; Private &amp; Confidential</div>
+  </div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Creator-led clipping &middot; Nigeria and wider Africa</span>
+      <h1 class="rv d1">Winnerman<span>Into the Davido feed</span></h1>
+      <p class="hero-sub rv d2">Pushing Winnerman's music and content to Nigerian and wider African audiences through creator-led clipping and the reach of the Davido fanbase.</p>
+      <div class="hero-chips rv d3">
+        <span class="hchip"><b>4</b> weeks</span>
+        <span class="hchip">TikTok &middot; Reels &middot; X</span>
+        <span class="hchip">Paid per <b>verified view</b></span>
+      </div>
+    </div>
+    <div class="stack rv d2" aria-hidden="true">
+      <div class="phone p1"><img src="img/clips/king30bg.jpg" alt=""><div class="pv">1.9M<small>30BG fanpage</small></div></div>
+      <div class="phone p2"><img src="img/clips/samskid.jpg" alt=""><div class="pv">2.0M<small>30BG skit</small></div></div>
+      <div class="phone p3"><img src="img/clips/bigsamblog.jpg" alt=""><div class="pv">223K<small>Naija blog</small></div></div>
+      <div class="stack-cap">Real posts on the pages we target &middot; <b>4.1M views</b></div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d4" style="color:var(--mute)">Prepared October 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 1 THE IDEA ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; The idea</span>
+    <h2 class="statement rv d1">The fastest discovery engine in Nigerian music already exists.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.8rem">It is the Davido fanbase. OBO, 30BG, and the meme, music and entertainment pages that live around it move millions of views every week, to exactly the audience Winnerman needs: young Nigerians who already listen to Afrobeats and act on what they hear.</p>
+    <p class="body-lg rv d2"><b>We put Winnerman's songs into that stream.</b> Creators on those pages cut fan edits, reaction clips and trend-led content with Winnerman's music carrying them. Every post tags @winnerman and uses the agreed hashtags and sound, so the attention does not stay on the page. It turns into follows and streams.</p>
+    <div class="tiles rv d3">
+      <div class="tile"><div class="tv"><span class="cu" data-target="4.1" data-dec="1">4.1</span>M</div><div class="tl">Views across three recent posts on the pages we target</div></div>
+      <div class="tile"><div class="tv"><span class="cu" data-target="3">3</span></div><div class="tl">Platforms: TikTok, Instagram Reels and X</div></div>
+      <div class="tile"><div class="tv"><span class="cu" data-target="4">4</span> weeks</div><div class="tl">From onboarding to final report</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 TARGETING ============ -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; Targeting</span>
+    <h2 class="statement rv d1">Where the audience already is.</h2>
+    <div class="tiers rv d2">
+      <div class="tier">
+        <span class="tk">Primary</span>
+        <h4>Nigerian meme, music and entertainment pages</h4>
+        <ul><li>The pages young Nigerians scroll every day</li><li>Broad reach into the core listening audience</li></ul>
+      </div>
+      <div class="tier">
+        <span class="tk">Primary</span>
+        <h4>Davido fanpages</h4>
+        <ul><li>OBO fanbase</li><li>30BG pages</li><li>Davido clip and update accounts</li></ul>
+      </div>
+      <div class="tier">
+        <span class="tk s">Secondary</span>
+        <h4>Afrobeats and Naija culture pages</h4>
+        <ul><li>TikTok</li><li>Instagram Reels</li><li>X</li></ul>
+      </div>
+    </div>
+
+    <h3 class="sub rv">What those pages already do</h3>
+    <div class="clip-wall">
+      <div class="vtile rv d1" data-id="7472827838186458373">
+        <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @samskid_">
+          <img src="img/clips/samskid.jpg" alt="When she's a 30BG skit" loading="lazy">
+          <span class="vt-views"><i></i>2.0M views</span>
+          <span class="vt-play" aria-hidden="true"><span></span></span>
+          <div class="vt-meta"><div class="vt-h">@samskid_</div><div class="vt-s">30BG fan-culture skit &middot; 253K likes</div></div>
+        </div>
+        <a class="vt-open" href="https://www.tiktok.com/@samskid_/video/7472827838186458373" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+      </div>
+      <div class="vtile rv d2" data-id="7504825508098575622">
+        <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @king.t9881">
+          <img src="img/clips/king30bg.jpg" alt="30BG fanpage clip" loading="lazy">
+          <span class="vt-views"><i></i>1.9M views</span>
+          <span class="vt-play" aria-hidden="true"><span></span></span>
+          <div class="vt-meta"><div class="vt-h">@king.t9881</div><div class="vt-s">30BG fanpage &middot; 234K likes</div></div>
+        </div>
+        <a class="vt-open" href="https://www.tiktok.com/@king.t9881/video/7504825508098575622" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+      </div>
+      <div class="vtile rv d3" data-id="7485084551090310455">
+        <div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @bigsamblog">
+          <img src="img/clips/bigsamblog.jpg" alt="Naija blog clip" loading="lazy">
+          <span class="vt-views"><i></i>223K views</span>
+          <span class="vt-play" aria-hidden="true"><span></span></span>
+          <div class="vt-meta"><div class="vt-h">@bigsamblog</div><div class="vt-s">Naija entertainment page &middot; 14.4K likes</div></div>
+        </div>
+        <a class="vt-open" href="https://www.tiktok.com/@bigsamblog/video/7485084551090310455" target="_blank" rel="noopener">Open on TikTok <span>&#8599;</span></a>
+      </div>
+      <div class="wall-note rv d4">
+        <div class="big"><span class="cu" data-target="4.1" data-dec="1">4.1</span>M</div>
+        <div class="bl">Views across three posts</div>
+        <p>A fan-culture skit, a fanpage clip and a blog page. <b>Each one is a page type in this plan.</b></p>
+        <p>The audience is already there and already watching. The campaign gives those pages Winnerman's music to carry, and gives every view a tag that leads back to him.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 CONTENT ANGLE ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; Content angle</span>
+    <h2 class="statement rv d1">Davido's audience, Winnerman's music.</h2>
+    <div class="angles rv d2">
+      <div class="ang"><div class="an">01</div><h4>Fan edits and reactions</h4><p>Fan edits, reaction clips and <span class="quote-ish">"if you like Davido, you'll like this"</span> content. The format the fanbase already shares.</p></div>
+      <div class="ang"><div class="an">02</div><h4>Davido-adjacent trends</h4><p>Winnerman's songs and content paired with the trends and sounds moving through the fanbase, so his music arrives inside something the audience is already watching.</p></div>
+      <div class="ang"><div class="an">03</div><h4>Every view points back</h4><p>Every post tags @winnerman and uses the agreed hashtags and sound. Views convert into follows and streams instead of staying on someone else's page.</p></div>
+    </div>
+
+    <h3 class="sub rv">How a view becomes a fan</h3>
+    <div class="flow rv d1" id="flow">
+      <div class="flow-fill" id="flowFill"></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg></div><div class="ft">Seen</div><div class="fd">On a fanpage or culture page they already follow</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 0-3.2 6.4M20 12v1.6a2.4 2.4 0 0 1-4.8 0V8.5M15.2 12a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/></svg></div><div class="ft">Tagged</div><div class="fd">@winnerman on every post, with the agreed sound</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M18 8v6M15 11h6"/></svg></div><div class="ft">Follow</div><div class="fd">One tap through to his profile</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div><div class="ft">Stream</div><div class="fd">Into the songs themselves</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 CLIPPING SETUP ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Clipping setup</span>
+    <h2 class="statement rv d1">Paid on verified views, and nothing else.</h2>
+    <div class="setup rv d2">
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+        <h5>Payout</h5>
+        <p>Creators are paid per verified view. No views, no pay. The budget goes into reach rather than into fees for posts that go nowhere.</p>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3.5v5.5c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6.5L12 3z"/></svg></div>
+        <h5>Rules</h5>
+        <ul>
+          <li>The @winnerman tag is required</li>
+          <li>A minimum quality bar on every clip</li>
+          <li>No botted views</li>
+          <li>No deleting posts early</li>
+        </ul>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h5>Tracking</h5>
+        <p>Creators submit their links, we verify the views, and payouts go out weekly. Anything that fails verification is not paid.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 TIMELINE ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; Execution timeline</span>
+    <h2 class="statement rv d1">Four weeks, three phases.</h2>
+    <div class="tl-rail rv d2">
+      <div class="tl-fill" id="tlFill"></div>
+      <button class="tl-step on" data-i="0"><div class="node">1</div><div class="when">Week 1</div><div class="what">Set up and launch</div></button>
+      <button class="tl-step" data-i="1"><div class="node">2</div><div class="when">Weeks 2 and 3</div><div class="what">The main push</div></button>
+      <button class="tl-step" data-i="2"><div class="node">3</div><div class="when">Week 4</div><div class="what">Scale and close</div></button>
+    </div>
+    <div class="tl-panel rv d3"><p id="tlText"></p></div>
+  </div>
+</section>
+
+<!-- ============ 6 MEASUREMENT ============ -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Measurement</span>
+    <h2 class="statement rv d1">What we track, and what you get.</h2>
+    <div class="kpis rv d2">
+      <div class="kpi"><div class="kn">KPI 01</div><h5>Total views and cost per thousand</h5><p>The core reach number, and what each thousand views actually cost.</p></div>
+      <div class="kpi"><div class="kn">KPI 02</div><h5>Active creators and pages</h5><p>How wide the campaign is running across the target pages.</p></div>
+      <div class="kpi"><div class="kn">KPI 03</div><h5>Tags and follower growth</h5><p>@winnerman tag mentions and growth on his own profile.</p></div>
+      <div class="kpi"><div class="kn">KPI 04</div><h5>Top clips and pages</h5><p>What performed best, which sets up the next round.</p></div>
+    </div>
+    <h3 class="sub rv">Deliverables</h3>
+    <div class="deliv rv d1">
+      <div class="dv"><div class="di"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div><div><h5>Weekly performance report</h5><p>Views, creators, top posts and spend, every week of the campaign.</p></div></div>
+      <div class="dv"><div class="di"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div><h5>End-of-campaign summary</h5><p>Top clips, spend breakdown and recommendations for scaling.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 PROOF ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Proof</span>
+    <h2 class="statement rv d1">This is the volume we already move.</h2>
+    <div class="proof-grid rv d2">
+      <div class="pf lead"><div class="pv"><span class="cu" data-target="1.3" data-dec="1">1.3</span>B+</div><div class="pl">Total views generated to date</div></div>
+      <div class="pf"><div class="pv"><span class="cu" data-target="160">160</span>M+</div><div class="pl">Views in the last 90 days alone</div></div>
+    </div>
+    <div class="clients rv d3">
+      <span class="cl-l">Clients include</span>
+      <span class="chip">Wale</span><span class="chip">Walmart</span><span class="chip">Jake Paul</span><span class="chip">Logan Paul</span>
+    </div>
+
+    <div class="note rv">
+      <div class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg></div>
+      <div>
+        <p><b>On the use of Davido's name.</b> This campaign uses Davido's name and fanbase culture as a discovery angle only. Content stays within fan-culture framing, meaning edits, references and commentary, with Winnerman's own music carrying the clips.</p>
+        <p>Davido's official audio and footage are not used without clearance, since that leads to takedowns. Davido is not endorsing or affiliated with this campaign.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 MODEL THE CAMPAIGN ============ -->
+<section class="section alt" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; Model the campaign</span>
+    <h2 class="statement rv d1">Set the budget.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, creator sourcing, quality control and reporting are included.</p>
+    <div class="model rv d2">
+      <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">USD 2,000</span></div>
+      <input type="range" id="budget" min="2000" max="20000" step="500" value="2000" aria-label="Campaign budget">
+      <div class="range-ends"><span>USD 2,000</span><span>USD 20,000</span></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oViews">1M</div><div class="ol">Verified views</div></div>
+        <div class="o"><div class="ov" id="oWeek">250K</div><div class="ol">Views per week</div></div>
+        <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per thousand views</div></div>
+      </div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder</div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=[...document.querySelectorAll('#dots a')];
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  /* count-ups */
+  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
+  once(document.querySelectorAll('.cu'),el=>{
+    const t=parseFloat(el.dataset.target);
+    if(reduce){el.textContent=fmt(t,el);return;}
+    const dur=1300,s=performance.now();
+    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
+  },0.5);
+
+  /* conversion flow lights up step by step */
+  once([document.getElementById('flow')],el=>{
+    const steps=[...el.querySelectorAll('.fs')], fill=document.getElementById('flowFill');
+    if(reduce){steps.forEach(s=>s.classList.add('lit'));fill.style.width='75%';return;}
+    fill.style.width='75%';
+    steps.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),i*650));
+  },0.45);
+
+  /* timeline */
+  const TL=[
+    'Onboarding and final assets: the songs, the clips and the brief. The creator and page list is built across the target tiers, and the brief goes live to the network.',
+    'The main push. Daily submissions come in and go through quality review. We watch which pages and formats perform and put more behind them every day.',
+    'Underperformers are cut and the winners are scaled. Payouts are closed out and the final report is delivered, with the top clips, the spend breakdown and the recommendations for the next round.'
+  ];
+  const steps=[...document.querySelectorAll('.tl-step')],tlText=document.getElementById('tlText'),tlFill=document.getElementById('tlFill');
+  function setTL(i){
+    steps.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i);});
+    tlFill.style.width=((i+1)/steps.length*100)+'%';
+    tlText.style.animation='none';void tlText.offsetWidth;tlText.style.animation='';
+    tlText.textContent=TL[i];
+  }
+  steps.forEach((s,i)=>s.addEventListener('click',()=>setTL(i)));
+  setTL(0);
+
+  /* clip tiles: tap to load TikTok's lightweight player */
+  const P='?autoplay=1&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=1&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0';
+  function playTile(t){
+    if(t.classList.contains('playing')||t.classList.contains('loading')) return;
+    t.classList.add('loading');
+    const f=document.createElement('iframe');
+    f.src='https://www.tiktok.com/player/v1/'+t.dataset.id+P;
+    f.title='TikTok clip';
+    f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
+    f.setAttribute('allowfullscreen','');
+    f.addEventListener('load',()=>{t.classList.remove('loading');t.classList.add('playing');});
+    t.querySelector('.vt-media').appendChild(f);
+    setTimeout(()=>{t.classList.remove('loading');t.classList.add('playing');},4000);
+  }
+  document.querySelectorAll('.vtile').forEach(t=>{
+    const m=t.querySelector('.vt-media');
+    m.addEventListener('click',()=>playTile(t));
+    m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});
+  });
+  window.addEventListener('message',e=>{
+    if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
+    try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
+  });
+
+  /* model: budget at $2 per thousand verified views */
+  const CPM=2, WEEKS=4;
+  const bS=document.getElementById('budget');
+  const m=n=>n>=1e6?(n/1e6).toFixed(n>=1e7?1:2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
+  function calc(){
+    const b=+bS.value, views=b/CPM*1000;
+    document.getElementById('budgetVal').textContent='USD '+b.toLocaleString('en-US');
+    document.getElementById('oViews').textContent=m(views);
+    document.getElementById('oWeek').textContent=m(views/WEEKS);
+    bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
+  }
+  bS.addEventListener('input',calc); calc();
+})();
+</script>
+</body>
+</html>
