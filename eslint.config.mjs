@@ -7,6 +7,10 @@ export default tseslint.config(
     ignores: ['**/node_modules/**', '**/.next/**', '**/dist/**', 'packages/db/migrations/**', 'apps/web/next-env.d.ts', 'apps/web/test-results/**', 'apps/web/playwright-report/**'],
   },
   js.configs.recommended,
+  {
+    files: ['**/*.mjs'],
+    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+  },
   ...tseslint.configs.recommended,
   {
     rules: {

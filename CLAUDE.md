@@ -48,4 +48,6 @@ Where things live:
 
 ## Repository notes
 
+- Next.js 16 changed APIs and conventions. Its docs ship in `apps/web/node_modules/next/dist/docs/`; read the relevant guide before using a Next.js API.
+
 - This repository also holds the existing Maison d'Élites static site, deployed as a Cloudflare Worker that serves the repo root. Anything that must not be public (docs, apps, packages, tooling) is listed in `.assetsignore`. Keep it that way.

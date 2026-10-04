@@ -1,0 +1,70 @@
+@import './fonts.css';
+/* No Tailwind preflight: the designed screens rely on browser defaults exactly like the mockups. */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '@mde/ui/tokens.css';
+@source '../../../../packages/ui/src';
+
+/* Page base and animations, copied from the mockups' <helmet> block. */
+body {
+  margin: 0;
+  background: #f2eee6;
+  color: #1a1510;
+  font-family: 'Archivo', Inter, system-ui, sans-serif;
+}
+a {
+  color: #1a1510;
+}
+a:hover {
+  color: #6e675c;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-25%);
+  }
+}
+@keyframes marqueeR {
+  from {
+    transform: translateX(-25%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r));
+  }
+  50% {
+    transform: translateY(-6px) rotate(var(--r));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}
+
+/* Visible focus for keyboard users on designed elements made clickable (no change for mouse users). */
+[role='link']:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid #1a1510;
+  outline-offset: 2px;
+}

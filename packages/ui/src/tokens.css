@@ -1,0 +1,96 @@
+/* Design tokens taken from the locked handoff mockups (docs/design/handoff). The mockups win over
+   05_DESIGN_SYSTEM.md wherever they differ. Tailwind reads the @theme block; the theme variables
+   below drive the Dark and Glass app themes exactly as the mockups define them. */
+@theme {
+  --color-page: #f2eee6;
+  --color-ink: #1a1510;
+  --color-line: #e0d6c6;
+  --color-muted: #8a8378;
+  --color-muted-2: #6e675c;
+  --color-curve: #bdb4a4;
+  --color-brand-page: #eee9db;
+  --color-brand-line: #d8cdb9;
+  --color-sand: #cdbfa8;
+  --color-gold: #a8843a;
+  --color-gold-ink: #8a6a22;
+  --color-gold-soft: #d8c58f;
+  --color-panel: #f5f1e8;
+  --color-night: #120f0b;
+  --color-cream: #f4f1ea;
+  --color-body-2: #4f493f;
+  --color-live: #c2412a;
+  --color-ok: #4fb286;
+  --color-ok-ink: #2f7d4f;
+  --color-pending: #e0a94a;
+  --color-warn: #b26a00;
+  --color-flagged: #e26b5e;
+  --color-bad: #b3261e;
+
+  --font-serif: 'EB Garamond', Georgia, serif;
+  --font-sans: 'Archivo', Inter, system-ui, sans-serif;
+  --font-app: 'Plus Jakarta Sans', Archivo, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+
+  --radius-pill: 999px;
+  --radius-chip: 12px;
+  --radius-tile: 10px;
+  --radius-input: 14px;
+  --radius-card: 24px;
+  --radius-float: 26px;
+  --radius-panel: 36px;
+
+  --shadow-float: 0 20px 50px rgba(26, 21, 16, 0.09);
+  --shadow-glass: 0 18px 44px rgba(26, 21, 16, 0.08);
+  --shadow-lift: 0 30px 70px rgba(26, 21, 16, 0.12);
+
+  --ease-calm: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* App themes. Values are the mockup's T object for "Dark" (the default) and "Glass". */
+:root,
+[data-theme='dark'] {
+  --t-stage: #111117;
+  --t-stage-line: rgba(255, 255, 255, 0.04);
+  --t-card: #1c1c24;
+  --t-card-line: rgba(255, 255, 255, 0.06);
+  --t-text: #f4f1ea;
+  --t-muted: rgba(244, 241, 234, 0.64);
+  --t-hair: rgba(255, 255, 255, 0.08);
+  --t-soft: rgba(255, 255, 255, 0.1);
+  --t-hair2: rgba(255, 255, 255, 0.14);
+  --t-row-bg: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  --t-pop: #26242a;
+  --t-accent-ink: #d8c58f;
+  --t-page: radial-gradient(900px 600px at 12% 0%, rgba(120, 84, 210, 0.38), transparent 60%),
+    radial-gradient(800px 600px at 92% 100%, rgba(216, 170, 90, 0.24), transparent 60%), #0c0a12;
+  --t-glass-bg: rgba(255, 255, 255, 0.06);
+  --t-glass-line: rgba(255, 255, 255, 0.12);
+  --t-side: rgba(10, 8, 16, 0.55);
+  --t-logo-filter: brightness(0) invert(1);
+  --t-btn: #f4f1ea;
+  --t-btn-text: #1a1510;
+}
+
+[data-theme='glass'] {
+  --t-stage: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.28));
+  --t-stage-line: rgba(255, 255, 255, 0.9);
+  --t-card: rgba(255, 255, 255, 0.58);
+  --t-card-line: rgba(255, 255, 255, 0.95);
+  --t-text: #17151c;
+  --t-muted: rgba(23, 21, 28, 0.66);
+  --t-hair: rgba(23, 21, 28, 0.1);
+  --t-soft: rgba(23, 21, 28, 0.09);
+  --t-hair2: rgba(23, 21, 28, 0.18);
+  --t-row-bg: rgba(23, 21, 28, 0.045);
+  --t-pop: rgba(255, 255, 255, 0.85);
+  --t-accent-ink: #86661f;
+  --t-page: radial-gradient(900px 600px at 8% 0%, rgba(190, 170, 255, 0.6), transparent 60%),
+    radial-gradient(800px 600px at 96% 100%, rgba(255, 200, 160, 0.6), transparent 60%),
+    radial-gradient(700px 500px at 60% 35%, rgba(170, 220, 255, 0.55), transparent 70%), #e8eaf2;
+  --t-glass-bg: rgba(255, 255, 255, 0.55);
+  --t-glass-line: rgba(255, 255, 255, 0.95);
+  --t-side: rgba(255, 255, 255, 0.5);
+  --t-logo-filter: none;
+  --t-btn: #17151c;
+  --t-btn-text: #ffffff;
+}
