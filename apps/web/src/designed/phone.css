@@ -294,7 +294,7 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
-  /* ---------- Wallet (proposed, waiting for the owner's approval) ---------- */
+  /* ---------- Wallet (approved and locked) ---------- */
   [data-m~='w-page'] {
     padding: 16px 12px 64px !important;
   }

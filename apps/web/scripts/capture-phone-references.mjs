@@ -49,4 +49,23 @@ for (const theme of ['dark', 'light']) {
     await shot(url, `creator-browse-${theme}-${view}`, filters, theme)
   }
 }
+// Wallet, both themes, every state (approved by the owner on 2026-10-05). Rendered from the
+// mockup's sample numbers, as the visual tests do.
+for (const theme of ['dark', 'light']) {
+  for (const [view, state] of [
+    ['data-overview', 'data'],
+    ['data-withdrawals', 'withdrawals'],
+    ['empty', 'empty'],
+    ['loading', 'loading'],
+    ['error', 'error'],
+    ['withdraw-done', 'done'],
+  ]) {
+    await shot(
+      `/design-states/wallet?state=${state}&theme=${theme}`,
+      `creator-wallet-${theme}-${view}`,
+      undefined,
+      theme,
+    )
+  }
+}
 await browser.close()

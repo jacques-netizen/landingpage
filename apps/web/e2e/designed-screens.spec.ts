@@ -108,7 +108,8 @@ for (const width of WIDTHS) {
   }
 }
 
-// The wallet ("Creator Site v1", wallet) in both themes and every state the mockup shows, rendered from
+// The wallet ("Creator Site v1", wallet) in both themes and every state the mockup shows (390 is the
+// owner-approved phone layout), rendered from
 // the mockup's sample numbers through the real wallet model (/design-states/wallet). The preview
 // switch and the "Sample" notes are kept invisible, so only those areas are masked.
 const WALLET_VIEWS = [
@@ -120,7 +121,7 @@ const WALLET_VIEWS = [
   ['withdraw-done', 'done'],
 ] as const
 
-for (const width of [1440, 1024] as const) {
+for (const width of WIDTHS) {
   for (const theme of ['dark', 'light'] as const) {
     test.describe(`wallet, ${theme}, at ${width}px`, () => {
       test.use({ viewport: { width, height: 900 } })
