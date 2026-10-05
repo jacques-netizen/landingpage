@@ -8,5 +8,8 @@ export const metadata: Metadata = { title: "For brands | Maison d'Élites" }
 
 export default async function BrandsPage() {
   const overrides = await loadContentOverrides('brands')
-  return <BrandsClient overrides={overrides} contactEmail={brand().contactEmail} />
+  const b = brand()
+  return (
+    <BrandsClient overrides={overrides} contactEmail={b.contactEmail} supportHref={b.supportDiscordUrl ?? '/help'} />
+  )
 }

@@ -579,3 +579,25 @@ export const apiKeys = pgTable('api_keys', {
   revokedAt: tz('revoked_at'),
   ...timestamps,
 })
+
+// Legal pages (terms, privacy, campaign rules, cookies). Every change is a new version; the newest
+// version whose effective date has passed is the one in force (01_PRODUCT.md section 8.1).
+export const LEGAL_SLUGS = ['terms', 'privacy', 'campaign-rules', 'cookies', 'brand-terms'] as const
+
+export const legalDocuments = pgTable(
+  'legal_documents',
+  {
+    id: id(),
+    slug: text('slug').notNull(),
+    version: integer('version').notNull(),
+    title: text('title').notNull(),
+    bodyMarkdown: text('body_markdown').notNull(),
+    effectiveAt: tz('effective_at').notNull(),
+    createdBy: uuid('created_by').references(() => users.id),
+    ...timestamps,
+  },
+  (t) => [
+    unique('legal_documents_slug_version').on(t.slug, t.version),
+    check('legal_documents_slug_check', inList('slug', LEGAL_SLUGS)),
+  ],
+)

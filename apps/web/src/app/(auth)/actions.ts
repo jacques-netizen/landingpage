@@ -1,11 +1,12 @@
 'use server'
 
 import { brand, env } from '@mde/config'
-import { cookies, headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { signIn, signOut } from '@/auth'
 import { accountExists, createEmailAccount } from '@/server/accounts'
+import { clientIp } from '@/server/client-ip'
 import { makeConsentCookie } from '@/server/consent'
 import { escapeHtml, sendEmail } from '@/server/email'
 import { rateLimit } from '@/server/rate-limit'
@@ -22,11 +23,6 @@ const emailSchema = z.string().trim().toLowerCase().pipe(z.email()).pipe(z.strin
 function safeNext(value: FormDataEntryValue | null) {
   const v = typeof value === 'string' ? value : ''
   return v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') ? v : '/'
-}
-
-async function clientIp() {
-  const h = await headers()
-  return (h.get('x-forwarded-for') ?? '').split(',')[0]!.trim() || h.get('x-real-ip') || 'unknown'
 }
 
 const TOO_MANY = 'Too many attempts. Wait an hour and try again.'

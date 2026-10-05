@@ -17,8 +17,8 @@ export async function signUpNewCreator(page: Page, prefix = 'creator') {
   const email = `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@test.invalid`
   await page.context().clearCookies()
   await page.goto('/sign-up')
-  await page.getByText('I am 18 or older.').click()
-  await page.getByText('I agree to the terms of use and the privacy policy.').click()
+  await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
+  await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
   await page.waitForURL('**/check-email')

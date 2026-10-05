@@ -17,8 +17,7 @@ export function HomeClient({ overrides }: { overrides: Record<string, string> })
       { label: 'Wallet', go: go('/wallet') },
     ],
     startEarning: go('/sign-up'),
-    // The how it works page is built in Phase 2. Until then the button stays as designed with no link.
-    howItWorks: undefined,
+    howItWorks: go('/how-it-works'),
   }
   return (
     <DesignedFrame>

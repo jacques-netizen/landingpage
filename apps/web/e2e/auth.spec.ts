@@ -10,8 +10,8 @@ const unique = (p: string) => `${p}-${Date.now()}-${Math.floor(Math.random() * 1
 async function requestLink(page: Page, mode: 'sign-in' | 'sign-up', email: string) {
   await page.goto(`/${mode}`)
   if (mode === 'sign-up') {
-    await page.getByText('I am 18 or older.').click()
-    await page.getByText('I agree to the terms of use and the privacy policy.').click()
+    await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
+    await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   }
   await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()

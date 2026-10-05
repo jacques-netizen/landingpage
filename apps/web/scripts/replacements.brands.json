@@ -20,6 +20,21 @@
     },
     "div:Pricing": {
       "id": "pricing"
+    },
+    "span:Privacy Policy": {
+      "onClick": "v.toPrivacy"
+    },
+    "span:Creator Terms of Use": {
+      "onClick": "v.toCreatorTerms"
+    },
+    "span:Brand Terms of Use": {
+      "onClick": "v.toBrandTerms"
+    },
+    "span:Contact Us": {
+      "onClick": "v.contact"
+    },
+    "span:Support": {
+      "onClick": "v.support"
     }
   },
   "$mark": {

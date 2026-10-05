@@ -19,7 +19,15 @@ function toggleVideo(ev: MouseEvent<HTMLElement>) {
 const scrollTo = (id: string) => () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
 // The brand site, built from "Platform Mockups" (screen "For brands").
-export function BrandsClient({ overrides, contactEmail }: { overrides: Record<string, string>; contactEmail: string }) {
+export function BrandsClient({
+  overrides,
+  contactEmail,
+  supportHref,
+}: {
+  overrides: Record<string, string>
+  contactEmail: string
+  supportHref: string
+}) {
   const router = useRouter()
   const copy = makeCopy({ ...brandsContent, ...brandsDataContent }, overrides)
   const [active, setActive] = useState<string>(CASE_STUDIES[0].slug)
@@ -49,6 +57,16 @@ export function BrandsClient({ overrides, contactEmail }: { overrides: Record<st
     },
     toCaseStudies: scrollTo('case-studies'),
     toPricing: scrollTo('pricing'),
+    toPrivacy: () => router.push('/legal/privacy'),
+    toCreatorTerms: () => router.push('/legal/terms'),
+    toBrandTerms: () => router.push('/legal/brand-terms'),
+    contact: () => {
+      window.location.href = `mailto:${contactEmail}`
+    },
+    support: () => {
+      if (supportHref.startsWith('/')) router.push(supportHref)
+      else window.location.href = supportHref
+    },
     csTabs: CASE_STUDIES.map((c) => {
       const on = c.slug === active
       return {

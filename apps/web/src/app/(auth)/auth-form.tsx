@@ -37,7 +37,15 @@ export function AuthForm({ mode, next, providers, initialError }: Props) {
           </Checkbox>
           {state.fields?.adult ? <p className="m-0 -mt-1 pl-8 text-[13px] text-bad">{state.fields.adult}</p> : null}
           <Checkbox name="terms" invalid={!!state.fields?.terms}>
-            I agree to the terms of use and the privacy policy.
+            I agree to the{' '}
+            <a href="/legal/terms" target="_blank" rel="noopener">
+              terms of use
+            </a>{' '}
+            and the{' '}
+            <a href="/legal/privacy" target="_blank" rel="noopener">
+              privacy policy
+            </a>
+            .
           </Checkbox>
           {state.fields?.terms ? <p className="m-0 -mt-1 pl-8 text-[13px] text-bad">{state.fields.terms}</p> : null}
         </div>
