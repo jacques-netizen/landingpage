@@ -1,10 +1,26 @@
 import { expect, type Page } from '@playwright/test'
 import { writeMockState } from '@mde/platforms'
+import Redis from 'ioredis'
 import type { Sql } from 'postgres'
 import { latestLink } from './outbox'
 
+/**
+ * The suite signs in far more often than a person would, so it clears the sign-in rate limit
+ * counters first. The limits stay on in the product.
+ */
+async function clearSignInLimits() {
+  const r = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379', { maxRetriesPerRequest: 1 })
+  try {
+    const keys = await r.keys('rl:auth:*')
+    if (keys.length) await r.del(...keys)
+  } finally {
+    r.disconnect()
+  }
+}
+
 /** Sign in by magic link as an existing account (seed staff use the seed.invalid domain). */
 export async function signInAs(page: Page, email: string) {
+  await clearSignInLimits()
   await page.context().clearCookies()
   await page.goto('/sign-in')
   await page.getByLabel('Email').fill(email)
@@ -17,6 +33,7 @@ export async function signInAs(page: Page, email: string) {
 /** Sign up a brand new creator (both consent boxes ticked) and sign in. Returns the email. */
 export async function signUpNewCreator(page: Page, prefix = 'creator') {
   const email = `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@test.invalid`
+  await clearSignInLimits()
   await page.context().clearCookies()
   await page.goto('/sign-up')
   await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
