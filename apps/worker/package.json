@@ -1,0 +1,23 @@
+{
+  "name": "@mde/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mde/campaigns": "workspace:*",
+    "@mde/config": "workspace:*",
+    "@mde/db": "workspace:*",
+    "bullmq": "^6.3.11"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "ioredis": "^5.11.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  }
+}
