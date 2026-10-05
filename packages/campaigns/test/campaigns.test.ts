@@ -118,6 +118,58 @@ describe('publishing and funding', () => {
     )
   })
 
+  it('tells staff and matching creators when a public campaign goes live', async () => {
+    const actor = await staff()
+    await db.insert(tables.staffRoles).values({ userId: actor, role: 'admin' })
+    const account = async (who: string, platform: string, status = 'verified') =>
+      db.insert(tables.linkedAccounts).values({
+        creatorId: who,
+        platform,
+        handle: `h${++n}`,
+        platformUserId: `p${Date.now()}${n}`,
+        linkMethod: 'bio_code',
+        status,
+      })
+    const tiktok = await creator()
+    await account(tiktok, 'tiktok')
+    const youtubeOnly = await creator()
+    await account(youtubeOnly, 'youtube')
+    const pending = await creator()
+    await account(pending, 'tiktok', 'pending')
+    const optedOut = await creator()
+    await account(optedOut, 'instagram')
+    await db.update(tables.users).set({ notifyNewCampaigns: false }).where(eq(tables.users.id, optedOut))
+
+    const client = await createClient(db, actor, {
+      name: 'Client N',
+      contactName: null,
+      contactEmail: null,
+      serviceFeeBps: 1000,
+      notes: null,
+    })
+    const c = await createDraft(db, actor, form(client.id, { title: 'Alert campaign' }))
+    await recordClientFunding(db, actor, { clientId: client.id, amountCents: 110_000, reference: 'INV-N' })
+    await fundCampaign(db, actor, c.id)
+    await publishCampaign(db, actor, c.id)
+
+    const kinds = async (who: string) =>
+      (await db.select().from(tables.notifications).where(eq(tables.notifications.userId, who))).map((x) => x.kind)
+    const [alert] = await db.select().from(tables.notifications).where(eq(tables.notifications.userId, tiktok))
+    expect(alert).toMatchObject({
+      kind: 'new_campaign',
+      title: 'New campaign: Alert campaign',
+      body: 'Pays $2.00 per 1,000 views.',
+      link: `/campaigns/${c.id}`,
+    })
+    expect(await kinds(youtubeOnly)).toEqual([])
+    expect(await kinds(pending)).toEqual([])
+    expect(await kinds(optedOut)).toEqual([])
+    expect(await kinds(actor)).toEqual(expect.arrayContaining(['campaign_event', 'campaign_event']))
+    expect(
+      (await db.select().from(tables.notifications).where(eq(tables.notifications.userId, actor))).map((x) => x.title),
+    ).toEqual(expect.arrayContaining(['Funding recorded', 'Campaign is live']))
+  })
+
   it('a campaign cannot go live with partial funding', async () => {
     const actor = await staff()
     const client = await createClient(db, actor, {

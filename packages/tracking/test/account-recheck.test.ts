@@ -57,6 +57,8 @@ describe('account re-check', () => {
     profile(a, { isPublic: false })
     expect(await recheckAccount(db, a, { router })).toBe('private')
     expect((await reload(a.id)).status).toBe('failed')
+    const [note] = await db.select().from(tables.notifications).where(eq(tables.notifications.userId, a.creatorId))
+    expect(note).toMatchObject({ kind: 'account_status', link: '/accounts' })
     const b = await account()
     profile(b, { platformUserId: 'someone-new' })
     expect(await recheckAccount(db, b, { router })).toBe('gone')

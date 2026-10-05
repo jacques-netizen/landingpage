@@ -251,6 +251,12 @@ describe('view checks and earnings', () => {
       nextCheckAt: null,
     })
     expect(await t.pending()).toBe(0)
+    const [note] = await db
+      .select()
+      .from(tables.notifications)
+      .where(eq(tables.notifications.userId, t.account.creatorId))
+    expect(note).toMatchObject({ kind: 'submission_removed', title: 'Your post was removed' })
+    expect(note!.body).toContain('You can appeal from your submissions.')
   })
 
   it('a post that comes back during the grace period carries on', async () => {
@@ -308,6 +314,17 @@ describe('view checks and earnings', () => {
     // Running again releases nothing new.
     const again = await runReleases(db, later)
     expect(again.releasedCents).toBe(0)
+    // The creator hears once, with the amount and the date.
+    const released = await db
+      .select()
+      .from(tables.notifications)
+      .where(
+        and(eq(tables.notifications.userId, t.account.creatorId), eq(tables.notifications.kind, 'earnings_released')),
+      )
+    expect(released).toHaveLength(1)
+    expect(released[0]!.body).toBe(
+      `$20.00 from ${t.c.title} became available to withdraw on ${later.toISOString().slice(0, 10)}.`,
+    )
 
     // A post with an open flag stays held.
     u.post(2_000, { authorPlatformUserId: 'someone-else' })

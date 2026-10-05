@@ -10,6 +10,7 @@ import {
 import { and, eq, inArray, sql } from 'drizzle-orm'
 import crypto from 'node:crypto'
 import type { CampaignForm } from './input'
+import { noticeClosed, noticeFunding, noticeWentLive } from './notices'
 
 export class CampaignError extends Error {
   constructor(
@@ -206,6 +207,7 @@ export async function publishCampaign(db: Db, actorId: string, id: string) {
     await saveTermsVersionTx(tx, actorId, c)
     const status = (await isFunded(tx, id)) ? 'live' : 'awaiting_funding'
     await tx.update(tables.campaigns).set({ status }).where(eq(tables.campaigns.id, id))
+    if (status === 'live') await noticeWentLive(tx, c)
     await writeAudit(tx, {
       actorId,
       action: 'campaign.publish',
@@ -224,7 +226,9 @@ export async function recordClientFunding(
   actorId: string,
   i: { clientId: string; amountCents: number; reference: string },
 ) {
-  return recordFundingMoney(createPgStore(db), { ...i, actorId })
+  const r = await recordFundingMoney(createPgStore(db), { ...i, actorId })
+  await noticeFunding(db, i.clientId, i.amountCents)
+  return r
 }
 
 /** Move the budget and fee from the client's balance into the campaign. Goes live if it was waiting. */
@@ -254,6 +258,7 @@ export async function fundCampaign(db: Db, actorId: string, id: string) {
         before: { status: now.status },
         after: { status: 'live' },
       })
+      await noticeWentLive(tx, now)
       return 'live'
     }
     return now.status
@@ -337,6 +342,7 @@ export async function closeCampaign(tx: DbOrTx, actorId: string | null, id: stri
     before: { status: c.status },
     after: { status: 'closed', releaseAt },
   })
+  await noticeClosed(tx, c)
 }
 
 /** Cancel a campaign that was never funded. A funded campaign is closed instead. */

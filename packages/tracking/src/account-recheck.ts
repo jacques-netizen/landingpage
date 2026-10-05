@@ -1,6 +1,6 @@
 // Daily re-check of each verified account (03_SYSTEMS.md 2.4): still public, handle changed,
 // follower drop of more than half in a day (flag), account deleted.
-import { getSettings, tables, type Db } from '@mde/db'
+import { getSettings, notify, tables, type Db } from '@mde/db'
 import {
   ProviderUnavailable,
   normalizeHandle,
@@ -45,6 +45,7 @@ export async function recheckAccount(
       .update(linkedAccounts)
       .set({ status: 'failed', lastCheckedAt: now })
       .where(eq(linkedAccounts.id, account.id))
+    await accountProblem(db, account, 'We could not find it any more. Link it again to keep submitting from it.')
     return 'gone'
   }
   if (!profile.isPublic) {
@@ -52,6 +53,7 @@ export async function recheckAccount(
       .update(linkedAccounts)
       .set({ status: 'failed', lastCheckedAt: now })
       .where(eq(linkedAccounts.id, account.id))
+    await accountProblem(db, account, 'It is now private. Make it public, then verify it again.')
     return 'private'
   }
 
@@ -119,4 +121,13 @@ export async function runAccountRechecks(
     }
   }
   return totals
+}
+
+/** The creator hears when a linked account stops working (03_SYSTEMS.md section 2). */
+async function accountProblem(db: Db, account: { creatorId: string; handle: string; platform: string }, body: string) {
+  await notify(db, account.creatorId, 'account_status', {
+    title: `Your account @${account.handle} needs attention`,
+    body,
+    link: '/accounts',
+  })
 }

@@ -199,6 +199,27 @@ export async function requestInfo(db: Db, reviewerId: string, id: string, note: 
   })
 }
 
+/** The creator answers a reviewer's question; the post goes back to the review queue with the answer. */
+export async function answerInfo(db: Db, creatorId: string, id: string, reply: string) {
+  const text = reply.trim()
+  if (!text) throw new ReviewError('note_required', 'Write your answer for the reviewer.')
+  if (text.length > 1000) throw new ReviewError('note_required', 'Keep the answer to 1,000 characters.')
+  await db.transaction(async (tx) => {
+    const s = await load(tx, id, true)
+    if (s.creatorId !== creatorId) throw new ReviewError('not_found', 'This submission is not yours.')
+    if (s.state !== 'needs_info') throw new ReviewError('wrong_state', 'This post is not waiting for an answer.')
+    await tx.update(submissions).set({ state: 'needs_review', creatorNote: text }).where(eq(submissions.id, id))
+    await writeAudit(tx, {
+      actorId: creatorId,
+      action: 'submission.info_reply',
+      entity: 'submission',
+      entityId: id,
+      before: { state: s.state, creatorNote: s.creatorNote },
+      after: { state: 'needs_review', creatorNote: text },
+    })
+  })
+}
+
 /** Clear one flag with a note. When none are left open, the post goes back to where it was. */
 export async function clearFlag(db: Db, reviewerId: string, flagId: string, note: string) {
   const text = note.trim()

@@ -1,7 +1,7 @@
 // The view check job (03_SYSTEMS.md 3.3 and 3.4). Safe to run twice: a check first claims the post by
 // moving its next check time forward in one update, so a second run of the same slot finds nothing
 // due. Earnings are recomputed from total counted views by the money engine, never added up.
-import { getSettings, tables, writeAudit, type Db } from '@mde/db'
+import { getSettings, notify, tables, writeAudit, type Db } from '@mde/db'
 import { accrueEarnings, createPgStore, reverseEarnings } from '@mde/money'
 import {
   ProviderUnavailable,
@@ -141,6 +141,15 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       await tx
         .insert(reviewDecisions)
         .values({ submissionId: s.id, reviewerId: null, outcome: 'remove', reasonCode: 'deleted_or_edited_post' })
+      const [reason] = await tx
+        .select({ message: tables.reasonCodes.creatorMessage })
+        .from(tables.reasonCodes)
+        .where(eq(tables.reasonCodes.code, 'deleted_or_edited_post'))
+      await notify(tx, s.creatorId, 'submission_removed', {
+        title: 'Your post was removed',
+        body: [reason?.message, 'You can appeal from your submissions.'].filter(Boolean).join(' '),
+        link: `/submissions?open=${s.id}`,
+      })
     } else if (visible && post.views !== null) {
       // 5 and 6. The first successful check sets the baseline; counted views move only while earning.
       const baseline = previous.length === 0 ? post.views : s.baselineViews

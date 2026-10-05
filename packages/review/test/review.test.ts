@@ -3,6 +3,7 @@ import { and, desc, eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
   activeStrikes,
+  answerInfo,
   addBusinessDays,
   approve,
   clearFlag,
@@ -86,6 +87,16 @@ describe('reviewer decisions', () => {
       reasonNote: 'Can you show the sound in the first 5 seconds?',
     })
     expect((await notes(t.creator))[0]).toMatchObject({ kind: 'needs_info' })
+    // The creator answers from the drawer; the post goes back to the queue with the answer.
+    await expect(answerInfo(db, t.staffId, t.id, 'Here it is.')).rejects.toMatchObject({ code: 'not_found' })
+    await expect(answerInfo(db, t.creator, t.id, '  ')).rejects.toMatchObject({ code: 'note_required' })
+    await answerInfo(db, t.creator, t.id, 'The sound starts at 0:02, see the pinned comment.')
+    expect(await t.sub()).toMatchObject({
+      state: 'needs_review',
+      creatorNote: 'The sound starts at 0:02, see the pinned comment.',
+    })
+    expect((await audits(t.id)).map((a) => a.action)).toContain('submission.info_reply')
+    await expect(answerInfo(db, t.creator, t.id, 'Again')).rejects.toMatchObject({ code: 'wrong_state' })
   })
 
   it('clearing a flag needs a note and puts the post back where it was', async () => {
