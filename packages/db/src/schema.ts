@@ -141,6 +141,7 @@ export const creatorProfiles = pgTable(
     payoutProviderRef: text('payout_provider_ref'),
     taxStatus: text('tax_status').notNull().default('not_collected'),
     strikesActive: integer('strikes_active').notNull().default(0),
+    staffNotes: text('staff_notes'),
     ...timestamps,
   },
   () => [check('creator_profiles_payout_status_check', inList('payout_status', PAYOUT_STATUSES))],

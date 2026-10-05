@@ -12,6 +12,7 @@ import {
   reject,
   requestInfo,
   resolveAppeal,
+  setStaffNotes,
   setSuspended,
 } from '../src'
 import { db, postInReview, sql, user } from './fixtures'
@@ -219,5 +220,19 @@ describe('warnings and suspension', () => {
     expect((await db.select().from(tables.users).where(eq(tables.users.id, creator)))[0]!.status).toBe('suspended')
     await setSuspended(db, admin, creator, false, 'Reviewed with the creator.')
     expect((await audits(creator)).map((a) => a.action)).toEqual(['user.suspend', 'user.restore'])
+  })
+
+  it('staff notes on a creator are saved and audited', async () => {
+    const staff = await user('reviewer', 'reviewer')
+    const creator = await user('creator')
+    await setStaffNotes(db, staff, creator, '  Prefers email. Spoke on Monday.  ')
+    const [p] = await db.select().from(tables.creatorProfiles).where(eq(tables.creatorProfiles.userId, creator))
+    expect(p!.staffNotes).toBe('Prefers email. Spoke on Monday.')
+    await setStaffNotes(db, staff, creator, '')
+    const [after] = await db.select().from(tables.creatorProfiles).where(eq(tables.creatorProfiles.userId, creator))
+    expect(after!.staffNotes).toBeNull()
+    const rows = (await audits(creator)).filter((a) => a.action === 'creator.notes')
+    expect(rows).toHaveLength(2)
+    expect(rows.map((r) => r.actorId)).toEqual([staff, staff])
   })
 })

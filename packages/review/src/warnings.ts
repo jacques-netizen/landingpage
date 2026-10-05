@@ -107,3 +107,21 @@ export async function expireStrikes(db: Db, now = new Date()) {
   }
   return { checked: stale.length, changed }
 }
+
+/** Staff notes on a creator, kept on their profile. Every change is audited. */
+export async function setStaffNotes(db: Db, staffId: string, creatorId: string, notes: string) {
+  const text = notes.trim().slice(0, 4000) || null
+  await db.transaction(async (tx) => {
+    const [p] = await tx.select().from(creatorProfiles).where(eq(creatorProfiles.userId, creatorId)).for('update')
+    if (!p) throw new ReviewError('not_found', 'This creator does not exist.')
+    await tx.update(creatorProfiles).set({ staffNotes: text }).where(eq(creatorProfiles.userId, creatorId))
+    await writeAudit(tx, {
+      actorId: staffId,
+      action: 'creator.notes',
+      entity: 'user',
+      entityId: creatorId,
+      before: { notes: p.staffNotes },
+      after: { notes: text },
+    })
+  })
+}

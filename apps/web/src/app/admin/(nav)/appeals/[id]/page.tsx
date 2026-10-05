@@ -34,9 +34,14 @@ export default async function AppealPage({ params }: { params: Promise<{ id: str
       title={`Appeal from ${a.name ?? a.email}`}
       lead={`${a.campaignTitle} · ${a.status === 'open' ? `reply by ${when(a.dueAt)}${late ? ' (late)' : dueSoon(a.dueAt) ? ' (within 24 hours)' : ''}` : a.status}`}
       actions={
-        <LinkButton href={`/admin/submissions/${a.submissionId}`} variant="secondary">
-          Post detail
-        </LinkButton>
+        <>
+          <LinkButton href={`/admin/creators/${a.creatorId}`} variant="secondary">
+            Creator
+          </LinkButton>
+          <LinkButton href={`/admin/submissions/${a.submissionId}`} variant="secondary">
+            Post detail
+          </LinkButton>
+        </>
       }
     >
       <section className="border-0 border-b border-solid border-line pb-6 text-[14px]">

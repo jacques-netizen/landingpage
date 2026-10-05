@@ -71,6 +71,13 @@
       "when": 1791212909133,
       "tag": "0009_review_appeals",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791215047514,
+      "tag": "0010_creator_staff_notes",
+      "breakpoints": true
     }
   ]
 }

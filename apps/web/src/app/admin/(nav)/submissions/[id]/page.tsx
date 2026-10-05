@@ -108,7 +108,7 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
       <section className="border-0 border-b border-solid border-line py-6 text-[14px]">
         <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Creator and account</h2>
         <p className="m-0">
-          {row.name ?? row.email} ·{' '}
+          <a href={`/admin/creators/${s.creatorId}`}>{row.name ?? row.email}</a> ·{' '}
           {account
             ? `${account.platform} @${account.handle} (${account.status}, ${account.followers === null ? 'followers hidden' : `${count(account.followers)} followers`})`
             : 'no linked account matched'}
