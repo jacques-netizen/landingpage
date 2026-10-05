@@ -1,7 +1,7 @@
 'use client'
 
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
-import { Button, Dialog, Field, Input, Segmented } from '@mde/ui'
+import { Button, Dialog, Field, Input } from '@mde/ui'
 import { useActionState, useState, useTransition } from 'react'
 import {
   addAccountAction,
@@ -34,13 +34,32 @@ export function AddAccount() {
   const [state, action, pending] = useActionState<AccountState, FormData>(addAccountAction, {})
   return (
     <form action={action} className="flex flex-col gap-4">
-      <Segmented
-        tone="app"
-        label="Platform"
-        value={platform}
-        onChange={setPlatform}
-        options={PLATFORMS.map((p) => ({ value: p, label: PLATFORM_LABELS[p] }))}
-      />
+      <fieldset className="m-0 border-0 p-0">
+        <legend className="mb-2 text-[13px] font-medium">Platform</legend>
+        {/* The mockups' filter pills, wrapping in the narrow column. */}
+        <div role="radiogroup" aria-label="Platform" className="flex flex-wrap gap-[6px]">
+          {PLATFORMS.map((p) => {
+            const on = p === platform
+            return (
+              <button
+                key={p}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                onClick={() => setPlatform(p)}
+                className="flex h-[34px] cursor-pointer items-center gap-2 rounded-pill border-0 px-[14px] font-app text-[13px] font-semibold"
+                style={{
+                  background: on ? 'rgba(216,197,143,0.2)' : 'var(--t-soft)',
+                  color: on ? 'var(--t-accent-ink)' : 'var(--t-muted)',
+                }}
+              >
+                <span aria-hidden className="size-[5px] rounded-full" style={{ background: 'currentColor' }} />
+                {PLATFORM_LABELS[p]}
+              </button>
+            )
+          })}
+        </div>
+      </fieldset>
       <input type="hidden" name="platform" value={platform} />
       <Field label="Handle" tone="app" helper="As it appears on your profile.">
         {(p) => (
