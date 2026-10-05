@@ -21,6 +21,8 @@ export const SEED_STAFF = [
 const SEED_CAMPAIGNS = [
   {
     title: 'Sample clipping',
+    // Budget left after the seeded earnings (the mockups' sample numbers for the four live campaigns).
+    leftCents: 480000,
     type: 'clipping',
     status: 'live',
     budgetCents: 774194,
@@ -30,6 +32,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Sample music',
+    leftCents: 160000,
     type: 'music',
     status: 'live',
     budgetCents: 181818,
@@ -39,6 +42,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Sample logo',
+    leftCents: 600000,
     type: 'logo',
     status: 'live',
     budgetCents: 1538462,
@@ -48,6 +52,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Sample UGC',
+    leftCents: 160000,
     type: 'ugc',
     status: 'live',
     budgetCents: 695652,
@@ -57,6 +62,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Seed draft campaign',
+    leftCents: null,
     type: 'clipping',
     status: 'draft',
     budgetCents: 500000,
@@ -66,6 +72,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Seed awaiting funding',
+    leftCents: null,
     type: 'music',
     status: 'awaiting_funding',
     budgetCents: 300000,
@@ -75,6 +82,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Seed closing campaign',
+    leftCents: 0,
     type: 'logo',
     status: 'closing',
     budgetCents: 200000,
@@ -84,6 +92,7 @@ const SEED_CAMPAIGNS = [
   },
   {
     title: 'Seed closed campaign',
+    leftCents: 40000,
     type: 'ugc',
     status: 'closed',
     budgetCents: 100000,
@@ -92,6 +101,8 @@ const SEED_CAMPAIGNS = [
     cover: null,
   },
 ] as const
+
+export const SEED_CAMPAIGN_PLAN = SEED_CAMPAIGNS
 
 export async function seed(db: Db) {
   if (process.env.NODE_ENV === 'production') throw new Error('Refusing to seed a production database')
@@ -167,10 +178,10 @@ export async function seed(db: Db) {
           capPerCreatorCents: 50000,
           minViewsToEarn: 1000,
           requiredHashtags: ['#ad'],
-          status: c.status,
+          // Funded campaigns start unfunded; packages/seed funds them through the money engine, then sets the status.
+          status: c.status === 'draft' ? 'draft' : 'awaiting_funding',
           startAt: new Date(now - 7 * 86400000),
           endAt: c.status === 'closed' ? new Date(now - 86400000) : new Date(now + 30 * 86400000),
-          closedAt: c.status === 'closed' ? new Date(now - 86400000) : null,
         })
         .returning()
       const [terms] = await tx

@@ -17,7 +17,7 @@
     "db:generate": "pnpm --filter @mde/db generate",
     "db:migrate": "pnpm --filter @mde/db migrate",
     "db:check": "pnpm --filter @mde/db check",
-    "db:seed": "pnpm --filter @mde/db seed"
+    "db:seed": "pnpm --filter @mde/seed seed"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
