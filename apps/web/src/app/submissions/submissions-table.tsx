@@ -3,10 +3,16 @@
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
 import { formatDollars } from '@mde/money/dollars'
 import { Button, Drawer, DrawerSection, Field, LineChart, LoadingRows, Textarea } from '@mde/ui'
-import { useActionState, useState, useTransition } from 'react'
+import { useActionState, useEffect, useState, useTransition } from 'react'
 import { STATUS_COLOURS } from '@/components/app-ui'
 import { LocalDateTime } from '@/components/local-time'
-import { appealAction, submissionDetailAction, type AppealFormState, type SubmissionDetail } from './actions'
+import {
+  answerInfoAction,
+  appealAction,
+  submissionDetailAction,
+  type AppealFormState,
+  type SubmissionDetail,
+} from './actions'
 
 type Row = {
   id: string
@@ -39,7 +45,16 @@ function Dot({ tone, children }: { tone: keyof typeof STATUS_COLOURS; children: 
 const th = 'px-3 py-3 text-left text-[12px] font-semibold text-[var(--t-muted)] whitespace-nowrap'
 const td = 'border-0 border-t border-solid border-[var(--t-hair)] px-3 py-[14px] align-top text-[13px]'
 
-export function SubmissionsTable({ rows, theme }: { rows: Row[]; theme: 'dark' | 'glass' }) {
+export function SubmissionsTable({
+  rows,
+  theme,
+  openId,
+}: {
+  rows: Row[]
+  theme: 'dark' | 'glass'
+  /** A notification links to one submission; its drawer opens on arrival. */
+  openId?: string
+}) {
   const [open, setOpen] = useState<Row | null>(null)
   const [detail, setDetail] = useState<SubmissionDetail | null | 'error'>(null)
   const [loading, start] = useTransition()
@@ -55,6 +70,12 @@ export function SubmissionsTable({ rows, theme }: { rows: Row[]; theme: 'dark' |
       }
     })
   }
+
+  useEffect(() => {
+    const row = openId ? rows.find((r) => r.id === openId) : undefined
+    if (row) load(row)
+    // Only on arrival.
+  }, [])
 
   return (
     <>
@@ -187,7 +208,14 @@ function Detail({ d, onAppealed }: { d: SubmissionDetail; onAppealed: () => void
         </p>
       </DrawerSection>
 
-      {d.reason || d.reasonNote ? (
+      {d.state === 'needs_info' ? (
+        <DrawerSection app title="A reviewer asked">
+          {d.reasonNote ? <p className="m-0 mb-4 text-[14px]">{d.reasonNote}</p> : null}
+          <AnswerForm id={d.id} onDone={onAppealed} />
+        </DrawerSection>
+      ) : null}
+
+      {d.state !== 'needs_info' && (d.reason || d.reasonNote) ? (
         <DrawerSection app title="Reason">
           {d.reason ? <p className="m-0 text-[14px] font-semibold">{d.reason}</p> : null}
           {d.reasonNote ? <p className="mt-2 mb-0 text-[14px] text-[var(--t-muted)]">{d.reasonNote}</p> : null}
@@ -304,6 +332,39 @@ function AppealForm({ id, onDone }: { id: string; onDone: () => void }) {
       ) : null}
       <Button type="submit" tone="app" loading={pending}>
         Send appeal
+      </Button>
+    </form>
+  )
+}
+
+function AnswerForm({ id, onDone }: { id: string; onDone: () => void }) {
+  const [state, action, pending] = useActionState<AppealFormState, FormData>(async (prev, form) => {
+    const next = await answerInfoAction(id, prev, form)
+    if (next.ok) onDone()
+    return next
+  }, {})
+  return (
+    <form action={action} className="flex flex-col gap-4">
+      <Field label="Your answer" tone="app" helper="Up to 1,000 characters. Your post goes back to the reviewer.">
+        {(p) => (
+          <Textarea
+            tone="app"
+            id={p.id}
+            aria-describedby={p.describedBy}
+            name="answer"
+            rows={3}
+            maxLength={1000}
+            required
+          />
+        )}
+      </Field>
+      {state.error && !pending ? (
+        <p role="alert" className="m-0 text-[14px] text-flagged">
+          {state.error}
+        </p>
+      ) : null}
+      <Button type="submit" tone="app" loading={pending}>
+        Send answer
       </Button>
     </form>
   )

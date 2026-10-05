@@ -1,6 +1,8 @@
 import { formatDollars } from '@mde/money/dollars'
 import { EmptyState } from '@mde/ui'
 import type { ReactNode } from 'react'
+import { db } from '@mde/db'
+import { unreadCount } from '@mde/notifications'
 import { requireStaff } from '@/server/guard'
 import { staffDashboard } from '@/server/dashboard'
 import { AdminPage } from './_components/ui'
@@ -21,11 +23,19 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 // What needs staff attention now (01_PRODUCT.md 8.4). Not in the mockups; staff style from 05 section 8.
 // Payouts waiting joins this page with payouts (Phase 6).
 export default async function AdminDashboard() {
-  await requireStaff()
+  const viewer = await requireStaff()
   const now = new Date()
-  const d = await staffDashboard(now)
+  const [d, unread] = await Promise.all([staffDashboard(now), unreadCount(db(), viewer.id)])
   return (
-    <AdminPage title="Dashboard" lead="What needs attention today.">
+    <AdminPage
+      title="Dashboard"
+      lead="What needs attention today."
+      actions={
+        <a href="/admin/notifications" className="text-[14px]">
+          Notifications{unread ? ` (${unread} new)` : ''}
+        </a>
+      }
+    >
       <Section title="Posts waiting for review">
         {d.waiting === 0 ? (
           <EmptyState body="The review queue is empty." />

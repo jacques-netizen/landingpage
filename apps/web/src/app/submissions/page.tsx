@@ -16,10 +16,14 @@ export const metadata: Metadata = { title: "Submissions | Maison d'Élites" }
 
 // Every post the creator submitted, filterable by state; a row opens the detail drawer (01_PRODUCT.md 8.2).
 // Not in the mockups, so it is built in the campaign page's style.
-export default async function SubmissionsPage({ searchParams }: { searchParams: Promise<{ state?: string }> }) {
+export default async function SubmissionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ state?: string; open?: string }>
+}) {
   const viewer = await getViewer()
   if (!viewer) redirect('/sign-in?next=/submissions')
-  const { state } = await searchParams
+  const { state, open } = await searchParams
   const filter = CREATOR_FILTERS.find((f) => f.key === state)
   const theme = readThemeCookie((await cookies()).get(THEME_COOKIE)?.value)
   const [rows, messages] = await Promise.all([
@@ -73,6 +77,7 @@ export default async function SubmissionsPage({ searchParams }: { searchParams: 
         ) : (
           <SubmissionsTable
             theme={theme === 'light' ? 'glass' : 'dark'}
+            openId={open}
             rows={rows.map((r) => ({
               id: r.id,
               campaignTitle: r.campaignTitle,

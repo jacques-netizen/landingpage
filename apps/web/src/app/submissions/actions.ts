@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@mde/db'
-import { APPEALABLE, openAppeal, ReviewError } from '@mde/review'
+import { answerInfo, APPEALABLE, openAppeal, ReviewError } from '@mde/review'
 import { CREATOR_STATE, DECISION_LABEL, getCreatorSubmission } from '@mde/submissions'
 import { reasonMessages } from '@/server/submissions'
 import { getViewer } from '@/server/viewer'
@@ -84,6 +84,19 @@ export async function appealAction(id: string, _prev: AppealFormState, form: For
     .filter(Boolean)
   try {
     await openAppeal(db(), viewer.id, id, { message: String(form.get('message') ?? ''), links })
+  } catch (e) {
+    if (e instanceof ReviewError) return { error: e.message }
+    throw e
+  }
+  return { ok: true }
+}
+
+/** Answer a reviewer's question; the post goes back to the review queue (03_SYSTEMS.md section 9). */
+export async function answerInfoAction(id: string, _prev: AppealFormState, form: FormData): Promise<AppealFormState> {
+  const viewer = await getViewer()
+  if (!viewer) return { error: 'Sign in again to answer.' }
+  try {
+    await answerInfo(db(), viewer.id, id, String(form.get('answer') ?? ''))
   } catch (e) {
     if (e instanceof ReviewError) return { error: e.message }
     throw e
