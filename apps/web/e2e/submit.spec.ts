@@ -1,7 +1,6 @@
-import { expect, test, type Page } from '@playwright/test'
-import { writeMockState } from '@mde/platforms'
+import { expect, test } from '@playwright/test'
 import postgres from 'postgres'
-import { signUpNewCreator } from './helpers'
+import { readyCreator, scriptPost } from './helpers'
 
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
   max: 1,
@@ -9,43 +8,8 @@ const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:
 })
 test.afterAll(() => sql.end())
 
-/** Sign up, link a TikTok account by bio code through the mock, and join "Sample music". */
-async function readyCreator(page: Page) {
-  await signUpNewCreator(page)
-  const handle = `clip${Date.now() % 1e8}${Math.floor(Math.random() * 1e3)}`
-  await page.goto('/accounts')
-  await page.getByLabel('Handle').fill(handle)
-  await page.getByRole('button', { name: 'Get a code' }).click()
-  const code = (await page.getByText(/^MDE-[A-Z0-9]{4}$/).textContent())!.trim()
-  writeMockState({ profiles: { [`tiktok:${handle}`]: { bio: code, followers: 8000 } } })
-  await page.getByRole('button', { name: 'Verify' }).click()
-  await expect(page.getByText('Verified', { exact: true })).toBeVisible()
-
-  const [c] = await sql`select id from campaigns where title = 'Sample music'`
-  await page.goto(`/campaigns/${c!.id}`)
-  await page.getByRole('button', { name: 'Join campaign' }).click()
-  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
-  return { handle, campaignId: c!.id as string }
-}
-
-function scriptPost(handle: string, caption: string) {
-  const id = `74${Date.now()}${Math.floor(Math.random() * 1e4)}`.slice(0, 19)
-  writeMockState({
-    posts: {
-      [`tiktok:${id}`]: {
-        authorPlatformUserId: `mock-tiktok-${handle}`,
-        publishedAt: new Date(Date.now() - 2 * 3_600_000).toISOString(),
-        views: 1500,
-        durationSeconds: 28,
-        caption,
-      },
-    },
-  })
-  return `https://www.tiktok.com/@${handle}/video/${id}`
-}
-
 test('a creator submits a post and sees every check pass', async ({ page }) => {
-  const { handle } = await readyCreator(page)
+  const { handle } = await readyCreator(page, sql)
   await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound #ad'))
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
@@ -55,7 +19,7 @@ test('a creator submits a post and sees every check pass', async ({ page }) => {
 })
 
 test('a rejected submission shows the creator message for its reason code', async ({ page }) => {
-  const { handle } = await readyCreator(page)
+  const { handle } = await readyCreator(page, sql)
   await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound, no tag'))
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Not accepted.')).toBeVisible()
@@ -73,7 +37,7 @@ test('a rejected submission shows the creator message for its reason code', asyn
 })
 
 test('a link that is not a post is turned away with nothing saved', async ({ page }) => {
-  const { campaignId } = await readyCreator(page)
+  const { campaignId } = await readyCreator(page, sql)
   await page.getByLabel('Link to your post').fill('https://www.tiktok.com/@someone')
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Not submitted.')).toBeVisible()
