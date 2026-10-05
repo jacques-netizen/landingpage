@@ -9,7 +9,11 @@ test('a creator links an account by bio code', async ({ page }) => {
   await expect(page.getByText('No accounts linked yet.')).toBeVisible()
 
   const handle = `maya${Date.now() % 1e8}`
-  await page.getByRole('radio', { name: 'TikTok' }).or(page.getByRole('button', { name: 'TikTok' })).first().click()
+  await page
+    .getByRole('radio', { name: 'TikTok' })
+    .or(page.getByRole('button', { name: 'TikTok' }))
+    .first()
+    .click()
   await page.getByLabel('Handle').fill(`@${handle}`)
   await page.getByRole('button', { name: 'Get a code' }).click()
   await expect(page.getByText('Waiting for the code')).toBeVisible()
