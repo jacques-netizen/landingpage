@@ -1,18 +1,21 @@
 import 'server-only'
 import { env } from '@mde/config'
-import { MockProvider, ProviderRouter, type ViewProvider } from '@mde/platforms'
-import { youtubeProvider } from './youtube'
+import { buildProviderRouter, type ProviderRouter } from '@mde/platforms'
+import { youtubeApiBase } from './youtube'
 
 const g = globalThis as unknown as { __mdeRouter?: ProviderRouter }
 
-// Providers in the order 03_SYSTEMS.md 3.1 lists them; the router falls back down the list. The mock
-// serves development, and a production build only when MOCK_PROVIDER=1 (CI end to end tests).
+// YouTube by API key, TikTok, Instagram and X through the data provider, and the mock in development
+// (or a production build with MOCK_PROVIDER=1, CI only).
 export function providers(): ProviderRouter {
   if (!g.__mdeRouter) {
-    const list: ViewProvider[] = []
-    if (env().YOUTUBE_API_KEY) list.push(youtubeProvider())
-    if (process.env.NODE_ENV !== 'production' || process.env.MOCK_PROVIDER === '1') list.push(new MockProvider())
-    g.__mdeRouter = new ProviderRouter(list)
+    const e = env()
+    g.__mdeRouter = buildProviderRouter({
+      youtubeApiKey: e.YOUTUBE_API_KEY,
+      youtubeApiBase: youtubeApiBase(),
+      dataProviderApiKey: e.DATA_PROVIDER_API_KEY,
+      mock: process.env.NODE_ENV !== 'production' || process.env.MOCK_PROVIDER === '1',
+    })
   }
   return g.__mdeRouter
 }

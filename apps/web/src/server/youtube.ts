@@ -8,7 +8,7 @@ export const OAUTH_STATE_COOKIE = 'mde_oauth_state'
 // so a real deploy always talks to Google.
 const testing = process.env.NODE_ENV !== 'production' || process.env.MOCK_PROVIDER === '1'
 export const googleTokenUrl = () => (testing && process.env.GOOGLE_TOKEN_URL_OVERRIDE) || undefined
-const youtubeBase = () => (testing && process.env.YOUTUBE_API_URL_OVERRIDE) || YOUTUBE_API
+export const youtubeApiBase = () => (testing && process.env.YOUTUBE_API_URL_OVERRIDE) || YOUTUBE_API
 
 /** The Google client for linking YouTube, or null when login linking is not set up. */
 export function youtubeLogin(): { client: GoogleClient; encryptionKey: string } | null {
@@ -26,5 +26,5 @@ export function youtubeLogin(): { client: GoogleClient; encryptionKey: string } 
 }
 
 export function youtubeProvider() {
-  return new YouTubeApiProvider(env().YOUTUBE_API_KEY, fetch, youtubeBase())
+  return new YouTubeApiProvider(env().YOUTUBE_API_KEY, fetch, youtubeApiBase())
 }
