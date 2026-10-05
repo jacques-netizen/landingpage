@@ -7,5 +7,22 @@
     "div:How it works": {
       "onClick": "v.howItWorks"
     }
+  },
+  "$mark": {
+    "hero": "width:1440px;margin:0 auto;height:1040px",
+    "nav": "padding:30px 48px;display:grid",
+    "pill": "display:flex;gap:6px;padding:5px 8px",
+    "cta": "justify-self:end;height:44px",
+    "head": "top:128px;text-align:center",
+    "h1": "font:400 104px/0.92",
+    "lead": "max-width:520px;margin:30px auto 0",
+    "card-l": "left:130px;top:340px",
+    "card-r": "right:130px;top:380px",
+    "curve": "top:552px",
+    "curve2": "top:596px",
+    "img": "left:70px;bottom:-110px;width:1300px",
+    "badge": "right:56px;top:150px",
+    "foot-l": "left:100px;bottom:48px",
+    "foot-r": "right:100px;bottom:48px"
   }
 }

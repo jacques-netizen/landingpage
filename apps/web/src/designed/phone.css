@@ -1,0 +1,220 @@
+/* PROPOSED phone layouts for the designed screens (not yet approved by the owner).
+   The mockups have no phone layout. Under 640px these rules reflow the same elements, with the
+   mockups' fonts, colours, components and copy, nothing new. At 640px and wider nothing here
+   applies, so the locked 1440 and 1024 designs are untouched. Elements are tagged with data-m
+   markers by scripts/dc-to-tsx.mjs ($mark in scripts/replacements.*.json). */
+
+@media (max-width: 639px) {
+  /* ---------- Home ---------- */
+  [data-m~='hero'] {
+    zoom: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 12px;
+    padding: 0 16px 32px;
+  }
+  [data-m~='hero'] > * {
+    grid-column: 1 / -1;
+  }
+  [data-m~='nav'] {
+    position: relative !important;
+    padding: 20px 0 0 !important;
+    grid-template-columns: 1fr auto !important;
+    row-gap: 16px;
+    order: 1;
+  }
+  [data-m~='nav'] > img {
+    height: 20px !important;
+  }
+  [data-m~='pill'] {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+  [data-m~='cta'] {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  [data-m~='head'] {
+    position: relative !important;
+    top: auto !important;
+    margin-top: 40px;
+    order: 2;
+  }
+  [data-m~='h1'] {
+    font-size: 41px !important;
+    line-height: 0.98 !important;
+  }
+  [data-m~='lead'] {
+    font-size: 16px !important;
+    margin-top: 20px !important;
+  }
+  [data-m~='img'] {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 150% !important;
+    max-width: none;
+    margin: -8px 0 0 -25%;
+    order: 3;
+  }
+  [data-m~='hero'] {
+    overflow: hidden !important;
+  }
+  [data-m~='badge'] {
+    order: 3;
+    grid-row: 3;
+    grid-column: 2;
+    justify-self: end;
+    position: relative !important;
+    right: auto !important;
+    top: 24px !important;
+    width: 84px;
+    height: 84px;
+    margin-bottom: -96px;
+  }
+  [data-m~='card-l'],
+  [data-m~='card-r'] {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    width: auto !important;
+    min-height: 168px !important;
+    padding: 16px !important;
+    margin-top: -40px;
+    order: 4;
+    --r: -4deg !important;
+  }
+  [data-m~='card-l'] {
+    grid-column: 1;
+  }
+  [data-m~='card-r'] {
+    grid-column: 2;
+    --r: 4deg !important;
+    margin-top: -24px;
+  }
+  [data-m~='curve'],
+  [data-m~='curve2'] {
+    display: none;
+  }
+  [data-m~='foot-l'],
+  [data-m~='foot-r'] {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin-top: 36px;
+    font-size: 14px !important;
+    order: 5;
+  }
+  [data-m~='foot-l'] {
+    grid-column: 1;
+  }
+  [data-m~='foot-r'] {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  [data-m~='pill'] > * {
+    padding: 9px 10px !important;
+    white-space: nowrap;
+  }
+  [data-m~='pill'] {
+    font-size: 12px !important;
+  }
+  [data-m~='b-h1'] {
+    font-size: 33px !important;
+  }
+  [data-m~='b-adv'] {
+    min-height: 0 !important;
+    padding: 24px !important;
+  }
+
+  /* ---------- Brand site sections ---------- */
+  [data-m~='b-sec120'] {
+    padding-top: 72px !important;
+    padding-bottom: 72px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  [data-m~='b-sec130'] {
+    padding-top: 80px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  [data-m~='b-2col'],
+  [data-m~='b-testi'] {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 40px !important;
+  }
+  [data-m~='b-h60'],
+  [data-m~='b-h64'] {
+    font-size: 40px !important;
+  }
+  [data-m~='b-h58'] {
+    font-size: 40px !important;
+  }
+  [data-m~='b-h52'] {
+    font-size: 36px !important;
+  }
+  [data-m~='b-h44'] {
+    font-size: 32px !important;
+  }
+  [data-m~='b-h84'] {
+    font-size: 48px !important;
+  }
+  [data-m~='b-wall'] {
+    height: calc(440px * var(--mde-wall-scale)) !important;
+  }
+  [data-m~='b-grid380'] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  [data-m~='b-ind'] {
+    padding: 24px !important;
+  }
+  [data-m~='b-steps'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin-top: 48px !important;
+    gap: 12px !important;
+  }
+  [data-m~='b-steps'] > * {
+    min-height: 220px !important;
+    padding: 20px 16px !important;
+  }
+  [data-m~='b-case'] {
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: center;
+    padding: 72px 20px 32px !important;
+    gap: 28px !important;
+    border-radius: 32px !important;
+  }
+  [data-m~='b-case'] > * {
+    justify-self: stretch;
+  }
+  [data-m~='b-case'] > [style*='width:300px'] {
+    justify-self: center;
+  }
+  [data-m~='b-tag'] {
+    left: -20px !important;
+    top: -72px !important;
+  }
+  [data-m~='b-frames'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+  [data-m~='b-testi-v'] {
+    min-height: 420px !important;
+  }
+  [data-m~='b-testi-t'] {
+    padding: 36px 24px !important;
+  }
+  [data-m~='b-cta'] {
+    padding: 96px 16px !important;
+  }
+  [data-m~='b-foot'] {
+    gap: 48px !important;
+  }
+}

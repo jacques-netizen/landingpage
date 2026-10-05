@@ -17,7 +17,7 @@ export function Tabs({ tabs, tone = 'paper', defaultValue, ...rest }: Props) {
           'flex',
           tone === 'paper'
             ? 'gap-6 border-0 border-b border-solid border-line'
-            : 'w-max gap-1 rounded-[18px] border border-solid border-[var(--t-card-line)] bg-[var(--t-card)] p-[6px] backdrop-blur-[18px]',
+            : 'w-max max-w-full overflow-x-auto gap-1 rounded-[18px] border border-solid border-[var(--t-card-line)] bg-[var(--t-card)] p-[6px] backdrop-blur-[18px]',
         )}
       >
         {tabs.map((t) => (

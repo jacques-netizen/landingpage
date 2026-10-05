@@ -1,7 +1,12 @@
 {
   "heroZoom": "\"var(--mde-hero-zoom)\"",
   "wallScale": "\"var(--mde-wall-scale)\"",
-  "$authoring": ["Paste link", "Add video", "Add clip", "Add testimonial video"],
+  "$authoring": [
+    "Paste link",
+    "Add video",
+    "Add clip",
+    "Add testimonial video"
+  ],
   "$attach": {
     "div:Book a call": {
       "onClick": "v.bookCall"
@@ -21,5 +26,45 @@
     "div:Pricing": {
       "id": "pricing"
     }
+  },
+  "$mark": {
+    "hero": "width:1440px;margin:0 auto;height:1000px",
+    "nav": "padding:30px 48px;display:grid",
+    "pill": "display:flex;gap:6px;padding:5px 8px",
+    "cta": "justify-self:end;height:44px",
+    "head": "top:118px;text-align:center",
+    "h1": "font:400 76px/0.96",
+    "lead": "max-width:540px;margin:24px auto 0",
+    "card-l": "left:110px;top:430px",
+    "card-r": "right:110px;top:470px",
+    "curve": "left:206px;top:578px",
+    "curve2": "left:1070px;top:612px",
+    "img": "left:130px;bottom:0;width:1180px",
+    "badge": "right:56px;top:150px",
+    "foot-l": "left:100px;bottom:48px",
+    "foot-r": "right:100px;bottom:48px",
+    "b-2col": "grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)",
+    "b-h60": "font:400 60px/1.02",
+    "b-h64": "font:400 64px/1.02",
+    "b-wall": "height:440px;border-radius:36px",
+    "b-grid380": "minmax(380px,1fr)",
+    "b-ind": "padding:44px;border-radius:36px",
+    "b-h44": "font:400 44px/1.04",
+    "b-sec120": "padding:120px 24px",
+    "b-sec130": "padding:130px 24px",
+    "b-steps": "grid-template-columns:repeat(4,minmax(0,1fr));gap:20px",
+    "b-case": "grid-template-columns:minmax(0,1.05fr) 300px minmax(0,0.8fr)",
+    "b-h58": "font:400 58px/1",
+    "b-tag": "left:-48px;top:-48px",
+    "b-frames": "grid-template-columns:repeat(4,minmax(0,1fr));gap:18px",
+    "b-testi": "grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr)",
+    "b-testi-v": "min-height:560px",
+    "b-testi-t": "padding:64px 56px",
+    "b-h52": "font:400 52px/1.05",
+    "b-cta": "padding:150px 24px",
+    "b-h84": "font:400 84px/0.98",
+    "b-foot": "gap:96px",
+    "b-adv": "padding:32px 30px;border-radius:28px",
+    "b-h1": "font:400 76px/0.96"
   }
 }

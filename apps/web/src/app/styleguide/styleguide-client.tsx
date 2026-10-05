@@ -52,7 +52,7 @@ function Section({ title, note, children }: { title: string; note?: string; chil
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[160px_1fr] items-start gap-6 border-0 border-b border-solid border-line py-5 last:border-b-0">
+    <div className="grid grid-cols-[160px_1fr] max-sm:grid-cols-1 items-start gap-6 border-0 border-b border-solid border-line py-5 last:border-b-0">
       <div className="pt-3 text-[13px] text-muted-2">{label}</div>
       <div className="flex flex-wrap items-center gap-4">{children}</div>
     </div>
@@ -186,7 +186,7 @@ export function StyleguideClient() {
         <PageContainer>
           <header className="pt-16 pb-12">
             <p className="m-0 font-mono text-[12px] tracking-[0.28em] text-gold-ink uppercase">Styleguide</p>
-            <h1 className="mt-6 mb-0 font-serif text-[64px] leading-none font-normal tracking-[-0.02em]">
+            <h1 className="mt-6 mb-0 font-serif text-[64px] leading-none max-sm:text-[40px] font-normal tracking-[-0.02em]">
               Shared components
               <br />
               <em>from the locked design.</em>
@@ -207,7 +207,7 @@ export function StyleguideClient() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {(['dark', 'glass'] as const).map((t) => (
                 <div key={t} data-theme={t} className="h-28 rounded-[22px] p-5" style={{ background: 'var(--t-page)' }}>
                   <div className="h-full rounded-[14px] border border-solid border-[var(--t-card-line)] bg-[var(--t-card)] p-4 font-app text-[13px] font-semibold text-[var(--t-text)]">
@@ -237,7 +237,7 @@ export function StyleguideClient() {
             {TYPE.map(([name, font, sample]) => (
               <div
                 key={name}
-                className="grid grid-cols-[160px_1fr] items-baseline gap-6 border-0 border-b border-solid border-line py-4"
+                className="grid grid-cols-[160px_1fr] max-sm:grid-cols-1 items-baseline gap-6 border-0 border-b border-solid border-line py-4"
               >
                 <div className="text-[13px] text-muted-2">
                   {name}
@@ -324,7 +324,7 @@ export function StyleguideClient() {
                 View rules
               </Button>
             </Row>
-            <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="mt-6 grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {(['dark', 'glass'] as const).map((t) => (
                 <AppPanel key={t} theme={t}>
                   <div className="flex flex-wrap gap-3">
@@ -358,7 +358,7 @@ export function StyleguideClient() {
             title="Inputs"
             note="Label above, helper below, errors with an icon and words. Focus shows a 2px ring."
           >
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-8 max-sm:grid-cols-1">
               <Field label="Display name" helper="Shown on public campaign lists unless your profile is private.">
                 {(p) => <Input id={p.id} aria-describedby={p.describedBy} placeholder="Your name" />}
               </Field>
@@ -384,13 +384,13 @@ export function StyleguideClient() {
                   />
                 )}
               </Field>
-              <div className="col-span-2">
+              <div className="col-span-2 max-sm:col-span-1">
                 <Field label="Note to creator" helper="Up to 1,000 characters.">
                   {(p) => <Textarea id={p.id} aria-describedby={p.describedBy} placeholder="Note to creator" />}
                 </Field>
               </div>
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {(['dark', 'glass'] as const).map((t) => (
                 <AppPanel key={t} theme={t}>
                   <Field label="Search" tone="app">
@@ -443,7 +443,7 @@ export function StyleguideClient() {
                 },
               ]}
             />
-            <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="mt-6 grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {(['dark', 'glass'] as const).map((t) => (
                 <AppPanel key={t} theme={t}>
                   <Tabs
@@ -581,7 +581,7 @@ export function StyleguideClient() {
           </Section>
 
           <Section title="Empty, error and loading">
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6 max-sm:grid-cols-1">
               <EmptyState body="No approved posts yet. Posts appear here once they pass review." />
               <ErrorState
                 title="Could not load this page."
@@ -594,7 +594,7 @@ export function StyleguideClient() {
                 <Skeleton className="h-4 w-5/6" />
               </div>
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {(['dark', 'glass'] as const).map((t) => (
                 <AppPanel key={t} theme={t}>
                   <EmptyState

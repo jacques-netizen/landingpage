@@ -15,7 +15,10 @@ export function PublicNav({
   logoSrc?: string
 }) {
   return (
-    <nav aria-label="Main" className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-4 px-12 py-[30px] font-sans">
+    <nav
+      aria-label="Main"
+      className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-4 px-12 py-[30px] font-sans max-sm:grid-cols-[1fr_auto] max-sm:gap-y-4 max-sm:px-4 max-sm:py-5"
+    >
       <a href="/" className="justify-self-start">
         <img
           src={logoSrc}
@@ -23,7 +26,7 @@ export function PublicNav({
           className="block h-[26px] w-auto max-w-full object-contain object-left"
         />
       </a>
-      <div className="flex gap-[6px] rounded-pill border border-solid border-line bg-[rgba(255,255,255,0.55)] px-2 py-[5px] text-[13px]">
+      <div className="flex gap-[6px] rounded-pill border border-solid border-line bg-[rgba(255,255,255,0.55)] px-2 py-[5px] text-[13px] max-sm:col-span-2 max-sm:row-start-2 max-sm:justify-self-center">
         {links.map((l) => (
           <a
             key={l.href}
@@ -40,7 +43,7 @@ export function PublicNav({
       </div>
       <a
         href={cta.href}
-        className="flex h-11 items-center gap-2 justify-self-end rounded-pill bg-ink px-[22px] text-[13px] font-medium text-white no-underline hover:text-white"
+        className="flex h-11 items-center gap-2 justify-self-end rounded-pill max-sm:col-start-2 max-sm:row-start-1 bg-ink px-[22px] text-[13px] font-medium text-white no-underline hover:text-white"
       >
         {cta.label} <span aria-hidden>↗</span>
       </a>

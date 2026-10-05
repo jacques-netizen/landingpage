@@ -35,6 +35,12 @@ delete replacements.$authoring
 // onClick goes through clickable(); other keys (like id) are added as plain attributes.
 const attach = replacements.$attach ?? {}
 delete replacements.$attach
+// "$mark" tags elements for the phone layout without changing them: { "<marker>": "<style substring>" }
+// adds data-m="<marker>" to every element whose mockup style contains the substring. The phone
+// stylesheet (src/designed/phone.css) keys off these markers; desktop rendering is unaffected.
+const marks = Object.entries(replacements.$mark ?? {})
+delete replacements.$mark
+const marksUsed = new Set()
 const attachUsed = new Set()
 
 const src = fs.readFileSync(path.join(HANDOFF, file), 'utf8')
@@ -107,7 +113,10 @@ function styleExpr(raw, scope) {
 const BOOLEAN = { autoplay: 'autoPlay', muted: 'muted', loop: 'loop', playsinline: 'playsInline', controls: 'controls' }
 
 function attrs(node, scope) {
+  const mark = marks.filter(([, sub]) => (node.attribs.style ?? '').includes(sub)).map(([m]) => m)
+  for (const m of mark) marksUsed.add(m)
   const out = []
+  if (mark.length) out.push(`data-m=${JSON.stringify(mark.join(' '))}`)
   const ownText = (node.children ?? [])
     .filter((c) => c.type === 'text')
     .map((c) => c.data)
@@ -205,6 +214,7 @@ function emitTag(node, scope, depth) {
 
 const body = children(root, new Set(['copy']), 0)
 for (const k of Object.keys(attach)) if (!attachUsed.has(k)) throw new Error(`$attach key matched nothing: ${k}`)
+for (const [m] of marks) if (!marksUsed.has(m)) throw new Error(`$mark matched nothing: ${m}`)
 const name = componentName.replace(/Design$/, '').toLowerCase()
 const header = `// GENERATED from docs/design/handoff/${file} (screen "${flag}") by apps/web/scripts/dc-to-tsx.mjs.
 // This is the locked design. Do not restyle it. Wire behaviour through the values object \`v\`.
