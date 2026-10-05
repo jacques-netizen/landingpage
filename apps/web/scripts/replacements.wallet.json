@@ -1,6 +1,10 @@
 {
   "wz": "\"var(--mde-app-zoom)\"",
-  "$hide": ["list:states", "text:Sample", "text:Sample tiers"],
+  "$hide": [
+    "list:states",
+    "text:Sample",
+    "text:Sample tiers"
+  ],
   "$text": {
     "$2.00": "{v.rateFmt}",
     "Bank transfer, ending 0000": "{v.payoutLabel}",
@@ -34,5 +38,19 @@
   },
   "$if": {
     "margin:14px 4px 10px;font:600 11px Archivo": "v.groupB"
+  },
+  "$mark": {
+    "w-page": "max-width:1240px;margin:0 auto;padding:30px 24px 96px",
+    "w-head": "=display:grid;grid-template-columns:1fr auto 1fr;column-gap:16px;align-items:center",
+    "w-zoom": "margin-top:36px;zoom:{{ wz }}",
+    "w-frame": "position:relative;width:1240px;box-sizing:border-box;border-radius:36px",
+    "w-side": "width:60px;flex:none",
+    "w-tabs": "justify-content:space-between;align-items:center;gap:16px;padding:6px;border-radius:18px",
+    "w-grid": "grid-template-columns:minmax(0,1fr) 190px 310px",
+    "w-agent": "right:6px;top:-8px;width:270px",
+    "w-big": "font:700 76px/1",
+    "w-stats": "grid-template-columns:repeat(3,auto)",
+    "w-posts": "grid-row:span 2",
+    "w-next": "right:376px;bottom:-40px"
   }
 }
