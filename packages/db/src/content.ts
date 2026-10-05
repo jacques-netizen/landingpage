@@ -6,7 +6,7 @@ import { settings } from './schema'
 // Marketing content for the designed public pages lives in settings under `content.<page>`.
 // The value is a map of text and video keys to staff-edited values. Keys that are not stored
 // fall back to the approved copy from the mockups, so the layout never changes, only the words.
-export const CONTENT_PAGES = ['home', 'brands', 'browse'] as const
+export const CONTENT_PAGES = ['home', 'brands', 'browse', 'wallet'] as const
 export type ContentPage = (typeof CONTENT_PAGES)[number]
 export type ContentOverrides = Record<string, string>
 

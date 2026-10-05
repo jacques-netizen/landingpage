@@ -1,0 +1,32 @@
+// GENERATED approved copy for the "wallet" page, from docs/design/handoff/Creator Site v1.dc.html.
+// Staff edits are stored in settings (content.wallet) and override these by key.
+export const walletContent: Record<string, string> = {
+  "wallet.001": "Withdrawal requested. It appears under Withdrawals once staff review it.",
+  "wallet.002": "Dismiss",
+  "wallet.003": "Available",
+  "wallet.004": "Pending",
+  "wallet.005": "Paid out",
+  "wallet.006": "Rate per 1k",
+  "wallet.007": "Withdraw",
+  "wallet.008": "→",
+  "wallet.009": "Change",
+  "wallet.010": "TOP CLIP",
+  "wallet.011": "Earned",
+  "wallet.012": "STREAK",
+  "wallet.013": "LAST POSTS",
+  "wallet.014": "Sample",
+  "wallet.015": "Could not load your wallet.",
+  "wallet.016": "Your balance is safe. Check your connection and try again.",
+  "wallet.017": "Try again",
+  "wallet.018": "Browse campaigns",
+  "wallet.019": "PAYOUT OVERVIEW",
+  "wallet.020": "⌄",
+  "wallet.021": "Approved",
+  "wallet.022": "Views",
+  "wallet.023": "Posts",
+  "wallet.024": "Best clip",
+  "wallet.025": "Rating",
+  "wallet.026": "Sample tiers",
+  "wallet.027": "NEXT PAYOUT",
+  "wallet.028": "Sample"
+}

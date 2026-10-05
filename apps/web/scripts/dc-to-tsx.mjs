@@ -48,6 +48,16 @@ delete replacements.$if
 const conditionsUsed = new Set()
 const attach = replacements.$attach ?? {}
 delete replacements.$attach
+// "$children": replace the children of one element with a JSX expression that draws the same markup
+// from data (bars, squares). Keys are "<style substring>" or "=<exact style>".
+const childSwap = Object.entries(replacements.$children ?? {})
+delete replacements.$children
+const childUsed = new Set()
+const childSeen = {}
+// "$attrs": bind one static attribute to a value: { "<attribute>=<static value>": "v.expression" }.
+const attrSwap = replacements.$attrs ?? {}
+delete replacements.$attrs
+const attrUsed = new Set()
 // "$mark" tags elements for the phone layout without changing them: { "<marker>": "<style substring>" }
 // adds data-m="<marker>" to every element whose mockup style contains the substring. The phone
 // stylesheet (src/designed/phone.css) keys off these markers; desktop rendering is unaffected.
@@ -162,6 +172,11 @@ function attrs(node, scope) {
       out.push(BOOLEAN[key])
       continue
     } else if (key.includes('-') && !key.startsWith('data-') && !key.startsWith('aria-')) key = kebabToCamel(key)
+    if (`${name}=${value}` in attrSwap) {
+      attrUsed.add(`${name}=${value}`)
+      out.push(`${key}={${attrSwap[`${name}=${value}`]}}`)
+      continue
+    }
     let v = valueExpr(value, scope)
     if ((key === 'src' || key === 'poster') && !value.includes('{{')) v = JSON.stringify(asset(value))
     if (key.startsWith('on')) {
@@ -255,6 +270,19 @@ function emit(node, scope, depth) {
 function emitTag(node, scope, depth) {
   const voidTags = new Set(['img', 'br', 'input', 'meta', 'link', 'hr', 'source'])
   if (voidTags.has(node.name)) return `<${node.name}${attrs(node, scope)} />`
+  const style = node.attribs.style ?? ''
+  // A key may end in "#n" to take only the nth element that matches (1 based).
+  const swap = childSwap.find(([key]) => {
+    const [, k, nth] = key.match(/^(.*?)(?:#(\d+))?$/)
+    const hit = k.startsWith('=') ? style === k.slice(1) : style.includes(k)
+    if (!hit) return false
+    childSeen[key] = (childSeen[key] ?? 0) + 1
+    return !nth || childSeen[key] === Number(nth)
+  })
+  if (swap) {
+    childUsed.add(swap[0])
+    return `<${node.name}${attrs(node, scope)}>{${swap[1]}}</${node.name}>`
+  }
   return `<${node.name}${attrs(node, scope)}>${children(node, scope, depth)}</${node.name}>`
 }
 
@@ -264,6 +292,8 @@ for (const [m] of marks) if (!marksUsed.has(m)) throw new Error(`$mark matched n
 for (const [k] of conditions) if (!conditionsUsed.has(k)) throw new Error(`$if matched nothing: ${k}`)
 for (const k of hide) if (!hideUsed.has(k)) throw new Error(`$hide matched nothing: ${k}`)
 for (const k of Object.keys(textSwap)) if (!textUsed.has(k)) throw new Error(`$text matched nothing: ${k}`)
+for (const [k] of childSwap) if (!childUsed.has(k)) throw new Error(`$children matched nothing: ${k}`)
+for (const k of Object.keys(attrSwap)) if (!attrUsed.has(k)) throw new Error(`$attrs matched nothing: ${k}`)
 const name = componentName.replace(/Design$/, '').toLowerCase()
 const header = `// GENERATED from docs/design/handoff/${file} (screen "${flag}") by apps/web/scripts/dc-to-tsx.mjs.
 // This is the locked design. Do not restyle it. Wire behaviour through the values object \`v\`.

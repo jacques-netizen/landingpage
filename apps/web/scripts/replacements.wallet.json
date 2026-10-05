@@ -1,0 +1,38 @@
+{
+  "wz": "\"var(--mde-app-zoom)\"",
+  "$hide": ["list:states", "text:Sample", "text:Sample tiers"],
+  "$text": {
+    "$2.00": "{v.rateFmt}",
+    "Bank transfer, ending 0000": "{v.payoutLabel}",
+    "$120.00": "{v.bestFmt}",
+    "4 days, goal 5 posts": "{v.streakLabel}",
+    "TODAY": "{v.groupA}",
+    "27 SEPT": "{v.groupB}",
+    "This month": "{v.periodLabel}",
+    "83%": "{v.approvedPct}",
+    "5 APPROVED": "{v.approvedLabel}",
+    "1 FLAGGED": "{v.flaggedLabel}",
+    "158,200": "{v.viewsFmt}",
+    "6": "{v.postsCount}",
+    "GOLD II": "{v.tierLabel}",
+    "68% to Platinum": "{v.tierProgress}"
+  },
+  "$children": {
+    "=display:flex;gap:4px#2": "(v.streakDays as string[]).map((bg: string, i: number) => <span key={i} style={css({ \"flex\": \"1\", \"height\": \"22px\", \"borderRadius\": \"6px\", \"background\": bg })}></span>)",
+    "margin-top:12px;display:flex;gap:3px;align-items:flex-end;height:44px": "(v.bars as { h: string; bg: string }[]).map((b, i: number) => <span key={i} style={css({ \"flex\": \"1\", \"height\": b.h, \"borderRadius\": \"2px\", \"background\": b.bg })}></span>)"
+  },
+  "$attrs": {
+    "stroke-dasharray=230 276.5": "v.ringDash"
+  },
+  "$attach": {
+    "span:Change": {
+      "onClick": "v.changeMethod"
+    },
+    "span:This month": {
+      "onClick": "v.cyclePeriod"
+    }
+  },
+  "$if": {
+    "margin:14px 4px 10px;font:600 11px Archivo": "v.groupB"
+  }
+}

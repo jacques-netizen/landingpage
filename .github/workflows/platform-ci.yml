@@ -96,6 +96,7 @@ jobs:
           node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isHome HomeDesign home scripts/replacements.home.json
           node scripts/dc-to-tsx.mjs "Platform Mockups.dc.html" isBrands BrandsDesign brands scripts/replacements.brands.json
           node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isBrowse BrowseDesign browse scripts/replacements.browse.json
+          node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isWallet WalletDesign wallet scripts/replacements.wallet.json
           if [ -n "$(git status --porcelain src/designed)" ]; then
             echo "A designed screen was edited by hand or the converter changed. The design is locked."
             git diff --stat src/designed

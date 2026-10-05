@@ -29,6 +29,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@mde/tracking": "workspace:*",
     "@playwright/test": "1.56.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.10.0",

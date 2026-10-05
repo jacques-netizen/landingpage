@@ -107,3 +107,36 @@ for (const width of WIDTHS) {
     })
   }
 }
+
+// The wallet ("Creator Site v1", wallet) in both themes and every state the mockup shows, rendered from
+// the mockup's sample numbers through the real wallet model (/design-states/wallet). The preview
+// switch and the "Sample" notes are kept invisible, so only those areas are masked.
+const WALLET_VIEWS = [
+  ['data-overview', 'data'],
+  ['data-withdrawals', 'withdrawals'],
+  ['empty', 'empty'],
+  ['loading', 'loading'],
+  ['error', 'error'],
+  ['withdraw-done', 'done'],
+] as const
+
+for (const width of [1440, 1024] as const) {
+  for (const theme of ['dark', 'light'] as const) {
+    test.describe(`wallet, ${theme}, at ${width}px`, () => {
+      test.use({ viewport: { width, height: 900 } })
+      for (const [name, state] of WALLET_VIEWS) {
+        test(`${name} matches the locked design`, async ({ page }) => {
+          await page.goto(`/design-states/wallet?state=${state}&theme=${theme}`)
+          await settle(page)
+          const result = await compareWithReference(
+            page,
+            `creator-wallet-${theme}-${name}-${width}`,
+            await previewMasks(page),
+          )
+          test.info().annotations.push({ type: 'visual', description: result.message })
+          expect(result.ok, result.message).toBe(true)
+        })
+      }
+    })
+  }
+}
