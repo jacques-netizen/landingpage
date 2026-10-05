@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
+    "@mde/campaigns": "workspace:*",
     "@mde/config": "workspace:*",
     "@mde/db": "workspace:*",
+    "@mde/money": "workspace:*",
     "@mde/ui": "workspace:*",
     "drizzle-orm": "^0.45.3",
     "ioredis": "^5.11.1",
@@ -22,9 +24,7 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "server-only": "^0.0.1",
-    "zod": "^4.6.5",
-    "@mde/campaigns": "workspace:*",
-    "@mde/money": "workspace:*"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
@@ -37,6 +37,7 @@
     "htmlparser2": "^10.1.0",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
+    "postgres": "^3.4.9",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vitest": "^5.0.3"

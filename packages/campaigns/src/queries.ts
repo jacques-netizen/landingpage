@@ -49,11 +49,15 @@ export async function listPublicCampaigns(db: DbOrTx) {
   return rows.map((c) => ({ campaign: c, figures: figures.get(c.id)! }))
 }
 
-/** One campaign for its public page, private ones included (they are reached by link). */
-export async function getPublicCampaign(db: DbOrTx, id: string) {
+/**
+ * One campaign for its page, private ones included (they are reached by link). Staff previewing an
+ * unpublished campaign pass includeUnpublished.
+ */
+export async function getPublicCampaign(db: DbOrTx, id: string, opts: { includeUnpublished?: boolean } = {}) {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null
   const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
-  if (!c || !PUBLIC_STATUSES.includes(c.status as (typeof PUBLIC_STATUSES)[number])) return null
+  if (!c) return null
+  if (!opts.includeUnpublished && !PUBLIC_STATUSES.includes(c.status as (typeof PUBLIC_STATUSES)[number])) return null
   const figures = (await campaignFigures(db, [c.id])).get(c.id)!
   const [terms] = c.currentTermsVersionId
     ? await db.select().from(tables.termsVersions).where(eq(tables.termsVersions.id, c.currentTermsVersionId))

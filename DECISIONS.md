@@ -89,3 +89,9 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - The Dark or Glass choice is kept in a cookie so the server renders the chosen theme on the first paint. Dark is the default. Reason: no flash of the wrong theme.
 - Loading and error states of designed screens are rendered for visual tests by `/design-states/...`, which returns 404 in production unless `DESIGN_STATES=1` (set in CI only). Reason: those states cannot be caught reliably otherwise.
 - Visual tests run in their own Playwright project before the flow tests. Reason: flow tests create campaigns that would change the seeded screens.
+- The campaign page is not in the mockups. It uses the campaigns screen's frame, sidebar, glass panels, Plus Jakarta Sans and the gold button, in the viewer's chosen theme, with the layout from 05_DESIGN_SYSTEM.md section 8 (details on the left, budget and Join on the right). Reason: new screens must look like they belong to the designed ones.
+- Staff can open unpublished campaigns at their page as a preview, with a banner saying so. The public gets a 404. Reason: the builder's "live preview of the creator page" (01_PRODUCT.md section 8.4).
+- Times on campaign pages are shown in the viewer's time zone, rendered in the browser (UTC until it loads). Reason: 05_DESIGN_SYSTEM.md section 9.
+- Joined creators see "You have joined this campaign" with what to do next; the submit form arrives in Phase 3. Reason: no dead buttons before the feature exists.
+- The campaigns list's loading screen sits in a route group so it does not wrap campaign pages, which load without a streamed skeleton so an unknown or unpublished campaign returns a real 404. Reason: a streamed page has already sent status 200 before it can say "not found".
+- Access code guesses are limited to 10 an hour per creator. Reason: 03_SYSTEMS.md section 1 rate limits on form posts.
