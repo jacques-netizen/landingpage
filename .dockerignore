@@ -1,0 +1,10 @@
+# The platform image needs only the workspace (apps, packages) and its root config.
+**/node_modules
+**/.next
+**/test-results
+**/playwright-report
+.git
+docs
+media
+dump.rdb
+*.local

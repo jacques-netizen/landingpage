@@ -24,3 +24,4 @@ eslint.config.mjs
 .github
 .gitattributes
 .env.example
+.dockerignore

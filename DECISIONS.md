@@ -191,3 +191,9 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Creators read notifications at `/notifications` (newest first; opening the page marks them read, new ones keep a dot for that visit) with the two email switches beside the list; the page joins the signed-in links in the app frame. Staff read theirs at `/admin/notifications`, linked from the dashboard with the unread count, so the designed staff column stays as it is. Reason: simplest in-app list.
 - Links in creator notifications open the submission's drawer directly (`/submissions?open=`). Reason: the reply box and appeal form live in the drawer.
 - On hold by the owner (2026-10-05): visible review queue filters and bulk approve, and the leaderboard. The owner will design the leaderboard first; both are added later. Reason: owner's call.
+
+## Launch (owner, 2026-10-05)
+
+- Phase 6 (payouts) is skipped for now: the owner builds the payment system this week. Withdraw shows "Withdrawals open soon" until then. The money engine already has request, paid and failed withdrawal steps for it to connect to. Reason: owner's call, to launch campaigns sooner.
+- Hosting is Railway: one Docker image (`apps/Dockerfile`) run as a web service and a worker service, with Railway Postgres and Redis. 04_BUILD_PLAN.md suggested Vercel plus a separate worker host; the owner agreed to one host for everything. Reason: simplest to run and to launch this week.
+- The first admin is made with `pnpm staff:grant <email> <role>` (audited); there is no sign-up path to a staff role. Reason: a fresh production database has no staff.

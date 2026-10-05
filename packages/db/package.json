@@ -13,7 +13,8 @@
     "generate": "drizzle-kit generate",
     "migrate": "tsx src/migrate.ts",
     "check": "drizzle-kit check",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "staff:grant": "tsx src/grant-staff.ts"
   },
   "dependencies": {
     "@mde/config": "workspace:*",
