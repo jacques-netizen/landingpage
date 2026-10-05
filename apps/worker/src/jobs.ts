@@ -1,9 +1,10 @@
 // Scheduled jobs (03_SYSTEMS.md section 11). Every job must be safe to run twice: a retry or two
 // workers picking up the same tick must not change the result.
 import { runCampaignLifecycle } from '@mde/campaigns'
-import type { Db } from '@mde/db'
+import { writeAudit, type Db } from '@mde/db'
+import { ledgerCheck } from '@mde/money'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
-import { runAccountRechecks, runDueViewChecks } from '@mde/tracking'
+import { runAccountRechecks, runDueViewChecks, runReleases } from '@mde/tracking'
 
 export type JobContext = {
   db: Db
@@ -32,5 +33,20 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
   'account-recheck': {
     every: 60 * MINUTE,
     run: ({ db, now, router, tokenFor }) => runAccountRechecks(db, { router, tokenFor, now }),
+  },
+  // Releases earnings once a closed campaign's review window has passed, then returns unused budget.
+  'release-earnings': { every: 60 * MINUTE, run: ({ db, now }) => runReleases(db, now) },
+  // The money property checks on live data. Any failure is logged as an error and kept in the audit
+  // log for staff (03_SYSTEMS.md section 11 and the alert in section 13).
+  'ledger-check': {
+    every: 24 * 60 * MINUTE,
+    run: async ({ db }) => {
+      const problems = await ledgerCheck(db)
+      if (problems.length) {
+        console.error(JSON.stringify({ level: 'error', msg: 'ledger check failed', problems }))
+        await writeAudit(db, { actorId: null, action: 'ledger_check.failed', entity: 'ledger', after: problems })
+      }
+      return { errors: problems.length }
+    },
   },
 }

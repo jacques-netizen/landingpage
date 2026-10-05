@@ -21,6 +21,7 @@ type State = {
     kind: string
     idempotencyKey: string
     submissionId: string | null
+    campaignId: string | null
     entries: { accountId: string; amountCents: number }[]
   }[]
   clients: Record<string, { serviceFeeBps: number }>
@@ -84,6 +85,7 @@ export function createMemoryStore() {
           kind: t.kind,
           idempotencyKey: t.idempotencyKey,
           submissionId: t.submissionId ?? null,
+          campaignId: t.campaignId ?? null,
           entries: entries.map((e) => ({ ...e })),
         })
         return { id, created: true }
@@ -93,6 +95,9 @@ export function createMemoryStore() {
       },
       async countSubmissionTransactions(id) {
         return s.transactions.filter((t) => t.submissionId === id).length
+      },
+      async countCampaignTransactions(campaignId, kind) {
+        return s.transactions.filter((t) => t.campaignId === campaignId && t.kind === kind).length
       },
       async campaign(id) {
         return s.campaigns[id] ? { ...s.campaigns[id]! } : null

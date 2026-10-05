@@ -30,6 +30,8 @@ describe('scheduled jobs', () => {
   it('checks views every minute and accounts every hour (each account once a day)', () => {
     expect(SCHEDULED_JOBS['view-checks']!.every).toBe(60_000)
     expect(SCHEDULED_JOBS['account-recheck']!.every).toBe(60 * 60_000)
+    expect(SCHEDULED_JOBS['release-earnings']!.every).toBe(60 * 60_000)
+    expect(SCHEDULED_JOBS['ledger-check']!.every).toBe(24 * 60 * 60_000)
   })
 
   it('runs the campaign lifecycle every 5 minutes', async () => {

@@ -11,6 +11,7 @@
     "@mde/campaigns": "workspace:*",
     "@mde/config": "workspace:*",
     "@mde/db": "workspace:*",
+    "@mde/money": "workspace:*",
     "@mde/platforms": "workspace:*",
     "@mde/tracking": "workspace:*",
     "bullmq": "^6.3.11"

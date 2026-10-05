@@ -111,6 +111,8 @@ export interface MoneyTx {
   insertTransaction(t: NewTransaction, entries: Entry[]): Promise<{ id: string; created: boolean }>
   transactionExists(idempotencyKey: string): Promise<boolean>
   countSubmissionTransactions(submissionId: string): Promise<number>
+  /** How many transactions of one kind a campaign has had. */
+  countCampaignTransactions(campaignId: string, kind: string): Promise<number>
 
   campaign(id: string): Promise<CampaignMoney | null>
   setCampaignStatus(id: string, status: string): Promise<void>

@@ -398,9 +398,16 @@ export async function returnCampaignRemainder(store: MoneyStore, i: { campaignId
     const [budgetId, holdId] = await tx.lockAccounts([account.budget(c.id), account.holding(c.clientId)])
     const remainder = await tx.balance(budgetId!)
     if (remainder === 0) return { returnedCents: 0 }
+    // Money can come back into a closed budget later (a held post reversed by staff), so each return
+    // has its own number. The budget is locked above, so two runs agree on the number and post once.
+    const n = await tx.countCampaignTransactions(c.id, 'campaign_remainder_returned')
     const r = await post(
       tx,
-      { kind: 'campaign_remainder_returned', idempotencyKey: `remainder:${c.id}`, campaignId: c.id },
+      {
+        kind: 'campaign_remainder_returned',
+        idempotencyKey: n === 0 ? `remainder:${c.id}` : `remainder:${c.id}:${n}`,
+        campaignId: c.id,
+      },
       [
         { id: budgetId!, amountCents: -remainder },
         { id: holdId!, amountCents: remainder },

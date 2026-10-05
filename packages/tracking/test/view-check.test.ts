@@ -1,5 +1,6 @@
 import {
   campaignFormSchema,
+  closeCampaign,
   createClient,
   createDraft,
   fundCampaign,
@@ -13,7 +14,7 @@ import { MockProvider, ProviderRouter, type MockState } from '@mde/platforms'
 import { submitPost } from '@mde/submissions'
 import { and, eq, sql as dsql } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { recheckAccount, runDueViewChecks, runViewCheck, type CheckOutcome } from '../src'
+import { recheckAccount, runDueViewChecks, runReleases, runViewCheck, type CheckOutcome } from '../src'
 
 const { db, sql } = createDb(process.env.DATABASE_URL!, { max: 4, onnotice: () => {} })
 afterAll(() => sql.end())
@@ -287,5 +288,34 @@ describe('view checks and earnings', () => {
       detail: { before: 10_000, after: 4_000, previousState: 'earning' },
     })
     expect((await t.sub()).state).toBe('flagged')
+  })
+
+  it('releases final posts after the review window and returns unused budget; flagged posts wait', async () => {
+    const t = await setup()
+    t.post(10_500)
+    await t.check(2) // earns $20.00
+    const u = await setup()
+    const closedAt = new Date()
+    await db.transaction((tx) => closeCampaign(tx, staffId, t.c.id, closedAt))
+    expect((await t.sub()).state).toBe('final')
+    // Not yet: the review window (7 days) is still running.
+    expect((await runReleases(db, new Date(closedAt.getTime() + 6 * 86_400_000))).released).toBe(0)
+    const later = new Date(closedAt.getTime() + 7 * 86_400_000 + 1)
+    const r = await runReleases(db, later)
+    expect(r.released).toBeGreaterThanOrEqual(1)
+    expect((await t.sub()).state).toBe('paid_out')
+    expect(await t.pending()).toBe(0)
+    // Running again releases nothing new.
+    const again = await runReleases(db, later)
+    expect(again.releasedCents).toBe(0)
+
+    // A post with an open flag stays held.
+    u.post(2_000, { authorPlatformUserId: 'someone-else' })
+    await u.check(2)
+    await db.update(tables.submissions).set({ state: 'final' }).where(eq(tables.submissions.id, u.id))
+    await db.transaction((tx) => closeCampaign(tx, staffId, u.c.id, closedAt))
+    const held = await runReleases(db, later)
+    expect(held.held).toBeGreaterThanOrEqual(1)
+    expect((await u.sub()).state).toBe('final')
   })
 })

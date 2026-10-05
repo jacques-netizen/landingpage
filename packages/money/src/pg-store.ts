@@ -74,6 +74,13 @@ function pgTx(tx: Tx): MoneyTx {
       return Number(rows[0]!.n)
     },
 
+    async countCampaignTransactions(campaignId, kind) {
+      const rows = await tx.execute<{ n: string }>(
+        sql`select count(*)::bigint as n from ledger_transactions where campaign_id = ${campaignId} and kind = ${kind}`,
+      )
+      return Number(rows[0]!.n)
+    },
+
     async campaign(id) {
       const [c] = await tx.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
       if (!c) return null
