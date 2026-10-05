@@ -48,6 +48,12 @@ jobs:
       DESIGN_STATES: '1'
       # Account and post data come from the scripted mock provider in CI.
       MOCK_PROVIDER: '1'
+      # YouTube login runs against a fake Google started by the end to end test (e2e/youtube-login.spec.ts).
+      AUTH_GOOGLE_ID: fake-client
+      AUTH_GOOGLE_SECRET: fake-secret
+      TOKEN_ENCRYPTION_KEY: AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=
+      GOOGLE_TOKEN_URL_OVERRIDE: http://localhost:3199/token
+      YOUTUBE_API_URL_OVERRIDE: http://localhost:3199/youtube/v3
     steps:
       - uses: actions/checkout@v4
         with:

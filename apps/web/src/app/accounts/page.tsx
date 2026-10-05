@@ -10,6 +10,7 @@ import { AppHeading, panel, StatusDot } from '@/components/app-ui'
 import { LocalDateTime } from '@/components/local-time'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
 import { getViewer } from '@/server/viewer'
+import { youtubeLogin } from '@/server/youtube'
 import { AccountActions, AddAccount } from './account-forms'
 
 export const dynamic = 'force-dynamic'
@@ -19,13 +20,31 @@ const count = (n: number) => n.toLocaleString('en-US')
 
 // Linked accounts: platform, handle, status, followers, last checked; add and remove (01_PRODUCT.md 8.2).
 // Not in the mockups, so it is built in the campaign page's style.
-export default async function AccountsPage() {
+const LINK_MESSAGES: Record<string, string> = {
+  youtube_unavailable: 'Linking with YouTube login is not available yet. Use a bio code instead.',
+  youtube_state: 'That sign-in link expired. Start again.',
+  youtube_denied: 'YouTube access was not approved, so nothing was linked.',
+  youtube_no_channel: 'That Google account has no YouTube channel.',
+  youtube_failed: 'We could not reach YouTube just now. Try again in a few minutes.',
+  linked_elsewhere: 'This account is already linked to another creator. Our team has been told and will look into it.',
+  limit_reached: 'You have linked the most accounts allowed. Remove one to add another.',
+}
+
+export default async function AccountsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ linked?: string; error?: string }>
+}) {
+  const { linked, error } = await searchParams
   const viewer = await getViewer()
   if (!viewer) redirect('/sign-in?next=/accounts')
   const theme = readThemeCookie((await cookies()).get(THEME_COOKIE)?.value)
   const [accounts, s] = await Promise.all([listAccounts(db(), viewer.id), getSettings(db())])
   const now = new Date()
   const full = accounts.length >= s.max_linked_accounts
+  const canUseYouTubeLogin = !!youtubeLogin()
+  const notice = linked === 'youtube' ? 'Your YouTube channel is linked and verified.' : null
+  const problem = error ? (LINK_MESSAGES[error] ?? LINK_MESSAGES.youtube_failed) : null
 
   return (
     <AppFrame theme={theme} active="accounts" signedIn>
@@ -33,6 +52,18 @@ export default async function AccountsPage() {
         title="Accounts"
         lead={`Link the accounts you post from. Posts count only from verified accounts. You can link up to ${s.max_linked_accounts}.`}
       />
+      {notice || problem ? (
+        <p
+          role={problem ? 'alert' : 'status'}
+          className="m-0 mb-4 rounded-[16px] border border-solid px-5 py-[14px] text-[14px]"
+          style={{
+            borderColor: problem ? 'rgba(229,103,92,0.45)' : 'rgba(79,178,134,0.45)',
+            background: problem ? 'rgba(229,103,92,0.14)' : 'rgba(79,178,134,0.14)',
+          }}
+        >
+          {problem ?? notice}
+        </p>
+      ) : null}
       <div className="grid grid-cols-[minmax(0,1fr)_340px] items-start gap-4 max-lg:grid-cols-1">
         <section className={`${panel} p-6 max-sm:p-4`} aria-label="Your accounts">
           {accounts.length === 0 ? (
@@ -106,8 +137,22 @@ export default async function AccountsPage() {
             </p>
           ) : (
             <>
+              {canUseYouTubeLogin ? (
+                <div className="mt-4 mb-6 border-0 border-b border-solid border-[var(--t-hair)] pb-6">
+                  <a
+                    href="/api/oauth/youtube/start"
+                    className="flex h-12 items-center justify-center gap-2 rounded-[14px] bg-gold-soft px-[26px] text-[14px] font-bold text-ink no-underline hover:text-ink"
+                  >
+                    Link with YouTube login <span aria-hidden>→</span>
+                  </a>
+                  <p className="mt-3 mb-0 text-[13px] leading-[1.5] text-[var(--t-muted)]">
+                    Read-only access to your channel and its view counts. Nothing is ever posted.
+                  </p>
+                </div>
+              ) : null}
               <p className="mt-2 mb-5 text-[14px] leading-[1.5] text-[var(--t-muted)]">
-                We give you a short code. Put it in your public bio, then press Verify.
+                {canUseYouTubeLogin ? 'Or use a bio code, for any platform. ' : ''}We give you a short code. Put it in
+                your public bio, then press Verify.
               </p>
               <AddAccount />
             </>
