@@ -42,3 +42,11 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Password sign in (optional in 03_SYSTEMS.md section 1) is not built yet. Reason: magic link is the default and covers the Phase 0 acceptance; passwords can be added without changing the schema.
 - Signed-out visitors to `/admin` are sent to sign in; signed-in people without a staff role get 403. Staff API returns 401 or 403 as JSON in the `{ error: { code, message } }` shape. Reason: 03_SYSTEMS.md sections 1 and 10.
 - The sign-up terms line is plain text for now. Reason: the legal pages arrive in Phase 2 and the line should not link to pages that do not exist yet.
+
+## Open items the owner will answer later
+
+- Case study videos: the owner will upload every case study, frame and testimonial video. Until then a case study with no video or poster (Walmart, Jake & Logan Paul) shows an empty video box. No fallback is needed.
+- Home "How it works" button: stays unlinked until the owner says where it goes (expected: the Phase 2 how it works page).
+- Brand footer "Careers": stays unlinked until the owner gives a destination.
+- A "For brands" link on the creator home: not added. The brand site stays reachable at `/brands` by URL until the owner decides.
+- Mockup preview controls on the app screens (Data / Loading / Error switches, "Sample data for layout only" notes): ask the owner when building those screens.
