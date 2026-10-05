@@ -141,3 +141,18 @@ for (const width of WIDTHS) {
     })
   }
 }
+
+// The staff review queue ("Creator Site v1", review) with the mockup's sample queue run through the
+// real component (/design-states/review). Its "Sample data" note is kept invisible and masked.
+for (const width of [1440, 1024] as const) {
+  test.describe(`review queue at ${width}px`, () => {
+    test.use({ viewport: { width, height: 900 } })
+    test('matches the locked design', async ({ page }) => {
+      await page.goto('/design-states/review')
+      await settle(page)
+      const result = await compareWithReference(page, `creator-review-${width}`, await previewMasks(page))
+      test.info().annotations.push({ type: 'visual', description: result.message })
+      expect(result.ok, result.message).toBe(true)
+    })
+  })
+}

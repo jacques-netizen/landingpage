@@ -44,6 +44,9 @@ importers:
       '@mde/platforms':
         specifier: workspace:*
         version: link:../../packages/platforms
+      '@mde/review':
+        specifier: workspace:*
+        version: link:../../packages/review
       '@mde/submissions':
         specifier: workspace:*
         version: link:../../packages/submissions

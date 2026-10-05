@@ -26,3 +26,28 @@
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+/* The review screen's note box: a real text field drawn exactly like the mockup's text. Typed text
+   is ink; the placeholder keeps the mockup's muted colour. */
+.mde-note {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  color: #1a1510;
+  resize: none;
+  outline: none;
+}
+.mde-note::placeholder {
+  color: #8a8378;
+  opacity: 1;
+}
+[data-note]:focus-within {
+  outline: 2px solid #1a1510;
+  outline-offset: 2px;
+}
