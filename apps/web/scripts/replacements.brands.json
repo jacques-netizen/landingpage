@@ -1,12 +1,7 @@
 {
   "heroZoom": "\"var(--mde-hero-zoom)\"",
   "wallScale": "\"var(--mde-wall-scale)\"",
-  "$authoring": [
-    "Paste link",
-    "Add video",
-    "Add clip",
-    "Add testimonial video"
-  ],
+  "$authoring": ["Paste link", "Add video", "Add clip", "Add testimonial video"],
   "$attach": {
     "div:Book a call": {
       "onClick": "v.bookCall"
