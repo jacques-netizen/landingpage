@@ -43,6 +43,13 @@
       "when": 1791191229297,
       "tag": "0005_legal_documents",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791199747062,
+      "tag": "0006_linked_account_unique_active",
+      "breakpoints": true
     }
   ]
 }

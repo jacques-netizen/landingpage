@@ -281,7 +281,12 @@
     bottom: 22px !important;
   }
   [data-m~='a-hero-shade'] {
-    background: linear-gradient(0deg, rgba(12, 10, 18, 0.92) 0%, rgba(12, 10, 18, 0.55) 48%, transparent 80%) !important;
+    background: linear-gradient(
+      0deg,
+      rgba(12, 10, 18, 0.92) 0%,
+      rgba(12, 10, 18, 0.55) 48%,
+      transparent 80%
+    ) !important;
   }
   [data-m~='a-hero-buttons'] > * {
     white-space: nowrap;

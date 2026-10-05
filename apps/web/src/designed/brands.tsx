@@ -5,5 +5,3580 @@ import { Fragment } from 'react'
 import { clickable, css } from './runtime'
 
 export function BrandsDesign({ v, copy }: { v: any; copy: (key: string) => string }) {
-  return (<>{' '}<div style={css({ "background": "#EEE9DB", "color": "#1A1510" })}>{' '}<div data-m="hero" style={css({ "position": "relative", "width": "1440px", "margin": "0 auto", "height": "1000px", "overflow": "hidden", "background": "#EEE9DB", "zoom": "var(--mde-hero-zoom)" })}>{' '}<div data-m="nav" style={css({ "position": "absolute", "left": "0", "right": "0", "top": "0", "padding": "30px 48px", "display": "grid", "gridTemplateColumns": "1fr auto 1fr", "columnGap": "16px", "alignItems": "center", "zIndex": "6" })}>{' '}<img {...clickable(v.goHome)} src="/designed/logo-nav-clear.png" alt="Maison d'Élites" style={css({ "height": "26px", "width": "auto", "maxWidth": "100%", "objectFit": "contain", "objectPosition": "left", "display": "block", "justifySelf": "start", "cursor": "pointer" })} />{' '}<div data-m="pill" style={css({ "display": "flex", "gap": "6px", "padding": "5px 8px", "border": "1px solid #D8CDB9", "borderRadius": "999px", "fontSize": "13px", "background": "rgba(255,255,255,0.55)" })}><span {...clickable(v.goHome)} style={css({ "padding": "9px 16px", "cursor": "pointer" })}>{copy("brands.001")}</span><span style={css({ "padding": "9px 16px", "borderRadius": "999px", "background": "#1A1510", "color": "#fff" })}>{copy("brands.002")}</span><span {...clickable(v.toCaseStudies)} style={css({ "padding": "9px 16px" })}>{copy("brands.003")}</span><span {...clickable(v.toPricing)} style={css({ "padding": "9px 16px" })}>{copy("brands.004")}</span></div>{' '}<div data-m="cta" {...clickable(v.bookCall)} style={css({ "justifySelf": "end", "height": "44px", "padding": "0 22px", "borderRadius": "999px", "background": "#1A1510", "color": "#fff", "display": "flex", "alignItems": "center", "gap": "8px", "font": "500 13px Archivo" })}>{copy("brands.005")}{' '}<span>{copy("brands.006")}</span></div>{' '}</div>{' '}<div data-m="head" style={css({ "position": "absolute", "left": "0", "right": "0", "top": "118px", "textAlign": "center", "zIndex": "5" })}>{' '}<div style={css({ "display": "inline-flex", "alignItems": "center", "gap": "10px", "height": "34px", "padding": "0 16px", "borderRadius": "999px", "border": "1px solid #CDBFA8", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.2em" })}><span style={css({ "width": "7px", "height": "7px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.007")}</div>{' '}<div data-m="h1 b-h1" style={css({ "marginTop": "22px", "font": "400 76px/0.96 'EB Garamond',Georgia,serif", "letterSpacing": "-0.035em" })}>{copy("brands.008")}<br /><em>{copy("brands.009")}</em></div>{' '}<p data-m="lead" style={css({ "maxWidth": "540px", "margin": "24px auto 0", "fontSize": "18px", "lineHeight": "1.45", "color": "#8A8378" })}>{copy("brands.010")}</p>{' '}<div style={css({ "display": "flex", "gap": "12px", "justifyContent": "center", "marginTop": "26px" })}><div {...clickable(v.bookCall)} style={css({ "height": "50px", "padding": "0 28px", "borderRadius": "999px", "background": "#1A1510", "color": "#fff", "display": "flex", "alignItems": "center", "gap": "12px", "font": "500 15px Archivo" })}>{copy("brands.011")}{' '}<span>{copy("brands.012")}</span></div><div {...clickable(v.toCaseStudies)} style={css({ "height": "50px", "padding": "0 24px", "borderRadius": "999px", "border": "1px solid #CDBFA8", "background": "rgba(255,255,255,0.5)", "display": "flex", "alignItems": "center", "font": "500 15px Archivo" })}>{copy("brands.013")}</div></div>{' '}</div>{' '}<svg data-m="curve" style={css({ "position": "absolute", "left": "206px", "top": "578px", "zIndex": "3" })} width="170" height="150" viewBox="0 0 170 150" fill="none"><path d="M0 0 C 0 90, 60 140, 170 144" stroke="#BDB4A4" strokeWidth="1"></path></svg>{' '}<svg data-m="curve2" style={css({ "position": "absolute", "left": "1070px", "top": "612px", "zIndex": "3" })} width="160" height="130" viewBox="0 0 160 130" fill="none"><path d="M160 0 C 160 80, 110 122, 0 124" stroke="#BDB4A4" strokeWidth="1"></path></svg>{' '}<img data-m="img" src="/designed/bh-3.png" alt="" style={css({ "position": "absolute", "left": "130px", "bottom": "0", "width": "1180px", "height": "auto", "zIndex": "2", "display": "block", "WebkitMaskImage": "linear-gradient(transparent,#000 16%)", "maskImage": "linear-gradient(transparent,#000 16%)" })} />{' '}<div data-m="card-l" style={css({ "position": "absolute", "left": "110px", "top": "430px", "width": "206px", "minHeight": "150px", "boxSizing": "border-box", "padding": "20px", "borderRadius": "26px", "background": "#fff", "boxShadow": "0 20px 50px rgba(26,21,16,0.09)", "--r": "-6deg", "transform": "rotate(-6deg)", "animation": "drift 7s ease-in-out 0s infinite", "zIndex": "4" })}><div style={css({ "font": "600 18px/1.2 Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.014")}</div><div style={css({ "marginTop": "8px", "fontSize": "13px", "lineHeight": "1.4", "color": "#8A8378" })}>{copy("brands.015")}</div></div>{' '}<div data-m="card-r" style={css({ "position": "absolute", "right": "110px", "top": "470px", "width": "206px", "minHeight": "150px", "boxSizing": "border-box", "padding": "20px", "borderRadius": "26px", "background": "#fff", "boxShadow": "0 20px 50px rgba(26,21,16,0.09)", "--r": "5deg", "transform": "rotate(5deg)", "animation": "drift 7s ease-in-out -3s infinite", "zIndex": "4" })}><div style={css({ "font": "600 18px/1.2 Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.016")}</div><div style={css({ "marginTop": "8px", "fontSize": "13px", "lineHeight": "1.4", "color": "#8A8378" })}>{copy("brands.017")}</div></div>{' '}<svg data-m="badge" style={css({ "position": "absolute", "right": "56px", "top": "150px", "zIndex": "5", "animation": "spin 28s linear infinite" })} width="112" height="112" viewBox="0 0 112 112"><defs><path id="orb2" d="M56 56 m-41 0 a41 41 0 1 1 82 0 a41 41 0 1 1 -82 0"></path></defs><text fontFamily="Archivo" fontSize="9.5" letterSpacing="2.2" fill="#1A1510"><textPath href="#orb2">{copy("brands.018")}</textPath></text></svg>{' '}<svg data-m="badge" style={css({ "position": "absolute", "right": "56px", "top": "150px", "zIndex": "5" })} width="112" height="112" viewBox="0 0 112 112"><path d="M56 40 L59.5 52.5 L72 56 L59.5 59.5 L56 72 L52.5 59.5 L40 56 L52.5 52.5 Z" fill="#1A1510"></path></svg>{' '}<div data-m="foot-l" style={css({ "position": "absolute", "left": "100px", "bottom": "48px", "zIndex": "5", "fontSize": "15px", "lineHeight": "1.45", "color": "#8A8378" })}><div style={css({ "width": "26px", "height": "1px", "background": "#BDB4A4", "marginBottom": "12px" })}></div>{copy("brands.019")}<br />{copy("brands.020")}<br />{copy("brands.021")}</div>{' '}<div data-m="foot-r" style={css({ "position": "absolute", "right": "100px", "bottom": "48px", "zIndex": "5", "fontSize": "15px", "lineHeight": "1.45", "color": "#8A8378" })}><svg width="18" height="18" viewBox="0 0 18 18" style={css({ "display": "block", "margin": "0 0 16px 38px" })}><path d="M9 0 L10.8 7.2 L18 9 L10.8 10.8 L9 18 L7.2 10.8 L0 9 L7.2 7.2 Z" fill="#1A1510"></path></svg><div style={css({ "display": "flex", "alignItems": "center", "gap": "12px" })}><span style={css({ "width": "26px", "height": "1px", "background": "#BDB4A4" })}></span><span>{copy("brands.022")}<br />{copy("brands.023")}</span></div></div>{' '}</div>{' '}<div style={css({ "borderTop": "1px solid #D8CDB9", "borderBottom": "1px solid #D8CDB9", "padding": "48px 0", "overflow": "hidden" })}>{' '}<div style={css({ "textAlign": "center", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.3em", "color": "#8A8378" })}>{copy("brands.024")}</div>{' '}<div style={css({ "marginTop": "30px" })}><div style={css({ "overflow": "hidden", "WebkitMaskImage": "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)", "maskImage": "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)" })}><div style={css({ "display": "flex", "gap": "64px", "width": "max-content", "alignItems": "center", "animation": "marquee 38s linear infinite" })}><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/walmart.png" alt="Walmart" style={css({ "height": "44px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/nintendo-t.png" alt="Nintendo" style={css({ "height": "54px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/wyde.svg" alt="WYDE" style={css({ "height": "92px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/sony.png" alt="Sony" style={css({ "height": "36px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/defjam.png" alt="DEF JAM" style={css({ "height": "84px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/walmart.png" alt="Walmart" style={css({ "height": "44px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/nintendo-t.png" alt="Nintendo" style={css({ "height": "54px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/wyde.svg" alt="WYDE" style={css({ "height": "92px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/sony.png" alt="Sony" style={css({ "height": "36px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/defjam.png" alt="DEF JAM" style={css({ "height": "84px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/walmart.png" alt="Walmart" style={css({ "height": "44px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/nintendo-t.png" alt="Nintendo" style={css({ "height": "54px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/wyde.svg" alt="WYDE" style={css({ "height": "92px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/sony.png" alt="Sony" style={css({ "height": "36px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/defjam.png" alt="DEF JAM" style={css({ "height": "84px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/walmart.png" alt="Walmart" style={css({ "height": "44px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/nintendo-t.png" alt="Nintendo" style={css({ "height": "54px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/wyde.svg" alt="WYDE" style={css({ "height": "92px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/sony.png" alt="Sony" style={css({ "height": "36px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "64px", "flex": "none" })}><img src="/designed/logos/defjam.png" alt="DEF JAM" style={css({ "height": "84px", "width": "auto", "filter": "grayscale(1) contrast(1.1)", "opacity": "0.8", "flex": "none", "display": "block" })} /><svg width="22" height="22" viewBox="0 0 22 22" style={css({ "flex": "none" })}><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span></div></div></div>{' '}<div style={css({ "marginTop": "22px" })}><div style={css({ "overflow": "hidden", "WebkitMaskImage": "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)", "maskImage": "linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)" })}><div style={css({ "display": "flex", "gap": "56px", "width": "max-content", "font": "400 34px/1 'EB Garamond',serif", "fontStyle": "italic", "color": "#8A8378", "animation": "marqueeR 46s linear infinite" })}><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.025")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.026")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.027")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.028")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.029")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.030")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.031")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.032")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.033")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.034")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.035")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.036")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.037")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.038")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.039")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.040")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.041")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.042")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.043")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.044")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.045")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.046")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.047")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span><span style={css({ "display": "flex", "alignItems": "center", "gap": "56px", "flex": "none" })}><span>{copy("brands.048")}</span><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path></svg></span></div></div></div>{' '}</div>{' '}<div data-m="b-2col b-sec130" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "130px 24px 110px", "display": "grid", "gridTemplateColumns": "minmax(0,1.05fr) minmax(0,1fr)", "gap": "64px", "alignItems": "center" })}>{' '}<div><div style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.049")}</div><div style={css({ "marginTop": "26px" })}><div data-m="b-h60" style={css({ "font": "400 60px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.050")}{' '}<em>{copy("brands.051")}</em>{copy("brands.052")}</div></div>{' '}<p style={css({ "marginTop": "28px", "fontSize": "17px", "lineHeight": "1.7", "color": "#6E675C" })}>{copy("brands.053")}</p>{' '}<p style={css({ "marginTop": "18px", "fontSize": "17px", "lineHeight": "1.7", "color": "#6E675C" })}>{copy("brands.054")}{' '}<b style={css({ "color": "#1A1510" })}>{copy("brands.055")}</b>{copy("brands.056")}</p></div>{' '}<div><div data-m="b-wall" style={css({ "position": "relative", "width": "100%", "height": "440px", "borderRadius": "36px", "overflow": "hidden", "background": "radial-gradient(420px 300px at 50% 55%,rgba(168,132,58,0.28),transparent 70%),linear-gradient(160deg,#F7F3EA,#E9E1D0)", "border": "1px solid rgba(255,255,255,0.9)" })}><div style={css({ "position": "absolute", "left": "50%", "top": "0", "width": "660px", "height": "440px", "marginLeft": "-330px", "transform": `scale(${"var(--mde-wall-scale)"})`, "transformOrigin": "50% 0" })}><div style={css({ "position": "absolute", "left": "40px", "top": "70px", "width": "128px", "height": "262px", "zIndex": "1", "--r": "-8deg", "transform": "rotate(-8deg)", "animation": "drift 7s ease-in-out 0s infinite" })}><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "22px", "background": "#15110d", "padding": "5px", "boxSizing": "border-box", "boxShadow": "0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)" })}><div style={css({ "position": "relative", "width": "100%", "height": "100%", "borderRadius": "18px", "overflow": "hidden" })}><img src="/designed/story-3-s.png" alt="" style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))" })}></div><div style={css({ "position": "absolute", "left": "50%", "top": "50%", "width": "33px", "height": "33px", "margin": "-17px 0 0 -17px", "borderRadius": "50%", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "justifyContent": "center" })}><svg width="13" height="14" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div><div style={css({ "position": "absolute", "left": "10%", "right": "10%", "bottom": "6%", "height": "3px", "borderRadius": "2px", "background": "rgba(255,255,255,0.35)" })}><div style={css({ "width": "66%", "height": "100%", "borderRadius": "2px", "background": "#fff" })}></div></div><div style={css({ "position": "absolute", "left": "50%", "top": "2.5%", "width": "28%", "height": "3.2%", "marginLeft": "-14%", "borderRadius": "999px", "background": "#0b0907" })}></div></div></div></div><div style={css({ "position": "absolute", "left": "142px", "top": "150px", "width": "150px", "height": "308px", "zIndex": "2", "--r": "-3deg", "transform": "rotate(-3deg)", "animation": "drift 6s ease-in-out -2s infinite" })}><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "26px", "background": "#15110d", "padding": "6px", "boxSizing": "border-box", "boxShadow": "0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)" })}><div style={css({ "position": "relative", "width": "100%", "height": "100%", "borderRadius": "21px", "overflow": "hidden" })}><img src="/designed/story-2-s.png" alt="" style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))" })}></div><div style={css({ "position": "absolute", "left": "50%", "top": "50%", "width": "39px", "height": "39px", "margin": "-20px 0 0 -20px", "borderRadius": "50%", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "justifyContent": "center" })}><svg width="15" height="17" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div><div style={css({ "position": "absolute", "left": "10%", "right": "10%", "bottom": "6%", "height": "3px", "borderRadius": "2px", "background": "rgba(255,255,255,0.35)" })}><div style={css({ "width": "54%", "height": "100%", "borderRadius": "2px", "background": "#fff" })}></div></div><div style={css({ "position": "absolute", "left": "50%", "top": "2.5%", "width": "28%", "height": "3.2%", "marginLeft": "-14%", "borderRadius": "999px", "background": "#0b0907" })}></div></div></div></div><div style={css({ "position": "absolute", "left": "258px", "top": "30px", "width": "172px", "height": "353px", "zIndex": "4", "--r": "2deg", "transform": "rotate(2deg)", "animation": "drift 8s ease-in-out -1s infinite" })}><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "29px", "background": "#15110d", "padding": "7px", "boxSizing": "border-box", "boxShadow": "0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)" })}><div style={css({ "position": "relative", "width": "100%", "height": "100%", "borderRadius": "24px", "overflow": "hidden" })}><img src="/designed/story-1-s.png" alt="" style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))" })}></div><div style={css({ "position": "absolute", "left": "50%", "top": "50%", "width": "45px", "height": "45px", "margin": "-22px 0 0 -22px", "borderRadius": "50%", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "justifyContent": "center" })}><svg width="17" height="19" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div><div style={css({ "position": "absolute", "left": "10%", "right": "10%", "bottom": "6%", "height": "3px", "borderRadius": "2px", "background": "rgba(255,255,255,0.35)" })}><div style={css({ "width": "42%", "height": "100%", "borderRadius": "2px", "background": "#fff" })}></div></div><div style={css({ "position": "absolute", "left": "50%", "top": "2.5%", "width": "28%", "height": "3.2%", "marginLeft": "-14%", "borderRadius": "999px", "background": "#0b0907" })}></div></div></div></div><div style={css({ "position": "absolute", "left": "396px", "top": "140px", "width": "150px", "height": "308px", "zIndex": "3", "--r": "5deg", "transform": "rotate(5deg)", "animation": "drift 7s ease-in-out -3s infinite" })}><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "26px", "background": "#15110d", "padding": "6px", "boxSizing": "border-box", "boxShadow": "0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)" })}><div style={css({ "position": "relative", "width": "100%", "height": "100%", "borderRadius": "21px", "overflow": "hidden" })}><img src="/designed/story-4-s.png" alt="" style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))" })}></div><div style={css({ "position": "absolute", "left": "50%", "top": "50%", "width": "39px", "height": "39px", "margin": "-20px 0 0 -20px", "borderRadius": "50%", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "justifyContent": "center" })}><svg width="15" height="17" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div><div style={css({ "position": "absolute", "left": "10%", "right": "10%", "bottom": "6%", "height": "3px", "borderRadius": "2px", "background": "rgba(255,255,255,0.35)" })}><div style={css({ "width": "78%", "height": "100%", "borderRadius": "2px", "background": "#fff" })}></div></div><div style={css({ "position": "absolute", "left": "50%", "top": "2.5%", "width": "28%", "height": "3.2%", "marginLeft": "-14%", "borderRadius": "999px", "background": "#0b0907" })}></div></div></div></div><div style={css({ "position": "absolute", "left": "508px", "top": "64px", "width": "120px", "height": "246px", "zIndex": "1", "--r": "9deg", "transform": "rotate(9deg)", "animation": "drift 6s ease-in-out -4s infinite" })}><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "20px", "background": "#15110d", "padding": "5px", "boxSizing": "border-box", "boxShadow": "0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)" })}><div style={css({ "position": "relative", "width": "100%", "height": "100%", "borderRadius": "17px", "overflow": "hidden" })}><img src="/designed/story-2-s.png" alt="" style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))" })}></div><div style={css({ "position": "absolute", "left": "50%", "top": "50%", "width": "31px", "height": "31px", "margin": "-16px 0 0 -16px", "borderRadius": "50%", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "justifyContent": "center" })}><svg width="12" height="13" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div><div style={css({ "position": "absolute", "left": "10%", "right": "10%", "bottom": "6%", "height": "3px", "borderRadius": "2px", "background": "rgba(255,255,255,0.35)" })}><div style={css({ "width": "54%", "height": "100%", "borderRadius": "2px", "background": "#fff" })}></div></div><div style={css({ "position": "absolute", "left": "50%", "top": "2.5%", "width": "28%", "height": "3.2%", "marginLeft": "-14%", "borderRadius": "999px", "background": "#0b0907" })}></div></div></div></div></div><div style={css({ "position": "absolute", "left": "22px", "bottom": "20px", "height": "34px", "padding": "0 16px", "borderRadius": "999px", "background": "rgba(255,255,255,0.85)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.18em", "zIndex": "6" })}><span style={css({ "width": "7px", "height": "7px", "borderRadius": "50%", "background": "#C2412A", "animation": "blink 1.4s infinite" })}></span>{copy("brands.057")}</div></div><div style={css({ "display": "flex", "flexWrap": "wrap", "gap": "10px", "marginTop": "22px" })}><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.058")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.059")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.060")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.061")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.062")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.063")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.064")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.065")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.066")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.067")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.068")}</span><span style={css({ "height": "42px", "padding": "0 18px", "borderRadius": "999px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 14px Archivo" })}><span style={css({ "width": "6px", "height": "6px", "borderRadius": "50%", "background": "#A8843A" })}></span>{copy("brands.069")}</span></div></div>{' '}</div>{' '}<div style={css({ "borderTop": "1px solid #D8CDB9", "background": "#F5F1E8" })}><div data-m="b-sec120" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "120px 24px", "textAlign": "center" })}>{' '}<div style={css({ "display": "flex", "justifyContent": "center" })}><div style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.070")}</div></div><div style={css({ "marginTop": "26px" })}><div data-m="b-h60" style={css({ "font": "400 60px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.071")}</div></div>{' '}<p style={css({ "maxWidth": "640px", "margin": "22px auto 0", "fontSize": "17px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.072")}</p>{' '}<div data-m="b-grid380" style={css({ "marginTop": "56px", "display": "grid", "gridTemplateColumns": "repeat(auto-fit,minmax(380px,1fr))", "gap": "24px", "textAlign": "left" })}>{' '}<div data-m="b-ind" style={css({ "padding": "44px", "borderRadius": "36px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)" })}><img src="/designed/concert-s.png" alt="" style={css({ "width": "100%", "height": "260px", "objectFit": "cover", "borderRadius": "24px", "display": "block", "marginBottom": "28px" })} /><div style={css({ "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.24em", "textTransform": "uppercase", "color": "#8A6A22" })}>{copy("brands.073")}</div><div data-m="b-h44" style={css({ "marginTop": "14px", "font": "400 44px/1.04 'EB Garamond',serif", "letterSpacing": "-0.025em" })}>{copy("brands.074")}</div><div style={css({ "marginTop": "18px", "fontSize": "16px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.075")}</div><div style={css({ "marginTop": "28px", "display": "flex", "gap": "8px", "flexWrap": "wrap" })}><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.076")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.077")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.078")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.079")}</span></div></div>{' '}<div data-m="b-ind" style={css({ "padding": "44px", "borderRadius": "36px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)" })}><img src="/designed/bb-b.png" alt="" style={css({ "width": "100%", "height": "260px", "objectFit": "cover", "objectPosition": "center 30%", "borderRadius": "24px", "display": "block", "marginBottom": "28px" })} /><div style={css({ "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.24em", "textTransform": "uppercase", "color": "#8A6A22" })}>{copy("brands.080")}</div><div data-m="b-h44" style={css({ "marginTop": "14px", "font": "400 44px/1.04 'EB Garamond',serif", "letterSpacing": "-0.025em" })}>{copy("brands.081")}</div><div style={css({ "marginTop": "18px", "fontSize": "16px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.082")}</div><div style={css({ "marginTop": "28px", "display": "flex", "gap": "8px", "flexWrap": "wrap" })}><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.083")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.084")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.085")}</span><span style={css({ "height": "32px", "padding": "0 14px", "borderRadius": "10px", "background": "rgba(26,21,16,0.06)", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.14em", "textTransform": "uppercase", "color": "#6E675C" })}>{copy("brands.086")}</span></div></div>{' '}</div></div></div>{' '}<div style={css({ "position": "relative", "overflow": "hidden", "background": "#EEE9DB" })}>{' '}<img src="/designed/sky-b.png" alt="" style={css({ "position": "absolute", "left": "0", "right": "0", "bottom": "0", "width": "100%", "height": "100%", "objectFit": "cover", "objectPosition": "center bottom" })} />{' '}<div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,#EEE9DB 0%,rgba(238,233,219,0.55) 24%,rgba(238,233,219,0) 52%)" })}></div>{' '}<div data-m="b-sec130" style={css({ "position": "relative", "maxWidth": "1240px", "margin": "0 auto", "padding": "130px 24px 120px" })}>{' '}<div style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.087")}</div><div style={css({ "marginTop": "26px" })}><div data-m="b-h64" style={css({ "font": "400 64px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.088")}</div></div>{' '}<p style={css({ "maxWidth": "520px", "marginTop": "20px", "fontSize": "17px", "lineHeight": "1.6", "color": "#4F493F" })}>{copy("brands.089")}</p>{' '}<div data-m="b-steps" style={css({ "marginTop": "80px", "display": "grid", "gridTemplateColumns": "repeat(4,minmax(0,1fr))", "gap": "20px", "alignItems": "end" })}><div style={css({ "minHeight": "250px", "boxSizing": "border-box", "padding": "26px 24px 28px", "borderRadius": "30px 30px 18px 18px", "background": "linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 24px 50px rgba(26,21,16,0.16)", "display": "flex", "flexDirection": "column", "--r": "0deg", "animation": "drift 7s ease-in-out 0s infinite" })}><div style={css({ "font": "400 64px/1 'EB Garamond',serif", "letterSpacing": "-0.04em", "color": "#A8843A" })}>{copy("brands.090")}</div><div style={css({ "marginTop": "auto", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.091")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#4F493F" })}>{copy("brands.092")}</div></div><div style={css({ "minHeight": "310px", "boxSizing": "border-box", "padding": "26px 24px 28px", "borderRadius": "30px 30px 18px 18px", "background": "linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 24px 50px rgba(26,21,16,0.16)", "display": "flex", "flexDirection": "column", "--r": "0deg", "animation": "drift 8s ease-in-out -1.5s infinite" })}><div style={css({ "font": "400 64px/1 'EB Garamond',serif", "letterSpacing": "-0.04em", "color": "#A8843A" })}>{copy("brands.093")}</div><div style={css({ "marginTop": "auto", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.094")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#4F493F" })}>{copy("brands.095")}</div></div><div style={css({ "minHeight": "370px", "boxSizing": "border-box", "padding": "26px 24px 28px", "borderRadius": "30px 30px 18px 18px", "background": "linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 24px 50px rgba(26,21,16,0.16)", "display": "flex", "flexDirection": "column", "--r": "0deg", "animation": "drift 9s ease-in-out -3s infinite" })}><div style={css({ "font": "400 64px/1 'EB Garamond',serif", "letterSpacing": "-0.04em", "color": "#A8843A" })}>{copy("brands.096")}</div><div style={css({ "marginTop": "auto", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.097")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#4F493F" })}>{copy("brands.098")}</div></div><div style={css({ "minHeight": "430px", "boxSizing": "border-box", "padding": "26px 24px 28px", "borderRadius": "30px 30px 18px 18px", "background": "linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 24px 50px rgba(26,21,16,0.16)", "display": "flex", "flexDirection": "column", "--r": "0deg", "animation": "drift 10s ease-in-out -4.5s infinite" })}><div style={css({ "font": "400 64px/1 'EB Garamond',serif", "letterSpacing": "-0.04em", "color": "#A8843A" })}>{copy("brands.099")}</div><div style={css({ "marginTop": "auto", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.100")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#4F493F" })}>{copy("brands.101")}</div></div></div>{' '}</div></div>{' '}<div style={css({ "borderTop": "1px solid #D8CDB9", "background": "#F5F1E8" })}><div data-m="b-sec120" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "120px 24px" })}>{' '}<div style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.102")}</div><div style={css({ "marginTop": "26px" })}><div data-m="b-h64" style={css({ "font": "400 64px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.103")}</div></div>{' '}<p style={css({ "maxWidth": "560px", "marginTop": "20px", "fontSize": "17px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.104")}</p>{' '}<div style={css({ "marginTop": "56px", "display": "grid", "gridTemplateColumns": "repeat(auto-fit,minmax(300px,1fr))", "gap": "20px" })}>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.105")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.106")}</div></div>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.107")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.108")}</div></div>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.109")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.110")}</div></div>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.111")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.112")}</div></div>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.113")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.114")}</div></div>{' '}<div data-m="b-adv" style={css({ "padding": "32px 30px", "borderRadius": "28px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "minHeight": "210px" })}><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z" fill="#A8843A"></path></svg><div style={css({ "marginTop": "22px", "font": "600 20px Archivo", "letterSpacing": "-0.01em" })}>{copy("brands.115")}</div><div style={css({ "marginTop": "10px", "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C" })}>{copy("brands.116")}</div></div>{' '}</div></div></div>{' '}<div data-m="b-sec130" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "130px 24px 110px" })}>{' '}<div id="case-studies" style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.117")}</div><div style={css({ "marginTop": "26px" })}><div data-m="b-h64" style={css({ "font": "400 64px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.118")}</div></div>{' '}<p style={css({ "maxWidth": "600px", "marginTop": "20px", "fontSize": "17px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.119")}</p>{' '}<div style={css({ "marginTop": "36px", "display": "flex", "gap": "10px", "flexWrap": "wrap" })}>{(v.csTabs as any[]).map((t: any, i0: number) => (<Fragment key={i0}><span {...clickable(t.go)} style={css({ "height": "46px", "padding": "0 24px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "font": "500 15px Archivo", "cursor": "pointer", "border": `1px solid ${t.bd}`, "background": t.bg, "color": t.fg })}>{t.label}</span></Fragment>))}</div>{' '}{(v.csActive as any[]).map((c: any, i0: number) => (<Fragment key={i0}>{' '}<div data-m="b-case" style={css({ "position": "relative", "marginTop": "28px", "borderRadius": "40px", "overflow": "hidden", "minHeight": "600px", "background": "linear-gradient(120deg,#6E1522 0%,#B3331F 46%,#E8803A 100%)", "color": "#fff", "display": "grid", "gridTemplateColumns": "minmax(0,1.05fr) 300px minmax(0,0.8fr)", "gap": "36px", "padding": "48px", "boxSizing": "border-box", "alignItems": "center" })}>{' '}<img src="/designed/story-2-s.png" alt="" style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "opacity": "0.14" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "radial-gradient(700px 400px at 70% 30%,rgba(255,200,150,0.25),transparent 70%),linear-gradient(180deg,transparent 60%,rgba(20,6,6,0.35))" })}></div>{' '}<div style={css({ "position": "relative" })}>{' '}<div data-m="b-tag" style={css({ "position": "absolute", "left": "-48px", "top": "-48px", "height": "44px", "padding": "0 28px", "background": "#1A1510", "color": "#F4F1EA", "display": "flex", "alignItems": "center", "font": "600 13px Archivo", "letterSpacing": "0.14em", "borderRadius": "0 0 16px 0" })}>{copy("brands.120")}</div>{' '}<div data-m="b-h58" style={css({ "font": "400 58px/1 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{c.title}<span style={css({ "opacity": "0.55" })}>{' '}{copy("brands.121")}{' '}</span><em>{copy("brands.122")}</em></div>{' '}<span style={css({ "marginTop": "22px", "display": "inline-flex", "height": "30px", "padding": "0 16px", "borderRadius": "999px", "background": "#1A1510", "font": "600 12px Archivo", "letterSpacing": "0.14em", "alignItems": "center" })}>{copy("brands.123")}</span>{' '}<div style={css({ "marginTop": "22px", "display": "flex", "flexDirection": "column", "gap": "14px" })}>{' '}<div style={css({ "padding": "18px 22px", "borderRadius": "20px", "background": "rgba(255,255,255,0.16)", "border": "1px solid rgba(255,255,255,0.28)" })}><div style={css({ "font": "700 15px Archivo", "letterSpacing": "0.08em" })}>{copy("brands.124")}</div><div style={css({ "marginTop": "6px", "fontSize": "14px", "lineHeight": "1.5", "color": "rgba(255,255,255,0.92)" })}>{c.objective}</div></div>{' '}<div style={css({ "padding": "18px 22px", "borderRadius": "20px", "background": "rgba(255,255,255,0.16)", "border": "1px solid rgba(255,255,255,0.28)" })}><div style={css({ "font": "700 15px Archivo", "letterSpacing": "0.08em" })}>{copy("brands.125")}</div><div style={css({ "marginTop": "6px", "fontSize": "14px", "lineHeight": "1.5", "color": "rgba(255,255,255,0.92)" })}>{c.strategy}</div></div>{c.hasResult ? (<><div style={css({ "padding": "18px 22px", "borderRadius": "20px", "background": "rgba(255,255,255,0.16)", "border": "1px solid rgba(255,255,255,0.28)" })}><div style={css({ "font": "700 15px Archivo", "letterSpacing": "0.08em" })}>{copy("brands.126")}</div><div style={css({ "marginTop": "6px", "fontSize": "14px", "lineHeight": "1.5", "color": "rgba(255,255,255,0.92)" })}>{c.result}</div></div></>) : null}{' '}</div>{' '}</div>{' '}<div style={css({ "position": "relative", "width": "300px", "height": "500px" })} onDragOver={c.dragOver} onDrop={c.drop}>{c.hasVideo ? (<><div style={css({ "position": "absolute", "inset": "0", "borderRadius": "34px", "overflow": "hidden", "background": "#000", "cursor": "pointer" })} {...clickable(c.toggle)}><video src={c.video} autoPlay muted loop playsInline onPlay={c.onPlay} onPause={c.onPause} style={css({ "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })}></video>{c.paused ? (<><div style={css({ "position": "absolute", "inset": "0", "display": "flex", "alignItems": "center", "justifyContent": "center", "background": "rgba(0,0,0,0.25)", "pointerEvents": "none" })}><div style={css({ "width": "78px", "height": "78px", "borderRadius": "50%", "background": "rgba(255,255,255,0.9)", "display": "flex", "alignItems": "center", "justifyContent": "center", "boxShadow": "0 12px 30px rgba(0,0,0,0.3)" })}><svg width="26" height="28" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div></div></>) : null}</div></>) : null}{c.noVideo ? (<>{c.hasPoster ? (<><img src={c.poster} alt="" style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "borderRadius": "34px", "display": "block" })} /></>) : null}{c.noPoster ? (<></>) : null}{v.authoring ? (<div {...clickable(c.link)} style={css({ "position": "absolute", "right": "112px", "top": "12px", "zIndex": "4", "height": "32px", "padding": "0 14px", "borderRadius": "999px", "background": "rgba(26,21,16,0.78)", "color": "#fff", "display": "flex", "alignItems": "center", "font": "600 12px Archivo", "cursor": "pointer" })}>{"Paste link"}</div>) : null}{v.authoring ? (<label style={css({ "position": "absolute", "right": "12px", "top": "12px", "zIndex": "4", "height": "32px", "padding": "0 14px", "borderRadius": "999px", "background": "rgba(26,21,16,0.78)", "color": "#fff", "display": "flex", "alignItems": "center", "font": "600 12px Archivo", "cursor": "pointer" })}>{"Add video"}<input type="file" accept="video/mp4,video/quicktime,video/webm,video/*" onChange={c.pick} style={css({ "display": "none" })} /></label>) : null}</>) : null}</div>{' '}<div style={css({ "position": "relative" })}>{' '}<div style={css({ "textAlign": "center", "font": "700 14px Archivo", "letterSpacing": "0.08em" })}>{copy("brands.127")}</div>{' '}<div style={css({ "marginTop": "20px", "display": "flex", "flexDirection": "column", "gap": "14px" })}>{' '}{(c.stats as any[]).map((x: any, i1: number) => (<Fragment key={i1}><div style={css({ "padding": "18px 22px", "borderRadius": "20px", "background": "rgba(255,255,255,0.16)", "border": "1px solid rgba(255,255,255,0.28)" })}><div style={css({ "font": "600 13px Archivo", "letterSpacing": "0.06em" })}>{x.l}</div><div style={css({ "marginTop": "4px", "font": "600 36px/1 Archivo", "letterSpacing": "-0.03em", "opacity": "0.9", "whiteSpace": "nowrap" })}>{x.v}</div></div></Fragment>))}</div>{' '}<div style={css({ "marginTop": "14px", "textAlign": "center", "fontSize": "12px", "color": "rgba(255,255,255,0.8)" })}>{c.note}</div>{' '}</div>{' '}</div>{' '}</Fragment>))}{' '}<div data-m="b-frames" style={css({ "marginTop": "28px", "display": "grid", "gridTemplateColumns": "repeat(4,minmax(0,1fr))", "gap": "18px" })}>{(v.frames as any[]).map((f: any, i0: number) => (<Fragment key={i0}><div style={css({ "position": "relative", "aspectRatio": "3/4", "borderRadius": "26px", "overflow": "hidden", "background": "#000", "boxShadow": "0 24px 50px rgba(26,21,16,0.18)", "--r": `${f.rot}deg`, "transform": `rotate(${f.rot}deg)`, "animation": `drift ${f.dur}s ease-in-out ${f.delay}s infinite`, "cursor": "pointer" })} {...clickable(f.toggle)} onDragOver={f.dragOver} onDrop={f.drop}><img src={f.img} alt="" style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} />{f.hasVideo ? (<><video src={f.video} muted loop playsInline preload="metadata" onPlay={f.onPlay} onPause={f.onPause} style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })}></video></>) : null}{f.showPlay ? (<><div style={css({ "position": "absolute", "inset": "0", "display": "flex", "alignItems": "center", "justifyContent": "center", "pointerEvents": "none" })}><div style={css({ "width": "64px", "height": "64px", "borderRadius": "50%", "background": "rgba(255,255,255,0.9)", "display": "flex", "alignItems": "center", "justifyContent": "center", "boxShadow": "0 10px 24px rgba(0,0,0,0.3)" })}><svg width="22" height="24" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div></div></>) : null}{f.noVideo ? (<>{v.authoring ? (<label onClick={f.stop} style={css({ "position": "absolute", "left": "12px", "bottom": "12px", "height": "28px", "padding": "0 12px", "borderRadius": "999px", "background": "rgba(255,255,255,0.88)", "display": "flex", "alignItems": "center", "font": "600 11px Archivo", "cursor": "pointer" })}>{"Add clip"}<input type="file" accept="video/mp4,video/quicktime,video/webm,video/*" onChange={f.pick} style={css({ "display": "none" })} /></label>) : null}</>) : null}</div></Fragment>))}</div>{' '}</div>{' '}<div data-m="b-sec130" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "130px 24px 40px" })}><div data-m="b-testi" style={css({ "display": "grid", "gridTemplateColumns": "minmax(0,0.8fr) minmax(0,1.2fr)", "gap": "0", "borderRadius": "40px", "overflow": "hidden", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 30px 70px rgba(26,21,16,0.12)" })}>{' '}<div data-m="b-testi-v" style={css({ "position": "relative", "minHeight": "560px", "background": "#000", "cursor": "pointer" })} {...clickable(v.tm.toggle)} onDragOver={v.tm.dragOver} onDrop={v.tm.drop}><img src="/designed/proof/poster-kojo-blak.png" alt="" style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })} />{v.tm.hasVideo ? (<><video src={v.tm.video} playsInline preload="metadata" onPlay={v.tm.onPlay} onPause={v.tm.onPause} style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "display": "block" })}></video></>) : null}{v.tm.showPlay ? (<><div style={css({ "position": "absolute", "inset": "0", "display": "flex", "alignItems": "center", "justifyContent": "center", "background": "rgba(0,0,0,0.18)", "pointerEvents": "none" })}><div style={css({ "width": "84px", "height": "84px", "borderRadius": "50%", "background": "rgba(255,255,255,0.92)", "display": "flex", "alignItems": "center", "justifyContent": "center", "boxShadow": "0 14px 34px rgba(0,0,0,0.35)" })}><svg width="28" height="30" viewBox="0 0 10 11"><path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path></svg></div></div></>) : null}<div style={css({ "position": "absolute", "left": "18px", "bottom": "18px", "height": "30px", "padding": "0 14px", "borderRadius": "999px", "background": "rgba(255,255,255,0.9)", "display": "flex", "alignItems": "center", "font": "600 11px Archivo", "pointerEvents": "none" })}>{copy("brands.128")}</div>{v.tm.noVideo ? (<>{v.authoring ? (<label onClick={v.tm.stop} style={css({ "position": "absolute", "right": "18px", "bottom": "18px", "height": "30px", "padding": "0 14px", "borderRadius": "999px", "background": "rgba(26,21,16,0.8)", "color": "#fff", "display": "flex", "alignItems": "center", "font": "600 11px Archivo", "cursor": "pointer" })}>{"Add testimonial video"}<input type="file" accept="video/mp4,video/quicktime,video/webm,video/*" onChange={v.tm.pick} style={css({ "display": "none" })} /></label>) : null}</>) : null}</div>{' '}<div data-m="b-testi-t" style={css({ "padding": "64px 56px", "display": "flex", "flexDirection": "column", "justifyContent": "center" })}>{' '}<div style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.129")}</div>{' '}<div data-m="b-h52" style={css({ "marginTop": "26px", "font": "400 52px/1.05 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.130")}{' '}<em>{copy("brands.131")}</em></div><p style={css({ "marginTop": "20px", "maxWidth": "420px", "fontSize": "17px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.132")}</p><div style={css({ "marginTop": "26px", "font": "600 16px Archivo" })}>{copy("brands.133")}</div><div style={css({ "marginTop": "2px", "fontSize": "14px", "color": "#6E675C" })}>{copy("brands.134")}</div>{' '}<div style={css({ "marginTop": "28px", "display": "flex", "gap": "10px", "flexWrap": "wrap" })}><span style={css({ "height": "38px", "padding": "0 18px", "borderRadius": "999px", "background": "#1A1510", "color": "#F4F1EA", "display": "flex", "alignItems": "center", "gap": "10px", "font": "500 13px Archivo" })}><svg width="12" height="12" viewBox="0 0 22 22"><path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#D8C58F"></path></svg>{copy("brands.135")}</span><span style={css({ "height": "38px", "padding": "0 18px", "borderRadius": "999px", "border": "1px solid #CDBFA8", "display": "flex", "alignItems": "center", "font": "500 13px Archivo" })}>{copy("brands.136")}</span></div>{' '}</div></div></div>{' '}<div style={css({ "borderTop": "1px solid #D8CDB9", "background": "#F5F1E8" })}><div data-m="b-sec120" style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "120px 24px 130px", "textAlign": "center" })}>{' '}<div style={css({ "display": "flex", "justifyContent": "center" })}><div id="pricing" style={css({ "display": "flex", "alignItems": "center", "gap": "14px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.28em", "textTransform": "uppercase", "color": "#8A6A22" })}><span style={css({ "width": "30px", "height": "1px", "background": "#8A6A22" })}></span>{copy("brands.137")}</div></div><div style={css({ "marginTop": "26px" })}><div data-m="b-h64" style={css({ "font": "400 64px/1.02 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.138")}</div></div>{' '}<p style={css({ "maxWidth": "620px", "margin": "20px auto 0", "fontSize": "17px", "lineHeight": "1.6", "color": "#6E675C" })}>{copy("brands.139")}</p>{' '}<div style={css({ "marginTop": "64px", "display": "grid", "gridTemplateColumns": "repeat(auto-fit,minmax(320px,1fr))", "gap": "24px", "textAlign": "left", "alignItems": "stretch" })}>{' '}<div style={css({ "position": "relative", "padding": "36px 34px 34px", "borderRadius": "32px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "flexDirection": "column", "gap": "20px" })}><div style={css({ "font": "600 22px Archivo" })}>{copy("brands.140")}</div><div data-m="b-h58" style={css({ "font": "400 58px/1 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.141")}</div><div style={css({ "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C", "minHeight": "70px" })}>{copy("brands.142")}</div><div style={css({ "height": "1px", "background": "#D8CDB9" })}></div><div style={css({ "display": "flex", "flexDirection": "column", "gap": "14px", "flex": "1" })}><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.143")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.144")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.145")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.146")}</div></div><div {...clickable(v.bookCall)} style={css({ "height": "52px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "justifyContent": "center", "font": "500 15px Archivo", "border": "1px solid #CDBFA8" })}>{copy("brands.147")}</div></div>{' '}<div style={css({ "position": "relative", "padding": "36px 34px 34px", "borderRadius": "32px", "background": "#1A1510", "color": "#F4F1EA", "border": "1px solid #A8843A", "boxShadow": "0 30px 70px rgba(26,21,16,0.25)", "display": "flex", "flexDirection": "column", "gap": "20px" })}><span style={css({ "position": "absolute", "left": "34px", "top": "-15px", "height": "30px", "padding": "0 16px", "borderRadius": "999px", "background": "#D8C58F", "color": "#1A1510", "display": "flex", "alignItems": "center", "font": "500 11px 'Geist Mono',monospace", "letterSpacing": "0.2em" })}>{copy("brands.148")}</span><div style={css({ "font": "600 22px Archivo" })}>{copy("brands.149")}</div><div data-m="b-h58" style={css({ "font": "400 58px/1 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.150")}</div><div style={css({ "fontSize": "15px", "lineHeight": "1.55", "color": "rgba(244,241,234,0.72)", "minHeight": "70px" })}>{copy("brands.151")}</div><div style={css({ "height": "1px", "background": "rgba(255,255,255,0.14)" })}></div><div style={css({ "display": "flex", "flexDirection": "column", "gap": "14px", "flex": "1" })}><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.152")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.153")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.154")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.155")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.156")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.157")}</div></div><div {...clickable(v.bookCall)} style={css({ "height": "52px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "justifyContent": "center", "font": "500 15px Archivo", "background": "#D8C58F", "color": "#1A1510" })}>{copy("brands.158")}</div></div>{' '}<div style={css({ "position": "relative", "padding": "36px 34px 34px", "borderRadius": "32px", "background": "rgba(255,255,255,0.78)", "border": "1px solid rgba(255,255,255,0.95)", "boxShadow": "0 18px 44px rgba(26,21,16,0.08)", "display": "flex", "flexDirection": "column", "gap": "20px" })}><div style={css({ "font": "600 22px Archivo" })}>{copy("brands.159")}</div><div data-m="b-h58" style={css({ "font": "400 58px/1 'EB Garamond',serif", "letterSpacing": "-0.03em" })}>{copy("brands.160")}</div><div style={css({ "fontSize": "15px", "lineHeight": "1.55", "color": "#6E675C", "minHeight": "70px" })}>{copy("brands.161")}</div><div style={css({ "height": "1px", "background": "#D8CDB9" })}></div><div style={css({ "display": "flex", "flexDirection": "column", "gap": "14px", "flex": "1" })}><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.162")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.163")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.164")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.165")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.166")}</div><div style={css({ "display": "flex", "gap": "12px", "alignItems": "center", "fontSize": "15px" })}><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A8843A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8.5 L6.5 12 L13 4.5"></path></svg>{copy("brands.167")}</div></div><div {...clickable(v.bookCall)} style={css({ "height": "52px", "borderRadius": "999px", "display": "flex", "alignItems": "center", "justifyContent": "center", "font": "500 15px Archivo", "border": "1px solid #CDBFA8" })}>{copy("brands.168")}</div></div>{' '}</div></div></div>{' '}<div data-m="b-cta" style={css({ "position": "relative", "overflow": "hidden", "padding": "150px 24px", "textAlign": "center", "background": "#1A1510", "color": "#F4F1EA" })}><img src="/designed/concert-s.png" alt="" style={css({ "position": "absolute", "inset": "0", "width": "100%", "height": "100%", "objectFit": "cover", "opacity": "0.4" })} /><div style={css({ "position": "absolute", "inset": "0", "background": "linear-gradient(180deg,#1A1510 0%,rgba(26,21,16,0.55) 50%,#1A1510 100%)" })}></div><div style={css({ "position": "relative" })}>{' '}<div data-m="b-h84" style={css({ "font": "400 84px/0.98 'EB Garamond',serif", "letterSpacing": "-0.035em" })}>{copy("brands.169")}<br /><em>{copy("brands.170")}</em></div>{' '}<div style={css({ "marginTop": "22px", "font": "500 12px 'Geist Mono',monospace", "letterSpacing": "0.26em", "color": "#D8C58F" })}>{copy("brands.171")}</div>{' '}<p style={css({ "maxWidth": "560px", "margin": "22px auto 0", "fontSize": "17px", "lineHeight": "1.6", "color": "rgba(244,241,234,0.72)" })}>{copy("brands.172")}</p>{' '}<div {...clickable(v.bookCall)} style={css({ "margin": "34px auto 0", "width": "200px", "height": "54px", "borderRadius": "999px", "background": "#F4F1EA", "color": "#1A1510", "display": "flex", "alignItems": "center", "justifyContent": "center", "gap": "10px", "font": "600 15px Archivo" })}>{copy("brands.173")}{' '}<span>{copy("brands.174")}</span></div>{' '}</div></div>{' '}<div style={css({ "background": "#120F0B", "color": "#F4F1EA" })}><div style={css({ "maxWidth": "1240px", "margin": "0 auto", "padding": "64px 24px 40px" })}>{' '}<div style={css({ "display": "flex", "justifyContent": "space-between", "gap": "48px", "flexWrap": "wrap" })}>{' '}<img src="/designed/logo-nav-clear.png" alt="Maison d'Élites" style={css({ "height": "26px", "width": "auto", "filter": "brightness(0) invert(1)" })} />{' '}<div data-m="b-foot" style={css({ "display": "flex", "gap": "96px", "flexWrap": "wrap", "fontSize": "15px", "color": "rgba(244,241,234,0.7)" })}>{' '}<div style={css({ "display": "flex", "flexDirection": "column", "gap": "14px" })}><div style={css({ "font": "600 17px Archivo", "color": "#F4F1EA" })}>{copy("brands.175")}</div><span {...clickable(v.toPrivacy)}>{copy("brands.176")}</span><span {...clickable(v.toCreatorTerms)}>{copy("brands.177")}</span><span {...clickable(v.toBrandTerms)}>{copy("brands.178")}</span></div>{' '}<div style={css({ "display": "flex", "flexDirection": "column", "gap": "14px" })}><div style={css({ "font": "600 17px Archivo", "color": "#F4F1EA" })}>{copy("brands.179")}</div><span {...clickable(v.contact)}>{copy("brands.180")}</span><span {...clickable(v.support)}>{copy("brands.181")}</span><span>{copy("brands.182")}</span></div>{' '}</div></div>{' '}<div style={css({ "marginTop": "56px", "fontSize": "14px", "color": "rgba(244,241,234,0.55)" })}>{copy("brands.183")}</div>{' '}</div></div>{' '}</div>{' '}</>)
+  return (
+    <>
+      {' '}
+      <div style={css({ background: '#EEE9DB', color: '#1A1510' })}>
+        {' '}
+        <div
+          data-m="hero"
+          style={css({
+            position: 'relative',
+            width: '1440px',
+            margin: '0 auto',
+            height: '1000px',
+            overflow: 'hidden',
+            background: '#EEE9DB',
+            zoom: 'var(--mde-hero-zoom)',
+          })}
+        >
+          {' '}
+          <div
+            data-m="nav"
+            style={css({
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              top: '0',
+              padding: '30px 48px',
+              display: 'grid',
+              gridTemplateColumns: '1fr auto 1fr',
+              columnGap: '16px',
+              alignItems: 'center',
+              zIndex: '6',
+            })}
+          >
+            {' '}
+            <img
+              {...clickable(v.goHome)}
+              src="/designed/logo-nav-clear.png"
+              alt="Maison d'Élites"
+              style={css({
+                height: '26px',
+                width: 'auto',
+                maxWidth: '100%',
+                objectFit: 'contain',
+                objectPosition: 'left',
+                display: 'block',
+                justifySelf: 'start',
+                cursor: 'pointer',
+              })}
+            />{' '}
+            <div
+              data-m="pill"
+              style={css({
+                display: 'flex',
+                gap: '6px',
+                padding: '5px 8px',
+                border: '1px solid #D8CDB9',
+                borderRadius: '999px',
+                fontSize: '13px',
+                background: 'rgba(255,255,255,0.55)',
+              })}
+            >
+              <span {...clickable(v.goHome)} style={css({ padding: '9px 16px', cursor: 'pointer' })}>
+                {copy('brands.001')}
+              </span>
+              <span style={css({ padding: '9px 16px', borderRadius: '999px', background: '#1A1510', color: '#fff' })}>
+                {copy('brands.002')}
+              </span>
+              <span {...clickable(v.toCaseStudies)} style={css({ padding: '9px 16px' })}>
+                {copy('brands.003')}
+              </span>
+              <span {...clickable(v.toPricing)} style={css({ padding: '9px 16px' })}>
+                {copy('brands.004')}
+              </span>
+            </div>{' '}
+            <div
+              data-m="cta"
+              {...clickable(v.bookCall)}
+              style={css({
+                justifySelf: 'end',
+                height: '44px',
+                padding: '0 22px',
+                borderRadius: '999px',
+                background: '#1A1510',
+                color: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                font: '500 13px Archivo',
+              })}
+            >
+              {copy('brands.005')} <span>{copy('brands.006')}</span>
+            </div>{' '}
+          </div>{' '}
+          <div
+            data-m="head"
+            style={css({ position: 'absolute', left: '0', right: '0', top: '118px', textAlign: 'center', zIndex: '5' })}
+          >
+            {' '}
+            <div
+              style={css({
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                height: '34px',
+                padding: '0 16px',
+                borderRadius: '999px',
+                border: '1px solid #CDBFA8',
+                font: "500 12px 'Geist Mono',monospace",
+                letterSpacing: '0.2em',
+              })}
+            >
+              <span style={css({ width: '7px', height: '7px', borderRadius: '50%', background: '#A8843A' })}></span>
+              {copy('brands.007')}
+            </div>{' '}
+            <div
+              data-m="h1 b-h1"
+              style={css({
+                marginTop: '22px',
+                font: "400 76px/0.96 'EB Garamond',Georgia,serif",
+                letterSpacing: '-0.035em',
+              })}
+            >
+              {copy('brands.008')}
+              <br />
+              <em>{copy('brands.009')}</em>
+            </div>{' '}
+            <p
+              data-m="lead"
+              style={css({
+                maxWidth: '540px',
+                margin: '24px auto 0',
+                fontSize: '18px',
+                lineHeight: '1.45',
+                color: '#8A8378',
+              })}
+            >
+              {copy('brands.010')}
+            </p>{' '}
+            <div style={css({ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '26px' })}>
+              <div
+                {...clickable(v.bookCall)}
+                style={css({
+                  height: '50px',
+                  padding: '0 28px',
+                  borderRadius: '999px',
+                  background: '#1A1510',
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  font: '500 15px Archivo',
+                })}
+              >
+                {copy('brands.011')} <span>{copy('brands.012')}</span>
+              </div>
+              <div
+                {...clickable(v.toCaseStudies)}
+                style={css({
+                  height: '50px',
+                  padding: '0 24px',
+                  borderRadius: '999px',
+                  border: '1px solid #CDBFA8',
+                  background: 'rgba(255,255,255,0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  font: '500 15px Archivo',
+                })}
+              >
+                {copy('brands.013')}
+              </div>
+            </div>{' '}
+          </div>{' '}
+          <svg
+            data-m="curve"
+            style={css({ position: 'absolute', left: '206px', top: '578px', zIndex: '3' })}
+            width="170"
+            height="150"
+            viewBox="0 0 170 150"
+            fill="none"
+          >
+            <path d="M0 0 C 0 90, 60 140, 170 144" stroke="#BDB4A4" strokeWidth="1"></path>
+          </svg>{' '}
+          <svg
+            data-m="curve2"
+            style={css({ position: 'absolute', left: '1070px', top: '612px', zIndex: '3' })}
+            width="160"
+            height="130"
+            viewBox="0 0 160 130"
+            fill="none"
+          >
+            <path d="M160 0 C 160 80, 110 122, 0 124" stroke="#BDB4A4" strokeWidth="1"></path>
+          </svg>{' '}
+          <img
+            data-m="img"
+            src="/designed/bh-3.png"
+            alt=""
+            style={css({
+              position: 'absolute',
+              left: '130px',
+              bottom: '0',
+              width: '1180px',
+              height: 'auto',
+              zIndex: '2',
+              display: 'block',
+              WebkitMaskImage: 'linear-gradient(transparent,#000 16%)',
+              maskImage: 'linear-gradient(transparent,#000 16%)',
+            })}
+          />{' '}
+          <div
+            data-m="card-l"
+            style={css({
+              position: 'absolute',
+              left: '110px',
+              top: '430px',
+              width: '206px',
+              minHeight: '150px',
+              boxSizing: 'border-box',
+              padding: '20px',
+              borderRadius: '26px',
+              background: '#fff',
+              boxShadow: '0 20px 50px rgba(26,21,16,0.09)',
+              '--r': '-6deg',
+              transform: 'rotate(-6deg)',
+              animation: 'drift 7s ease-in-out 0s infinite',
+              zIndex: '4',
+            })}
+          >
+            <div style={css({ font: '600 18px/1.2 Archivo', letterSpacing: '-0.01em' })}>{copy('brands.014')}</div>
+            <div style={css({ marginTop: '8px', fontSize: '13px', lineHeight: '1.4', color: '#8A8378' })}>
+              {copy('brands.015')}
+            </div>
+          </div>{' '}
+          <div
+            data-m="card-r"
+            style={css({
+              position: 'absolute',
+              right: '110px',
+              top: '470px',
+              width: '206px',
+              minHeight: '150px',
+              boxSizing: 'border-box',
+              padding: '20px',
+              borderRadius: '26px',
+              background: '#fff',
+              boxShadow: '0 20px 50px rgba(26,21,16,0.09)',
+              '--r': '5deg',
+              transform: 'rotate(5deg)',
+              animation: 'drift 7s ease-in-out -3s infinite',
+              zIndex: '4',
+            })}
+          >
+            <div style={css({ font: '600 18px/1.2 Archivo', letterSpacing: '-0.01em' })}>{copy('brands.016')}</div>
+            <div style={css({ marginTop: '8px', fontSize: '13px', lineHeight: '1.4', color: '#8A8378' })}>
+              {copy('brands.017')}
+            </div>
+          </div>{' '}
+          <svg
+            data-m="badge"
+            style={css({
+              position: 'absolute',
+              right: '56px',
+              top: '150px',
+              zIndex: '5',
+              animation: 'spin 28s linear infinite',
+            })}
+            width="112"
+            height="112"
+            viewBox="0 0 112 112"
+          >
+            <defs>
+              <path id="orb2" d="M56 56 m-41 0 a41 41 0 1 1 82 0 a41 41 0 1 1 -82 0"></path>
+            </defs>
+            <text fontFamily="Archivo" fontSize="9.5" letterSpacing="2.2" fill="#1A1510">
+              <textPath href="#orb2">{copy('brands.018')}</textPath>
+            </text>
+          </svg>{' '}
+          <svg
+            data-m="badge"
+            style={css({ position: 'absolute', right: '56px', top: '150px', zIndex: '5' })}
+            width="112"
+            height="112"
+            viewBox="0 0 112 112"
+          >
+            <path d="M56 40 L59.5 52.5 L72 56 L59.5 59.5 L56 72 L52.5 59.5 L40 56 L52.5 52.5 Z" fill="#1A1510"></path>
+          </svg>{' '}
+          <div
+            data-m="foot-l"
+            style={css({
+              position: 'absolute',
+              left: '100px',
+              bottom: '48px',
+              zIndex: '5',
+              fontSize: '15px',
+              lineHeight: '1.45',
+              color: '#8A8378',
+            })}
+          >
+            <div style={css({ width: '26px', height: '1px', background: '#BDB4A4', marginBottom: '12px' })}></div>
+            {copy('brands.019')}
+            <br />
+            {copy('brands.020')}
+            <br />
+            {copy('brands.021')}
+          </div>{' '}
+          <div
+            data-m="foot-r"
+            style={css({
+              position: 'absolute',
+              right: '100px',
+              bottom: '48px',
+              zIndex: '5',
+              fontSize: '15px',
+              lineHeight: '1.45',
+              color: '#8A8378',
+            })}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" style={css({ display: 'block', margin: '0 0 16px 38px' })}>
+              <path d="M9 0 L10.8 7.2 L18 9 L10.8 10.8 L9 18 L7.2 10.8 L0 9 L7.2 7.2 Z" fill="#1A1510"></path>
+            </svg>
+            <div style={css({ display: 'flex', alignItems: 'center', gap: '12px' })}>
+              <span style={css({ width: '26px', height: '1px', background: '#BDB4A4' })}></span>
+              <span>
+                {copy('brands.022')}
+                <br />
+                {copy('brands.023')}
+              </span>
+            </div>
+          </div>{' '}
+        </div>{' '}
+        <div
+          style={css({
+            borderTop: '1px solid #D8CDB9',
+            borderBottom: '1px solid #D8CDB9',
+            padding: '48px 0',
+            overflow: 'hidden',
+          })}
+        >
+          {' '}
+          <div
+            style={css({
+              textAlign: 'center',
+              font: "500 12px 'Geist Mono',monospace",
+              letterSpacing: '0.3em',
+              color: '#8A8378',
+            })}
+          >
+            {copy('brands.024')}
+          </div>{' '}
+          <div style={css({ marginTop: '30px' })}>
+            <div
+              style={css({
+                overflow: 'hidden',
+                WebkitMaskImage: 'linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)',
+                maskImage: 'linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)',
+              })}
+            >
+              <div
+                style={css({
+                  display: 'flex',
+                  gap: '64px',
+                  width: 'max-content',
+                  alignItems: 'center',
+                  animation: 'marquee 38s linear infinite',
+                })}
+              >
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/walmart.png"
+                    alt="Walmart"
+                    style={css({
+                      height: '44px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/nintendo-t.png"
+                    alt="Nintendo"
+                    style={css({
+                      height: '54px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/wyde.svg"
+                    alt="WYDE"
+                    style={css({
+                      height: '92px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/sony.png"
+                    alt="Sony"
+                    style={css({
+                      height: '36px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/defjam.png"
+                    alt="DEF JAM"
+                    style={css({
+                      height: '84px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/walmart.png"
+                    alt="Walmart"
+                    style={css({
+                      height: '44px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/nintendo-t.png"
+                    alt="Nintendo"
+                    style={css({
+                      height: '54px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/wyde.svg"
+                    alt="WYDE"
+                    style={css({
+                      height: '92px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/sony.png"
+                    alt="Sony"
+                    style={css({
+                      height: '36px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/defjam.png"
+                    alt="DEF JAM"
+                    style={css({
+                      height: '84px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/walmart.png"
+                    alt="Walmart"
+                    style={css({
+                      height: '44px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/nintendo-t.png"
+                    alt="Nintendo"
+                    style={css({
+                      height: '54px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/wyde.svg"
+                    alt="WYDE"
+                    style={css({
+                      height: '92px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/sony.png"
+                    alt="Sony"
+                    style={css({
+                      height: '36px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/defjam.png"
+                    alt="DEF JAM"
+                    style={css({
+                      height: '84px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/walmart.png"
+                    alt="Walmart"
+                    style={css({
+                      height: '44px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/nintendo-t.png"
+                    alt="Nintendo"
+                    style={css({
+                      height: '54px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/wyde.svg"
+                    alt="WYDE"
+                    style={css({
+                      height: '92px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/sony.png"
+                    alt="Sony"
+                    style={css({
+                      height: '36px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '64px', flex: 'none' })}>
+                  <img
+                    src="/designed/logos/defjam.png"
+                    alt="DEF JAM"
+                    style={css({
+                      height: '84px',
+                      width: 'auto',
+                      filter: 'grayscale(1) contrast(1.1)',
+                      opacity: '0.8',
+                      flex: 'none',
+                      display: 'block',
+                    })}
+                  />
+                  <svg width="22" height="22" viewBox="0 0 22 22" style={css({ flex: 'none' })}>
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>{' '}
+          <div style={css({ marginTop: '22px' })}>
+            <div
+              style={css({
+                overflow: 'hidden',
+                WebkitMaskImage: 'linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)',
+                maskImage: 'linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)',
+              })}
+            >
+              <div
+                style={css({
+                  display: 'flex',
+                  gap: '56px',
+                  width: 'max-content',
+                  font: "400 34px/1 'EB Garamond',serif",
+                  fontStyle: 'italic',
+                  color: '#8A8378',
+                  animation: 'marqueeR 46s linear infinite',
+                })}
+              >
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.025')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.026')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.027')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.028')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.029')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.030')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.031')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.032')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.033')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.034')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.035')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.036')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.037')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.038')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.039')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.040')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.041')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.042')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.043')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.044')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.045')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.046')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.047')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+                <span style={css({ display: 'flex', alignItems: 'center', gap: '56px', flex: 'none' })}>
+                  <span>{copy('brands.048')}</span>
+                  <svg width="22" height="22" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#A8843A"></path>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>{' '}
+        </div>{' '}
+        <div
+          data-m="b-2col b-sec130"
+          style={css({
+            maxWidth: '1240px',
+            margin: '0 auto',
+            padding: '130px 24px 110px',
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0,1.05fr) minmax(0,1fr)',
+            gap: '64px',
+            alignItems: 'center',
+          })}
+        >
+          {' '}
+          <div>
+            <div
+              style={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                font: "500 12px 'Geist Mono',monospace",
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: '#8A6A22',
+              })}
+            >
+              <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+              {copy('brands.049')}
+            </div>
+            <div style={css({ marginTop: '26px' })}>
+              <div data-m="b-h60" style={css({ font: "400 60px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                {copy('brands.050')} <em>{copy('brands.051')}</em>
+                {copy('brands.052')}
+              </div>
+            </div>{' '}
+            <p style={css({ marginTop: '28px', fontSize: '17px', lineHeight: '1.7', color: '#6E675C' })}>
+              {copy('brands.053')}
+            </p>{' '}
+            <p style={css({ marginTop: '18px', fontSize: '17px', lineHeight: '1.7', color: '#6E675C' })}>
+              {copy('brands.054')} <b style={css({ color: '#1A1510' })}>{copy('brands.055')}</b>
+              {copy('brands.056')}
+            </p>
+          </div>{' '}
+          <div>
+            <div
+              data-m="b-wall"
+              style={css({
+                position: 'relative',
+                width: '100%',
+                height: '440px',
+                borderRadius: '36px',
+                overflow: 'hidden',
+                background:
+                  'radial-gradient(420px 300px at 50% 55%,rgba(168,132,58,0.28),transparent 70%),linear-gradient(160deg,#F7F3EA,#E9E1D0)',
+                border: '1px solid rgba(255,255,255,0.9)',
+              })}
+            >
+              <div
+                style={css({
+                  position: 'absolute',
+                  left: '50%',
+                  top: '0',
+                  width: '660px',
+                  height: '440px',
+                  marginLeft: '-330px',
+                  transform: `scale(${'var(--mde-wall-scale)'})`,
+                  transformOrigin: '50% 0',
+                })}
+              >
+                <div
+                  style={css({
+                    position: 'absolute',
+                    left: '40px',
+                    top: '70px',
+                    width: '128px',
+                    height: '262px',
+                    zIndex: '1',
+                    '--r': '-8deg',
+                    transform: 'rotate(-8deg)',
+                    animation: 'drift 7s ease-in-out 0s infinite',
+                  })}
+                >
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      borderRadius: '22px',
+                      background: '#15110d',
+                      padding: '5px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '18px',
+                        overflow: 'hidden',
+                      })}
+                    >
+                      <img
+                        src="/designed/story-3-s.png"
+                        alt=""
+                        style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                      />
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          background:
+                            'linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))',
+                        })}
+                      ></div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          width: '33px',
+                          height: '33px',
+                          margin: '-17px 0 0 -17px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.88)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <svg width="13" height="14" viewBox="0 0 10 11">
+                          <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                        </svg>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '10%',
+                          right: '10%',
+                          bottom: '6%',
+                          height: '3px',
+                          borderRadius: '2px',
+                          background: 'rgba(255,255,255,0.35)',
+                        })}
+                      >
+                        <div
+                          style={css({ width: '66%', height: '100%', borderRadius: '2px', background: '#fff' })}
+                        ></div>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '2.5%',
+                          width: '28%',
+                          height: '3.2%',
+                          marginLeft: '-14%',
+                          borderRadius: '999px',
+                          background: '#0b0907',
+                        })}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={css({
+                    position: 'absolute',
+                    left: '142px',
+                    top: '150px',
+                    width: '150px',
+                    height: '308px',
+                    zIndex: '2',
+                    '--r': '-3deg',
+                    transform: 'rotate(-3deg)',
+                    animation: 'drift 6s ease-in-out -2s infinite',
+                  })}
+                >
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      borderRadius: '26px',
+                      background: '#15110d',
+                      padding: '6px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '21px',
+                        overflow: 'hidden',
+                      })}
+                    >
+                      <img
+                        src="/designed/story-2-s.png"
+                        alt=""
+                        style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                      />
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          background:
+                            'linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))',
+                        })}
+                      ></div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          width: '39px',
+                          height: '39px',
+                          margin: '-20px 0 0 -20px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.88)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <svg width="15" height="17" viewBox="0 0 10 11">
+                          <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                        </svg>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '10%',
+                          right: '10%',
+                          bottom: '6%',
+                          height: '3px',
+                          borderRadius: '2px',
+                          background: 'rgba(255,255,255,0.35)',
+                        })}
+                      >
+                        <div
+                          style={css({ width: '54%', height: '100%', borderRadius: '2px', background: '#fff' })}
+                        ></div>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '2.5%',
+                          width: '28%',
+                          height: '3.2%',
+                          marginLeft: '-14%',
+                          borderRadius: '999px',
+                          background: '#0b0907',
+                        })}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={css({
+                    position: 'absolute',
+                    left: '258px',
+                    top: '30px',
+                    width: '172px',
+                    height: '353px',
+                    zIndex: '4',
+                    '--r': '2deg',
+                    transform: 'rotate(2deg)',
+                    animation: 'drift 8s ease-in-out -1s infinite',
+                  })}
+                >
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      borderRadius: '29px',
+                      background: '#15110d',
+                      padding: '7px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '24px',
+                        overflow: 'hidden',
+                      })}
+                    >
+                      <img
+                        src="/designed/story-1-s.png"
+                        alt=""
+                        style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                      />
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          background:
+                            'linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))',
+                        })}
+                      ></div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          width: '45px',
+                          height: '45px',
+                          margin: '-22px 0 0 -22px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.88)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <svg width="17" height="19" viewBox="0 0 10 11">
+                          <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                        </svg>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '10%',
+                          right: '10%',
+                          bottom: '6%',
+                          height: '3px',
+                          borderRadius: '2px',
+                          background: 'rgba(255,255,255,0.35)',
+                        })}
+                      >
+                        <div
+                          style={css({ width: '42%', height: '100%', borderRadius: '2px', background: '#fff' })}
+                        ></div>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '2.5%',
+                          width: '28%',
+                          height: '3.2%',
+                          marginLeft: '-14%',
+                          borderRadius: '999px',
+                          background: '#0b0907',
+                        })}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={css({
+                    position: 'absolute',
+                    left: '396px',
+                    top: '140px',
+                    width: '150px',
+                    height: '308px',
+                    zIndex: '3',
+                    '--r': '5deg',
+                    transform: 'rotate(5deg)',
+                    animation: 'drift 7s ease-in-out -3s infinite',
+                  })}
+                >
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      borderRadius: '26px',
+                      background: '#15110d',
+                      padding: '6px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '21px',
+                        overflow: 'hidden',
+                      })}
+                    >
+                      <img
+                        src="/designed/story-4-s.png"
+                        alt=""
+                        style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                      />
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          background:
+                            'linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))',
+                        })}
+                      ></div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          width: '39px',
+                          height: '39px',
+                          margin: '-20px 0 0 -20px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.88)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <svg width="15" height="17" viewBox="0 0 10 11">
+                          <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                        </svg>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '10%',
+                          right: '10%',
+                          bottom: '6%',
+                          height: '3px',
+                          borderRadius: '2px',
+                          background: 'rgba(255,255,255,0.35)',
+                        })}
+                      >
+                        <div
+                          style={css({ width: '78%', height: '100%', borderRadius: '2px', background: '#fff' })}
+                        ></div>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '2.5%',
+                          width: '28%',
+                          height: '3.2%',
+                          marginLeft: '-14%',
+                          borderRadius: '999px',
+                          background: '#0b0907',
+                        })}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={css({
+                    position: 'absolute',
+                    left: '508px',
+                    top: '64px',
+                    width: '120px',
+                    height: '246px',
+                    zIndex: '1',
+                    '--r': '9deg',
+                    transform: 'rotate(9deg)',
+                    animation: 'drift 6s ease-in-out -4s infinite',
+                  })}
+                >
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      borderRadius: '20px',
+                      background: '#15110d',
+                      padding: '5px',
+                      boxSizing: 'border-box',
+                      boxShadow: '0 30px 50px rgba(26,21,16,0.28),inset 0 0 0 1.5px rgba(255,255,255,0.14)',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        borderRadius: '17px',
+                        overflow: 'hidden',
+                      })}
+                    >
+                      <img
+                        src="/designed/story-2-s.png"
+                        alt=""
+                        style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                      />
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          background:
+                            'linear-gradient(180deg,rgba(0,0,0,0.25),transparent 30%,transparent 62%,rgba(0,0,0,0.5))',
+                        })}
+                      ></div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '50%',
+                          width: '31px',
+                          height: '31px',
+                          margin: '-16px 0 0 -16px',
+                          borderRadius: '50%',
+                          background: 'rgba(255,255,255,0.88)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        })}
+                      >
+                        <svg width="12" height="13" viewBox="0 0 10 11">
+                          <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                        </svg>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '10%',
+                          right: '10%',
+                          bottom: '6%',
+                          height: '3px',
+                          borderRadius: '2px',
+                          background: 'rgba(255,255,255,0.35)',
+                        })}
+                      >
+                        <div
+                          style={css({ width: '54%', height: '100%', borderRadius: '2px', background: '#fff' })}
+                        ></div>
+                      </div>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          left: '50%',
+                          top: '2.5%',
+                          width: '28%',
+                          height: '3.2%',
+                          marginLeft: '-14%',
+                          borderRadius: '999px',
+                          background: '#0b0907',
+                        })}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                style={css({
+                  position: 'absolute',
+                  left: '22px',
+                  bottom: '20px',
+                  height: '34px',
+                  padding: '0 16px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.85)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: "500 12px 'Geist Mono',monospace",
+                  letterSpacing: '0.18em',
+                  zIndex: '6',
+                })}
+              >
+                <span
+                  style={css({
+                    width: '7px',
+                    height: '7px',
+                    borderRadius: '50%',
+                    background: '#C2412A',
+                    animation: 'blink 1.4s infinite',
+                  })}
+                ></span>
+                {copy('brands.057')}
+              </div>
+            </div>
+            <div style={css({ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '22px' })}>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.058')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.059')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.060')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.061')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.062')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.063')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.064')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.065')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.066')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.067')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.068')}
+              </span>
+              <span
+                style={css({
+                  height: '42px',
+                  padding: '0 18px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  font: '500 14px Archivo',
+                })}
+              >
+                <span style={css({ width: '6px', height: '6px', borderRadius: '50%', background: '#A8843A' })}></span>
+                {copy('brands.069')}
+              </span>
+            </div>
+          </div>{' '}
+        </div>{' '}
+        <div style={css({ borderTop: '1px solid #D8CDB9', background: '#F5F1E8' })}>
+          <div
+            data-m="b-sec120"
+            style={css({ maxWidth: '1240px', margin: '0 auto', padding: '120px 24px', textAlign: 'center' })}
+          >
+            {' '}
+            <div style={css({ display: 'flex', justifyContent: 'center' })}>
+              <div
+                style={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  font: "500 12px 'Geist Mono',monospace",
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  color: '#8A6A22',
+                })}
+              >
+                <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+                {copy('brands.070')}
+              </div>
+            </div>
+            <div style={css({ marginTop: '26px' })}>
+              <div data-m="b-h60" style={css({ font: "400 60px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                {copy('brands.071')}
+              </div>
+            </div>{' '}
+            <p
+              style={css({
+                maxWidth: '640px',
+                margin: '22px auto 0',
+                fontSize: '17px',
+                lineHeight: '1.6',
+                color: '#6E675C',
+              })}
+            >
+              {copy('brands.072')}
+            </p>{' '}
+            <div
+              data-m="b-grid380"
+              style={css({
+                marginTop: '56px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(380px,1fr))',
+                gap: '24px',
+                textAlign: 'left',
+              })}
+            >
+              {' '}
+              <div
+                data-m="b-ind"
+                style={css({
+                  padding: '44px',
+                  borderRadius: '36px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                })}
+              >
+                <img
+                  src="/designed/concert-s.png"
+                  alt=""
+                  style={css({
+                    width: '100%',
+                    height: '260px',
+                    objectFit: 'cover',
+                    borderRadius: '24px',
+                    display: 'block',
+                    marginBottom: '28px',
+                  })}
+                />
+                <div
+                  style={css({
+                    font: "500 12px 'Geist Mono',monospace",
+                    letterSpacing: '0.24em',
+                    textTransform: 'uppercase',
+                    color: '#8A6A22',
+                  })}
+                >
+                  {copy('brands.073')}
+                </div>
+                <div
+                  data-m="b-h44"
+                  style={css({
+                    marginTop: '14px',
+                    font: "400 44px/1.04 'EB Garamond',serif",
+                    letterSpacing: '-0.025em',
+                  })}
+                >
+                  {copy('brands.074')}
+                </div>
+                <div style={css({ marginTop: '18px', fontSize: '16px', lineHeight: '1.6', color: '#6E675C' })}>
+                  {copy('brands.075')}
+                </div>
+                <div style={css({ marginTop: '28px', display: 'flex', gap: '8px', flexWrap: 'wrap' })}>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.076')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.077')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.078')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.079')}
+                  </span>
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-ind"
+                style={css({
+                  padding: '44px',
+                  borderRadius: '36px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                })}
+              >
+                <img
+                  src="/designed/bb-b.png"
+                  alt=""
+                  style={css({
+                    width: '100%',
+                    height: '260px',
+                    objectFit: 'cover',
+                    objectPosition: 'center 30%',
+                    borderRadius: '24px',
+                    display: 'block',
+                    marginBottom: '28px',
+                  })}
+                />
+                <div
+                  style={css({
+                    font: "500 12px 'Geist Mono',monospace",
+                    letterSpacing: '0.24em',
+                    textTransform: 'uppercase',
+                    color: '#8A6A22',
+                  })}
+                >
+                  {copy('brands.080')}
+                </div>
+                <div
+                  data-m="b-h44"
+                  style={css({
+                    marginTop: '14px',
+                    font: "400 44px/1.04 'EB Garamond',serif",
+                    letterSpacing: '-0.025em',
+                  })}
+                >
+                  {copy('brands.081')}
+                </div>
+                <div style={css({ marginTop: '18px', fontSize: '16px', lineHeight: '1.6', color: '#6E675C' })}>
+                  {copy('brands.082')}
+                </div>
+                <div style={css({ marginTop: '28px', display: 'flex', gap: '8px', flexWrap: 'wrap' })}>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.083')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.084')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.085')}
+                  </span>
+                  <span
+                    style={css({
+                      height: '32px',
+                      padding: '0 14px',
+                      borderRadius: '10px',
+                      background: 'rgba(26,21,16,0.06)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: "500 11px 'Geist Mono',monospace",
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: '#6E675C',
+                    })}
+                  >
+                    {copy('brands.086')}
+                  </span>
+                </div>
+              </div>{' '}
+            </div>
+          </div>
+        </div>{' '}
+        <div style={css({ position: 'relative', overflow: 'hidden', background: '#EEE9DB' })}>
+          {' '}
+          <img
+            src="/designed/sky-b.png"
+            alt=""
+            style={css({
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center bottom',
+            })}
+          />{' '}
+          <div
+            style={css({
+              position: 'absolute',
+              inset: '0',
+              background: 'linear-gradient(180deg,#EEE9DB 0%,rgba(238,233,219,0.55) 24%,rgba(238,233,219,0) 52%)',
+            })}
+          ></div>{' '}
+          <div
+            data-m="b-sec130"
+            style={css({ position: 'relative', maxWidth: '1240px', margin: '0 auto', padding: '130px 24px 120px' })}
+          >
+            {' '}
+            <div
+              style={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                font: "500 12px 'Geist Mono',monospace",
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: '#8A6A22',
+              })}
+            >
+              <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+              {copy('brands.087')}
+            </div>
+            <div style={css({ marginTop: '26px' })}>
+              <div data-m="b-h64" style={css({ font: "400 64px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                {copy('brands.088')}
+              </div>
+            </div>{' '}
+            <p
+              style={css({
+                maxWidth: '520px',
+                marginTop: '20px',
+                fontSize: '17px',
+                lineHeight: '1.6',
+                color: '#4F493F',
+              })}
+            >
+              {copy('brands.089')}
+            </p>{' '}
+            <div
+              data-m="b-steps"
+              style={css({
+                marginTop: '80px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4,minmax(0,1fr))',
+                gap: '20px',
+                alignItems: 'end',
+              })}
+            >
+              <div
+                style={css({
+                  minHeight: '250px',
+                  boxSizing: 'border-box',
+                  padding: '26px 24px 28px',
+                  borderRadius: '30px 30px 18px 18px',
+                  background: 'linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 24px 50px rgba(26,21,16,0.16)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  '--r': '0deg',
+                  animation: 'drift 7s ease-in-out 0s infinite',
+                })}
+              >
+                <div
+                  style={css({ font: "400 64px/1 'EB Garamond',serif", letterSpacing: '-0.04em', color: '#A8843A' })}
+                >
+                  {copy('brands.090')}
+                </div>
+                <div style={css({ marginTop: 'auto', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.091')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#4F493F' })}>
+                  {copy('brands.092')}
+                </div>
+              </div>
+              <div
+                style={css({
+                  minHeight: '310px',
+                  boxSizing: 'border-box',
+                  padding: '26px 24px 28px',
+                  borderRadius: '30px 30px 18px 18px',
+                  background: 'linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 24px 50px rgba(26,21,16,0.16)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  '--r': '0deg',
+                  animation: 'drift 8s ease-in-out -1.5s infinite',
+                })}
+              >
+                <div
+                  style={css({ font: "400 64px/1 'EB Garamond',serif", letterSpacing: '-0.04em', color: '#A8843A' })}
+                >
+                  {copy('brands.093')}
+                </div>
+                <div style={css({ marginTop: 'auto', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.094')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#4F493F' })}>
+                  {copy('brands.095')}
+                </div>
+              </div>
+              <div
+                style={css({
+                  minHeight: '370px',
+                  boxSizing: 'border-box',
+                  padding: '26px 24px 28px',
+                  borderRadius: '30px 30px 18px 18px',
+                  background: 'linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 24px 50px rgba(26,21,16,0.16)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  '--r': '0deg',
+                  animation: 'drift 9s ease-in-out -3s infinite',
+                })}
+              >
+                <div
+                  style={css({ font: "400 64px/1 'EB Garamond',serif", letterSpacing: '-0.04em', color: '#A8843A' })}
+                >
+                  {copy('brands.096')}
+                </div>
+                <div style={css({ marginTop: 'auto', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.097')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#4F493F' })}>
+                  {copy('brands.098')}
+                </div>
+              </div>
+              <div
+                style={css({
+                  minHeight: '430px',
+                  boxSizing: 'border-box',
+                  padding: '26px 24px 28px',
+                  borderRadius: '30px 30px 18px 18px',
+                  background: 'linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.7))',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 24px 50px rgba(26,21,16,0.16)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  '--r': '0deg',
+                  animation: 'drift 10s ease-in-out -4.5s infinite',
+                })}
+              >
+                <div
+                  style={css({ font: "400 64px/1 'EB Garamond',serif", letterSpacing: '-0.04em', color: '#A8843A' })}
+                >
+                  {copy('brands.099')}
+                </div>
+                <div style={css({ marginTop: 'auto', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.100')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#4F493F' })}>
+                  {copy('brands.101')}
+                </div>
+              </div>
+            </div>{' '}
+          </div>
+        </div>{' '}
+        <div style={css({ borderTop: '1px solid #D8CDB9', background: '#F5F1E8' })}>
+          <div data-m="b-sec120" style={css({ maxWidth: '1240px', margin: '0 auto', padding: '120px 24px' })}>
+            {' '}
+            <div
+              style={css({
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                font: "500 12px 'Geist Mono',monospace",
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color: '#8A6A22',
+              })}
+            >
+              <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+              {copy('brands.102')}
+            </div>
+            <div style={css({ marginTop: '26px' })}>
+              <div data-m="b-h64" style={css({ font: "400 64px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                {copy('brands.103')}
+              </div>
+            </div>{' '}
+            <p
+              style={css({
+                maxWidth: '560px',
+                marginTop: '20px',
+                fontSize: '17px',
+                lineHeight: '1.6',
+                color: '#6E675C',
+              })}
+            >
+              {copy('brands.104')}
+            </p>{' '}
+            <div
+              style={css({
+                marginTop: '56px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))',
+                gap: '20px',
+              })}
+            >
+              {' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.105')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.106')}
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.107')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.108')}
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.109')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.110')}
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.111')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.112')}
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.113')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.114')}
+                </div>
+              </div>{' '}
+              <div
+                data-m="b-adv"
+                style={css({
+                  padding: '32px 30px',
+                  borderRadius: '28px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  minHeight: '210px',
+                })}
+              >
+                <svg width="26" height="26" viewBox="0 0 26 26">
+                  <path
+                    d="M13 2 L15.6 10.4 L24 13 L15.6 15.6 L13 24 L10.4 15.6 L2 13 L10.4 10.4 Z"
+                    fill="#A8843A"
+                  ></path>
+                </svg>
+                <div style={css({ marginTop: '22px', font: '600 20px Archivo', letterSpacing: '-0.01em' })}>
+                  {copy('brands.115')}
+                </div>
+                <div style={css({ marginTop: '10px', fontSize: '15px', lineHeight: '1.55', color: '#6E675C' })}>
+                  {copy('brands.116')}
+                </div>
+              </div>{' '}
+            </div>
+          </div>
+        </div>{' '}
+        <div data-m="b-sec130" style={css({ maxWidth: '1240px', margin: '0 auto', padding: '130px 24px 110px' })}>
+          {' '}
+          <div
+            id="case-studies"
+            style={css({
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px',
+              font: "500 12px 'Geist Mono',monospace",
+              letterSpacing: '0.28em',
+              textTransform: 'uppercase',
+              color: '#8A6A22',
+            })}
+          >
+            <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+            {copy('brands.117')}
+          </div>
+          <div style={css({ marginTop: '26px' })}>
+            <div data-m="b-h64" style={css({ font: "400 64px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+              {copy('brands.118')}
+            </div>
+          </div>{' '}
+          <p
+            style={css({ maxWidth: '600px', marginTop: '20px', fontSize: '17px', lineHeight: '1.6', color: '#6E675C' })}
+          >
+            {copy('brands.119')}
+          </p>{' '}
+          <div style={css({ marginTop: '36px', display: 'flex', gap: '10px', flexWrap: 'wrap' })}>
+            {(v.csTabs as any[]).map((t: any, i0: number) => (
+              <Fragment key={i0}>
+                <span
+                  {...clickable(t.go)}
+                  style={css({
+                    height: '46px',
+                    padding: '0 24px',
+                    borderRadius: '999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    font: '500 15px Archivo',
+                    cursor: 'pointer',
+                    border: `1px solid ${t.bd}`,
+                    background: t.bg,
+                    color: t.fg,
+                  })}
+                >
+                  {t.label}
+                </span>
+              </Fragment>
+            ))}
+          </div>{' '}
+          {(v.csActive as any[]).map((c: any, i0: number) => (
+            <Fragment key={i0}>
+              {' '}
+              <div
+                data-m="b-case"
+                style={css({
+                  position: 'relative',
+                  marginTop: '28px',
+                  borderRadius: '40px',
+                  overflow: 'hidden',
+                  minHeight: '600px',
+                  background: 'linear-gradient(120deg,#6E1522 0%,#B3331F 46%,#E8803A 100%)',
+                  color: '#fff',
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(0,1.05fr) 300px minmax(0,0.8fr)',
+                  gap: '36px',
+                  padding: '48px',
+                  boxSizing: 'border-box',
+                  alignItems: 'center',
+                })}
+              >
+                {' '}
+                <img
+                  src="/designed/story-2-s.png"
+                  alt=""
+                  style={css({
+                    position: 'absolute',
+                    inset: '0',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: '0.14',
+                  })}
+                />
+                <div
+                  style={css({
+                    position: 'absolute',
+                    inset: '0',
+                    background:
+                      'radial-gradient(700px 400px at 70% 30%,rgba(255,200,150,0.25),transparent 70%),linear-gradient(180deg,transparent 60%,rgba(20,6,6,0.35))',
+                  })}
+                ></div>{' '}
+                <div style={css({ position: 'relative' })}>
+                  {' '}
+                  <div
+                    data-m="b-tag"
+                    style={css({
+                      position: 'absolute',
+                      left: '-48px',
+                      top: '-48px',
+                      height: '44px',
+                      padding: '0 28px',
+                      background: '#1A1510',
+                      color: '#F4F1EA',
+                      display: 'flex',
+                      alignItems: 'center',
+                      font: '600 13px Archivo',
+                      letterSpacing: '0.14em',
+                      borderRadius: '0 0 16px 0',
+                    })}
+                  >
+                    {copy('brands.120')}
+                  </div>{' '}
+                  <div data-m="b-h58" style={css({ font: "400 58px/1 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                    {c.title}
+                    <span style={css({ opacity: '0.55' })}> {copy('brands.121')} </span>
+                    <em>{copy('brands.122')}</em>
+                  </div>{' '}
+                  <span
+                    style={css({
+                      marginTop: '22px',
+                      display: 'inline-flex',
+                      height: '30px',
+                      padding: '0 16px',
+                      borderRadius: '999px',
+                      background: '#1A1510',
+                      font: '600 12px Archivo',
+                      letterSpacing: '0.14em',
+                      alignItems: 'center',
+                    })}
+                  >
+                    {copy('brands.123')}
+                  </span>{' '}
+                  <div style={css({ marginTop: '22px', display: 'flex', flexDirection: 'column', gap: '14px' })}>
+                    {' '}
+                    <div
+                      style={css({
+                        padding: '18px 22px',
+                        borderRadius: '20px',
+                        background: 'rgba(255,255,255,0.16)',
+                        border: '1px solid rgba(255,255,255,0.28)',
+                      })}
+                    >
+                      <div style={css({ font: '700 15px Archivo', letterSpacing: '0.08em' })}>{copy('brands.124')}</div>
+                      <div
+                        style={css({
+                          marginTop: '6px',
+                          fontSize: '14px',
+                          lineHeight: '1.5',
+                          color: 'rgba(255,255,255,0.92)',
+                        })}
+                      >
+                        {c.objective}
+                      </div>
+                    </div>{' '}
+                    <div
+                      style={css({
+                        padding: '18px 22px',
+                        borderRadius: '20px',
+                        background: 'rgba(255,255,255,0.16)',
+                        border: '1px solid rgba(255,255,255,0.28)',
+                      })}
+                    >
+                      <div style={css({ font: '700 15px Archivo', letterSpacing: '0.08em' })}>{copy('brands.125')}</div>
+                      <div
+                        style={css({
+                          marginTop: '6px',
+                          fontSize: '14px',
+                          lineHeight: '1.5',
+                          color: 'rgba(255,255,255,0.92)',
+                        })}
+                      >
+                        {c.strategy}
+                      </div>
+                    </div>
+                    {c.hasResult ? (
+                      <>
+                        <div
+                          style={css({
+                            padding: '18px 22px',
+                            borderRadius: '20px',
+                            background: 'rgba(255,255,255,0.16)',
+                            border: '1px solid rgba(255,255,255,0.28)',
+                          })}
+                        >
+                          <div style={css({ font: '700 15px Archivo', letterSpacing: '0.08em' })}>
+                            {copy('brands.126')}
+                          </div>
+                          <div
+                            style={css({
+                              marginTop: '6px',
+                              fontSize: '14px',
+                              lineHeight: '1.5',
+                              color: 'rgba(255,255,255,0.92)',
+                            })}
+                          >
+                            {c.result}
+                          </div>
+                        </div>
+                      </>
+                    ) : null}{' '}
+                  </div>{' '}
+                </div>{' '}
+                <div
+                  style={css({ position: 'relative', width: '300px', height: '500px' })}
+                  onDragOver={c.dragOver}
+                  onDrop={c.drop}
+                >
+                  {c.hasVideo ? (
+                    <>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          borderRadius: '34px',
+                          overflow: 'hidden',
+                          background: '#000',
+                          cursor: 'pointer',
+                        })}
+                        {...clickable(c.toggle)}
+                      >
+                        <video
+                          src={c.video}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          onPlay={c.onPlay}
+                          onPause={c.onPause}
+                          style={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                        ></video>
+                        {c.paused ? (
+                          <>
+                            <div
+                              style={css({
+                                position: 'absolute',
+                                inset: '0',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'rgba(0,0,0,0.25)',
+                                pointerEvents: 'none',
+                              })}
+                            >
+                              <div
+                                style={css({
+                                  width: '78px',
+                                  height: '78px',
+                                  borderRadius: '50%',
+                                  background: 'rgba(255,255,255,0.9)',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  boxShadow: '0 12px 30px rgba(0,0,0,0.3)',
+                                })}
+                              >
+                                <svg width="26" height="28" viewBox="0 0 10 11">
+                                  <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                                </svg>
+                              </div>
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    </>
+                  ) : null}
+                  {c.noVideo ? (
+                    <>
+                      {c.hasPoster ? (
+                        <>
+                          <img
+                            src={c.poster}
+                            alt=""
+                            style={css({
+                              position: 'absolute',
+                              inset: '0',
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '34px',
+                              display: 'block',
+                            })}
+                          />
+                        </>
+                      ) : null}
+                      {c.noPoster ? <></> : null}
+                      {v.authoring ? (
+                        <div
+                          {...clickable(c.link)}
+                          style={css({
+                            position: 'absolute',
+                            right: '112px',
+                            top: '12px',
+                            zIndex: '4',
+                            height: '32px',
+                            padding: '0 14px',
+                            borderRadius: '999px',
+                            background: 'rgba(26,21,16,0.78)',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            font: '600 12px Archivo',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          {'Paste link'}
+                        </div>
+                      ) : null}
+                      {v.authoring ? (
+                        <label
+                          style={css({
+                            position: 'absolute',
+                            right: '12px',
+                            top: '12px',
+                            zIndex: '4',
+                            height: '32px',
+                            padding: '0 14px',
+                            borderRadius: '999px',
+                            background: 'rgba(26,21,16,0.78)',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            font: '600 12px Archivo',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          {'Add video'}
+                          <input
+                            type="file"
+                            accept="video/mp4,video/quicktime,video/webm,video/*"
+                            onChange={c.pick}
+                            style={css({ display: 'none' })}
+                          />
+                        </label>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>{' '}
+                <div style={css({ position: 'relative' })}>
+                  {' '}
+                  <div style={css({ textAlign: 'center', font: '700 14px Archivo', letterSpacing: '0.08em' })}>
+                    {copy('brands.127')}
+                  </div>{' '}
+                  <div style={css({ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '14px' })}>
+                    {' '}
+                    {(c.stats as any[]).map((x: any, i1: number) => (
+                      <Fragment key={i1}>
+                        <div
+                          style={css({
+                            padding: '18px 22px',
+                            borderRadius: '20px',
+                            background: 'rgba(255,255,255,0.16)',
+                            border: '1px solid rgba(255,255,255,0.28)',
+                          })}
+                        >
+                          <div style={css({ font: '600 13px Archivo', letterSpacing: '0.06em' })}>{x.l}</div>
+                          <div
+                            style={css({
+                              marginTop: '4px',
+                              font: '600 36px/1 Archivo',
+                              letterSpacing: '-0.03em',
+                              opacity: '0.9',
+                              whiteSpace: 'nowrap',
+                            })}
+                          >
+                            {x.v}
+                          </div>
+                        </div>
+                      </Fragment>
+                    ))}
+                  </div>{' '}
+                  <div
+                    style={css({
+                      marginTop: '14px',
+                      textAlign: 'center',
+                      fontSize: '12px',
+                      color: 'rgba(255,255,255,0.8)',
+                    })}
+                  >
+                    {c.note}
+                  </div>{' '}
+                </div>{' '}
+              </div>{' '}
+            </Fragment>
+          ))}{' '}
+          <div
+            data-m="b-frames"
+            style={css({
+              marginTop: '28px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4,minmax(0,1fr))',
+              gap: '18px',
+            })}
+          >
+            {(v.frames as any[]).map((f: any, i0: number) => (
+              <Fragment key={i0}>
+                <div
+                  style={css({
+                    position: 'relative',
+                    aspectRatio: '3/4',
+                    borderRadius: '26px',
+                    overflow: 'hidden',
+                    background: '#000',
+                    boxShadow: '0 24px 50px rgba(26,21,16,0.18)',
+                    '--r': `${f.rot}deg`,
+                    transform: `rotate(${f.rot}deg)`,
+                    animation: `drift ${f.dur}s ease-in-out ${f.delay}s infinite`,
+                    cursor: 'pointer',
+                  })}
+                  {...clickable(f.toggle)}
+                  onDragOver={f.dragOver}
+                  onDrop={f.drop}
+                >
+                  <img
+                    src={f.img}
+                    alt=""
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                    })}
+                  />
+                  {f.hasVideo ? (
+                    <>
+                      <video
+                        src={f.video}
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        onPlay={f.onPlay}
+                        onPause={f.onPause}
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block',
+                        })}
+                      ></video>
+                    </>
+                  ) : null}
+                  {f.showPlay ? (
+                    <>
+                      <div
+                        style={css({
+                          position: 'absolute',
+                          inset: '0',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          pointerEvents: 'none',
+                        })}
+                      >
+                        <div
+                          style={css({
+                            width: '64px',
+                            height: '64px',
+                            borderRadius: '50%',
+                            background: 'rgba(255,255,255,0.9)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 10px 24px rgba(0,0,0,0.3)',
+                          })}
+                        >
+                          <svg width="22" height="24" viewBox="0 0 10 11">
+                            <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+                  {f.noVideo ? (
+                    <>
+                      {v.authoring ? (
+                        <label
+                          onClick={f.stop}
+                          style={css({
+                            position: 'absolute',
+                            left: '12px',
+                            bottom: '12px',
+                            height: '28px',
+                            padding: '0 12px',
+                            borderRadius: '999px',
+                            background: 'rgba(255,255,255,0.88)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            font: '600 11px Archivo',
+                            cursor: 'pointer',
+                          })}
+                        >
+                          {'Add clip'}
+                          <input
+                            type="file"
+                            accept="video/mp4,video/quicktime,video/webm,video/*"
+                            onChange={f.pick}
+                            style={css({ display: 'none' })}
+                          />
+                        </label>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
+              </Fragment>
+            ))}
+          </div>{' '}
+        </div>{' '}
+        <div data-m="b-sec130" style={css({ maxWidth: '1240px', margin: '0 auto', padding: '130px 24px 40px' })}>
+          <div
+            data-m="b-testi"
+            style={css({
+              display: 'grid',
+              gridTemplateColumns: 'minmax(0,0.8fr) minmax(0,1.2fr)',
+              gap: '0',
+              borderRadius: '40px',
+              overflow: 'hidden',
+              background: 'rgba(255,255,255,0.78)',
+              border: '1px solid rgba(255,255,255,0.95)',
+              boxShadow: '0 30px 70px rgba(26,21,16,0.12)',
+            })}
+          >
+            {' '}
+            <div
+              data-m="b-testi-v"
+              style={css({ position: 'relative', minHeight: '560px', background: '#000', cursor: 'pointer' })}
+              {...clickable(v.tm.toggle)}
+              onDragOver={v.tm.dragOver}
+              onDrop={v.tm.drop}
+            >
+              <img
+                src="/designed/proof/poster-kojo-blak.png"
+                alt=""
+                style={css({
+                  position: 'absolute',
+                  inset: '0',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                })}
+              />
+              {v.tm.hasVideo ? (
+                <>
+                  <video
+                    src={v.tm.video}
+                    playsInline
+                    preload="metadata"
+                    onPlay={v.tm.onPlay}
+                    onPause={v.tm.onPause}
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                    })}
+                  ></video>
+                </>
+              ) : null}
+              {v.tm.showPlay ? (
+                <>
+                  <div
+                    style={css({
+                      position: 'absolute',
+                      inset: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'rgba(0,0,0,0.18)',
+                      pointerEvents: 'none',
+                    })}
+                  >
+                    <div
+                      style={css({
+                        width: '84px',
+                        height: '84px',
+                        borderRadius: '50%',
+                        background: 'rgba(255,255,255,0.92)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 14px 34px rgba(0,0,0,0.35)',
+                      })}
+                    >
+                      <svg width="28" height="30" viewBox="0 0 10 11">
+                        <path d="M1 0.5 L9.5 5.5 L1 10.5 Z" fill="#1A1510"></path>
+                      </svg>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+              <div
+                style={css({
+                  position: 'absolute',
+                  left: '18px',
+                  bottom: '18px',
+                  height: '30px',
+                  padding: '0 14px',
+                  borderRadius: '999px',
+                  background: 'rgba(255,255,255,0.9)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  font: '600 11px Archivo',
+                  pointerEvents: 'none',
+                })}
+              >
+                {copy('brands.128')}
+              </div>
+              {v.tm.noVideo ? (
+                <>
+                  {v.authoring ? (
+                    <label
+                      onClick={v.tm.stop}
+                      style={css({
+                        position: 'absolute',
+                        right: '18px',
+                        bottom: '18px',
+                        height: '30px',
+                        padding: '0 14px',
+                        borderRadius: '999px',
+                        background: 'rgba(26,21,16,0.8)',
+                        color: '#fff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        font: '600 11px Archivo',
+                        cursor: 'pointer',
+                      })}
+                    >
+                      {'Add testimonial video'}
+                      <input
+                        type="file"
+                        accept="video/mp4,video/quicktime,video/webm,video/*"
+                        onChange={v.tm.pick}
+                        style={css({ display: 'none' })}
+                      />
+                    </label>
+                  ) : null}
+                </>
+              ) : null}
+            </div>{' '}
+            <div
+              data-m="b-testi-t"
+              style={css({ padding: '64px 56px', display: 'flex', flexDirection: 'column', justifyContent: 'center' })}
+            >
+              {' '}
+              <div
+                style={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  font: "500 12px 'Geist Mono',monospace",
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  color: '#8A6A22',
+                })}
+              >
+                <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+                {copy('brands.129')}
+              </div>{' '}
+              <div
+                data-m="b-h52"
+                style={css({ marginTop: '26px', font: "400 52px/1.05 'EB Garamond',serif", letterSpacing: '-0.03em' })}
+              >
+                {copy('brands.130')} <em>{copy('brands.131')}</em>
+              </div>
+              <p
+                style={css({
+                  marginTop: '20px',
+                  maxWidth: '420px',
+                  fontSize: '17px',
+                  lineHeight: '1.6',
+                  color: '#6E675C',
+                })}
+              >
+                {copy('brands.132')}
+              </p>
+              <div style={css({ marginTop: '26px', font: '600 16px Archivo' })}>{copy('brands.133')}</div>
+              <div style={css({ marginTop: '2px', fontSize: '14px', color: '#6E675C' })}>{copy('brands.134')}</div>{' '}
+              <div style={css({ marginTop: '28px', display: 'flex', gap: '10px', flexWrap: 'wrap' })}>
+                <span
+                  style={css({
+                    height: '38px',
+                    padding: '0 18px',
+                    borderRadius: '999px',
+                    background: '#1A1510',
+                    color: '#F4F1EA',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    font: '500 13px Archivo',
+                  })}
+                >
+                  <svg width="12" height="12" viewBox="0 0 22 22">
+                    <path d="M11 0 L13.2 8.8 L22 11 L13.2 13.2 L11 22 L8.8 13.2 L0 11 L8.8 8.8 Z" fill="#D8C58F"></path>
+                  </svg>
+                  {copy('brands.135')}
+                </span>
+                <span
+                  style={css({
+                    height: '38px',
+                    padding: '0 18px',
+                    borderRadius: '999px',
+                    border: '1px solid #CDBFA8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    font: '500 13px Archivo',
+                  })}
+                >
+                  {copy('brands.136')}
+                </span>
+              </div>{' '}
+            </div>
+          </div>
+        </div>{' '}
+        <div style={css({ borderTop: '1px solid #D8CDB9', background: '#F5F1E8' })}>
+          <div
+            data-m="b-sec120"
+            style={css({ maxWidth: '1240px', margin: '0 auto', padding: '120px 24px 130px', textAlign: 'center' })}
+          >
+            {' '}
+            <div style={css({ display: 'flex', justifyContent: 'center' })}>
+              <div
+                id="pricing"
+                style={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  font: "500 12px 'Geist Mono',monospace",
+                  letterSpacing: '0.28em',
+                  textTransform: 'uppercase',
+                  color: '#8A6A22',
+                })}
+              >
+                <span style={css({ width: '30px', height: '1px', background: '#8A6A22' })}></span>
+                {copy('brands.137')}
+              </div>
+            </div>
+            <div style={css({ marginTop: '26px' })}>
+              <div data-m="b-h64" style={css({ font: "400 64px/1.02 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                {copy('brands.138')}
+              </div>
+            </div>{' '}
+            <p
+              style={css({
+                maxWidth: '620px',
+                margin: '20px auto 0',
+                fontSize: '17px',
+                lineHeight: '1.6',
+                color: '#6E675C',
+              })}
+            >
+              {copy('brands.139')}
+            </p>{' '}
+            <div
+              style={css({
+                marginTop: '64px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))',
+                gap: '24px',
+                textAlign: 'left',
+                alignItems: 'stretch',
+              })}
+            >
+              {' '}
+              <div
+                style={css({
+                  position: 'relative',
+                  padding: '36px 34px 34px',
+                  borderRadius: '32px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                })}
+              >
+                <div style={css({ font: '600 22px Archivo' })}>{copy('brands.140')}</div>
+                <div data-m="b-h58" style={css({ font: "400 58px/1 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                  {copy('brands.141')}
+                </div>
+                <div style={css({ fontSize: '15px', lineHeight: '1.55', color: '#6E675C', minHeight: '70px' })}>
+                  {copy('brands.142')}
+                </div>
+                <div style={css({ height: '1px', background: '#D8CDB9' })}></div>
+                <div style={css({ display: 'flex', flexDirection: 'column', gap: '14px', flex: '1' })}>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.143')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.144')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.145')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.146')}
+                  </div>
+                </div>
+                <div
+                  {...clickable(v.bookCall)}
+                  style={css({
+                    height: '52px',
+                    borderRadius: '999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    font: '500 15px Archivo',
+                    border: '1px solid #CDBFA8',
+                  })}
+                >
+                  {copy('brands.147')}
+                </div>
+              </div>{' '}
+              <div
+                style={css({
+                  position: 'relative',
+                  padding: '36px 34px 34px',
+                  borderRadius: '32px',
+                  background: '#1A1510',
+                  color: '#F4F1EA',
+                  border: '1px solid #A8843A',
+                  boxShadow: '0 30px 70px rgba(26,21,16,0.25)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                })}
+              >
+                <span
+                  style={css({
+                    position: 'absolute',
+                    left: '34px',
+                    top: '-15px',
+                    height: '30px',
+                    padding: '0 16px',
+                    borderRadius: '999px',
+                    background: '#D8C58F',
+                    color: '#1A1510',
+                    display: 'flex',
+                    alignItems: 'center',
+                    font: "500 11px 'Geist Mono',monospace",
+                    letterSpacing: '0.2em',
+                  })}
+                >
+                  {copy('brands.148')}
+                </span>
+                <div style={css({ font: '600 22px Archivo' })}>{copy('brands.149')}</div>
+                <div data-m="b-h58" style={css({ font: "400 58px/1 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                  {copy('brands.150')}
+                </div>
+                <div
+                  style={css({
+                    fontSize: '15px',
+                    lineHeight: '1.55',
+                    color: 'rgba(244,241,234,0.72)',
+                    minHeight: '70px',
+                  })}
+                >
+                  {copy('brands.151')}
+                </div>
+                <div style={css({ height: '1px', background: 'rgba(255,255,255,0.14)' })}></div>
+                <div style={css({ display: 'flex', flexDirection: 'column', gap: '14px', flex: '1' })}>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.152')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.153')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.154')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.155')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.156')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.157')}
+                  </div>
+                </div>
+                <div
+                  {...clickable(v.bookCall)}
+                  style={css({
+                    height: '52px',
+                    borderRadius: '999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    font: '500 15px Archivo',
+                    background: '#D8C58F',
+                    color: '#1A1510',
+                  })}
+                >
+                  {copy('brands.158')}
+                </div>
+              </div>{' '}
+              <div
+                style={css({
+                  position: 'relative',
+                  padding: '36px 34px 34px',
+                  borderRadius: '32px',
+                  background: 'rgba(255,255,255,0.78)',
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 18px 44px rgba(26,21,16,0.08)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                })}
+              >
+                <div style={css({ font: '600 22px Archivo' })}>{copy('brands.159')}</div>
+                <div data-m="b-h58" style={css({ font: "400 58px/1 'EB Garamond',serif", letterSpacing: '-0.03em' })}>
+                  {copy('brands.160')}
+                </div>
+                <div style={css({ fontSize: '15px', lineHeight: '1.55', color: '#6E675C', minHeight: '70px' })}>
+                  {copy('brands.161')}
+                </div>
+                <div style={css({ height: '1px', background: '#D8CDB9' })}></div>
+                <div style={css({ display: 'flex', flexDirection: 'column', gap: '14px', flex: '1' })}>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.162')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.163')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.164')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.165')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.166')}
+                  </div>
+                  <div style={css({ display: 'flex', gap: '12px', alignItems: 'center', fontSize: '15px' })}>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="#A8843A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M3 8.5 L6.5 12 L13 4.5"></path>
+                    </svg>
+                    {copy('brands.167')}
+                  </div>
+                </div>
+                <div
+                  {...clickable(v.bookCall)}
+                  style={css({
+                    height: '52px',
+                    borderRadius: '999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    font: '500 15px Archivo',
+                    border: '1px solid #CDBFA8',
+                  })}
+                >
+                  {copy('brands.168')}
+                </div>
+              </div>{' '}
+            </div>
+          </div>
+        </div>{' '}
+        <div
+          data-m="b-cta"
+          style={css({
+            position: 'relative',
+            overflow: 'hidden',
+            padding: '150px 24px',
+            textAlign: 'center',
+            background: '#1A1510',
+            color: '#F4F1EA',
+          })}
+        >
+          <img
+            src="/designed/concert-s.png"
+            alt=""
+            style={css({
+              position: 'absolute',
+              inset: '0',
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: '0.4',
+            })}
+          />
+          <div
+            style={css({
+              position: 'absolute',
+              inset: '0',
+              background: 'linear-gradient(180deg,#1A1510 0%,rgba(26,21,16,0.55) 50%,#1A1510 100%)',
+            })}
+          ></div>
+          <div style={css({ position: 'relative' })}>
+            {' '}
+            <div data-m="b-h84" style={css({ font: "400 84px/0.98 'EB Garamond',serif", letterSpacing: '-0.035em' })}>
+              {copy('brands.169')}
+              <br />
+              <em>{copy('brands.170')}</em>
+            </div>{' '}
+            <div
+              style={css({
+                marginTop: '22px',
+                font: "500 12px 'Geist Mono',monospace",
+                letterSpacing: '0.26em',
+                color: '#D8C58F',
+              })}
+            >
+              {copy('brands.171')}
+            </div>{' '}
+            <p
+              style={css({
+                maxWidth: '560px',
+                margin: '22px auto 0',
+                fontSize: '17px',
+                lineHeight: '1.6',
+                color: 'rgba(244,241,234,0.72)',
+              })}
+            >
+              {copy('brands.172')}
+            </p>{' '}
+            <div
+              {...clickable(v.bookCall)}
+              style={css({
+                margin: '34px auto 0',
+                width: '200px',
+                height: '54px',
+                borderRadius: '999px',
+                background: '#F4F1EA',
+                color: '#1A1510',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px',
+                font: '600 15px Archivo',
+              })}
+            >
+              {copy('brands.173')} <span>{copy('brands.174')}</span>
+            </div>{' '}
+          </div>
+        </div>{' '}
+        <div style={css({ background: '#120F0B', color: '#F4F1EA' })}>
+          <div style={css({ maxWidth: '1240px', margin: '0 auto', padding: '64px 24px 40px' })}>
+            {' '}
+            <div style={css({ display: 'flex', justifyContent: 'space-between', gap: '48px', flexWrap: 'wrap' })}>
+              {' '}
+              <img
+                src="/designed/logo-nav-clear.png"
+                alt="Maison d'Élites"
+                style={css({ height: '26px', width: 'auto', filter: 'brightness(0) invert(1)' })}
+              />{' '}
+              <div
+                data-m="b-foot"
+                style={css({
+                  display: 'flex',
+                  gap: '96px',
+                  flexWrap: 'wrap',
+                  fontSize: '15px',
+                  color: 'rgba(244,241,234,0.7)',
+                })}
+              >
+                {' '}
+                <div style={css({ display: 'flex', flexDirection: 'column', gap: '14px' })}>
+                  <div style={css({ font: '600 17px Archivo', color: '#F4F1EA' })}>{copy('brands.175')}</div>
+                  <span {...clickable(v.toPrivacy)}>{copy('brands.176')}</span>
+                  <span {...clickable(v.toCreatorTerms)}>{copy('brands.177')}</span>
+                  <span {...clickable(v.toBrandTerms)}>{copy('brands.178')}</span>
+                </div>{' '}
+                <div style={css({ display: 'flex', flexDirection: 'column', gap: '14px' })}>
+                  <div style={css({ font: '600 17px Archivo', color: '#F4F1EA' })}>{copy('brands.179')}</div>
+                  <span {...clickable(v.contact)}>{copy('brands.180')}</span>
+                  <span {...clickable(v.support)}>{copy('brands.181')}</span>
+                  <span>{copy('brands.182')}</span>
+                </div>{' '}
+              </div>
+            </div>{' '}
+            <div style={css({ marginTop: '56px', fontSize: '14px', color: 'rgba(244,241,234,0.55)' })}>
+              {copy('brands.183')}
+            </div>{' '}
+          </div>
+        </div>{' '}
+      </div>{' '}
+    </>
+  )
 }

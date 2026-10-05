@@ -3,21 +3,44 @@ import type { ThemeName } from '@/designed/themes'
 
 // The app screens' frame, taken from the campaigns screen mockup: themed page background, a glass frame
 // 1240px wide, and the left column with the wordmark and Home, Campaigns, Wallet. Used for app screens
-// the mockups do not show, so they look like they belong to the same design.
+// the mockups do not show, so they look like they belong to the same design. Signed-in creators also
+// get Accounts and Submissions below a hairline; the designed screens' own columns are unchanged.
+export type AppSection = 'home' | 'campaigns' | 'wallet' | 'accounts' | 'submissions'
+
 export function AppFrame({
   theme,
   active,
+  signedIn = false,
   children,
 }: {
   theme: ThemeName
-  active: 'home' | 'campaigns' | 'wallet'
+  active: AppSection
+  signedIn?: boolean
   children: ReactNode
 }) {
-  const links = [
+  const main = [
     ['home', 'Home', '/'],
     ['campaigns', 'Campaigns', '/campaigns'],
     ['wallet', 'Wallet', '/wallet'],
   ] as const
+  const mine = [
+    ['submissions', 'Submissions', '/submissions'],
+    ['accounts', 'Accounts', '/accounts'],
+  ] as const
+  const link = ([key, label, href]: readonly [AppSection, string, string]) => (
+    <a
+      key={key}
+      href={href}
+      aria-current={active === key ? 'page' : undefined}
+      className="flex h-[42px] items-center rounded-[12px] px-[14px] text-[14px] font-semibold no-underline"
+      style={{
+        background: active === key ? 'rgba(216,197,143,0.2)' : 'transparent',
+        color: active === key ? 'var(--t-accent-ink)' : 'var(--t-muted)',
+      }}
+    >
+      {label}
+    </a>
+  )
   return (
     <div
       data-theme={theme === 'light' ? 'glass' : 'dark'}
@@ -37,20 +60,16 @@ export function AppFrame({
               style={{ filter: 'var(--t-logo-filter)' }}
             />
           </a>
-          {links.map(([key, label, href]) => (
-            <a
-              key={key}
-              href={href}
-              aria-current={active === key ? 'page' : undefined}
-              className="flex h-[42px] items-center rounded-[12px] px-[14px] text-[14px] font-semibold no-underline"
-              style={{
-                background: active === key ? 'rgba(216,197,143,0.2)' : 'transparent',
-                color: active === key ? 'var(--t-accent-ink)' : 'var(--t-muted)',
-              }}
-            >
-              {label}
-            </a>
-          ))}
+          {main.map(link)}
+          {signedIn ? (
+            <>
+              <span
+                aria-hidden
+                className="mx-[6px] my-3 block h-px bg-[var(--t-hair)] max-sm:mx-1 max-sm:my-0 max-sm:h-auto max-sm:w-px"
+              />
+              {mine.map(link)}
+            </>
+          ) : null}
         </nav>
         <main className="min-w-0 flex-1">{children}</main>
       </div>

@@ -1,0 +1,2 @@
+ALTER TABLE "linked_accounts" DROP CONSTRAINT "linked_accounts_platform_user";--> statement-breakpoint
+CREATE UNIQUE INDEX "linked_accounts_platform_user" ON "linked_accounts" USING btree ("platform","platform_user_id") WHERE "linked_accounts"."status" <> 'removed';

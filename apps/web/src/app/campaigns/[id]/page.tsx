@@ -83,7 +83,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
   const tf = c.templateFields
 
   return (
-    <AppFrame theme={theme} active="campaigns">
+    <AppFrame theme={theme} active="campaigns" signedIn={!!viewer}>
       {!published ? (
         <p className="m-0 mb-4 rounded-[16px] border border-solid border-[rgba(224,169,74,0.45)] bg-[rgba(224,169,74,0.16)] px-5 py-[14px] text-[14px]">
           Staff preview. This campaign is {status?.label.toLowerCase() ?? c.status} and not visible to creators yet.

@@ -16,6 +16,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   uuid,
   type AnyPgColumn,
 } from 'drizzle-orm/pg-core'
@@ -173,7 +174,10 @@ export const linkedAccounts = pgTable(
     ...timestamps,
   },
   (t) => [
-    unique('linked_accounts_platform_user').on(t.platform, t.platformUserId),
+    // A platform account belongs to one creator at a time. A removed link frees it.
+    uniqueIndex('linked_accounts_platform_user')
+      .on(t.platform, t.platformUserId)
+      .where(sql`${t.status} <> 'removed'`),
     check('linked_accounts_platform_check', inList('platform', PLATFORMS)),
     check('linked_accounts_link_method_check', inList('link_method', LINK_METHODS)),
     check('linked_accounts_status_check', inList('status', LINKED_ACCOUNT_STATUSES)),

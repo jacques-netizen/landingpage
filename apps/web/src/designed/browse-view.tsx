@@ -84,7 +84,12 @@ export function BrowseView({ state, cards, featured, theme: initialTheme, accoun
       ['data', 'Data'],
       ['loading', 'Loading'],
       ['error', 'Error'],
-    ].map(([k, label]) => ({ label, go: () => {}, bg: k === 'data' ? '#D8C58F' : 'transparent', fg: k === 'data' ? '#1A1510' : T.muted })),
+    ].map(([k, label]) => ({
+      label,
+      go: () => {},
+      bg: k === 'data' ? '#D8C58F' : 'transparent',
+      fg: k === 'data' ? '#1A1510' : T.muted,
+    })),
     themes: themeSwitch(th, (t) => {
       setTh(t)
       saveThemeCookie(t)
