@@ -4,6 +4,7 @@ import { runCampaignLifecycle } from '@mde/campaigns'
 import { writeAudit, type Db } from '@mde/db'
 import { ledgerCheck } from '@mde/money'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
+import { expireStrikes } from '@mde/review'
 import { runAccountRechecks, runDueViewChecks, runReleases } from '@mde/tracking'
 
 export type JobContext = {
@@ -49,4 +50,6 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
       return { errors: problems.length }
     },
   },
+  // Warnings stop counting as strikes after strike_days (03_SYSTEMS.md section 8).
+  'strike-expiry': { every: 24 * 60 * MINUTE, run: ({ db, now }) => expireStrikes(db, now) },
 }

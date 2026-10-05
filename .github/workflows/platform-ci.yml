@@ -40,6 +40,7 @@ jobs:
       PLATFORMS_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_platforms
       SUBMISSIONS_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_submissions
       TRACKING_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_tracking
+      REVIEW_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_review
       REDIS_URL: redis://localhost:6379
       AUTH_SECRET: ci-only-secret-not-for-production-0123456789
       CONTACT_EMAIL: hello@example.com

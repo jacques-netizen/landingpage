@@ -63,6 +63,13 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
   const checks: CheckResult[] = []
   const stop = (message?: string): SubmitResult => ({ outcome: 'not_submitted', checks, message })
 
+  // A suspended creator cannot submit (03_SYSTEMS.md section 8).
+  const [u] = await db
+    .select({ status: tables.users.status })
+    .from(tables.users)
+    .where(eq(tables.users.id, input.creatorId))
+  if (u?.status !== 'active')
+    return stop('Your account is suspended, so new posts cannot be submitted. Contact support.')
   const [c] = await db.select().from(campaigns).where(eq(campaigns.id, input.campaignId))
   if (!c) return stop('This campaign does not exist.')
   const [member] = await db

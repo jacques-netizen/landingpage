@@ -304,3 +304,14 @@ describe('the account the creator picks', () => {
     expect(right.outcome).toBe('needs_review')
   })
 })
+
+describe('suspended creators', () => {
+  it('cannot submit', async () => {
+    const c = await liveCampaign()
+    const me = await creatorIn(c.id)
+    await db.update(tables.users).set({ status: 'suspended' }).where(eq(tables.users.id, me.id))
+    const r = await submitPost(db, { creatorId: me.id, campaignId: c.id, postUrl: post().url }, deps())
+    expect(r).toMatchObject({ outcome: 'not_submitted', checks: [] })
+    expect(r.message).toMatch(/suspended/)
+  })
+})

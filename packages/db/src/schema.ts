@@ -420,6 +420,9 @@ export const appeals = pgTable(
       .references(() => users.id),
     message: text('message').notNull(),
     status: text('status').notNull().default('open'),
+    // The submission's state when the appeal opened, restored if the decision is upheld.
+    previousState: text('previous_state'),
+    links: text('links').array(),
     reply: text('reply'),
     reviewerId: uuid('reviewer_id').references(() => users.id),
     dueAt: tz('due_at').notNull(),
@@ -436,6 +439,8 @@ export const warnings = pgTable('warnings', {
     .references(() => users.id),
   reasonCode: text('reason_code'),
   note: text('note'),
+  // The post the warning came from, so an overturned appeal can clear it.
+  submissionId: uuid('submission_id').references(() => submissions.id),
   expiresAt: tz('expires_at'),
   createdBy: uuid('created_by').references(() => users.id),
   ...timestamps,

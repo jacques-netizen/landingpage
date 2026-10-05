@@ -1,26 +1,28 @@
 {
-  "name": "@mde/worker",
+  "name": "@mde/review",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./business-days": "./src/business-days.ts"
+  },
   "scripts": {
-    "start": "tsx src/main.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "@mde/campaigns": "workspace:*",
     "@mde/config": "workspace:*",
     "@mde/db": "workspace:*",
     "@mde/money": "workspace:*",
-    "@mde/platforms": "workspace:*",
-    "@mde/review": "workspace:*",
-    "@mde/tracking": "workspace:*",
-    "bullmq": "^6.3.11"
+    "@mde/submissions": "workspace:*",
+    "drizzle-orm": "^0.45.3"
   },
   "devDependencies": {
+    "@mde/campaigns": "workspace:*",
+    "@mde/platforms": "workspace:*",
+    "@mde/tracking": "workspace:*",
     "@types/node": "^22.10.0",
-    "ioredis": "^5.11.1",
-    "tsx": "^4.23.15",
+    "postgres": "^3.4.9",
     "typescript": "^5.9.3",
     "vitest": "^5.0.3"
   }
