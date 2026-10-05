@@ -74,7 +74,8 @@ export async function deliverPendingEmails(
     } catch (e) {
       const final = n.emailAttempts >= MAX_EMAIL_ATTEMPTS
       await set({ emailStatus: final ? 'failed' : 'pending' })
-      final ? out.failed++ : out.retry++
+      if (final) out.failed++
+      else out.retry++
       log({ level: final ? 'error' : 'warn', msg: 'notification email failed', notificationId: n.id, err: String(e) })
     }
   }
