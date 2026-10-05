@@ -1,10 +1,6 @@
 {
   "wz": "\"var(--mde-app-zoom)\"",
-  "$hide": [
-    "list:states",
-    "text:Sample",
-    "text:Sample tiers"
-  ],
+  "$hide": ["list:states", "text:Sample", "text:Sample tiers"],
   "$text": {
     "$2.00": "{v.rateFmt}",
     "Bank transfer, ending 0000": "{v.payoutLabel}",
