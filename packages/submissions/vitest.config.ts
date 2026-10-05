@@ -7,7 +7,8 @@ export default defineConfig({
     fileParallelism: false,
     testTimeout: 60_000,
     env: {
-      DATABASE_URL: process.env.SUBMISSIONS_TEST_DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde_test_submissions',
+      DATABASE_URL:
+        process.env.SUBMISSIONS_TEST_DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde_test_submissions',
     },
   },
 })
