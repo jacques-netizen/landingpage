@@ -36,8 +36,9 @@ describe('settings defaults', () => {
 })
 
 describe('reason codes', () => {
-  it('has the 21 starting codes with unique ids', () => {
-    expect(REASON_CODES).toHaveLength(21)
-    expect(new Set(REASON_CODES.map((r) => r[0])).size).toBe(21)
+  it('has the 21 starting codes from 03_SYSTEMS.md section 5 plus post_limit_reached, with unique ids', () => {
+    expect(REASON_CODES).toHaveLength(22)
+    expect(new Set(REASON_CODES.map((r) => r[0])).size).toBe(22)
+    expect(REASON_CODES.map((r) => r[0])).toContain('post_limit_reached')
   })
 })
