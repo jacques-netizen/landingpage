@@ -241,6 +241,10 @@ export const campaigns = pgTable(
     closedAt: tz('closed_at'),
     releaseAt: tz('release_at'),
     currentTermsVersionId: uuid('current_terms_version_id').references((): AnyPgColumn => termsVersions.id),
+    // Template-specific rules (01_PRODUCT.md section 6.2), e.g. logo file, safe zone, audio link.
+    templateFields: jsonb('template_fields').$type<Record<string, string | number | boolean>>().notNull().default({}),
+    // Rules text being edited before it is saved as a terms version.
+    termsDraftMarkdown: text('terms_draft_markdown'),
     ...timestamps,
   },
   () => [

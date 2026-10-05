@@ -29,6 +29,13 @@
       "when": 1791160846862,
       "tag": "0003_ledger_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791188981625,
+      "tag": "0004_campaign_template_fields",
+      "breakpoints": true
     }
   ]
 }

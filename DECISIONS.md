@@ -68,3 +68,16 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - A withdrawal can be marked paid or failed only once it is in a batch or sent; repeating either is a no-op. Reason: section 6, and webhooks can arrive twice.
 - Release refuses while a submission has an open fraud flag or open appeal. Reason: section 5.4 step 4.
 - The withdrawal quote lives in `@mde/money/quote`, a module with no server imports. Reason: section 6 requires the form and the server to use the same function.
+
+## Campaigns (Phase 2)
+
+- Campaign status means: `draft` (being built), `awaiting_funding` (published, waiting for the client's money), `live` (published and funded), `closing` (budget used, no new earnings), `closed`, `cancelled`. Publishing an unfunded campaign leaves it waiting; funding it then makes it live at once. Reason: section 5.3 of 01_PRODUCT.md, "the campaign goes live only when fully funded".
+- A live campaign with a future start date shows on the site and can be joined; submissions open at the start date (Phase 3 check 1). The lifecycle job therefore only closes campaigns. Reason: simplest reading of "open at start_at" without a separate scheduled status.
+- Once funded, the budget cannot change. Once live, the budget, caps, minimum views, type and client cannot change; the rate can (existing posts keep their locked rate). Reason: changing caps or minimums after posts earned would change money already owed, which is a money rule decision for the owner.
+- Rules text is saved as a new terms version when a campaign is published and whenever it changes on a published campaign. Reason: 02_DATA_AND_MONEY.md terms versions, and every submission is paid under the version in force when it was submitted.
+- Only campaigns that were never funded can be cancelled; funded campaigns are closed so the budget is accounted for. Reason: no money may be left unexplained.
+- Template-specific rules (logo file, safe zone, audio link and similar) are stored in `campaigns.template_fields`. Template minimum durations and hashtags start empty. Reason: 01_PRODUCT.md section 6.2 lists these fields but the table has no columns for them, and the numbers are for staff to set, not to invent.
+- Staff type money as dollars ("$1,250.00"); `@mde/money/dollars` turns it into whole cents with string maths. Reason: no floating point anywhere money is handled.
+- "Dollars paid" on a campaign is what creators have earned on it (sum of earned cents); "left" is the campaign budget account balance from the ledger. Reason: section 6.3 of 01_PRODUCT.md, figures from the ledger, never a stored balance.
+- Private campaigns are not listed. Their page is reached by link and joining needs the access code (case does not matter). Reason: 01_PRODUCT.md sections 5.1 and 6.1.
+- Development seed lives in `packages/seed` and funds and earns through the money engine, so the seeded campaigns show the mockups' sample numbers exactly. Reason: the visual tests compare those screens against the locked screenshots.
