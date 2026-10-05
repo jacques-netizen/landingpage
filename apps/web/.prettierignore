@@ -1,0 +1,5 @@
+# Prettier reads the ignore file in the folder it runs from. Same rules as the root .prettierignore,
+# so running it here never reformats the generated designed screens.
+.next
+src/designed/**
+src/styles/fonts.css
