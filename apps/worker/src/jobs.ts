@@ -3,6 +3,7 @@
 import { runCampaignLifecycle } from '@mde/campaigns'
 import { writeAudit, type Db } from '@mde/db'
 import { ledgerCheck } from '@mde/money'
+import { deliverPendingEmails, notifyAppealDeadlines } from '@mde/notifications'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
 import { expireStrikes } from '@mde/review'
 import { runAccountRechecks, runDueViewChecks, runReleases } from '@mde/tracking'
@@ -50,6 +51,10 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
       return { errors: problems.length }
     },
   },
+  // Notification emails go out from the notification rows, with retries (03_SYSTEMS.md section 9).
+  'email-send': { every: MINUTE, run: ({ db, now }) => deliverPendingEmails(db, { now }) },
+  // Reviewers and admins hear once when an open appeal is within 24 hours of its reply date.
+  'appeal-deadlines': { every: 60 * MINUTE, run: ({ db, now }) => notifyAppealDeadlines(db, now) },
   // Warnings stop counting as strikes after strike_days (03_SYSTEMS.md section 8).
   'strike-expiry': { every: 24 * 60 * MINUTE, run: ({ db, now }) => expireStrikes(db, now) },
 }

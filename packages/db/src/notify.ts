@@ -13,7 +13,9 @@ export type NotificationKind =
   | 'appeal_reply'
   | 'new_campaign'
   | 'warning_issued'
+  | 'account_status'
   | 'appeal_opened'
+  | 'appeal_due'
   | 'campaign_event'
   | 'payout_failed'
 

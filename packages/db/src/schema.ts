@@ -56,6 +56,9 @@ export const users = pgTable(
     adultConfirmedAt: tz('adult_confirmed_at'),
     termsAcceptedAt: tz('terms_accepted_at'),
     status: text('status').notNull().default('active'),
+    // Notification preferences (03_SYSTEMS.md section 9): email is on by default; new campaign alerts can be switched off.
+    notifyEmail: boolean('notify_email').notNull().default(true),
+    notifyNewCampaigns: boolean('notify_new_campaigns').notNull().default(true),
     ...timestamps,
   },
   () => [check('users_status_check', inList('status', USER_STATUSES))],
@@ -542,18 +545,35 @@ export const withdrawals = pgTable(
 
 // ---------- Support tables ----------
 
-export const notifications = pgTable('notifications', {
-  id: id(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id),
-  kind: text('kind').notNull(),
-  title: text('title').notNull(),
-  body: text('body'),
-  link: text('link'),
-  readAt: tz('read_at'),
-  ...timestamps,
-})
+export const NOTIFICATION_EMAIL_STATUSES = ['pending', 'sending', 'sent', 'skipped', 'failed'] as const
+
+export const notifications = pgTable(
+  'notifications',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    kind: text('kind').notNull(),
+    title: text('title').notNull(),
+    body: text('body'),
+    link: text('link'),
+    readAt: tz('read_at'),
+    // The email for this notification, sent by the worker from this row.
+    emailStatus: text('email_status').notNull().default('pending'),
+    emailAttempts: integer('email_attempts').notNull().default(0),
+    emailClaimedAt: tz('email_claimed_at'),
+    emailedAt: tz('emailed_at'),
+    ...timestamps,
+  },
+  (t) => [
+    check('notifications_email_status_check', inList('email_status', NOTIFICATION_EMAIL_STATUSES)),
+    index('notifications_email_pending')
+      .on(t.createdAt)
+      .where(sql`${t.emailStatus} in ('pending', 'sending')`),
+    index('notifications_user_created').on(t.userId, t.createdAt),
+  ],
+)
 
 export const settings = pgTable('settings', {
   key: text('key').primaryKey(),

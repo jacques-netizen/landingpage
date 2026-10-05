@@ -12,6 +12,7 @@
     "@mde/config": "workspace:*",
     "@mde/db": "workspace:*",
     "@mde/money": "workspace:*",
+    "@mde/notifications": "workspace:*",
     "@mde/platforms": "workspace:*",
     "@mde/review": "workspace:*",
     "@mde/tracking": "workspace:*",

@@ -78,6 +78,13 @@
       "when": 1791215047514,
       "tag": "0010_creator_staff_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791215567352,
+      "tag": "0011_notification_email",
+      "breakpoints": true
     }
   ]
 }
