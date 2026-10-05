@@ -4,8 +4,8 @@ import type { ThemeName } from '@/designed/themes'
 // The app screens' frame, taken from the campaigns screen mockup: themed page background, a glass frame
 // 1240px wide, and the left column with the wordmark and Home, Campaigns, Wallet. Used for app screens
 // the mockups do not show, so they look like they belong to the same design. Signed-in creators also
-// get Accounts and Submissions below a hairline; the designed screens' own columns are unchanged.
-export type AppSection = 'home' | 'campaigns' | 'wallet' | 'accounts' | 'submissions'
+// get My campaigns, Submissions and Accounts below a hairline; the designed screens' own columns are unchanged.
+export type AppSection = 'home' | 'campaigns' | 'wallet' | 'my-campaigns' | 'accounts' | 'submissions'
 
 export function AppFrame({
   theme,
@@ -24,6 +24,7 @@ export function AppFrame({
     ['wallet', 'Wallet', '/wallet'],
   ] as const
   const mine = [
+    ['my-campaigns', 'My campaigns', '/my-campaigns'],
     ['submissions', 'Submissions', '/submissions'],
     ['accounts', 'Accounts', '/accounts'],
   ] as const

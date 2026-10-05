@@ -58,4 +58,12 @@ test('earnings from a view check show in the wallet', async ({ page }) => {
   await expect(page.getByText('5,000 views')).toBeVisible()
   await expect(page.getByText('+$6.25')).toBeVisible()
   await expect(page.getByText('TODAY')).toBeVisible()
+
+  // My campaigns shows the same post, views and earnings for the campaign.
+  await page.goto('/my-campaigns')
+  const row = page.getByRole('row', { name: /Sample music/ })
+  await expect(row).toContainText('5,000')
+  await expect(row).toContainText('$6.25')
+  await page.getByRole('link', { name: 'Closed' }).click()
+  await expect(page.getByText('No closed campaigns yet.')).toBeVisible()
 })
