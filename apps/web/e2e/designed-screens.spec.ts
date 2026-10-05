@@ -36,6 +36,7 @@ for (const width of WIDTHS) {
     ] as const) {
       test(`brand site with the ${tab} case study matches the locked design`, async ({ page }) => {
         await page.goto('/brands')
+        await page.waitForLoadState('networkidle') // a click before hydration is lost
         await page.getByText(tab, { exact: true }).first().click()
         await settle(page)
         const masks = [
@@ -93,6 +94,8 @@ for (const width of WIDTHS) {
         test(`${view.name} matches the locked design`, async ({ page, baseURL }) => {
           await page.context().addCookies([{ name: 'mde_theme', value: theme, url: baseURL! }])
           await page.goto(view.path.includes('?') ? `${view.path}&theme=${theme}` : view.path)
+          // A click before hydration is lost and the unfiltered grid gets captured; wait for the page to settle first.
+          if (view.filters) await page.waitForLoadState('networkidle')
           for (const f of view.filters ?? []) await page.getByText(f, { exact: true }).first().click()
           await settle(page)
           const result = await compareWithReference(
