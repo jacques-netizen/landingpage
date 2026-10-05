@@ -48,7 +48,6 @@ export function memoryWorld(): World {
       mem.seed.campaign({
         clientId,
         budgetCents: o.budgetCents,
-        rateCentsPer1000: o.rate,
         capPerPostCents: o.capPost,
         capPerCreatorCents: o.capCreator,
         minViewsToEarn: o.minViews,
@@ -63,10 +62,18 @@ export function memoryWorld(): World {
         state: 'approved',
         countedViews: 0,
       }),
-    setViews: async (id, countedViews) => mem.seed.setSubmission(id, { countedViews }),
-    setSubmissionState: async (id, state) => mem.seed.setSubmission(id, { state }),
-    setCampaignStatus: async (id, status) => mem.seed.setCampaign(id, { status }),
-    setWithdrawalStatus: async (id, status) => mem.seed.setWithdrawal(id, { status }),
+    setViews: async (id, countedViews) => {
+      mem.seed.setSubmission(id, { countedViews })
+    },
+    setSubmissionState: async (id, state) => {
+      mem.seed.setSubmission(id, { state })
+    },
+    setCampaignStatus: async (id, status) => {
+      mem.seed.setCampaign(id, { status })
+    },
+    setWithdrawalStatus: async (id, status) => {
+      mem.seed.setWithdrawal(id, { status })
+    },
     setFeeSettings: async (s) => mem.seed.settings(s),
     ledger: async () => mem.inspect(),
     close: async () => {},

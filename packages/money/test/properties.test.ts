@@ -29,7 +29,7 @@ type Op =
   | { t: 'again'; sub: number }
   | { t: 'reject'; sub: number }
   | { t: 'release'; sub: number }
-  | { t: 'withdraw'; creator: number; amount: number }
+  | { t: 'withdraw'; creator: number; share: number; extra: number }
   | { t: 'paid'; w: number }
   | { t: 'failed'; w: number }
   | { t: 'close' }
@@ -60,20 +60,25 @@ const scenario = fc.record({
       },
       { weight: 1, arbitrary: fc.record({ t: fc.constant('again' as const), sub: fc.nat(8) }) },
       { weight: 1, arbitrary: fc.record({ t: fc.constant('reject' as const), sub: fc.nat(8) }) },
-      { weight: 2, arbitrary: fc.record({ t: fc.constant('release' as const), sub: fc.nat(8) }) },
+      { weight: 3, arbitrary: fc.record({ t: fc.constant('release' as const), sub: fc.nat(8) }) },
       {
-        weight: 2,
+        weight: 4,
         arbitrary: fc.record({
           t: fc.constant('withdraw' as const),
           creator: fc.nat(2),
-          amount: fc.integer({ min: 0, max: 200_000 }),
+          // A share of what is available (1 to 100%), sometimes plus extra to hit the refusals.
+          share: fc.integer({ min: 1, max: 100 }),
+          extra: fc.oneof(
+            { weight: 4, arbitrary: fc.constant(0) },
+            { weight: 1, arbitrary: fc.integer({ min: 1, max: 50_000 }) },
+          ),
         }),
       },
-      { weight: 1, arbitrary: fc.record({ t: fc.constant('paid' as const), w: fc.nat(4) }) },
-      { weight: 1, arbitrary: fc.record({ t: fc.constant('failed' as const), w: fc.nat(4) }) },
+      { weight: 2, arbitrary: fc.record({ t: fc.constant('paid' as const), w: fc.nat(4) }) },
+      { weight: 2, arbitrary: fc.record({ t: fc.constant('failed' as const), w: fc.nat(4) }) },
       { weight: 1, arbitrary: fc.record({ t: fc.constant('close' as const) }) },
     ),
-    { maxLength: 25 },
+    { minLength: 10, maxLength: 40 },
   ),
 })
 
@@ -130,6 +135,19 @@ async function tolerate(p: Promise<unknown>) {
   }
 }
 
+// How often each money path actually ran, so a generator change cannot silently stop exercising it.
+const coverage = {
+  accrued: 0,
+  reversedByViews: 0,
+  rejectedWithEarnings: 0,
+  released: 0,
+  withdrawn: 0,
+  paid: 0,
+  failed: 0,
+  closing: 0,
+  remainder: 0,
+}
+
 type Scenario = typeof scenario extends fc.Arbitrary<infer T> ? T : never
 
 async function runScenario(w: World, s: Scenario, eachStep: boolean) {
@@ -159,6 +177,7 @@ async function runScenario(w: World, s: Scenario, eachStep: boolean) {
     for (let k = 0; k < s.subsPerCreator; k++) subs.push(await w.submission(campaignId, creator, s.rate))
   }
   const withdrawals: string[] = []
+  const withdrawalStatus = new Map<string, string>()
   const states = new Map(subs.map((id) => [id, 'approved']))
   let closed = false
 
@@ -167,7 +186,11 @@ async function runScenario(w: World, s: Scenario, eachStep: boolean) {
       case 'views': {
         const id = subs[op.sub % subs.length]!
         await w.setViews(id, op.views)
-        await tolerate(accrueEarnings(w.store, { submissionId: id }))
+        const r = (await tolerate(accrueEarnings(w.store, { submissionId: id }))) as
+          { deltaCents: number; campaignClosing: boolean } | undefined
+        if (r && r.deltaCents > 0) coverage.accrued++
+        if (r && r.deltaCents < 0) coverage.reversedByViews++
+        if (r?.campaignClosing) coverage.closing++
         break
       }
       case 'again': {
@@ -177,7 +200,9 @@ async function runScenario(w: World, s: Scenario, eachStep: boolean) {
       case 'reject': {
         const id = subs[op.sub % subs.length]!
         if (!['approved', 'earning'].includes(states.get(id)!)) break
-        await tolerate(reverseEarnings(w.store, { submissionId: id, actorId: null }))
+        const rev = (await tolerate(reverseEarnings(w.store, { submissionId: id, actorId: null }))) as
+          { reversedCents: number } | undefined
+        if (rev && rev.reversedCents > 0) coverage.rejectedWithEarnings++
         await w.setSubmissionState(id, 'rejected')
         states.set(id, 'rejected')
         break
@@ -188,36 +213,60 @@ async function runScenario(w: World, s: Scenario, eachStep: boolean) {
         await w.setSubmissionState(id, 'final')
         const r = await tolerate(releaseEarnings(w.store, { submissionId: id }))
         states.set(id, r ? 'paid_out' : 'final')
+        if (r && (r as { releasedCents: number }).releasedCents > 0) coverage.released++
         break
       }
       case 'withdraw': {
+        const creatorId = creators[op.creator % creators.length]!
+        const l = await w.ledger()
+        const acct = l.accounts.find((a) => a.kind === 'creator_available' && a.ownerId === creatorId)
+        const available = acct
+          ? l.transactions
+              .flatMap((t) => t.entries)
+              .filter((e) => e.accountId === acct.id)
+              .reduce((n, e) => n + e.amountCents, 0)
+          : 0
         const r = await tolerate(
           requestWithdrawal(w.store, {
-            creatorId: creators[op.creator % creators.length]!,
-            amountCents: op.amount,
+            creatorId,
+            amountCents: Math.floor((available * op.share) / 100) + op.extra,
             method: 'paypal',
           }),
         )
-        if (r && typeof r === 'object' && 'id' in r) withdrawals.push((r as { id: string }).id)
+        if (r && typeof r === 'object' && 'id' in r) {
+          withdrawals.push((r as { id: string }).id)
+          coverage.withdrawn++
+          withdrawalStatus.set((r as { id: string }).id, 'requested')
+        }
         break
       }
       case 'paid':
       case 'failed': {
         const id = withdrawals[op.w % Math.max(1, withdrawals.length)]
         if (!id) break
-        await w.setWithdrawalStatus(id, 'sent').catch(() => {})
-        if (op.t === 'paid')
-          await tolerate(
-            markWithdrawalPaid(w.store, { withdrawalId: id, partnerReference: `ref-${id}`, actorId: null }),
-          )
-        else await tolerate(markWithdrawalFailed(w.store, { withdrawalId: id, reason: 'test failure', actorId: null }))
+        // Staff approval and batching come later; here a requested withdrawal is simply sent.
+        if (withdrawalStatus.get(id) === 'requested') {
+          await w.setWithdrawalStatus(id, 'sent')
+          withdrawalStatus.set(id, 'sent')
+        }
+        const done = (await tolerate(
+          op.t === 'paid'
+            ? markWithdrawalPaid(w.store, { withdrawalId: id, partnerReference: `ref-${id}`, actorId: null })
+            : markWithdrawalFailed(w.store, { withdrawalId: id, reason: 'test failure', actorId: null }),
+        )) as { alreadyDone: boolean } | undefined
+        if (done && !done.alreadyDone) {
+          withdrawalStatus.set(id, op.t)
+          coverage[op.t]++
+        }
         break
       }
       case 'close': {
         if (closed) break
         closed = true
         await w.setCampaignStatus(campaignId, 'closed')
-        await tolerate(returnCampaignRemainder(w.store, { campaignId }))
+        const rem = (await tolerate(returnCampaignRemainder(w.store, { campaignId }))) as
+          { returnedCents: number } | undefined
+        if (rem && rem.returnedCents > 0) coverage.remainder++
         break
       }
     }
@@ -243,6 +292,10 @@ describe('money engine properties', () => {
       }),
       { numRuns: 10_000 },
     )
+    // Every path ran many times across the 10,000 sequences.
+    console.log('Property coverage across 10,000 runs:', JSON.stringify(coverage))
+    for (const [path, count] of Object.entries(coverage))
+      expect(count, `${path} ran ${count} times`).toBeGreaterThan(200)
   })
 
   const pg = postgresWorld()
