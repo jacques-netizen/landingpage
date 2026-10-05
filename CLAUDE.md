@@ -8,7 +8,7 @@ Read `/docs` and this file again at the start of every new session, in this orde
 
 Where things live:
 - Final design mockups: `docs/design/handoff/` ("Platform Mockups.dc.html" and "Creator Site v1.dc.html").
-- Locked design screenshots: `docs/design/reference-screens/` at 1440 and 1024 px, stored in Git LFS. Rebuilt only with `docs/design/capture-reference-screens.mjs`, and only when the owner says so in writing.
+- Locked design screenshots: `docs/design/reference-screens/` at 1440 and 1024 px (from the mockups, rebuilt only with `docs/design/capture-reference-screens.mjs`) and at 390 px for approved phone layouts (from the product, `apps/web/scripts/capture-phone-references.mjs`). Stored in Git LFS. Never rewritten unless the owner says so in writing.
 - Reference image: `docs/reference/home-reference.jpg`.
 
 ## Design rules
@@ -26,6 +26,7 @@ Where things live:
 - The mockups have no phone layout. The 390 px captures are not part of the locked design.
 - When building each screen, propose a phone layout that uses only the mockups' fonts, colours, components and copy, nothing new. Show the owner screenshots.
 - Once the owner approves a phone layout, add it to the reference set and lock it like the rest.
+- Approved and locked: home and brand site phone layouts (`apps/web/src/designed/phone.css`).
 
 ## Approved content
 

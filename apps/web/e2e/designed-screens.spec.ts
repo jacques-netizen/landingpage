@@ -3,7 +3,8 @@ import { compareWithReference, settle, type Rect } from './visual'
 
 // Visual tests for every designed screen built so far, at the locked widths.
 // References live in docs/design/reference-screens (see CLAUDE.md).
-const WIDTHS = [1440, 1024] as const
+// 390 is the owner-approved phone layout (captured from the product, see scripts/capture-phone-references.mjs).
+const WIDTHS = [1440, 1024, 390] as const
 
 async function rectsOf(page: Page, selector: string, pick: (r: Rect) => Rect = (r) => r): Promise<Rect[]> {
   const rects = await page.locator(selector).evaluateAll((els) =>
