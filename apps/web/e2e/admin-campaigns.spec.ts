@@ -94,3 +94,15 @@ test('reviewers can see campaigns but cannot create or change them', async ({ pa
   const res = await page.goto('/admin/campaigns/new')
   expect(res?.status()).toBe(403)
 })
+
+test('staff watch a live campaign on its monitor', async ({ page }) => {
+  await signInAs(page, 'reviewer@seed.invalid')
+  await page.goto('/admin/campaigns')
+  await page.getByRole('link', { name: 'Sample clipping' }).first().click()
+  await page.getByRole('link', { name: 'Monitor' }).click()
+  await expect(page.getByRole('heading', { name: 'Sample clipping: monitor' })).toBeVisible()
+  await expect(page.getByText('$4,800.00')).toBeVisible()
+  for (const h of ['Budget', 'Posts by state', 'Flagged posts', 'Top creators', 'Closing'])
+    await expect(page.getByRole('heading', { name: h })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Close campaign' })).toBeVisible()
+})

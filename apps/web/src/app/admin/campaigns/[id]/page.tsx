@@ -53,10 +53,13 @@ export default async function CampaignAdminPage({
       title={c.title}
       lead={`${client?.name ?? 'No client'} · ${c.type}`}
       actions={
-        live ? (
-          <LinkButton href={`/campaigns/${c.id}`} variant="secondary">
-            View creator page
-          </LinkButton>
+        live || c.status === 'closed' ? (
+          <>
+            <LinkButton href={`/admin/campaigns/${c.id}/monitor`}>Monitor</LinkButton>
+            <LinkButton href={`/campaigns/${c.id}`} variant="secondary">
+              View creator page
+            </LinkButton>
+          </>
         ) : null
       }
     >
