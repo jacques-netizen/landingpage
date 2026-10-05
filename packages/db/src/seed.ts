@@ -171,6 +171,7 @@ export async function seed(db: Db) {
           title: c.title,
           coverImageUrl: c.cover,
           briefMarkdown: 'Seed brief. Development data only.',
+          termsDraftMarkdown: 'Seed campaign rules. Development data only.',
           platforms: [...c.platforms],
           budgetCents: c.budgetCents,
           rateCentsPer1000: c.rate,

@@ -8,6 +8,8 @@ type Option = { value: string; label: string; disabled?: boolean }
 
 type Props = {
   id?: string
+  name?: string
+  required?: boolean
   value?: string
   defaultValue?: string
   onValueChange?: (v: string) => void

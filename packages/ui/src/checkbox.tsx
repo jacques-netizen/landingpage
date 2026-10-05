@@ -12,6 +12,7 @@ type CheckboxProps = {
   disabled?: boolean
   invalid?: boolean
   name?: string
+  value?: string
   required?: boolean
   children: ReactNode
 }

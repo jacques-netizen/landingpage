@@ -7,19 +7,24 @@
 @import '../designed/phone.css';
 @source '../../../../packages/ui/src';
 
-/* Page base and animations, copied from the mockups' <helmet> block. */
-body {
-  margin: 0;
-  background: #f2eee6;
-  color: #1a1510;
-  font-family: 'Archivo', Inter, system-ui, sans-serif;
+/* Page base, copied from the mockups' <helmet> block. In the base layer so utility classes
+   (such as a white link on an ink button) win over it; designed screens use inline styles. */
+@layer base {
+  body {
+    margin: 0;
+    background: #f2eee6;
+    color: #1a1510;
+    font-family: 'Archivo', Inter, system-ui, sans-serif;
+  }
+  a {
+    color: #1a1510;
+  }
+  a:hover {
+    color: #6e675c;
+  }
 }
-a {
-  color: #1a1510;
-}
-a:hover {
-  color: #6e675c;
-}
+
+/* Animations, copied from the mockups' <helmet> block. */
 @keyframes marquee {
   to {
     transform: translateX(-25%);

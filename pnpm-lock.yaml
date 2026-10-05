@@ -29,12 +29,18 @@ importers:
       '@auth/drizzle-adapter':
         specifier: ^1.11.3
         version: 1.11.3
+      '@mde/campaigns':
+        specifier: workspace:*
+        version: link:../../packages/campaigns
       '@mde/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@mde/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@mde/money':
+        specifier: workspace:*
+        version: link:../../packages/money
       '@mde/ui':
         specifier: workspace:*
         version: link:../../packages/ui

@@ -4,7 +4,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./templates": "./src/templates.ts"
+    "./templates": "./src/templates.ts",
+    "./status": "./src/status.ts",
+    "./input": "./src/input.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
