@@ -43,13 +43,17 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Signed-out visitors to `/admin` are sent to sign in; signed-in people without a staff role get 403. Staff API returns 401 or 403 as JSON in the `{ error: { code, message } }` shape. Reason: 03_SYSTEMS.md sections 1 and 10.
 - The sign-up terms line is plain text for now. Reason: the legal pages arrive in Phase 2 and the line should not link to pages that do not exist yet.
 
+## Owner answers
+
+- The Data / Loading / Error switches on the campaigns and wallet mockups are preview tools, not product. They are not shipped; the real loading, empty and error states appear on their own when they happen. The visual tests for those screens will mask the switches only. Reason: confirmed by the owner.
+
 ## Open items the owner will answer later
 
 - Case study videos: the owner will upload every case study, frame and testimonial video. Until then a case study with no video or poster (Walmart, Jake & Logan Paul) shows an empty video box. No fallback is needed.
 - Home "How it works" button: stays unlinked until the owner says where it goes (expected: the Phase 2 how it works page).
 - Brand footer "Careers": stays unlinked until the owner gives a destination.
 - A "For brands" link on the creator home: not added. The brand site stays reachable at `/brands` by URL until the owner decides.
-- Mockup preview controls on the app screens (Data / Loading / Error switches, "Sample data for layout only" notes): ask the owner when building those screens.
+- "Sample data for layout only" notes on the app screens: ask the owner whether they ship when building those screens.
 
 ## Money engine (Phase 1)
 
