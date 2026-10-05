@@ -217,4 +217,80 @@
   [data-m~='b-foot'] {
     gap: 48px !important;
   }
+
+  /* ---------- Campaigns screen (proposed, waiting for the owner's approval) ---------- */
+  [data-m~='a-page'] {
+    padding: 16px 12px 64px !important;
+  }
+  [data-m~='a-zoom'] {
+    zoom: 1 !important;
+  }
+  [data-m~='a-frame'] {
+    width: auto !important;
+    flex-direction: column;
+    padding: 10px !important;
+    border-radius: 28px !important;
+    gap: 12px !important;
+  }
+  [data-m~='a-side'] {
+    width: auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 16px 12px !important;
+    border-radius: 22px !important;
+  }
+  [data-m~='a-side'] > img {
+    flex-basis: 100%;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 4px 12px !important;
+  }
+  [data-m~='a-divider'] {
+    flex-basis: 100%;
+    margin: 10px 4px 4px !important;
+  }
+  [data-m~='a-heading'] {
+    flex-basis: 100%;
+    padding: 8px 4px 2px !important;
+  }
+  [data-m~='a-top'] {
+    flex-wrap: wrap;
+    row-gap: 10px !important;
+  }
+  [data-m~='a-search'] {
+    flex-basis: 100% !important;
+  }
+  [data-m~='a-top'] > [aria-hidden='true'] > * {
+    display: none !important;
+  }
+  [data-m~='a-top'] > :last-child {
+    margin-left: auto;
+  }
+  [data-m~='a-hero'] {
+    height: 440px !important;
+    border-radius: 22px !important;
+  }
+  [data-m~='a-hero-pill'] {
+    left: 20px !important;
+    top: 20px !important;
+  }
+  [data-m~='a-hero-text'] {
+    left: 20px !important;
+    right: 20px;
+    bottom: 22px !important;
+  }
+  [data-m~='a-hero-shade'] {
+    background: linear-gradient(0deg, rgba(12, 10, 18, 0.92) 0%, rgba(12, 10, 18, 0.55) 48%, transparent 80%) !important;
+  }
+  [data-m~='a-hero-buttons'] > * {
+    white-space: nowrap;
+    padding: 0 18px !important;
+  }
+  [data-m~='a-hero-title'] {
+    font-size: 32px !important;
+  }
+  [data-m~='a-grid'] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 }

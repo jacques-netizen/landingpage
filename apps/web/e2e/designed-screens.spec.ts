@@ -68,3 +68,42 @@ for (const width of WIDTHS) {
     }
   })
 }
+
+// The campaigns screen ("Creator Site v1", browse) in both themes and every state the mockup shows.
+// The mockup's Data / Loading / Error preview switch and its "Sample data" note are kept invisible in
+// the product, so only those areas are masked.
+async function previewMasks(page: Page) {
+  return rectsOf(page, '[aria-hidden="true"][style*="display:contents"] > *')
+}
+
+const BROWSE_VIEWS: { name: string; path: string; filters?: string[] }[] = [
+  { name: 'data', path: '/campaigns' },
+  { name: 'filtered-clipping', path: '/campaigns', filters: ['Clipping'] },
+  { name: 'filtered-tiktok', path: '/campaigns', filters: ['TikTok'] },
+  { name: 'empty', path: '/campaigns', filters: ['UGC', 'Instagram'] },
+  { name: 'loading', path: '/design-states/browse?state=loading' },
+  { name: 'error', path: '/design-states/browse?state=error' },
+]
+
+for (const width of [1440, 1024] as const) {
+  for (const theme of ['dark', 'light'] as const) {
+    test.describe(`campaigns screen, ${theme}, at ${width}px`, () => {
+      test.use({ viewport: { width, height: 900 } })
+      for (const view of BROWSE_VIEWS) {
+        test(`${view.name} matches the locked design`, async ({ page, baseURL }) => {
+          await page.context().addCookies([{ name: 'mde_theme', value: theme, url: baseURL! }])
+          await page.goto(view.path.includes('?') ? `${view.path}&theme=${theme}` : view.path)
+          for (const f of view.filters ?? []) await page.getByText(f, { exact: true }).first().click()
+          await settle(page)
+          const result = await compareWithReference(
+            page,
+            `creator-browse-${theme}-${view.name}-${width}`,
+            await previewMasks(page),
+          )
+          test.info().annotations.push({ type: 'visual', description: result.message })
+          expect(result.ok, result.message).toBe(true)
+        })
+      }
+    })
+  }
+}

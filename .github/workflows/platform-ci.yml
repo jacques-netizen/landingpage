@@ -43,6 +43,8 @@ jobs:
       APP_URL: http://localhost:3100
       # CI has no email provider: magic links go to a local file the end to end tests read.
       EMAIL_DEV_OUTBOX: '1'
+      # Lets the visual tests render loading and error states of designed screens.
+      DESIGN_STATES: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -82,6 +84,7 @@ jobs:
         run: |
           node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isHome HomeDesign home scripts/replacements.home.json
           node scripts/dc-to-tsx.mjs "Platform Mockups.dc.html" isBrands BrandsDesign brands scripts/replacements.brands.json
+          node scripts/dc-to-tsx.mjs "Creator Site v1.dc.html" isBrowse BrowseDesign browse scripts/replacements.browse.json
           if [ -n "$(git status --porcelain src/designed)" ]; then
             echo "A designed screen was edited by hand or the converter changed. The design is locked."
             git diff --stat src/designed

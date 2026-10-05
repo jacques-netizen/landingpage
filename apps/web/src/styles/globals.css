@@ -5,6 +5,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities);
 @import '@mde/ui/tokens.css';
 @import '../designed/phone.css';
+@import '../designed/designed.css';
 @source '../../../../packages/ui/src';
 
 /* Page base, copied from the mockups' <helmet> block. In the base layer so utility classes

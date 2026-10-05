@@ -181,7 +181,8 @@ export async function seed(db: Db) {
           requiredHashtags: ['#ad'],
           // Funded campaigns start unfunded; packages/seed funds them through the money engine, then sets the status.
           status: c.status === 'draft' ? 'draft' : 'awaiting_funding',
-          startAt: new Date(now - 7 * 86400000),
+          // Staggered by a minute so the plan order is the order campaigns opened.
+          startAt: new Date(now - 7 * 86400000 + i * 60000),
           endAt: c.status === 'closed' ? new Date(now - 86400000) : new Date(now + 30 * 86400000),
         })
         .returning()

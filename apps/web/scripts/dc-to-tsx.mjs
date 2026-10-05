@@ -33,6 +33,19 @@ delete replacements.$authoring
 // "$attach" adds behaviour to designed elements without touching their look, keyed by
 // "<tag>:<the element's own text>", e.g. { "div:Book a call": { "onClick": "v.bookCall" } }.
 // onClick goes through clickable(); other keys (like id) are added as plain attributes.
+// "$hide": preview-only elements kept as invisible placeholders so the locked layout does not move.
+// Keys are "text:<own text>" or "list:<sc-for list name inside the element>".
+const hide = new Set(replacements.$hide ?? [])
+delete replacements.$hide
+const hideUsed = new Set()
+// "$text": replace a static text node with a JSX expression (live values instead of mockup text).
+const textSwap = replacements.$text ?? {}
+delete replacements.$text
+const textUsed = new Set()
+// "$if": render an element only when a value is present: { "<style substring>": "v.featured" }.
+const conditions = Object.entries(replacements.$if ?? {})
+delete replacements.$if
+const conditionsUsed = new Set()
 const attach = replacements.$attach ?? {}
 delete replacements.$attach
 // "$mark" tags elements for the phone layout without changing them: { "<marker>": "<style substring>" }
@@ -113,7 +126,12 @@ function styleExpr(raw, scope) {
 const BOOLEAN = { autoplay: 'autoPlay', muted: 'muted', loop: 'loop', playsinline: 'playsInline', controls: 'controls' }
 
 function attrs(node, scope) {
-  const mark = marks.filter(([, sub]) => (node.attribs.style ?? '').includes(sub)).map(([m]) => m)
+  // A substring starting with "=" must match the whole style exactly.
+  const mark = marks
+    .filter(([, sub]) =>
+      sub.startsWith('=') ? (node.attribs.style ?? '') === sub.slice(1) : (node.attribs.style ?? '').includes(sub),
+    )
+    .map(([m]) => m)
   for (const m of mark) marksUsed.add(m)
   const out = []
   if (mark.length) out.push(`data-m=${JSON.stringify(mark.join(' '))}`)
@@ -122,9 +140,13 @@ function attrs(node, scope) {
     .map((c) => c.data)
     .join('')
     .trim()
-  const extra = attach[`${node.name}:${ownText}`]
+  const styleKey = Object.keys(attach).find(
+    (k) => k.startsWith('style:') && (node.attribs.style ?? '').includes(k.slice(6)),
+  )
+  const attachKey = attach[`${node.name}:${ownText}`] ? `${node.name}:${ownText}` : styleKey
+  const extra = attachKey ? attach[attachKey] : undefined
   if (extra) {
-    attachUsed.add(`${node.name}:${ownText}`)
+    attachUsed.add(attachKey)
     for (const [k, v] of Object.entries(extra))
       out.push(k === 'onClick' ? `{...clickable(${v})}` : `${k}=${JSON.stringify(v)}`)
   }
@@ -158,6 +180,12 @@ function text(node, scope) {
   const txt = node.data
   if (!txt.includes('{{')) {
     if (!txt.trim()) return txt.includes(' ') ? "{' '}" : ''
+    if (txt.trim() in textSwap) {
+      textUsed.add(txt.trim())
+      const lead = /^\s/.test(txt) ? "{' '}" : ''
+      const trail = /\s$/.test(txt) ? "{' '}" : ''
+      return lead + textSwap[txt.trim()] + trail
+    }
     // Keep the exact leading and trailing whitespace around the slot.
     const lead = txt.match(/^\s*/)[0]
     const trail = txt.match(/\s*$/)[0]
@@ -194,6 +222,24 @@ function emit(node, scope, depth) {
     .map((c) => c.data)
     .join('')
     .trim()
+  const listInside = (node.children ?? [])
+    .find((c) => c.type === 'tag' && c.name === 'sc-for')
+    ?.attribs.list?.replace(/[{}\s]/g, '')
+  const hideKey = hide.has(`text:${ownText}`)
+    ? `text:${ownText}`
+    : listInside && hide.has(`list:${listInside}`)
+      ? `list:${listInside}`
+      : null
+  const condition = conditions.find(([sub]) => (node.attribs.style ?? '').includes(sub))
+  if (condition && !node.__conditioned) {
+    conditionsUsed.add(condition[0])
+    node.__conditioned = true
+    return `{${condition[1]} ? (${emit(node, scope, depth)}) : null}`
+  }
+  if (hideKey) {
+    hideUsed.add(hideKey)
+    return `<div aria-hidden="true" style={{ display: 'contents', visibility: 'hidden' }}>${emitTag(node, scope, depth)}</div>`
+  }
   if (authoring.has(ownText)) {
     const saved = slot
     const savedContent = { ...content }
@@ -215,6 +261,9 @@ function emitTag(node, scope, depth) {
 const body = children(root, new Set(['copy']), 0)
 for (const k of Object.keys(attach)) if (!attachUsed.has(k)) throw new Error(`$attach key matched nothing: ${k}`)
 for (const [m] of marks) if (!marksUsed.has(m)) throw new Error(`$mark matched nothing: ${m}`)
+for (const [k] of conditions) if (!conditionsUsed.has(k)) throw new Error(`$if matched nothing: ${k}`)
+for (const k of hide) if (!hideUsed.has(k)) throw new Error(`$hide matched nothing: ${k}`)
+for (const k of Object.keys(textSwap)) if (!textUsed.has(k)) throw new Error(`$text matched nothing: ${k}`)
 const name = componentName.replace(/Design$/, '').toLowerCase()
 const header = `// GENERATED from docs/design/handoff/${file} (screen "${flag}") by apps/web/scripts/dc-to-tsx.mjs.
 // This is the locked design. Do not restyle it. Wire behaviour through the values object \`v\`.

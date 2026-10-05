@@ -1,0 +1,28 @@
+/* Behaviour styles for designed screens that do not change how they look. */
+
+/* The campaigns search field is a real input that renders like the mockup's text. */
+.mde-search {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.mde-search::placeholder {
+  color: inherit;
+  opacity: 1;
+}
+.mde-search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+[data-search]:focus-within {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
