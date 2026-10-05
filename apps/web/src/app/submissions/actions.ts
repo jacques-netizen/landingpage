@@ -1,6 +1,7 @@
 'use server'
 
 import { db } from '@mde/db'
+import { APPEALABLE, openAppeal, ReviewError } from '@mde/review'
 import { CREATOR_STATE, DECISION_LABEL, getCreatorSubmission } from '@mde/submissions'
 import { reasonMessages } from '@/server/submissions'
 import { getViewer } from '@/server/viewer'
@@ -23,7 +24,8 @@ export type SubmissionDetail = {
   earnedCents: number
   checks: { check: number; label: string; status: 'pass' | 'fail' | 'review'; message?: string }[]
   history: { at: string; text: string; note: string | null }[]
-  appeal: { status: string; reply: string | null } | null
+  appeal: { status: string; reply: string | null; dueAt: string } | null
+  canAppeal: boolean
 }
 
 /** One of the signed-in creator's submissions, for the detail drawer. */
@@ -66,6 +68,25 @@ export async function submissionDetailAction(id: string): Promise<SubmissionDeta
         note: d.note,
       })),
     ],
-    appeal: s.appeal ? { status: s.appeal.status, reply: s.appeal.reply } : null,
+    appeal: s.appeal ? { status: s.appeal.status, reply: s.appeal.reply, dueAt: s.appeal.dueAt.toISOString() } : null,
+    canAppeal: !s.appeal && APPEALABLE.includes(s.state),
   }
+}
+
+export type AppealFormState = { error?: string; ok?: boolean }
+
+/** Appeal a rejected or removed post: one per submission, message up to 1,000 characters (01 8.5). */
+export async function appealAction(id: string, _prev: AppealFormState, form: FormData): Promise<AppealFormState> {
+  const viewer = await getViewer()
+  if (!viewer) return { error: 'Sign in again to appeal.' }
+  const links = String(form.get('links') ?? '')
+    .split(/\s+/)
+    .filter(Boolean)
+  try {
+    await openAppeal(db(), viewer.id, id, { message: String(form.get('message') ?? ''), links })
+  } catch (e) {
+    if (e instanceof ReviewError) return { error: e.message }
+    throw e
+  }
+  return { ok: true }
 }

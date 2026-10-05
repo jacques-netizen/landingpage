@@ -2,11 +2,11 @@
 
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
 import { formatDollars } from '@mde/money/dollars'
-import { Button, Drawer, DrawerSection, LineChart, LoadingRows } from '@mde/ui'
-import { useState, useTransition } from 'react'
+import { Button, Drawer, DrawerSection, Field, LineChart, LoadingRows, Textarea } from '@mde/ui'
+import { useActionState, useState, useTransition } from 'react'
 import { STATUS_COLOURS } from '@/components/app-ui'
 import { LocalDateTime } from '@/components/local-time'
-import { submissionDetailAction, type SubmissionDetail } from './actions'
+import { appealAction, submissionDetailAction, type AppealFormState, type SubmissionDetail } from './actions'
 
 type Row = {
   id: string
@@ -145,14 +145,14 @@ export function SubmissionsTable({ rows, theme }: { rows: Row[]; theme: 'dark' |
             </Button>
           </div>
         ) : (
-          <Detail d={detail} />
+          <Detail d={detail} onAppealed={() => open && load(open)} />
         )}
       </Drawer>
     </>
   )
 }
 
-function Detail({ d }: { d: SubmissionDetail }) {
+function Detail({ d, onAppealed }: { d: SubmissionDetail; onAppealed: () => void }) {
   return (
     <>
       <DrawerSection app title="Views">
@@ -228,13 +228,23 @@ function Detail({ d }: { d: SubmissionDetail }) {
             </li>
           ))}
         </ol>
-        {d.appeal ? (
-          <p className="mt-3 mb-0 text-[13px]">
-            Appeal {d.appeal.status === 'open' ? 'open, waiting for a reply' : d.appeal.status}.
-            {d.appeal.reply ? ` ${d.appeal.reply}` : ''}
-          </p>
-        ) : null}
       </DrawerSection>
+
+      {d.appeal ? (
+        <DrawerSection app title="Appeal">
+          <p className="m-0 text-[14px] font-semibold">{APPEAL_STATUS[d.appeal.status] ?? d.appeal.status}</p>
+          {d.appeal.status === 'open' ? (
+            <p className="mt-1 mb-0 text-[13px] text-[var(--t-muted)]">
+              A reviewer replies by <LocalDateTime iso={d.appeal.dueAt} />.
+            </p>
+          ) : null}
+          {d.appeal.reply ? <p className="mt-2 mb-0 text-[14px]">{d.appeal.reply}</p> : null}
+        </DrawerSection>
+      ) : d.canAppeal ? (
+        <DrawerSection app title="Appeal">
+          <AppealForm id={d.id} onDone={onAppealed} />
+        </DrawerSection>
+      ) : null}
 
       {d.creatorNote ? (
         <DrawerSection app title="Your note">
@@ -251,5 +261,50 @@ function Detail({ d }: { d: SubmissionDetail }) {
         </a>
       </div>
     </>
+  )
+}
+
+const APPEAL_STATUS: Record<string, string> = {
+  open: 'Appeal sent, waiting for a reply.',
+  overturned: 'Appeal accepted. The post is back in the campaign.',
+  upheld: 'Appeal answered. The decision stays.',
+}
+
+function AppealForm({ id, onDone }: { id: string; onDone: () => void }) {
+  const [state, action, pending] = useActionState<AppealFormState, FormData>(async (prev, form) => {
+    const next = await appealAction(id, prev, form)
+    if (next.ok) onDone()
+    return next
+  }, {})
+  return (
+    <form action={action} className="flex flex-col gap-4">
+      <p className="m-0 text-[13px] text-[var(--t-muted)]">
+        Think the decision is wrong? Tell a reviewer why. You can appeal once.
+      </p>
+      <Field label="Why should the decision change?" tone="app" helper="Up to 1,000 characters.">
+        {(p) => (
+          <Textarea
+            tone="app"
+            id={p.id}
+            aria-describedby={p.describedBy}
+            name="message"
+            rows={4}
+            maxLength={1000}
+            required
+          />
+        )}
+      </Field>
+      <Field label="Links" tone="app" helper="Optional. Screenshots or posts that back you up, one per line.">
+        {(p) => <Textarea tone="app" id={p.id} aria-describedby={p.describedBy} name="links" rows={2} />}
+      </Field>
+      {state.error && !pending ? (
+        <p role="alert" className="m-0 text-[14px] text-flagged">
+          {state.error}
+        </p>
+      ) : null}
+      <Button type="submit" tone="app" loading={pending}>
+        Send appeal
+      </Button>
+    </form>
   )
 }
