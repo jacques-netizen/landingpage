@@ -16,13 +16,15 @@ type Props = {
   options: Option[]
   placeholder?: string
   tone?: Tone
+  /** App screens: the viewer's theme. The list renders outside the themed frame, so it carries it. */
+  theme?: 'dark' | 'glass'
   invalid?: boolean
   disabled?: boolean
   'aria-describedby'?: string
 }
 
 // Same shape as the inputs, with the mockups' small chevron (as in "This month").
-export function Select({ id, options, placeholder, tone = 'paper', invalid, ...rest }: Props) {
+export function Select({ id, options, placeholder, tone = 'paper', theme, invalid, ...rest }: Props) {
   return (
     <RSelect.Root {...rest}>
       <RSelect.Trigger
@@ -39,6 +41,7 @@ export function Select({ id, options, placeholder, tone = 'paper', invalid, ...r
       </RSelect.Trigger>
       <RSelect.Portal>
         <RSelect.Content
+          data-theme={theme}
           position="popper"
           sideOffset={6}
           className={cn(
@@ -57,7 +60,10 @@ export function Select({ id, options, placeholder, tone = 'paper', invalid, ...r
                 className={cn(
                   bare,
                   'flex h-10 cursor-pointer items-center rounded-[10px] px-3 text-[14px] outline-none',
-                  'data-[highlighted]:bg-[rgba(26,21,16,0.05)] data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
+                  tone === 'paper'
+                    ? 'data-[highlighted]:bg-[rgba(26,21,16,0.05)]'
+                    : 'data-[highlighted]:bg-[var(--t-soft)]',
+                  'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
                   'data-[state=checked]:font-semibold',
                 )}
               >

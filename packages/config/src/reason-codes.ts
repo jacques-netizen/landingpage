@@ -1,4 +1,4 @@
-// Starting reason codes from 03_SYSTEMS.md section 5. Admins can edit the wording later in the reason_codes table.
+// Starting reason codes from 03_SYSTEMS.md section 5, plus post_limit_reached for check 5 of section 4. Admins can edit the wording later in the reason_codes table.
 export const REASON_CODES = [
   ['not_linked_account', 'Not a linked account', 'This post is not from one of your verified accounts.'],
   ['posted_before_start', 'Posted before start', 'This post went up before the campaign opened.'],
@@ -20,6 +20,7 @@ export const REASON_CODES = [
   ['not_original', 'Not original', 'The content is not original.'],
   ['brand_unsafe', 'Brand unsafe', 'The content breaks the content rules.'],
   ['deleted_or_edited_post', 'Deleted or edited post', 'The post was removed or changed.'],
+  ['post_limit_reached', 'Post limit reached', 'This account has already submitted the most posts this campaign allows.'],
   ['other', 'Other', 'See the note from the reviewer.'],
 ] as const
 

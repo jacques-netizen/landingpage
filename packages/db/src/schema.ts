@@ -331,6 +331,9 @@ export const submissions = pgTable(
     countedViews: bigint('counted_views', { mode: 'number' }).notNull().default(0),
     earnedCents: cents('earned_cents').notNull().default(0),
     mediaHash: text('media_hash'),
+    // The automatic check results the creator saw, in order (03_SYSTEMS.md section 4).
+    checkResults: jsonb('check_results'),
+    creatorNote: text('creator_note'),
     ...timestamps,
   },
   (t) => [

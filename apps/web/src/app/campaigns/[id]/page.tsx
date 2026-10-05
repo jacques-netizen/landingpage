@@ -18,7 +18,9 @@ import { AppFrame } from '@/components/app-frame'
 import { LocalDateTime } from '@/components/local-time'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
 import { getViewer, hasAccess } from '@/server/viewer'
+import { listAccounts } from '@mde/platforms'
 import { JoinPanel } from './join-panel'
+import { SubmitPanel } from './submit-panel'
 
 export const dynamic = 'force-dynamic'
 
@@ -80,6 +82,13 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
           ? 'joined'
           : 'can-join'
   const platforms = c.platforms.map((p) => PLATFORM_LABELS[p as Platform] ?? p)
+  // Joined creators submit here once submissions are open: their verified accounts on this campaign's platforms.
+  const canSubmit = joinState === 'joined' && !opensLater
+  const accounts = canSubmit
+    ? (await listAccounts(d, viewer!.id))
+        .filter((a) => a.status === 'verified' && c.platforms.includes(a.platform))
+        .map((a) => ({ id: a.id, label: `${PLATFORM_LABELS[a.platform as Platform] ?? a.platform} @${a.handle}` }))
+    : []
   const tf = c.templateFields
 
   return (
@@ -301,12 +310,16 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
               </div>
             ))}
           </dl>
-          <JoinPanel
-            campaignId={c.id}
-            state={joinState}
-            isPrivate={c.visibility === 'private'}
-            opensLabel={opensLater}
-          />
+          {canSubmit ? (
+            <SubmitPanel campaignId={c.id} accounts={accounts} theme={theme === 'light' ? 'glass' : 'dark'} />
+          ) : (
+            <JoinPanel
+              campaignId={c.id}
+              state={joinState}
+              isPrivate={c.visibility === 'private'}
+              opensLabel={opensLater}
+            />
+          )}
         </aside>
       </div>
     </AppFrame>

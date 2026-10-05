@@ -81,6 +81,9 @@ export class ProviderRouter {
   }
 
   fetchPost(method: LinkMethod, input: Parameters<ViewProvider['fetchPost']>[0]): Promise<PostData> {
-    return this.call(input.platform, method, 'fetch the post', (p) => p.fetchPost(input))
+    return this.call(input.platform, method, 'fetch the post', async (p) => ({
+      ...(await p.fetchPost(input)),
+      source: `provider:${p.name}`,
+    }))
   }
 }

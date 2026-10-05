@@ -26,7 +26,11 @@ export type PostData = {
   authorPlatformUserId: string | null
   /** A thumbnail or frame link the duplicate media check can hash, where the platform gives one. */
   thumbnailUrl?: string | null
+  /** A perceptual hash the provider computed itself, where it can (the mock scripts this). */
+  mediaHash?: string | null
   rawRef: unknown
+  /** Which provider answered. The router fills this in. */
+  source?: string
 }
 
 // All platform data goes through this interface so providers can be swapped (03_SYSTEMS.md 3.1).

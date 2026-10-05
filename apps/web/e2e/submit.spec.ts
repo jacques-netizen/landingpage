@@ -1,0 +1,85 @@
+import { expect, test, type Page } from '@playwright/test'
+import { writeMockState } from '@mde/platforms'
+import postgres from 'postgres'
+import { signUpNewCreator } from './helpers'
+
+const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
+  max: 1,
+  onnotice: () => {},
+})
+test.afterAll(() => sql.end())
+
+/** Sign up, link a TikTok account by bio code through the mock, and join "Sample music". */
+async function readyCreator(page: Page) {
+  await signUpNewCreator(page)
+  const handle = `clip${Date.now() % 1e8}${Math.floor(Math.random() * 1e3)}`
+  await page.goto('/accounts')
+  await page.getByLabel('Handle').fill(handle)
+  await page.getByRole('button', { name: 'Get a code' }).click()
+  const code = (await page.getByText(/^MDE-[A-Z0-9]{4}$/).textContent())!.trim()
+  writeMockState({ profiles: { [`tiktok:${handle}`]: { bio: code, followers: 8000 } } })
+  await page.getByRole('button', { name: 'Verify' }).click()
+  await expect(page.getByText('Verified', { exact: true })).toBeVisible()
+
+  const [c] = await sql`select id from campaigns where title = 'Sample music'`
+  await page.goto(`/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Join campaign' }).click()
+  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
+  return { handle, campaignId: c!.id as string }
+}
+
+function scriptPost(handle: string, caption: string) {
+  const id = `74${Date.now()}${Math.floor(Math.random() * 1e4)}`.slice(0, 19)
+  writeMockState({
+    posts: {
+      [`tiktok:${id}`]: {
+        authorPlatformUserId: `mock-tiktok-${handle}`,
+        publishedAt: new Date(Date.now() - 2 * 3_600_000).toISOString(),
+        views: 1500,
+        durationSeconds: 28,
+        caption,
+      },
+    },
+  })
+  return `https://www.tiktok.com/@${handle}/video/${id}`
+}
+
+test('a creator submits a post and sees every check pass', async ({ page }) => {
+  const { handle } = await readyCreator(page)
+  await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound #ad'))
+  await page.getByRole('button', { name: 'Submit post' }).click()
+  await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
+  const rows = page.getByRole('listitem').filter({ hasText: /Pass|Review|Fail/ })
+  await expect(rows).toHaveCount(11)
+  await expect(page.getByText('Fail', { exact: true })).toHaveCount(0)
+})
+
+test('a rejected submission shows the creator message for its reason code', async ({ page }) => {
+  const { handle } = await readyCreator(page)
+  await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound, no tag'))
+  await page.getByRole('button', { name: 'Submit post' }).click()
+  await expect(page.getByText('Not accepted.')).toBeVisible()
+  await expect(page.getByText('A required hashtag is missing. Missing #ad')).toBeVisible()
+
+  // Staff rewording is what the creator sees next time.
+  await sql`update reason_codes set creator_message = 'Add every hashtag the campaign lists.' where code = 'missing_hashtag'`
+  try {
+    await page.getByLabel('Link to your post').fill(scriptPost(handle, 'still no tag'))
+    await page.getByRole('button', { name: 'Submit post' }).click()
+    await expect(page.getByText('Add every hashtag the campaign lists. Missing #ad')).toBeVisible()
+  } finally {
+    await sql`update reason_codes set creator_message = 'A required hashtag is missing.' where code = 'missing_hashtag'`
+  }
+})
+
+test('a link that is not a post is turned away with nothing saved', async ({ page }) => {
+  const { campaignId } = await readyCreator(page)
+  await page.getByLabel('Link to your post').fill('https://www.tiktok.com/@someone')
+  await page.getByRole('button', { name: 'Submit post' }).click()
+  await expect(page.getByText('Not submitted.')).toBeVisible()
+  await expect(page.getByText(/not a post we can read/)).toBeVisible()
+  await expect(page.getByLabel('Link to your post')).toHaveValue('https://www.tiktok.com/@someone')
+  const [row] =
+    await sql`select count(*)::int as n from submissions where campaign_id = ${campaignId} and post_url = 'https://www.tiktok.com/@someone'`
+  expect(row!.n).toBe(0)
+})
