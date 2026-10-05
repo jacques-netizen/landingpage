@@ -26,7 +26,7 @@ Where things live:
 - The mockups have no phone layout. Their scaled-down 390 px rendering is not part of the locked design.
 - When building each screen, propose a phone layout that uses only the mockups' fonts, colours, components and copy, nothing new. Show the owner screenshots.
 - Once the owner approves a phone layout, add it to the reference set and lock it like the rest.
-- Approved and locked: home and brand site phone layouts (`apps/web/src/designed/phone.css`).
+- Approved and locked: home, brand site and campaigns screen (both themes, every state) phone layouts (`apps/web/src/designed/phone.css`).
 
 ## Approved content
 

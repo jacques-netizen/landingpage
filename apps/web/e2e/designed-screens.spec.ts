@@ -85,7 +85,7 @@ const BROWSE_VIEWS: { name: string; path: string; filters?: string[] }[] = [
   { name: 'error', path: '/design-states/browse?state=error' },
 ]
 
-for (const width of [1440, 1024] as const) {
+for (const width of WIDTHS) {
   for (const theme of ['dark', 'light'] as const) {
     test.describe(`campaigns screen, ${theme}, at ${width}px`, () => {
       test.use({ viewport: { width, height: 900 } })
