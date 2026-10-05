@@ -334,10 +334,15 @@ export const submissions = pgTable(
     // The automatic check results the creator saw, in order (03_SYSTEMS.md section 4).
     checkResults: jsonb('check_results'),
     creatorNote: text('creator_note'),
+    // When the next view check is due (03_SYSTEMS.md 3.2). Null once tracking has ended.
+    nextCheckAt: tz('next_check_at'),
+    // First check that could not see the post, for the grace period in 03_SYSTEMS.md 3.4.
+    missingSince: tz('missing_since'),
     ...timestamps,
   },
   (t) => [
     unique('submissions_campaign_post').on(t.campaignId, t.platform, t.platformPostId),
+    index('submissions_next_check').on(t.nextCheckAt),
     check('submissions_state_check', inList('state', SUBMISSION_STATES)),
   ],
 )

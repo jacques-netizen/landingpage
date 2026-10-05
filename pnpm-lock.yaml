@@ -129,6 +129,12 @@ importers:
       '@mde/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@mde/platforms':
+        specifier: workspace:*
+        version: link:../../packages/platforms
+      '@mde/tracking':
+        specifier: workspace:*
+        version: link:../../packages/tracking
       bullmq:
         specifier: ^6.3.11
         version: 6.3.11(ioredis@5.11.1)
@@ -329,6 +335,43 @@ importers:
       '@types/pngjs':
         specifier: ^6.0.5
         version: 6.0.5
+      postgres:
+        specifier: ^3.4.9
+        version: 3.4.9
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^5.0.3
+        version: 5.0.3(@types/node@22.20.5)(vite@8.3.2(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
+  packages/tracking:
+    dependencies:
+      '@mde/config':
+        specifier: workspace:*
+        version: link:../config
+      '@mde/db':
+        specifier: workspace:*
+        version: link:../db
+      '@mde/money':
+        specifier: workspace:*
+        version: link:../money
+      '@mde/platforms':
+        specifier: workspace:*
+        version: link:../platforms
+      '@mde/submissions':
+        specifier: workspace:*
+        version: link:../submissions
+      drizzle-orm:
+        specifier: ^0.45.3
+        version: 0.45.3(postgres@3.4.9)
+    devDependencies:
+      '@mde/campaigns':
+        specifier: workspace:*
+        version: link:../campaigns
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.5
       postgres:
         specifier: ^3.4.9
         version: 3.4.9

@@ -26,6 +26,7 @@ import {
   type CheckResult,
 } from './checks'
 import { mediaHashFromUrl } from './media-hash'
+import { nextCheckAt } from './schedule'
 
 const { campaigns, submissions, linkedAccounts, campaignMembers, viewSnapshots, reviewDecisions, fraudFlags } = tables
 
@@ -211,6 +212,9 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     mediaHash,
     checkResults: checks,
     creatorNote: input.note?.trim() || null,
+    // The check at submission is the first one; the next follows the interval table.
+    nextCheckAt: nextCheckAt({ state, submittedAt: now }, c, s.view_check_intervals, now),
+    missingSince: null,
   }
 
   try {

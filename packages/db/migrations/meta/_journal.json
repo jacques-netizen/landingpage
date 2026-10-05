@@ -57,6 +57,13 @@
       "when": 1791200696031,
       "tag": "0007_submission_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791202767391,
+      "tag": "0008_view_check_schedule",
+      "breakpoints": true
     }
   ]
 }

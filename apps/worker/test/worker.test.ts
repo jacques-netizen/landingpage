@@ -1,12 +1,14 @@
 import type { Db } from '@mde/db'
 import IORedis from 'ioredis'
 import { afterAll, describe, expect, it } from 'vitest'
+import { ProviderRouter } from '@mde/platforms'
 import { SCHEDULED_JOBS, type ScheduledJob } from '../src/jobs'
 import { startWorker } from '../src/worker'
 
 const redisUrl = new URL(process.env.REDIS_URL ?? 'redis://localhost:6379')
 const connection = { host: redisUrl.hostname, port: Number(redisUrl.port || 6379), maxRetriesPerRequest: null }
 const fakeDb = { execute: async () => [] } as unknown as Db
+const router = new ProviderRouter([])
 const prefix = `mde-test-${process.pid}-${Date.now()}`
 
 afterAll(async () => {
@@ -25,9 +27,14 @@ const waitFor = async (check: () => boolean, ms = 10_000) => {
 }
 
 describe('scheduled jobs', () => {
+  it('checks views every minute and accounts every hour (each account once a day)', () => {
+    expect(SCHEDULED_JOBS['view-checks']!.every).toBe(60_000)
+    expect(SCHEDULED_JOBS['account-recheck']!.every).toBe(60 * 60_000)
+  })
+
   it('runs the campaign lifecycle every 5 minutes', async () => {
     expect(SCHEDULED_JOBS['campaign-lifecycle']!.every).toBe(5 * 60_000)
-    await expect(SCHEDULED_JOBS['campaign-lifecycle']!.run({ db: fakeDb, now: new Date() })).resolves.toEqual({
+    await expect(SCHEDULED_JOBS['campaign-lifecycle']!.run({ db: fakeDb, now: new Date(), router })).resolves.toEqual({
       closed: 0,
     })
   })
@@ -38,7 +45,14 @@ describe('scheduled jobs', () => {
     const jobs: Record<string, ScheduledJob> = {
       tick: { every: 300, run: async () => ({ n: ++runs }) },
     }
-    const w = await startWorker({ connection, db: fakeDb, jobs, prefix: `${prefix}-a`, log: (e) => logs.push(e) })
+    const w = await startWorker({
+      connection,
+      db: fakeDb,
+      router,
+      jobs,
+      prefix: `${prefix}-a`,
+      log: (e) => logs.push(e),
+    })
     try {
       await waitFor(() => runs >= 2)
       expect(logs.some((l) => l.msg === 'job done' && l.job === 'tick')).toBe(true)
@@ -62,7 +76,14 @@ describe('scheduled jobs', () => {
         },
       },
     }
-    const w = await startWorker({ connection, db: fakeDb, jobs, prefix: `${prefix}-b`, log: (e) => logs.push(e) })
+    const w = await startWorker({
+      connection,
+      db: fakeDb,
+      router,
+      jobs,
+      prefix: `${prefix}-b`,
+      log: (e) => logs.push(e),
+    })
     try {
       await waitFor(() => attempts >= 1)
       await waitFor(() => logs.filter((l) => l.msg === 'job failed').length >= 1)
