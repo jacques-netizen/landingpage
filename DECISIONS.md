@@ -50,3 +50,17 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Brand footer "Careers": stays unlinked until the owner gives a destination.
 - A "For brands" link on the creator home: not added. The brand site stays reachable at `/brands` by URL until the owner decides.
 - Mockup preview controls on the app screens (Data / Loading / Error switches, "Sample data for layout only" notes): ask the owner when building those screens.
+
+## Money engine (Phase 1)
+
+- The engine (`packages/money`) talks to storage through one interface with two implementations: Postgres for the product and an in-memory store for tests. Reason: the property tests run the exact engine code 10,000 times in seconds; a smaller sample runs the same scenarios against real Postgres.
+- The in-memory store enforces what the database enforces at commit (balanced transactions, no guarded balance below zero, all or nothing). Reason: a property run cannot pass in memory and fail in Postgres for a reason the tests never see.
+- Earnings transactions use the idempotency key `submission:{id}:{n}`, where n is how many money transactions that submission already has, taken under the submission's row lock. Reason: the example key `earning:{submission_id}:{counted_views}` in 02_DATA_AND_MONEY.md collides when views fall and rise back to the same number (10,000, 9,000, 10,000), which would silently skip the third adjustment. Running the same view check twice still posts nothing, because earnings are recomputed from totals and the second run finds no change.
+- The database rejects at commit any ledger transaction that does not sum to zero or has fewer than two entries, and any balance other than the outside world's going below zero. Ledger rows cannot be updated, deleted or truncated. Reason: section 3 and section 7; the engine checks the same things first, the database is the last line.
+- Lock order in every money operation is campaign budget account, then the submission or withdrawal row, then creator and platform accounts, each set locked in a stable order. Reason: parallel jobs serialise on the campaign budget instead of overspending or deadlocking (tested with 20 parallel accruals on a 10,000 cent budget).
+- A campaign moves to `closing` once its budget balance is below 1 cent. Reason: section 5.3, "less than the smallest possible new payment", and the smallest payment is 1 cent.
+- A submission moves from `approved` to `earning` once its counted views are above zero and at or past the campaign minimum. Reason: 01_PRODUCT.md section 7 and 03_SYSTEMS.md section 3.3 step 8.
+- Earnings grow only while the post is approved or earning and the campaign is live. Corrections down still apply to final posts. Released (paid out) earnings are never reversed automatically. Reason: sections 5.3 and 5.4.
+- A withdrawal can be marked paid or failed only once it is in a batch or sent; repeating either is a no-op. Reason: section 6, and webhooks can arrive twice.
+- Release refuses while a submission has an open fraud flag or open appeal. Reason: section 5.4 step 4.
+- The withdrawal quote lives in `@mde/money/quote`, a module with no server imports. Reason: section 6 requires the form and the server to use the same function.
