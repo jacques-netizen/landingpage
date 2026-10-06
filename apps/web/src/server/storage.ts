@@ -87,7 +87,26 @@ export async function serveFile(id: string, range: string | null): Promise<Respo
     'content-security-policy': "sandbox; default-src 'none'; img-src 'self'; media-src 'self'",
   }
   if (f.storage === 'db') {
-    return new Response(new Uint8Array(f.data!), { headers: { ...headers, 'content-length': String(f.sizeBytes) } })
+    const data = new Uint8Array(f.data!)
+    headers['accept-ranges'] = 'bytes'
+    // Safari plays video only through range requests.
+    const m = range ? /^bytes=(\d*)-(\d*)$/.exec(range.trim()) : null
+    if (m && (m[1] || m[2])) {
+      const size = data.length
+      const start = m[1] ? Number(m[1]) : Math.max(0, size - Number(m[2]))
+      const end = m[1] && m[2] ? Math.min(Number(m[2]), size - 1) : size - 1
+      if (start >= size || start > end)
+        return new Response(null, { status: 416, headers: { ...headers, 'content-range': `bytes */${size}` } })
+      return new Response(data.slice(start, end + 1), {
+        status: 206,
+        headers: {
+          ...headers,
+          'content-range': `bytes ${start}-${end}/${size}`,
+          'content-length': String(end - start + 1),
+        },
+      })
+    }
+    return new Response(data, { headers: { ...headers, 'content-length': String(data.length) } })
   }
   const b = bucket()
   if (!b || !f.storageKey) return null

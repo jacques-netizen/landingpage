@@ -23,10 +23,13 @@ export function BrandsClient({
   overrides,
   contactEmail,
   supportHref,
+  creatorHomeHref = '/',
 }: {
   overrides: Record<string, string>
   contactEmail: string
   supportHref: string
+  /** The creator home: the app's own address when the brand site runs on its own domain. */
+  creatorHomeHref?: string
 }) {
   const router = useRouter()
   const copy = makeCopy({ ...brandsContent, ...brandsDataContent }, overrides)
@@ -51,7 +54,10 @@ export function BrandsClient({
 
   const v = {
     authoring: false,
-    goHome: () => router.push('/'),
+    goHome: () => {
+      if (creatorHomeHref.startsWith('http')) window.location.href = creatorHomeHref
+      else router.push(creatorHomeHref)
+    },
     bookCall: () => {
       window.location.href = bookCallHref
     },

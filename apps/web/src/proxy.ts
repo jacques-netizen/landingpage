@@ -41,4 +41,5 @@ export async function proxy(req: NextRequest) {
 }
 
 // Every request except Next's own build files, so the address routing sees each page.
-export const config = { matcher: ['/((?!_next/static|_next/image).*)'] }
+// Uploads skip it: the proxy buffers request bodies only up to 10 MB, and the upload route checks staff itself.
+export const config = { matcher: ['/((?!_next/static|_next/image|api/admin/uploads).*)'] }

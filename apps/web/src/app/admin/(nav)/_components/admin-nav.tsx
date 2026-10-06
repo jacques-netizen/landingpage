@@ -12,6 +12,7 @@ const LINKS = [
   ['Appeals', '/admin/appeals'],
   ['Ledger', '/admin/ledger'],
   ['Payouts', '/admin/payouts'],
+  ['Brand site', '/admin/brand-site'],
   ['Team', '/admin/team'],
   ['Settings', '/admin/settings'],
   ['Audit log', '/admin/audit-log'],

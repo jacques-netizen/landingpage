@@ -10,6 +10,11 @@ export default async function BrandsPage() {
   const overrides = await loadContentOverrides('brands')
   const b = brand()
   return (
-    <BrandsClient overrides={overrides} contactEmail={b.contactEmail} supportHref={b.supportDiscordUrl ?? '/help'} />
+    <BrandsClient
+      overrides={overrides}
+      contactEmail={b.contactEmail}
+      supportHref={b.supportDiscordUrl ?? '/help'}
+      creatorHomeHref={process.env.BRAND_HOST && process.env.APP_URL ? process.env.APP_URL : '/'}
+    />
   )
 }
