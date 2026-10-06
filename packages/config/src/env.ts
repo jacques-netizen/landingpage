@@ -43,6 +43,8 @@ export const envSchema = z.object({
   APP_URL: z.string().url().default('http://localhost:3000'),
   // Comma-separated emails that become admin when they sign in. How the owner gets in on a fresh deploy.
   ADMIN_EMAIL: optional,
+  // The brand site's domain (maisondelites.com); the app runs on APP_URL's domain. Unset: no routing.
+  BRAND_HOST: optional,
 })
 
 export type Env = z.infer<typeof envSchema>

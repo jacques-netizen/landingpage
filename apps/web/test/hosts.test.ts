@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest'
+import { routeForHost } from '../src/server/hosts'
+
+const cfg = { brandHost: 'maisondelites.com', appHost: 'app.maisondelites.com' }
+const r = (host: string, path: string, search = '') => routeForHost(host, path, search, cfg)
+
+describe('two addresses, one deployment', () => {
+  it('shows the brand site at the root of the main domain', () => {
+    expect(r('maisondelites.com', '/')).toEqual({ kind: 'rewrite', path: '/brands' })
+    expect(r('maisondelites.com', '/brands')).toEqual({ kind: 'redirect', url: 'https://maisondelites.com/' })
+    expect(r('maisondelites.com', '/for-clients')).toEqual({ kind: 'next' })
+    expect(r('maisondelites.com', '/legal/brand-terms')).toEqual({ kind: 'next' })
+  })
+
+  it('sends creator and staff pages from the main domain to the app', () => {
+    expect(r('maisondelites.com', '/campaigns', '?type=music')).toEqual({
+      kind: 'redirect',
+      url: 'https://app.maisondelites.com/campaigns?type=music',
+    })
+    for (const p of ['/sign-up', '/sign-in', '/wallet', '/admin', '/staff/sign-in', '/api/auth/session', '/fees'])
+      expect(r('maisondelites.com', p).kind, p).toBe('redirect')
+  })
+
+  it('serves shared files and assets on both', () => {
+    for (const p of ['/_next/static/x.js', '/designed/logo.png', '/files/abc/a.png', '/favicon.ico', '/api/health'])
+      expect(r('maisondelites.com', p), p).toEqual({ kind: 'next' })
+  })
+
+  it('sends www to the main domain and the brand pages from the app to the main domain', () => {
+    expect(r('www.maisondelites.com', '/x')).toEqual({ kind: 'redirect', url: 'https://maisondelites.com/x' })
+    expect(r('app.maisondelites.com', '/brands')).toEqual({ kind: 'redirect', url: 'https://maisondelites.com/' })
+    expect(r('app.maisondelites.com', '/')).toEqual({ kind: 'next' })
+    expect(r('app.maisondelites.com', '/campaigns')).toEqual({ kind: 'next' })
+  })
+
+  it('does nothing without a brand domain, or on any other address', () => {
+    expect(routeForHost('localhost:3000', '/', '', {})).toEqual({ kind: 'next' })
+    expect(r('web-production-5c853d.up.railway.app', '/campaigns')).toEqual({ kind: 'next' })
+  })
+})

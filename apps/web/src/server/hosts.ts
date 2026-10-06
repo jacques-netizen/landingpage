@@ -1,0 +1,42 @@
+// One deployment, two addresses: the brand site on the main domain (maisondelites.com) and the creator
+// app with staff admin on its own subdomain (app.maisondelites.com). The main domain shows the brand
+// site at "/" and sends everything that belongs to the app across; the app sends "/brands" back.
+// With no BRAND_HOST set (previews, tests) nothing is routed and every page is served everywhere.
+
+export type HostRoute = { kind: 'next' } | { kind: 'rewrite'; path: string } | { kind: 'redirect'; url: string }
+
+/** Paths the brand domain serves itself: the brand site, its legal pages and shared files. */
+const BRAND_PATHS = [/^\/$/, /^\/brands$/, /^\/for-clients(\/|$)/, /^\/legal(\/|$)/]
+const SHARED_PATHS = [
+  /^\/_next\//,
+  /^\/designed\//,
+  /^\/files\//,
+  /^\/favicon/,
+  /^\/robots\.txt$/,
+  /^\/sitemap/,
+  /^\/api\/health$/,
+]
+const ASSET = /\.(png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|woff2?|ttf|css|js|txt|xml|json)$/i
+
+export function routeForHost(
+  host: string | null,
+  path: string,
+  search: string,
+  cfg: { brandHost?: string; appHost?: string },
+): HostRoute {
+  const brand = cfg.brandHost?.toLowerCase()
+  const app = cfg.appHost?.toLowerCase()
+  if (!brand || !app || brand === app || !host) return { kind: 'next' }
+  const h = host.toLowerCase().replace(/:\d+$/, '')
+  if (h === `www.${brand}`) return { kind: 'redirect', url: `https://${brand}${path}${search}` }
+  if (h === brand) {
+    if (SHARED_PATHS.some((r) => r.test(path)) || ASSET.test(path)) return { kind: 'next' }
+    if (path === '/') return { kind: 'rewrite', path: '/brands' }
+    if (path === '/brands') return { kind: 'redirect', url: `https://${brand}/${search}` }
+    if (BRAND_PATHS.some((r) => r.test(path))) return { kind: 'next' }
+    return { kind: 'redirect', url: `https://${app}${path}${search}` }
+  }
+  if (h === app && (path === '/brands' || path.startsWith('/for-clients')))
+    return { kind: 'redirect', url: `https://${brand}${path === '/brands' ? '/' : path}${search}` }
+  return { kind: 'next' }
+}

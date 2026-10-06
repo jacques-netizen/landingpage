@@ -77,3 +77,17 @@ cannot be checked. Email is required: without it nobody can sign in.
 Every push to the deploy branch rebuilds both services. Migrations run before the new web version
 starts. Never run `pnpm db:seed` against production: it refuses to, because the product must never show
 sample data.
+
+## Two addresses: brand site and app
+
+One web service answers on both domains:
+
+- `maisondelites.com` shows the brand site (and its legal pages and `/for-clients`). Anything else asked
+  for there is sent to the app; `www.maisondelites.com` goes to `maisondelites.com`.
+- `app.maisondelites.com` is the creator app and staff admin (`/staff/sign-in`, `/admin`).
+
+Set on both services: `APP_URL=https://app.maisondelites.com` and `BRAND_HOST=maisondelites.com`.
+In Railway add three custom domains to the web service: `maisondelites.com`, `www.maisondelites.com`
+and `app.maisondelites.com`, and create the DNS records Railway shows in Cloudflare (leave
+`campaigns.maisondelites.com` as it is). Add `https://app.maisondelites.com/api/auth/callback/google`
+and `https://app.maisondelites.com/api/oauth/youtube/callback` to the Google OAuth client.
