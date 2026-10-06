@@ -28,7 +28,10 @@ test('an admin adds a moderator, who signs in at the staff page and sees only wh
   await signInAs(page, 'admin@seed.invalid')
   await page.goto('/admin/team')
   page.once('dialog', (d) => d.accept())
-  await page.getByRole('row', { name: new RegExp(email) }).getByRole('button', { name: 'Remove' }).click()
+  await page
+    .getByRole('row', { name: new RegExp(email) })
+    .getByRole('button', { name: 'Remove' })
+    .click()
   await expect(page.getByRole('cell', { name: email })).toHaveCount(0)
 })
 
