@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import postgres from 'postgres'
 import { signInAs } from './helpers'
 
 // Phase 2 acceptance: a staff user can create, fund and publish a campaign in under 5 minutes.
@@ -114,4 +115,37 @@ test('staff watch a live campaign on its monitor', async ({ page }) => {
   for (const h of ['Budget', 'Posts by state', 'Flagged posts', 'Top creators', 'Closing'])
     await expect(page.getByRole('heading', { name: h })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Close campaign' })).toBeVisible()
+})
+
+test('the campaign overview shows the numbers and every approved, pending and rejected post', async ({ page }) => {
+  const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
+    max: 1,
+    onnotice: () => {},
+  })
+  const [c] =
+    await sql`select id, current_terms_version_id as terms, rate_cents_per_1000 as rate from campaigns where title = 'Sample clipping'`
+  const [u] =
+    await sql`insert into users (email, display_name) values (${`ov-${Date.now()}@test.invalid`}, 'Overview creator') returning id`
+  const tag = `ov${Date.now()}`
+  for (const [i, state] of ['earning', 'needs_review', 'rejected'].entries())
+    await sql`
+      insert into submissions (campaign_id, creator_id, platform, post_url, platform_post_id, state, terms_version_id,
+        rate_cents_per_1000_locked, submitted_at, latest_views, baseline_views)
+      values (${c!.id}, ${u!.id}, 'tiktok', ${`https://www.tiktok.com/@${tag}/video/${i}`}, ${`${tag}${i}`}, ${state},
+        ${c!.terms}, ${c!.rate}, now(), 5000, 0)`
+  await sql.end()
+
+  await signInAs(page, 'reviewer@seed.invalid')
+  await page.goto(`/admin/campaigns/${c!.id}`)
+  for (const k of ['Views on approved posts', 'Counted views', 'Earned by creators', 'Left in budget'])
+    await expect(page.getByText(k, { exact: true })).toBeVisible()
+  const tabs = page.getByRole('navigation', { name: 'Posts by outcome' })
+  await expect(tabs.getByRole('link', { name: /^Approved \d+$/ })).toBeVisible()
+  const postLink = (i: number) => page.locator(`a[href="https://www.tiktok.com/@${tag}/video/${i}"]`)
+  await expect(postLink(0)).toBeVisible()
+  await tabs.getByRole('link', { name: /^Pending/ }).click()
+  await expect(postLink(1)).toBeVisible()
+  await expect(postLink(0)).toHaveCount(0)
+  await tabs.getByRole('link', { name: /^Rejected/ }).click()
+  await expect(postLink(2)).toBeVisible()
 })
