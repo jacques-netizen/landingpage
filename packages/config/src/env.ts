@@ -40,6 +40,8 @@ export const envSchema = z.object({
   CONTACT_EMAIL: z.string().default('CONTACT_EMAIL'),
   SUPPORT_DISCORD_URL: optional,
   APP_URL: z.string().url().default('http://localhost:3000'),
+  // Comma-separated emails that become admin when they sign in. How the owner gets in on a fresh deploy.
+  ADMIN_EMAIL: optional,
 })
 
 export type Env = z.infer<typeof envSchema>

@@ -1,10 +1,34 @@
 import 'server-only'
-import { canAccess, type Access, type StaffRole } from '@mde/config'
-import { db, tables } from '@mde/db'
+import { canAccess, env, type Access, type StaffRole } from '@mde/config'
+import { db, tables, writeAudit } from '@mde/db'
 import { and, eq, gt } from 'drizzle-orm'
 import { auth } from '@/auth'
 
 export type Viewer = { id: string; email: string; name: string | null; roles: StaffRole[] }
+
+/**
+ * The owner's addresses from ADMIN_EMAIL get the admin role the first time they are seen signed in,
+ * so a fresh deploy needs no command line. Signing in proves the address. Written to the audit log.
+ */
+async function withOwnerAdmin(userId: string, email: string, roles: StaffRole[]): Promise<StaffRole[]> {
+  if (roles.includes('admin')) return roles
+  const owners = (env().ADMIN_EMAIL ?? '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean)
+  if (!owners.includes(email.trim().toLowerCase())) return roles
+  await db().transaction(async (tx) => {
+    await tx.insert(tables.staffRoles).values({ userId, role: 'admin' }).onConflictDoNothing()
+    await writeAudit(tx, {
+      actorId: null,
+      action: 'staff.grant',
+      entity: 'user',
+      entityId: userId,
+      after: { role: 'admin', via: 'ADMIN_EMAIL' },
+    })
+  })
+  return [...roles, 'admin']
+}
 
 /** The signed-in person and their staff roles, read on the server for every request. */
 export async function getViewer(): Promise<Viewer | null> {
@@ -17,7 +41,16 @@ export async function getViewer(): Promise<Viewer | null> {
     .select({ role: tables.staffRoles.role })
     .from(tables.staffRoles)
     .where(eq(tables.staffRoles.userId, id))
-  return { id: u.id, email: u.email, name: u.name, roles: roles.map((r) => r.role as StaffRole) }
+  return {
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    roles: await withOwnerAdmin(
+      u.id,
+      u.email,
+      roles.map((r) => r.role as StaffRole),
+    ),
+  }
 }
 
 export const SESSION_COOKIES = ['__Secure-authjs.session-token', 'authjs.session-token']
@@ -25,7 +58,7 @@ export const SESSION_COOKIES = ['__Secure-authjs.session-token', 'authjs.session
 /** Staff roles for a raw session token. Used by the proxy, which runs before rendering. */
 export async function rolesForSessionToken(token: string): Promise<{ userId: string; roles: StaffRole[] } | null> {
   const rows = await db()
-    .select({ userId: tables.sessions.userId, role: tables.staffRoles.role })
+    .select({ userId: tables.sessions.userId, email: tables.users.email, role: tables.staffRoles.role })
     .from(tables.sessions)
     .innerJoin(tables.users, eq(tables.users.id, tables.sessions.userId))
     .leftJoin(tables.staffRoles, eq(tables.staffRoles.userId, tables.sessions.userId))
@@ -37,7 +70,9 @@ export async function rolesForSessionToken(token: string): Promise<{ userId: str
       ),
     )
   if (rows.length === 0) return null
-  return { userId: rows[0]!.userId, roles: rows.flatMap((r) => (r.role ? [r.role as StaffRole] : [])) }
+  const { userId, email } = rows[0]!
+  const roles = rows.flatMap((r) => (r.role ? [r.role as StaffRole] : []))
+  return { userId, roles: await withOwnerAdmin(userId, email, roles) }
 }
 
 export function hasAccess(viewer: Pick<Viewer, 'roles'> | null, access: Access) {

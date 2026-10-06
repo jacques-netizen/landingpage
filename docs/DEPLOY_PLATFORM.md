@@ -50,11 +50,13 @@ cannot be checked. Email is required: without it nobody can sign in.
    | `DATA_PROVIDER_API_KEY` | Your Scrape Creators key |
    | `YOUTUBE_API_KEY` | Your YouTube Data API key |
    | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | The Google OAuth client. Authorised redirect URIs: `https://app.yourdomain.com/api/auth/callback/google` and `https://app.yourdomain.com/api/oauth/youtube/callback` |
+   | `ADMIN_EMAIL` | Your email (several: separate with commas). That address becomes admin the first time it signs in |
    | `TOKEN_ENCRYPTION_KEY` | `openssl rand -base64 32`. Never change it once set: linked YouTube accounts are encrypted with it |
 
    Never set `MOCK_PROVIDER`, `EMAIL_DEV_OUTBOX` or `DESIGN_STATES` in production. They are for tests only.
 5. **Deploy.** Deploy the web service first (it applies the migrations), then the worker.
-6. **First admin.** In the web service, open a shell (or run a one-off command) and run:
+6. **First admin.** Easiest: set `ADMIN_EMAIL` (above) and sign in with that address. Or, in the web
+   service, open a shell (or run a one-off command) and run:
 
    ```
    pnpm staff:grant you@yourdomain.com admin
