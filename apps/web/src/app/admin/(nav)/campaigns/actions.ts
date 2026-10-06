@@ -55,7 +55,7 @@ function readForm(form: FormData) {
     allowedRegions: s('allowedRegions'),
     blockedRegions: s('blockedRegions'),
     requiredHashtags: s('requiredHashtags'),
-    requireAdDisclosure: form.get('requireAdDisclosure') === 'on',
+    requireAdDisclosure: false,
     minDurationSeconds: s('minDurationSeconds'),
     keepLiveDays: s('keepLiveDays'),
     visibility: s('visibility') === 'private' ? 'private' : 'public',

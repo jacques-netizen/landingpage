@@ -252,7 +252,7 @@ export const campaigns = pgTable(
     allowedRegions: text('allowed_regions').array(),
     blockedRegions: text('blocked_regions').array(),
     requiredHashtags: text('required_hashtags').array(),
-    requireAdDisclosure: boolean('require_ad_disclosure').notNull().default(true),
+    requireAdDisclosure: boolean('require_ad_disclosure').notNull().default(false),
     minDurationSeconds: integer('min_duration_seconds'),
     keepLiveDays: integer('keep_live_days').notNull().default(30),
     visibility: text('visibility').notNull().default('public'),

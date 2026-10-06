@@ -32,7 +32,6 @@ test('a signed-out visitor sees every rule before joining', async ({ page }) => 
     'Languages',
     'Audience regions',
     'Required hashtags',
-    'Ad disclosure',
     'Minimum duration',
     'How posts are checked',
     'Keep the post up',

@@ -40,7 +40,7 @@ You can change your email preferences at any time and ask us to export or delete
 - Post only on accounts you own and have linked.
 - Do not buy views, likes or followers, or use bots.
 - Keep each post public for as long as the campaign page says.
-- Include every required hashtag and a clear ad disclosure where the campaign asks for one.
+- Include every hashtag the campaign requires.
 
 Each campaign adds its own rules on its page.`,
   },

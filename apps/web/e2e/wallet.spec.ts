@@ -24,7 +24,7 @@ test('a new creator sees an empty wallet', async ({ page }) => {
 
 test('earnings from a view check show in the wallet', async ({ page }) => {
   const { handle } = await readyCreator(page, sql)
-  const link = scriptPost(handle, 'New sound #ad')
+  const link = scriptPost(handle, 'New sound #mde')
   await page.getByLabel('Link to your post').fill(link)
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
@@ -41,7 +41,7 @@ test('earnings from a view check show in the wallet', async ({ page }) => {
         likes: 400,
         comments: 30,
         durationSeconds: 28,
-        caption: 'New sound #ad',
+        caption: 'New sound #mde',
       },
     },
   })

@@ -178,7 +178,7 @@ export async function seed(db: Db) {
           capPerPostCents: 30000,
           capPerCreatorCents: 50000,
           minViewsToEarn: 1000,
-          requiredHashtags: ['#ad'],
+          requiredHashtags: ['#mde'],
           // Funded campaigns start unfunded; packages/seed funds them through the money engine, then sets the status.
           status: c.status === 'draft' ? 'draft' : 'awaiting_funding',
           // Staggered by a minute so the plan order is the order campaigns opened.

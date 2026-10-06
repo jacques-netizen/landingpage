@@ -10,7 +10,7 @@ test.afterAll(() => sql.end())
 
 test('the submissions table lists every post, filters by state, and opens the detail drawer', async ({ page }) => {
   const { handle } = await readyCreator(page, sql)
-  for (const caption of ['Good one #ad', 'Forgot it']) {
+  for (const caption of ['Good one #mde', 'Forgot it']) {
     await page.getByLabel('Link to your post').fill(scriptPost(handle, caption))
     await page.getByRole('button', { name: 'Submit post' }).click()
     await expect(page.getByText(/^(Submitted|Not accepted)\.$/)).toBeVisible()

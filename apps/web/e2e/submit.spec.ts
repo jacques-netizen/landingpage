@@ -10,7 +10,7 @@ test.afterAll(() => sql.end())
 
 test('a creator submits a post and sees every check pass', async ({ page }) => {
   const { handle } = await readyCreator(page, sql)
-  await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound #ad'))
+  await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound #mde'))
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
   const rows = page.getByRole('listitem').filter({ hasText: /Pass|Review|Fail/ })
@@ -23,14 +23,14 @@ test('a rejected submission shows the creator message for its reason code', asyn
   await page.getByLabel('Link to your post').fill(scriptPost(handle, 'New sound, no tag'))
   await page.getByRole('button', { name: 'Submit post' }).click()
   await expect(page.getByText('Not accepted.')).toBeVisible()
-  await expect(page.getByText('A required hashtag is missing. Missing #ad')).toBeVisible()
+  await expect(page.getByText('A required hashtag is missing. Missing #mde')).toBeVisible()
 
   // Staff rewording is what the creator sees next time.
   await sql`update reason_codes set creator_message = 'Add every hashtag the campaign lists.' where code = 'missing_hashtag'`
   try {
     await page.getByLabel('Link to your post').fill(scriptPost(handle, 'still no tag'))
     await page.getByRole('button', { name: 'Submit post' }).click()
-    await expect(page.getByText('Add every hashtag the campaign lists. Missing #ad')).toBeVisible()
+    await expect(page.getByText('Add every hashtag the campaign lists. Missing #mde')).toBeVisible()
   } finally {
     await sql`update reason_codes set creator_message = 'A required hashtag is missing.' where code = 'missing_hashtag'`
   }

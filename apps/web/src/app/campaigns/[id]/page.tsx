@@ -204,9 +204,6 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
               <Rule label="Required hashtags">
                 {c.requiredHashtags?.length ? c.requiredHashtags.join(' ') : 'None'}
               </Rule>
-              <Rule label="Ad disclosure">
-                {c.requireAdDisclosure ? 'Required. Mark the post clearly as an ad.' : 'Not required'}
-              </Rule>
               <Rule label="Minimum duration">
                 {c.minDurationSeconds === null ? 'None' : `${c.minDurationSeconds} seconds`}
               </Rule>

@@ -30,7 +30,7 @@ export const TEMPLATES: Record<CampaignType, Template> = {
     type: 'clipping',
     label: 'Clipping',
     description: 'Footage provided by the client. Creators cut and post clips.',
-    defaults: { requiredHashtags: [], requireAdDisclosure: true, minDurationSeconds: null, keepLiveDays: 30 },
+    defaults: { requiredHashtags: [], requireAdDisclosure: false, minDurationSeconds: null, keepLiveDays: 30 },
     fields: [],
     checks: [
       'Required hashtags are present',
@@ -42,7 +42,7 @@ export const TEMPLATES: Record<CampaignType, Template> = {
     type: 'logo',
     label: 'Logo',
     description: 'Creators place the client’s logo on their own content.',
-    defaults: { requiredHashtags: [], requireAdDisclosure: true, minDurationSeconds: null, keepLiveDays: 30 },
+    defaults: { requiredHashtags: [], requireAdDisclosure: false, minDurationSeconds: null, keepLiveDays: 30 },
     fields: [
       { key: 'logoFileUrl', label: 'Logo file', kind: 'url' },
       { key: 'safeZoneImageUrl', label: 'Safe zone image', kind: 'url' },
@@ -55,7 +55,7 @@ export const TEMPLATES: Record<CampaignType, Template> = {
     type: 'music',
     label: 'Music',
     description: 'Creators use the client’s sound in their posts.',
-    defaults: { requiredHashtags: [], requireAdDisclosure: true, minDurationSeconds: null, keepLiveDays: 30 },
+    defaults: { requiredHashtags: [], requireAdDisclosure: false, minDurationSeconds: null, keepLiveDays: 30 },
     fields: [
       { key: 'audioUrl', label: 'Audio link', kind: 'url' },
       { key: 'minAudioLevelPercent', label: 'Minimum audio level (percent)', kind: 'number' },
@@ -67,7 +67,7 @@ export const TEMPLATES: Record<CampaignType, Template> = {
     type: 'ugc',
     label: 'UGC',
     description: 'Original content made to the brief.',
-    defaults: { requiredHashtags: [], requireAdDisclosure: true, minDurationSeconds: null, keepLiveDays: 30 },
+    defaults: { requiredHashtags: [], requireAdDisclosure: false, minDurationSeconds: null, keepLiveDays: 30 },
     fields: [],
     checks: ['Manual review against the brief'],
   },

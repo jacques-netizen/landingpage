@@ -147,15 +147,11 @@ export function checkDuration(c: CampaignRules, post: Pick<PostData, 'durationSe
   return pass(9, label)
 }
 
-// Words that clearly mark a post as an ad. Hashtags match whole tags, ignoring case.
-const DISCLOSURE_TAGS = ['#ad', '#advert', '#advertisement', '#sponsored', '#paidpartnership', '#partner']
-const DISCLOSURE_PHRASES = ['paid partnership', 'sponsored by', 'advertisement']
-
 function hashtags(caption: string) {
   return new Set((caption.toLowerCase().match(/#[\p{L}\p{N}_]+/gu) ?? []).map((t) => t))
 }
 
-/** 10. The caption has every required hashtag, and a clear ad disclosure when the campaign asks for one. */
+/** 10. The caption has every required hashtag. There is no ad disclosure rule (owner decision). */
 export function checkCaption(c: CampaignRules, post: Pick<PostData, 'caption'>): CheckResult {
   const label = 'Required hashtag present'
   const caption = post.caption ?? ''
@@ -164,11 +160,6 @@ export function checkCaption(c: CampaignRules, post: Pick<PostData, 'caption'>):
     .map((t) => `#${t.trim().replace(/^#+/, '').toLowerCase()}`)
     .filter((t) => t.length > 1 && !tags.has(t))
   if (missing.length) return fail(10, label, 'missing_hashtag', `Missing ${missing.join(' ')}`)
-  if (c.requireAdDisclosure) {
-    const lower = caption.toLowerCase()
-    const disclosed = DISCLOSURE_TAGS.some((t) => tags.has(t)) || DISCLOSURE_PHRASES.some((p) => lower.includes(p))
-    if (!disclosed) return fail(10, label, 'missing_disclosure', 'Add #ad or "Paid partnership" to the caption.')
-  }
   return pass(10, label)
 }
 

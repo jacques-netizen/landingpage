@@ -314,15 +314,10 @@ export function CampaignBuilder({
           {text('blockedRegions', 'Blocked regions', { helper: 'Optional.' })}
           {text('requiredHashtags', 'Required hashtags', {
             helper: 'Separated by commas.',
-            placeholder: '#ad, #client',
+            placeholder: '#brand',
           })}
           {text('minDurationSeconds', 'Minimum video length (seconds)', { helper: 'Optional.', mode: 'numeric' })}
           {text('keepLiveDays', 'Days the post must stay up after the campaign closes', { mode: 'numeric' })}
-          <div className="flex items-end pb-3">
-            <Checkbox name="requireAdDisclosure" defaultChecked={initial.requireAdDisclosure}>
-              Require a clear ad disclosure
-            </Checkbox>
-          </div>
           {template.fields.map((tf) =>
             tf.kind === 'boolean' ? (
               <div key={tf.key} className="flex items-end pb-3">

@@ -147,9 +147,9 @@ describe('check 9: minimum duration', () => {
     expect(checkDuration(rules, { durationSeconds: null }).status).toBe('review'))
 })
 
-describe('check 10: hashtags and ad disclosure', () => {
-  it('passes with every hashtag and #ad, ignoring case', () =>
-    expect(checkCaption(rules, { caption: 'Great find #Walmart #DEALS #ad' }).status).toBe('pass'))
+describe('check 10: hashtags', () => {
+  it('passes with every hashtag, ignoring case', () =>
+    expect(checkCaption(rules, { caption: 'Great find #Walmart #DEALS' }).status).toBe('pass'))
   it('fails a missing hashtag with missing_hashtag', () => {
     const r = checkCaption(rules, { caption: 'Great find #walmart #ad' })
     expect(r.reason).toBe('missing_hashtag')
@@ -157,12 +157,8 @@ describe('check 10: hashtags and ad disclosure', () => {
   })
   it('does not accept a longer tag as the required one', () =>
     expect(checkCaption(rules, { caption: '#walmartdeals #deals #ad' }).reason).toBe('missing_hashtag'))
-  it('fails a missing disclosure with missing_disclosure', () =>
-    expect(checkCaption(rules, { caption: '#walmart #deals' }).reason).toBe('missing_disclosure'))
-  it('accepts "Paid partnership" as a disclosure', () =>
-    expect(checkCaption(rules, { caption: 'Paid partnership with Walmart #walmart #deals' }).status).toBe('pass'))
-  it('needs no disclosure when the campaign does not ask', () =>
-    expect(checkCaption({ ...rules, requireAdDisclosure: false }, { caption: '#walmart #deals' }).status).toBe('pass'))
+  it('never asks for an ad disclosure, even on an old campaign that had the setting on', () =>
+    expect(checkCaption({ ...rules, requireAdDisclosure: true }, { caption: '#walmart #deals' }).status).toBe('pass'))
 })
 
 describe('check 11: duplicate media', () => {
