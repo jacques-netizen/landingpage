@@ -3,55 +3,61 @@ import { signInAs } from './helpers'
 
 // Phase 2 acceptance: a staff user can create, fund and publish a campaign in under 5 minutes.
 // This drives the real screens a finance staff member uses, start to finish, and times it.
-test('finance staff create a client, record funding, build, fund and publish a campaign', async ({ page }) => {
+test('finance staff build a campaign with a new client, uploads and a plain budget, and put it live in one step', async ({
+  page,
+}) => {
   test.setTimeout(300_000)
   const started = Date.now()
   const stamp = Date.now()
   await signInAs(page, 'finance@seed.invalid')
 
-  // Client and funding.
-  await page.goto('/admin/clients/new')
-  await page.getByLabel('Client name').fill(`Acceptance client ${stamp}`)
-  await page.getByLabel('Service fee (percent of the budget)').fill('10')
-  await page.getByRole('button', { name: 'Create client' }).click()
-  await page.waitForURL(/\/admin\/clients\/[0-9a-f-]{36}$/)
-  await page.getByLabel('Amount received').fill('$1,100.00')
-  await page.getByLabel('Invoice or bank reference').fill(`INV-${stamp}`)
-  await page.getByRole('button', { name: 'Record funding' }).click()
-  await expect(page.getByText('Funding recorded.')).toBeVisible()
-
-  // Campaign from the clipping template.
   await page.goto('/admin/campaigns/new')
   await page.getByRole('link', { name: /Clipping/ }).click()
   await page.getByLabel('Title').fill(`Acceptance campaign ${stamp}`)
-  await page.getByLabel('Client').click()
-  await page.getByRole('option', { name: `Acceptance client ${stamp}` }).click()
-  await page.getByLabel('Cover image link').fill('/designed/camp-clip.png')
+  // A new client, added without leaving the builder.
+  await page.getByRole('button', { name: '+ New client' }).click()
+  await page.getByLabel('Client name').fill(`Acceptance client ${stamp}`)
+  await page.getByLabel('Service fee percent').fill('10')
+  await page.getByRole('button', { name: 'Add client' }).click()
+  await expect(page.getByLabel('Client')).toContainText(`Acceptance client ${stamp}`)
+  // A real picture for the card, and a file for creators.
+  await page.locator('input[type=file][accept="image/*"]').setInputFiles('public/designed/camp-clip.png')
+  await expect(page.getByRole('img', { name: 'Campaign picture' })).toBeVisible()
+  await page.locator('input[type=file][multiple]').setInputFiles({
+    name: 'brand-logo.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from('not really a png'),
+  })
+  await expect(page.getByText('Uploaded file: brand-logo.png')).toBeVisible()
   await page.getByLabel('Brief').fill('Cut the best moments from the footage and post them on your own account.')
   await page.getByText('TikTok', { exact: true }).click()
-  await page.getByLabel('Budget', { exact: true }).fill('$1,000.00')
-  await page.getByLabel('Rate per 1,000 counted views').fill('$2.00')
-  await page.getByLabel('Minimum views to earn').fill('1000')
+  await page.getByLabel('Budget', { exact: true }).fill('1000')
+  await page.getByLabel('Pay per 1,000 views').fill('2')
   await page
     .getByLabel('Rules', { exact: true })
     .fill('Post on your own public account. Keep the post up for 30 days after the campaign closes.')
-  await page.getByRole('button', { name: 'Save draft' }).click()
+  await page.getByRole('button', { name: 'Save campaign' }).click()
   await page.waitForURL(/\/admin\/campaigns\/[0-9a-f-]{36}\?saved=1$/)
-  await expect(page.getByText('Draft saved.')).toBeVisible()
 
-  // Fund from the client's balance, then publish.
-  await page.getByRole('button', { name: 'Fund $1,100.00 from client balance' }).click()
-  await expect(page.getByText('Funded. Publish it to go live.')).toBeVisible()
-  await page.getByRole('button', { name: 'Publish' }).click()
-  await expect(page.getByText('Published. The campaign is live.')).toBeVisible()
+  // One step: the client paid budget plus fee, and the campaign goes live.
+  await expect(page.getByText('Client pays in total')).toBeVisible()
+  await page.getByLabel('Invoice or payment reference (optional)').fill(`INV-${stamp}`)
+  await page.getByRole('button', { name: 'Client paid $1,100.00: go live' }).click()
+  await expect(page.getByText('Live. Creators can see it and join now.')).toBeVisible()
   await page.reload()
   await expect(page.getByText('Live', { exact: true })).toBeVisible()
+
+  // Creators see it with its picture, and can open the uploaded file.
+  await page.goto('/campaigns')
+  await expect(page.getByText(`Acceptance campaign ${stamp}`).first()).toBeVisible()
+  const cover = await page.locator(`img[src^="/files/"]`).first().getAttribute('src')
+  expect((await page.request.get(cover!)).status()).toBe(200)
 
   const minutes = (Date.now() - started) / 60_000
   expect(minutes).toBeLessThan(5)
 })
 
-test('a campaign published before funding waits, and partial funding does not make it live', async ({ page }) => {
+test('going live records only what the client still owes', async ({ page }) => {
   const stamp = Date.now()
   await signInAs(page, 'finance@seed.invalid')
   await page.goto('/admin/clients/new')
@@ -59,8 +65,8 @@ test('a campaign published before funding waits, and partial funding does not ma
   await page.getByLabel('Service fee (percent of the budget)').fill('10')
   await page.getByRole('button', { name: 'Create client' }).click()
   await page.waitForURL(/\/admin\/clients\/[0-9a-f-]{36}$/)
-  // Only the budget arrived, not the fee.
-  await page.getByLabel('Amount received').fill('$1,000.00')
+  // Part of the money arrived earlier.
+  await page.getByLabel('Amount received').fill('1000')
   await page.getByLabel('Invoice or bank reference').fill(`INV-P-${stamp}`)
   await page.getByRole('button', { name: 'Record funding' }).click()
   await expect(page.getByText('Funding recorded.')).toBeVisible()
@@ -69,21 +75,24 @@ test('a campaign published before funding waits, and partial funding does not ma
   await page.getByLabel('Title').fill(`Partial campaign ${stamp}`)
   await page.getByLabel('Client').click()
   await page.getByRole('option', { name: `Partial client ${stamp}` }).click()
-  await page.getByLabel('Cover image link').fill('/designed/camp-ugc.png')
   await page.getByLabel('Brief').fill('Original content made to the brief.')
   await page.getByText('Instagram', { exact: true }).click()
-  await page.getByLabel('Budget', { exact: true }).fill('$1,000.00')
-  await page.getByLabel('Rate per 1,000 counted views').fill('$2.00')
+  await page.getByLabel('Budget', { exact: true }).fill('1k')
+  await page.getByLabel('Pay per 1,000 views').fill('2')
   await page.getByLabel('Rules', { exact: true }).fill('Original content only.')
-  await page.getByRole('button', { name: 'Save draft' }).click()
+  await page.getByRole('button', { name: 'Save campaign' }).click()
   await page.waitForURL(/\?saved=1$/)
 
-  await page.getByRole('button', { name: 'Publish' }).click()
-  await expect(page.getByText('Published. It goes live as soon as it is funded.')).toBeVisible()
-  await page.getByRole('button', { name: 'Fund $1,100.00 from client balance' }).click()
-  await expect(page.getByText('The client has not paid enough for this budget and fee yet.')).toBeVisible()
+  // No picture yet: it cannot go live.
+  await expect(page.getByText(/Before it can go live, add the/)).toBeVisible()
+  await page.locator('input[type=file][accept="image/*"]').setInputFiles('public/designed/camp-ugc.png')
+  await expect(page.getByRole('img', { name: 'Campaign picture' })).toBeVisible()
+  await page.getByRole('button', { name: 'Save changes' }).click()
+  await expect(page.getByText('Saved.', { exact: true })).toBeVisible()
   await page.reload()
-  await expect(page.getByText('Waiting for funding', { exact: true })).toBeVisible()
+  await expect(page.getByText('Already paid in')).toBeVisible()
+  await page.getByRole('button', { name: 'Client paid $100.00: go live' }).click()
+  await expect(page.getByText('Live. Creators can see it and join now.')).toBeVisible()
 })
 
 test('reviewers can see campaigns but cannot create or change them', async ({ page }) => {

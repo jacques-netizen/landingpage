@@ -6,8 +6,10 @@ import {
   cancelCampaign,
   closeCampaign,
   copyCampaign,
+  createClient,
   createDraft,
   fundCampaign,
+  goLive,
   publishCampaign,
   TEMPLATES,
   updateCampaign,
@@ -108,6 +110,12 @@ export async function campaignAction(id: string, _prev: BuilderState, form: Form
   const viewer = await requireStaff('money', `/admin/campaigns/${id}`)
   const what = String(form.get('action') ?? '')
   try {
+    if (what === 'golive') {
+      await goLive(db(), viewer.id, id, { reference: String(form.get('reference') ?? '') })
+      revalidatePath(`/admin/campaigns/${id}`)
+      revalidatePath('/campaigns')
+      return { ok: 'Live. Creators can see it and join now.' }
+    }
     if (what === 'publish') {
       const status = await publishCampaign(db(), viewer.id, id)
       revalidatePath(`/admin/campaigns/${id}`)
@@ -139,4 +147,25 @@ export async function campaignAction(id: string, _prev: BuilderState, form: Form
     throw e
   }
   return { error: 'Unknown action.' }
+}
+
+/** Add a client from inside the campaign builder: just a name and the service fee in percent. */
+export async function quickClientAction(input: {
+  name: string
+  feePercent: string
+}): Promise<{ error?: string; client?: { id: string; name: string } }> {
+  const viewer = await requireStaff('money', '/admin/campaigns')
+  const name = input.name.trim()
+  if (!name) return { error: 'Enter the client name.' }
+  const m = /^(\d{1,3})(?:\.(\d{1,2}))?\s*%?$/.exec(input.feePercent.trim() || '0')
+  const bps = m ? Number(m[1]) * 100 + Number((m[2] ?? '').padEnd(2, '0')) : NaN
+  if (!m || bps > 10_000) return { error: 'Enter the fee as a percent, like 10.' }
+  const c = await createClient(db(), viewer.id, {
+    name: name.slice(0, 200),
+    contactName: null,
+    contactEmail: null,
+    serviceFeeBps: bps,
+    notes: null,
+  })
+  return { client: { id: c.id, name: c.name } }
 }

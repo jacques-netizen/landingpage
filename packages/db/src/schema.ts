@@ -64,6 +64,20 @@ export const users = pgTable(
   () => [check('users_status_check', inList('status', USER_STATUSES))],
 )
 
+// Files staff upload (campaign covers and assets). Small files live in the database; with a storage
+// bucket configured, the bytes live there and this row keeps the key.
+export const files = pgTable('files', {
+  id: id(),
+  name: text('name').notNull(),
+  contentType: text('content_type').notNull(),
+  sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
+  storage: text('storage').notNull(),
+  storageKey: text('storage_key'),
+  data: bytea('data'),
+  uploadedBy: uuid('uploaded_by').references(() => users.id),
+  ...timestamps,
+})
+
 export const STAFF_ROLE_VALUES = ['reviewer', 'finance', 'admin'] as const
 
 export const staffRoles = pgTable(

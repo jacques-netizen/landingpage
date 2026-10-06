@@ -2,6 +2,7 @@
 
 import { Button, Field, Input, Textarea } from '@mde/ui'
 import { useActionState } from 'react'
+import { MoneyField } from '../campaigns/builder-parts'
 import { Notice } from '../_components/ui'
 import { recordFundingAction, saveClientAction, type FormState } from './actions'
 
@@ -53,18 +54,26 @@ export function ClientForm({ id, initial, canEdit }: { id: string | null; initia
       </div>
       <Field
         label="Service fee (percent of the budget)"
-        helper="Charged on top of the budget when a campaign is funded."
+        helper="Charged on top of the budget. Leave empty for no fee."
         error={f.serviceFee}
       >
         {(p) => (
-          <Input
-            id={p.id}
-            aria-describedby={p.describedBy}
-            invalid={p.invalid}
-            name="serviceFee"
-            defaultValue={initial.serviceFee}
-            disabled={!canEdit}
-          />
+          <div className="relative max-w-[200px]">
+            <Input
+              id={p.id}
+              aria-describedby={p.describedBy}
+              invalid={p.invalid}
+              name="serviceFee"
+              defaultValue={initial.serviceFee.replace(/%$/, '')}
+              placeholder="0"
+              inputMode="decimal"
+              disabled={!canEdit}
+              className="pr-9"
+            />
+            <span aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted-2">
+              %
+            </span>
+          </div>
         )}
       </Field>
       <Field label="Notes">
@@ -89,18 +98,13 @@ export function FundingForm({ clientId }: { clientId: string }) {
       {state.ok ? <Notice kind="ok">{state.ok}</Notice> : null}
       {state.error ? <Notice kind="bad">{state.error}</Notice> : null}
       <div className="grid grid-cols-2 gap-5">
-        <Field label="Amount received" helper="The budget plus the service fee." error={f.amount}>
-          {(p) => (
-            <Input
-              id={p.id}
-              aria-describedby={p.describedBy}
-              invalid={p.invalid}
-              name="amount"
-              placeholder="$1,100.00"
-              inputMode="decimal"
-            />
-          )}
-        </Field>
+        <MoneyField
+          name="amount"
+          label="Amount received"
+          helper="The budget plus the service fee."
+          error={f.amount}
+          placeholder="1100"
+        />
         <Field label="Invoice or bank reference" error={f.reference}>
           {(p) => (
             <Input

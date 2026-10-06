@@ -9,28 +9,67 @@ type Props = {
   id: string
   can: { publish: boolean; fund: boolean; close: boolean; cancel: boolean; copy: boolean }
   fundLabel: string
+  /** The one-step go live: what the client owes and what is still missing. */
+  goLive?: { lines: [string, string][]; missing: string[]; owedNow: string } | null
 }
 
 // The actions a campaign allows in its current state. Close and cancel ask for confirmation.
-export function CampaignActions({ id, can, fundLabel }: Props) {
+export function CampaignActions({ id, can, fundLabel, goLive }: Props) {
   const [state, action, pending] = useActionState<BuilderState, FormData>(campaignAction.bind(null, id), {})
   const [confirm, setConfirm] = useState<null | 'close' | 'cancel'>(null)
+  const [reference, setReference] = useState('')
   const submit = (what: string) => {
     const f = new FormData()
     f.set('action', what)
+    f.set('reference', reference)
     action(f)
   }
   return (
     <div>
       {state.ok ? <Notice kind="ok">{state.ok}</Notice> : null}
       {state.error ? <Notice kind="bad">{state.error}</Notice> : null}
+      {goLive ? (
+        <div className="mb-6 max-w-[560px] rounded-card border border-solid border-line bg-[#FBF7F0] p-6">
+          <h3 className="m-0 font-serif text-[22px] font-normal">Go live</h3>
+          <dl className="mt-4 mb-0 flex flex-col gap-2 text-[14px]">
+            {goLive.lines.map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-4">
+                <dt className="text-muted-2">{k}</dt>
+                <dd className="m-0 tabular-nums">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          {goLive.missing.length ? (
+            <p className="mt-4 mb-0 text-[14px] text-bad">
+              Before it can go live, add the {goLive.missing.join(', ')} below and save.
+            </p>
+          ) : (
+            <>
+              <label className="mt-5 flex flex-col gap-2 text-[13px] font-medium">
+                Invoice or payment reference (optional)
+                <input
+                  value={reference}
+                  onChange={(e) => setReference(e.target.value)}
+                  placeholder="INV-1042"
+                  className="h-10 rounded-input border border-solid border-sand bg-white px-3 text-[14px] font-normal"
+                />
+              </label>
+              <div className="mt-5">
+                <Button onClick={() => submit('golive')} loading={pending} arrow>
+                  {goLive.owedNow === '$0.00' ? 'Go live' : `Client paid ${goLive.owedNow}: go live`}
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      ) : null}
       <div className="flex flex-wrap gap-3">
-        {can.fund ? (
+        {can.fund && !goLive ? (
           <Button size="sm" onClick={() => submit('fund')} loading={pending}>
             {fundLabel}
           </Button>
         ) : null}
-        {can.publish ? (
+        {can.publish && !goLive ? (
           <Button size="sm" onClick={() => submit('publish')} disabled={pending} arrow>
             Publish
           </Button>

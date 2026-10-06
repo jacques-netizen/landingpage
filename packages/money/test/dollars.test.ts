@@ -11,6 +11,23 @@ describe('parsing dollars typed by staff', () => {
     expect(parseDollarsToCents('$2')).toEqual({ ok: true, cents: 200 })
   })
 
+  it('reads the short ways people type budgets', () => {
+    expect(parseDollarsToCents('2000')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('2k')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('2K')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('1.5k')).toEqual({ ok: true, cents: 150_000 })
+    expect(parseDollarsToCents('2.345k')).toEqual({ ok: true, cents: 234_500 })
+    expect(parseDollarsToCents('$ 2,000')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('2000 USD')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('2 000')).toEqual({ ok: true, cents: 200_000 })
+    expect(parseDollarsToCents('2000usd')).toEqual({ ok: true, cents: 200_000 })
+  })
+
+  it('refuses short forms that would need fractions of a cent', () => {
+    for (const bad of ['1.23456k', 'k', '2kk', '2m', '-2k', '2 00'])
+      expect(parseDollarsToCents(bad).ok, bad).toBe(false)
+  })
+
   it('refuses anything that is not a whole number of cents', () => {
     for (const bad of ['', '12.345', '-5', '1,2,3.4.5', 'abc', '$', '1e3', '0x10', '12.', '.5.5', '99999999999999999'])
       expect(parseDollarsToCents(bad).ok, bad).toBe(false)

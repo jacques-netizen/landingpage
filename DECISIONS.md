@@ -198,3 +198,10 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Hosting is Railway: one Docker image (`apps/Dockerfile`) run as a web service and a worker service, with Railway Postgres and Redis. 04_BUILD_PLAN.md suggested Vercel plus a separate worker host; the owner agreed to one host for everything. Reason: simplest to run and to launch this week.
 - The first admin is made with `pnpm staff:grant <email> <role>` (audited); there is no sign-up path to a staff role. Reason: a fresh production database has no staff.
 - `ADMIN_EMAIL` (comma-separated) makes those addresses admin the first time they are seen signed in, audited as `staff.grant` via ADMIN_EMAIL. Signing in proves the address. Reason: the owner could not run the shell command; this needs only a Railway setting.
+
+## Admin rework (owner feedback, 2026-10-06)
+
+- Staff upload campaign pictures and asset files. Without a bucket, files up to 25 MB are kept in the database; with `STORAGE_ENDPOINT`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY` (and optional `STORAGE_REGION`) set, files up to 2 GB go to that S3-compatible bucket. Files are served from `/files/{id}/{name}`; only pictures, video, audio and PDF show in the browser, everything else downloads, and responses are sandboxed. Reason: owner asked for real uploads; works with no setup.
+- Dollar amounts accept "2000", "2k", "1.5k", "$2,000", "2 000" and "2000 USD", always parsed with string maths to whole cents. Reason: owner found amounts hard to type.
+- The campaign builder shows the essentials first (title, client with inline "New client", picture upload, platforms, brief, assets, budget, pay per 1,000 views, dates, rules); caps, account and content rules sit under "More rules". Reason: owner feedback.
+- "Go live" does in one step what was record funding, fund and publish: it records only what the client still owes for budget plus fee (with an optional reference), funds the campaign and publishes it, each step audited as before. Reason: owner feedback; same money rules.

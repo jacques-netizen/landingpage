@@ -5,9 +5,19 @@ export type ParsedCents = { ok: true; cents: number } | { ok: false; message: st
 
 const MAX_CENTS = 10 ** 13 // $100 billion, far above any budget
 
-/** "$1,250.00", "1250", "12.5" -> cents. Commas only as thousands separators; at most two decimals. */
+/**
+ * "$1,250.00", "1250", "12.5", "2k", "1.5k", "2000 USD", "2 000" -> cents. Commas or single spaces only as
+ * thousands separators; at most two decimals (three with k, so the result is still whole cents).
+ */
 export function parseDollarsToCents(input: string): ParsedCents {
-  const s = input.trim().replace(/^\$/, '').trim()
+  let s = input
+    .trim()
+    .replace(/\s*usd$/i, '')
+    .replace(/^\$\s*/, '')
+    .trim()
+  const k = /^(\d+)(?:\.(\d{1,3}))?k$/i.exec(s)
+  if (k) s = `${k[1]}${(k[2] ?? '').padEnd(3, '0')}`
+  else if (/^\d{1,3}( \d{3})+(\.\d{1,2})?$/.test(s)) s = s.replace(/ /g, '')
   const m = /^(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?$/.exec(s)
   if (!m) return { ok: false, message: 'Enter an amount in dollars, like 1,250.00.' }
   const whole = m[1]!.replace(/,/g, '')

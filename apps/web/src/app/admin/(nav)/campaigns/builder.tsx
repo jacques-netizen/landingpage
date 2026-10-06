@@ -1,9 +1,10 @@
 'use client'
 
 import { PLATFORM_LABELS, TEMPLATES, type CampaignType } from '@mde/campaigns/templates'
-import { Button, Checkbox, Field, Input, Select, Textarea } from '@mde/ui'
+import { Button, Checkbox, Field, Input, Textarea } from '@mde/ui'
 import { useActionState, useEffect, useState, type ReactNode } from 'react'
 import { Notice } from '../_components/ui'
+import { AssetsEditor, ClientPicker, CoverUpload, MoneyField } from './builder-parts'
 import { saveCampaignAction, type BuilderState } from './actions'
 
 export type BuilderValues = {
@@ -148,34 +149,30 @@ export function CampaignBuilder({
       {state.ok ? <Notice kind="ok">{state.ok}</Notice> : null}
       <input type="hidden" name="type" value={type} />
 
-      <Section title="Basics" note={`${template.label} template. ${template.description}`}>
-        <div className="col-span-2">{text('title', 'Title')}</div>
-        <Field
-          label="Client"
-          error={f.clientId}
-          helper={isLocked('clientId') ? 'Fixed once the campaign is live.' : undefined}
-        >
-          {(p) => (
-            <Select
-              id={p.id}
-              name="clientId"
-              aria-describedby={p.describedBy}
-              invalid={p.invalid}
-              defaultValue={initial.clientId || undefined}
-              placeholder="Choose a client"
-              disabled={isLocked('clientId')}
-              options={clients.map((c) => ({ value: c.id, label: c.name }))}
-            />
-          )}
-        </Field>
-        {isLocked('clientId') ? <input type="hidden" name="clientId" value={initial.clientId} /> : <div />}
-        {text('coverImageUrl', 'Cover image link', {
-          helper: 'The poster used on campaign cards.',
-          placeholder: 'https://',
-        })}
-        <div />
+      <Section title="The campaign" note={`${template.label} template. ${template.description}`}>
+        <div className="col-span-2">{text('title', 'Title', { placeholder: 'Summer launch clips' })}</div>
         <div className="col-span-2">
-          <Field label="Brief" helper="A plain description of the job." error={f.briefMarkdown}>
+          <ClientPicker
+            clients={clients}
+            defaultValue={initial.clientId}
+            error={f.clientId}
+            disabled={isLocked('clientId')}
+          />
+        </div>
+        <CoverUpload defaultValue={initial.coverImageUrl} error={f.coverImageUrl} />
+        <fieldset className="m-0 self-start border-0 p-0">
+          <legend className="mb-3 text-[13px] font-medium">Platforms</legend>
+          <div className="flex flex-col gap-3">
+            {Object.entries(PLATFORM_LABELS).map(([value, label]) => (
+              <Checkbox key={value} name="platforms" value={value} defaultChecked={initial.platforms.includes(value)}>
+                {label}
+              </Checkbox>
+            ))}
+          </div>
+          {f.platforms ? <p className="mt-2 mb-0 text-[13px] text-bad">{f.platforms}</p> : null}
+        </fieldset>
+        <div className="col-span-2">
+          <Field label="Brief" helper="What creators should make, in plain words." error={f.briefMarkdown}>
             {(p) => (
               <Textarea
                 id={p.id}
@@ -187,110 +184,57 @@ export function CampaignBuilder({
             )}
           </Field>
         </div>
-        <Field label="Assets" helper='One per line: "Label | https://link".' error={f.assets}>
-          {(p) => (
-            <Textarea
-              id={p.id}
-              aria-describedby={p.describedBy}
-              invalid={p.invalid}
-              name="assets"
-              defaultValue={initial.assets}
-              rows={4}
-            />
-          )}
-        </Field>
-        <Field label="Example posts" helper="Optional links, one per line.">
-          {(p) => (
-            <Textarea
-              id={p.id}
-              aria-describedby={p.describedBy}
-              name="examplePosts"
-              defaultValue={initial.examplePosts}
-              rows={4}
-            />
-          )}
-        </Field>
-        <fieldset className="col-span-2 m-0 border-0 p-0">
-          <legend className="mb-3 text-[13px] font-medium">Platforms</legend>
-          <div className="flex flex-wrap gap-6">
-            {Object.entries(PLATFORM_LABELS).map(([value, label]) => (
-              <Checkbox key={value} name="platforms" value={value} defaultChecked={initial.platforms.includes(value)}>
-                {label}
-              </Checkbox>
-            ))}
-          </div>
-          {f.platforms ? <p className="mt-2 mb-0 text-[13px] text-bad">{f.platforms}</p> : null}
-        </fieldset>
+        <div className="col-span-2">
+          <AssetsEditor defaultValue={initial.assets} error={f.assets} />
+        </div>
+        <div className="col-span-2">
+          <Field label="Example posts" helper="Optional. Links to posts like the ones you want, one per line.">
+            {(p) => (
+              <Textarea
+                id={p.id}
+                aria-describedby={p.describedBy}
+                name="examplePosts"
+                defaultValue={initial.examplePosts}
+                rows={3}
+              />
+            )}
+          </Field>
+        </div>
       </Section>
 
-      <Section title="Money" note="Dollars and cents. Creators are paid from the budget, which can never be overspent.">
-        {text('budget', 'Budget', {
-          helper: 'The amount available to creators. The client also pays the service fee.',
-          placeholder: '$1,000.00',
-          mode: 'decimal',
-        })}
-        {text('rate', 'Rate per 1,000 counted views', { placeholder: '$2.00', mode: 'decimal' })}
-        {text('capPerPost', 'Cap per post', { helper: 'Optional.', placeholder: '$300.00', mode: 'decimal' })}
-        {text('capPerCreator', 'Cap per creator', { helper: 'Optional.', placeholder: '$500.00', mode: 'decimal' })}
-        {text('minViewsToEarn', 'Minimum views to earn', {
-          helper: 'Posts below this earn nothing until they pass it.',
+      <Section title="Budget and pay" note="Type amounts in dollars, like 2000 or 2k.">
+        <MoneyField
+          name="budget"
+          label="Budget"
+          helper={
+            isLocked('budget')
+              ? 'Fixed once the campaign is funded or live.'
+              : 'The total creators can earn. The service fee is added on top.'
+          }
+          error={f.budget}
+          defaultValue={initial.budget}
+          placeholder="2000"
+          readOnly={isLocked('budget')}
+        />
+        <MoneyField
+          name="rate"
+          label="Pay per 1,000 views"
+          error={f.rate}
+          defaultValue={initial.rate}
+          placeholder="2"
+        />
+        {text('minViewsToEarn', 'Views before a post starts earning', {
+          helper: 'Optional. Posts below this earn nothing until they pass it.',
           placeholder: '1000',
           mode: 'numeric',
         })}
-        {text('minEngagement', 'Minimum engagement (percent)', {
-          helper: 'Optional. Likes, comments and shares divided by views.',
-          placeholder: '1.5',
-          mode: 'decimal',
-        })}
-      </Section>
-
-      <Section title="Account rules">
-        {text('minFollowers', 'Minimum followers', { helper: 'Optional.', mode: 'numeric' })}
-        {text('minAccountAgeDays', 'Minimum account age (days)', { helper: 'Optional.', mode: 'numeric' })}
-        {text('maxPostsPerAccount', 'Posts per linked account', { helper: 'Optional.', mode: 'numeric' })}
-        {text('languages', 'Languages', { helper: 'Optional, separated by commas.' })}
-        {text('allowedRegions', 'Allowed regions', { helper: 'Optional. Used only where audience data is available.' })}
-        {text('blockedRegions', 'Blocked regions', { helper: 'Optional.' })}
-      </Section>
-
-      <Section title="Content rules" note={`Checks: ${template.checks.join('. ')}.`}>
-        {text('requiredHashtags', 'Required hashtags', { helper: 'Separated by commas.', placeholder: '#ad, #client' })}
-        {text('minDurationSeconds', 'Minimum duration (seconds)', { helper: 'Optional.', mode: 'numeric' })}
-        {text('keepLiveDays', 'Days the post must stay up after the campaign closes', { mode: 'numeric' })}
-        <div className="flex items-end pb-3">
-          <Checkbox name="requireAdDisclosure" defaultChecked={initial.requireAdDisclosure}>
-            Require a clear ad disclosure
-          </Checkbox>
-        </div>
-        {template.fields.map((tf) =>
-          tf.kind === 'boolean' ? (
-            <div key={tf.key} className="flex items-end pb-3">
-              <Checkbox name={`tf.${tf.key}`} defaultChecked={initial.templateFields[tf.key] === true}>
-                {tf.label}
-              </Checkbox>
-            </div>
-          ) : (
-            <Field key={tf.key} label={tf.label} helper={tf.helper}>
-              {(p) => (
-                <Input
-                  id={p.id}
-                  aria-describedby={p.describedBy}
-                  name={`tf.${tf.key}`}
-                  defaultValue={String(initial.templateFields[tf.key] ?? '')}
-                  inputMode={tf.kind === 'number' ? 'numeric' : undefined}
-                  placeholder={tf.kind === 'url' ? 'https://' : undefined}
-                />
-              )}
-            </Field>
-          ),
-        )}
       </Section>
 
       <Section title="Dates and access" note="Leave the end empty to run until the budget is used.">
         <DateTimeField name="startAt" label="Submissions open" error={f.startAt} initial={initial.startAt} />
         <DateTimeField name="endAt" label="Submissions close" error={f.endAt} initial={initial.endAt} />
         <fieldset className="m-0 border-0 p-0">
-          <legend className="mb-3 text-[13px] font-medium">Visibility</legend>
+          <legend className="mb-3 text-[13px] font-medium">Who can join</legend>
           <div className="flex gap-6">
             {(['public', 'private'] as const).map((v) => (
               <label key={v} className="flex cursor-pointer items-center gap-2 text-[14px]">
@@ -301,7 +245,7 @@ export function CampaignBuilder({
                   checked={visibility === v}
                   onChange={() => setVisibility(v)}
                 />
-                {v === 'public' ? 'Public' : 'Private (needs an access code)'}
+                {v === 'public' ? 'Everyone' : 'Only with an access code'}
               </label>
             ))}
           </div>
@@ -314,8 +258,8 @@ export function CampaignBuilder({
       </Section>
 
       <Section
-        title="Rules text"
-        note="Shown to creators before they join. Saved as a terms version when you publish, and again whenever it changes."
+        title="Rules creators agree to"
+        note="Shown before they join. Saved as a terms version when you publish, and again whenever it changes."
       >
         <div className="col-span-2">
           <Field label="Rules" error={f.termsDraftMarkdown}>
@@ -325,18 +269,108 @@ export function CampaignBuilder({
                 aria-describedby={p.describedBy}
                 name="termsDraftMarkdown"
                 defaultValue={initial.termsDraftMarkdown}
-                rows={10}
+                rows={8}
               />
             )}
           </Field>
         </div>
       </Section>
 
-      <div className="flex gap-3 border-0 border-t border-solid border-line pt-8">
+      <details className="group border-0 border-t border-solid border-line py-8" open={hasAdvancedErrors(f)}>
+        <summary className="cursor-pointer list-none font-serif text-[24px]">
+          More rules <span className="font-sans text-[13px] text-muted-2">(optional: caps, accounts, content)</span>
+        </summary>
+        <div className="mt-6 grid grid-cols-2 gap-5">
+          <MoneyField
+            name="capPerPost"
+            label="Most one post can earn"
+            helper={isLocked('capPerPost') ? 'Fixed once the campaign is live.' : 'Optional.'}
+            error={f.capPerPost}
+            defaultValue={initial.capPerPost}
+            placeholder="300"
+            readOnly={isLocked('capPerPost')}
+          />
+          <MoneyField
+            name="capPerCreator"
+            label="Most one creator can earn"
+            helper={isLocked('capPerCreator') ? 'Fixed once the campaign is live.' : 'Optional.'}
+            error={f.capPerCreator}
+            defaultValue={initial.capPerCreator}
+            placeholder="500"
+            readOnly={isLocked('capPerCreator')}
+          />
+          {text('minEngagement', 'Minimum engagement (percent)', {
+            helper: 'Optional. Likes, comments and shares divided by views.',
+            placeholder: '1.5',
+            mode: 'decimal',
+          })}
+          {text('minFollowers', 'Minimum followers', { helper: 'Optional.', mode: 'numeric' })}
+          {text('minAccountAgeDays', 'Minimum account age (days)', { helper: 'Optional.', mode: 'numeric' })}
+          {text('maxPostsPerAccount', 'Posts per linked account', { helper: 'Optional.', mode: 'numeric' })}
+          {text('languages', 'Languages', { helper: 'Optional, separated by commas.' })}
+          {text('allowedRegions', 'Allowed regions', {
+            helper: 'Optional. Used only where audience data is available.',
+          })}
+          {text('blockedRegions', 'Blocked regions', { helper: 'Optional.' })}
+          {text('requiredHashtags', 'Required hashtags', {
+            helper: 'Separated by commas.',
+            placeholder: '#ad, #client',
+          })}
+          {text('minDurationSeconds', 'Minimum video length (seconds)', { helper: 'Optional.', mode: 'numeric' })}
+          {text('keepLiveDays', 'Days the post must stay up after the campaign closes', { mode: 'numeric' })}
+          <div className="flex items-end pb-3">
+            <Checkbox name="requireAdDisclosure" defaultChecked={initial.requireAdDisclosure}>
+              Require a clear ad disclosure
+            </Checkbox>
+          </div>
+          {template.fields.map((tf) =>
+            tf.kind === 'boolean' ? (
+              <div key={tf.key} className="flex items-end pb-3">
+                <Checkbox name={`tf.${tf.key}`} defaultChecked={initial.templateFields[tf.key] === true}>
+                  {tf.label}
+                </Checkbox>
+              </div>
+            ) : (
+              <Field key={tf.key} label={tf.label} helper={tf.helper}>
+                {(p) => (
+                  <Input
+                    id={p.id}
+                    aria-describedby={p.describedBy}
+                    name={`tf.${tf.key}`}
+                    defaultValue={String(initial.templateFields[tf.key] ?? '')}
+                    inputMode={tf.kind === 'number' ? 'numeric' : undefined}
+                    placeholder={tf.kind === 'url' ? 'https://' : undefined}
+                  />
+                )}
+              </Field>
+            ),
+          )}
+          <p className="col-span-2 m-0 text-[13px] text-muted-2">Checks: {template.checks.join('. ')}.</p>
+        </div>
+      </details>
+
+      <div className="sticky bottom-0 flex gap-3 border-0 border-t border-solid border-line bg-page py-5">
         <Button type="submit" loading={pending}>
-          {id ? 'Save changes' : 'Save draft'}
+          {id ? 'Save changes' : 'Save campaign'}
         </Button>
+        {state.error ? <span className="self-center text-[13px] text-bad">{state.error}</span> : null}
       </div>
     </form>
   )
 }
+
+const ADVANCED = [
+  'capPerPost',
+  'capPerCreator',
+  'minEngagement',
+  'minFollowers',
+  'minAccountAgeDays',
+  'maxPostsPerAccount',
+  'languages',
+  'allowedRegions',
+  'blockedRegions',
+  'requiredHashtags',
+  'minDurationSeconds',
+  'keepLiveDays',
+]
+const hasAdvancedErrors = (f: Record<string, string>) => ADVANCED.some((k) => f[k])

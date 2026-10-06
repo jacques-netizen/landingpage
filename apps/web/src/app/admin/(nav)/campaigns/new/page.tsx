@@ -51,20 +51,14 @@ export default async function NewCampaignPage({ searchParams }: { searchParams: 
   return (
     <AdminPage
       title="New campaign"
-      lead="Saved as a draft. Publish it when it is ready; it goes live once fully funded."
+      lead="Fill in the campaign, save it, then put it live from the next page."
       actions={
         <LinkButton href="/admin/campaigns/new" variant="secondary">
           Change template
         </LinkButton>
       }
     >
-      {clients.length === 0 ? (
-        <p className="m-0 text-[15px] text-muted-2">
-          Add a client first. <a href="/admin/clients/new">New client</a>
-        </p>
-      ) : (
-        <CampaignBuilder id={null} initial={valuesForTemplate(type as CampaignType)} clients={clients} locked={[]} />
-      )}
+      <CampaignBuilder id={null} initial={valuesForTemplate(type as CampaignType)} clients={clients} locked={[]} />
     </AdminPage>
   )
 }

@@ -99,7 +99,7 @@ export const campaignFormSchema = z
         .map((l) => l.trim())
         .filter(Boolean)) {
         const [label, url] = line.split('|').map((x) => x.trim())
-        if (!label || !url || !/^https?:\/\//.test(url)) {
+        if (!label || !url || !/^(https?:\/\/|\/files\/)/.test(url)) {
           ctx.addIssue({ code: 'custom', message: `Write each asset as "Label | https://link". Check: ${line}` })
           return z.NEVER
         }

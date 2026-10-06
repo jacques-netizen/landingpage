@@ -6,6 +6,7 @@ import {
   fundCampaign as fundCampaignMoney,
   recordClientFunding as recordFundingMoney,
   MoneyError,
+  serviceFeeCents,
 } from '@mde/money'
 import { and, eq, inArray, sql } from 'drizzle-orm'
 import crypto from 'node:crypto'
@@ -263,6 +264,44 @@ export async function fundCampaign(db: Db, actorId: string, id: string) {
     }
     return now.status
   })
+}
+
+/**
+ * Put a campaign live in one step: record what the client still owes for budget plus fee (only the
+ * difference from what they already paid in), fund the campaign and publish it. Each step is the same
+ * audited money movement as doing them one by one. Nothing is recorded if the campaign is incomplete.
+ */
+export async function goLive(db: Db, actorId: string, id: string, opts: { reference?: string } = {}) {
+  const c = await load(db, id)
+  if (['live', 'closing'].includes(c.status)) return { status: c.status, recordedCents: 0 }
+  if (!['draft', 'awaiting_funding'].includes(c.status))
+    throw new CampaignError('wrong_status', `A ${c.status} campaign cannot go live.`)
+  const missing = missingForPublish(c)
+  if (missing.length || !c.clientId)
+    throw new CampaignError('incomplete', `Add the ${(missing.length ? missing : ['client']).join(', ')} first.`)
+  let recordedCents = 0
+  if (!(await isFunded(db, id))) {
+    const [client] = await db.select().from(tables.clients).where(eq(tables.clients.id, c.clientId))
+    const owed = c.budgetCents + serviceFeeCents(c.budgetCents, client!.serviceFeeBps)
+    const rows = await db.execute<{ b: string }>(sql`
+      select coalesce(sum(e.amount_cents), 0) as b from ledger_entries e join ledger_accounts a on a.id = e.account_id
+      where a.kind = 'client_funds_holding' and a.owner_id = ${c.clientId}`)
+    const short = owed - Number(rows[0]!.b)
+    if (short > 0) {
+      await recordClientFunding(db, actorId, {
+        clientId: c.clientId,
+        amountCents: short,
+        reference: opts.reference?.trim() || `golive:${id}`,
+      })
+      recordedCents = short
+    }
+    await fundCampaign(db, actorId, id)
+  }
+  const now = await load(db, id)
+  const status = ['draft', 'awaiting_funding'].includes(now.status)
+    ? await publishCampaign(db, actorId, id)
+    : now.status
+  return { status, recordedCents }
 }
 
 /** Copy a campaign as a new draft in the same series (for a standing client's next month). */

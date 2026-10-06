@@ -22,6 +22,7 @@ export const envSchema = z.object({
   STORAGE_BUCKET: optional,
   STORAGE_ACCESS_KEY_ID: optional,
   STORAGE_SECRET_ACCESS_KEY: optional,
+  STORAGE_REGION: optional,
   EMAIL_API_KEY: optional,
   EMAIL_FROM: optional,
   STRIPE_SECRET_KEY: optional,

@@ -88,20 +88,33 @@ export default async function CampaignAdminPage({
       </dl>
 
       <section className="py-6">
-        <h2 className="m-0 font-serif text-[24px] font-normal">Funding</h2>
-        <p className="mt-2 mb-4 max-w-[640px] text-[15px] text-muted-2">
-          {funded
-            ? `Funded. ${formatDollars(c.budgetCents)} is in the campaign budget and the ${formatDollars(feeCents)} service fee was taken.`
-            : `Needs ${formatDollars(c.budgetCents + feeCents)}: the ${formatDollars(c.budgetCents)} budget plus a ${formatDollars(feeCents)} service fee. ${client?.name ?? 'The client'} has ${formatDollars(holding)} paid in and not yet used.`}{' '}
-          {!funded && client ? <a href={`/admin/clients/${client.id}`}>Record funding</a> : null}
-        </p>
-        {open && missing.length ? (
-          <p className="mt-0 mb-4 text-[13px] text-muted-2">Before publishing, add the {missing.join(', ')}.</p>
+        {funded || !open ? (
+          <p className="mt-0 mb-4 max-w-[640px] text-[15px] text-muted-2">
+            {funded
+              ? `Funded. ${formatDollars(c.budgetCents)} is in the campaign budget and the ${formatDollars(feeCents)} service fee was taken.`
+              : null}
+          </p>
         ) : null}
         {canMoney ? (
           <CampaignActions
             id={c.id}
             fundLabel={`Fund ${formatDollars(c.budgetCents + feeCents)} from client balance`}
+            goLive={
+              open
+                ? {
+                    lines: [
+                      ['Budget for creators', formatDollars(c.budgetCents)],
+                      [`Service fee (${(client?.serviceFeeBps ?? 0) / 100}%)`, formatDollars(feeCents)],
+                      ['Client pays in total', formatDollars(c.budgetCents + feeCents)],
+                      ...(holding > 0 && !funded
+                        ? ([['Already paid in', formatDollars(holding)]] as [string, string][])
+                        : []),
+                    ],
+                    missing: [...missing, ...(client ? [] : ['client'])],
+                    owedNow: formatDollars(funded ? 0 : Math.max(0, c.budgetCents + feeCents - holding)),
+                  }
+                : null
+            }
             can={{
               fund: !funded && !['closed', 'cancelled'].includes(c.status),
               publish: open,

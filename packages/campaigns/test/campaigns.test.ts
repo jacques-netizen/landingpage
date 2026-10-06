@@ -10,6 +10,7 @@ import {
   createDraft,
   fundCampaign,
   getPublicCampaign,
+  goLive,
   joinCampaign,
   listPublicCampaigns,
   publishCampaign,
@@ -168,6 +169,46 @@ describe('publishing and funding', () => {
     expect(
       (await db.select().from(tables.notifications).where(eq(tables.notifications.userId, actor))).map((x) => x.title),
     ).toEqual(expect.arrayContaining(['Funding recorded', 'Campaign is live']))
+  })
+
+  it('goes live in one step: records only what the client still owes, funds and publishes', async () => {
+    const actor = await staff()
+    const client = await createClient(db, actor, {
+      name: 'Client G',
+      contactName: null,
+      contactEmail: null,
+      serviceFeeBps: 1000,
+      notes: null,
+    })
+    // $300 already paid in; the campaign needs $2,000 budget + $200 fee = $2,200, so $1,900 is recorded.
+    await recordClientFunding(db, actor, { clientId: client.id, amountCents: 30_000, reference: 'DEPOSIT' })
+    const c = await createDraft(db, actor, form(client.id, { budgetCents: '2k' }))
+    const r = await goLive(db, actor, c.id, { reference: 'INV-77' })
+    expect(r).toEqual({ status: 'live', recordedCents: 190_000 })
+    const pub = await getPublicCampaign(db, c.id)
+    expect(pub!.figures).toMatchObject({ budgetCents: 200_000, leftCents: 200_000 })
+    expect((await audits(c.id)).map((a) => a.action)).toEqual(
+      expect.arrayContaining(['campaign.fund', 'campaign.publish']),
+    )
+    expect((await audits(client.id)).map((a) => a.after)).toEqual(
+      expect.arrayContaining([{ amountCents: 190_000, reference: 'INV-77' }]),
+    )
+    // Running it again changes nothing.
+    expect(await goLive(db, actor, c.id, { reference: 'INV-77' })).toEqual({ status: 'live', recordedCents: 0 })
+  })
+
+  it('will not go live until the campaign has everything it needs, and records nothing', async () => {
+    const actor = await staff()
+    const client = await createClient(db, actor, {
+      name: 'Client H',
+      contactName: null,
+      contactEmail: null,
+      serviceFeeBps: 0,
+      notes: null,
+    })
+    const c = await createDraft(db, actor, form(client.id, { briefMarkdown: '' }))
+    await expect(goLive(db, actor, c.id, {})).rejects.toMatchObject({ code: 'incomplete' })
+    expect((await audits(client.id)).filter((a) => a.action === 'funding.record')).toHaveLength(0)
   })
 
   it('a campaign cannot go live with partial funding', async () => {
