@@ -7,7 +7,7 @@ import { getViewer, hasAccess, type Viewer } from './viewer'
 /** For staff pages and server actions: the viewer, or a redirect to sign in, or a 403. */
 export async function requireStaff(access: Access = 'staff', next = '/admin'): Promise<Viewer> {
   const viewer = await getViewer()
-  if (!viewer) redirect(`/sign-in?next=${encodeURIComponent(next)}`)
+  if (!viewer) redirect(`/staff/sign-in?next=${encodeURIComponent(next)}`)
   if (!hasAccess(viewer, access)) forbidden()
   return viewer
 }

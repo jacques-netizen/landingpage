@@ -84,10 +84,10 @@ test('the email field explains a bad address', async ({ page }) => {
 const ADMIN_PAGES = ['/admin', '/admin/campaigns', '/admin/review', '/admin/settings', '/admin/anything/else']
 const ADMIN_API = ['/api/v1/admin', '/api/v1/admin/me', '/api/v1/admin/campaigns', '/api/v1/admin/settings']
 
-test('signed-out visitors are sent to sign in and get 401 from the staff API', async ({ page }) => {
+test('signed-out visitors are sent to the staff sign in and get 401 from the staff API', async ({ page }) => {
   for (const path of ADMIN_PAGES) {
     await page.goto(path)
-    expect(new URL(page.url()).pathname).toBe('/sign-in')
+    expect(new URL(page.url()).pathname).toBe('/staff/sign-in')
   }
   for (const path of ADMIN_API) {
     for (const method of ['GET', 'POST'] as const) {

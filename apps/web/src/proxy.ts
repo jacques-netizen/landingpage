@@ -12,7 +12,7 @@ export async function proxy(req: NextRequest) {
   if (!viewer) {
     if (isApi)
       return NextResponse.json({ error: { code: 'unauthenticated', message: 'Sign in to continue.' } }, { status: 401 })
-    const url = new URL('/sign-in', req.url)
+    const url = new URL('/staff/sign-in', req.url)
     url.searchParams.set('next', req.nextUrl.pathname)
     return NextResponse.redirect(url)
   }
