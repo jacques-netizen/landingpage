@@ -93,3 +93,14 @@
     zoom: 1 !important;
   }
 }
+
+/* Home: no Campaigns / Wallet pill in the header (owner request, 2026-10-07). Hidden rather than removed
+   on wide screens so the logo stays left and Start earning right; on phones its row goes too. */
+.mde-home [data-m~='pill'] {
+  visibility: hidden;
+}
+@media (max-width: 639.98px) {
+  .mde-home [data-m~='pill'] {
+    display: none;
+  }
+}

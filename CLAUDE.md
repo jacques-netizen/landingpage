@@ -27,7 +27,7 @@ Where things live:
 - When building each screen, propose a phone layout that uses only the mockups' fonts, colours, components and copy, nothing new. Show the owner screenshots.
 - Once the owner approves a phone layout, add it to the reference set and lock it like the rest.
 - Approved and locked: home, brand site, campaigns screen and wallet (both themes, every state) phone layouts (`apps/web/src/designed/phone.css`).
-- Campaigns screen and wallet: changed by the owner in writing on 2026-10-07 (the app's one menu, wallet inside the campaigns frame). Their references at every width now come from the product (`apps/web/scripts/capture-phone-references.mjs`).
+- Home, campaigns screen and wallet: changed by the owner in writing on 2026-10-07 (no Campaigns / Wallet pill on home, the app's one menu, wallet inside the campaigns frame). Their references at every width now come from the product (`apps/web/scripts/capture-phone-references.mjs`).
 
 ## Approved content
 

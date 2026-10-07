@@ -12,16 +12,16 @@ export function HomeClient({ overrides }: { overrides: Record<string, string> })
   const go = (href: string) => () => router.push(href)
   const v = {
     goHome: go('/'),
-    navLinks: [
-      { label: 'Campaigns', go: go('/campaigns') },
-      { label: 'Wallet', go: go('/wallet') },
-    ],
+    // The Campaigns / Wallet pill is gone (owner request, 2026-10-07); designed.css hides its frame.
+    navLinks: [],
     startEarning: go('/sign-up'),
     howItWorks: go('/how-it-works'),
   }
   return (
     <DesignedFrame>
-      <HomeDesign v={v} copy={makeCopy(homeContent, overrides)} />
+      <div className="mde-home" style={{ display: 'contents' }}>
+        <HomeDesign v={v} copy={makeCopy(homeContent, overrides)} />
+      </div>
     </DesignedFrame>
   )
 }

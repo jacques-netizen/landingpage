@@ -30,13 +30,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
   const b = brand()
   return (
     <div className="min-h-screen bg-page font-sans text-ink">
-      <PublicNav
-        links={[
-          { label: 'Campaigns', href: '/campaigns' },
-          { label: 'Wallet', href: '/wallet' },
-        ]}
-        cta={{ label: 'Start earning', href: '/sign-up' }}
-      />
+      <PublicNav links={[]} cta={{ label: 'Start earning', href: '/sign-up' }} />
       <main className="mx-auto box-border max-w-[1200px] px-6 pt-16 pb-28 max-sm:pt-8">{children}</main>
       <Footer
         columns={footerColumns()}

@@ -26,7 +26,14 @@ export function PublicNav({
           className="block h-[26px] w-auto max-w-full object-contain object-left"
         />
       </a>
-      <div className="flex gap-[6px] rounded-pill border border-solid border-line bg-[rgba(255,255,255,0.55)] px-2 py-[5px] text-[13px] max-sm:col-span-2 max-sm:row-start-2 max-sm:justify-self-center">
+      {/* With no links the pill is left out; an empty cell keeps the button on the right. */}
+      {links.length === 0 ? <span aria-hidden /> : null}
+      <div
+        className={cn(
+          'flex gap-[6px] rounded-pill border border-solid border-line bg-[rgba(255,255,255,0.55)] px-2 py-[5px] text-[13px] max-sm:col-span-2 max-sm:row-start-2 max-sm:justify-self-center',
+          links.length === 0 && 'hidden',
+        )}
+      >
         {links.map((l) => (
           <a
             key={l.href}

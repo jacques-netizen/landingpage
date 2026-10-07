@@ -25,7 +25,9 @@ async function shot(route, name, tab, theme, width = 390) {
   console.log(`${name}-${width}.png`)
   await page.close()
 }
-await shot('/', 'creator-home')
+// Home without the Campaigns / Wallet pill (owner's written request, 2026-10-07): from the product at
+// every width.
+for (const w of [1440, 1024, 390]) await shot('/', 'creator-home', undefined, undefined, w)
 for (const [tab, slug] of [
   ['Walmart', 'walmart'],
   ['Wale', 'wale'],
