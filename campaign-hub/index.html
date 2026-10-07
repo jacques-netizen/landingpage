@@ -116,6 +116,10 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(168,138,79,.14)}
 .cupd .idle-dot{width:6px;height:6px;border-radius:50%;background:var(--text-dim)}
 .cedit{font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light);font-weight:700;transition:transform .2s}
 .ccard:hover .cedit{transform:translateX(3px)}
+.cfoot-r{display:flex;align-items:center;gap:.9rem}
+.cdel{position:relative;z-index:2;background:none;border:0;cursor:pointer;font-family:inherit;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);font-weight:600;padding:.2rem 0;transition:color .15s}
+.cdel:hover{color:var(--bad)}
+.cdel:disabled{opacity:.5;cursor:default}
 
 /* ---------- states ---------- */
 .empty{grid-column:1/-1;text-align:center;padding:4rem 1.5rem;border:1px dashed var(--hair-mid);border-radius:18px;background:linear-gradient(180deg,rgba(26,26,32,.5),transparent)}
@@ -297,12 +301,29 @@ async function load(){
             '<div class="cstat"><div class="n">'+fmt(c.clips)+'</div><div class="l">Clips</div></div>'+
             (c.spend>0?'<div class="cstat"><div class="n">'+money0(c.spend)+'</div><div class="l">Spent</div></div>':'')+
           '</div>'+
-          '<div class="cfoot"><span class="cupd">'+dot+ago(c.updated)+'</span><span class="cedit">Edit →</span></div>'+
+          '<div class="cfoot"><span class="cupd">'+dot+ago(c.updated)+'</span><span class="cfoot-r"><button class="cdel" type="button" data-slug="'+esc(c.slug)+'" data-name="'+name+'">Delete</button><span class="cedit">Edit →</span></span></div>'+
         '</div>'+
       '</div>';
     }).join('');
   }catch(e){ grid.innerHTML='<div class="empty"><b>Couldn’t load</b><p>'+esc(e.message||e)+'</p></div>'; }
 }
+
+// Delete campaign — typed confirmation, since it can't be undone.
+$('#grid').addEventListener('click', async e=>{
+  const b=e.target.closest('.cdel'); if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const slug=b.dataset.slug, name=b.dataset.name||slug;
+  const typed=prompt('Delete “'+name+'” permanently? Its dashboard, clips and banner will be removed and campaigns.maisondelites.com/'+slug+' will stop showing data.\n\nType '+slug+' to confirm.');
+  if(typed==null) return;
+  if(typed.trim().toLowerCase()!==slug){ alert('Name didn’t match — nothing was deleted.'); return; }
+  b.disabled=true; b.textContent='Deleting…';
+  try{
+    const r=await fetch('/api/campaign?client='+encodeURIComponent(slug),{method:'DELETE',headers:hdr()});
+    if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
+    if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.error||('HTTP '+r.status)); }
+    load();
+  }catch(err){ alert('Couldn’t delete: '+(err.message||err)); b.disabled=false; b.textContent='Delete'; }
+});
 
 // New campaign
 $('#newBtn').addEventListener('click',()=>{ $('#newBox').classList.add('show'); $('#nName').focus(); });
