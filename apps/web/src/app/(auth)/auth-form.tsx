@@ -32,10 +32,6 @@ export function AuthForm({ mode, next, providers, initialError }: Props) {
 
       {mode === 'sign-up' ? (
         <div className="flex flex-col gap-3">
-          <Checkbox name="adult" invalid={!!state.fields?.adult}>
-            I am 18 or older.
-          </Checkbox>
-          {state.fields?.adult ? <p className="m-0 -mt-1 pl-8 text-[13px] text-bad">{state.fields.adult}</p> : null}
           <Checkbox name="terms" invalid={!!state.fields?.terms}>
             I agree to the{' '}
             <a href="/legal/terms" target="_blank" rel="noopener">

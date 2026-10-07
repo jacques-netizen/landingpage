@@ -6,7 +6,7 @@ export const LEGAL_WORKING_TEXT: Record<LegalSlug, { title: string; body: string
   terms: {
     title: 'Creator Terms of Use',
     body: `## Who can use the platform
-You must be 18 or older and the owner of every social account you link.
+You must be the owner of every social account you link.
 
 ## Campaigns
 Each campaign page lists its rules before you join. By joining you agree to those rules, saved as a dated version.

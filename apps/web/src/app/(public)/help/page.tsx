@@ -15,7 +15,7 @@ export default async function HelpPage() {
     {
       topic: 'Getting started',
       q: 'Who can join?',
-      a: 'Anyone 18 or older with a public TikTok, Instagram, YouTube or X account. Some campaigns set a minimum number of followers or a minimum account age, and say so on the campaign page.',
+      a: 'Anyone with a public TikTok, Instagram, YouTube or X account. Some campaigns set a minimum number of followers or a minimum account age, and say so on the campaign page.',
     },
     {
       topic: 'Getting started',

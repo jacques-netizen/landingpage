@@ -13,7 +13,7 @@ import { rateLimit } from '@/server/rate-limit'
 
 export type AuthFormState = {
   error?: string
-  fields?: { email?: string; adult?: string; terms?: string }
+  fields?: { email?: string; terms?: string }
   email?: string
 }
 
@@ -42,9 +42,9 @@ export async function authAction(
   let consentAt: Date | null = null
   if (mode === 'sign-up') {
     const fields: AuthFormState['fields'] = {}
-    if (form.get('adult') !== 'on') fields.adult = 'You must be 18 or older to join.'
+    // No age tick (owner decision, 2026-10-07): only the terms and privacy tick is required.
     if (form.get('terms') !== 'on') fields.terms = 'Tick to agree to the terms of use and the privacy policy.'
-    if (fields.adult || fields.terms) return { fields, email: rawEmail }
+    if (fields.terms) return { fields, email: rawEmail }
     consentAt = new Date()
     const c = makeConsentCookie(consentAt)
     ;(await cookies()).set(c.name, c.value, c.options)

@@ -10,7 +10,6 @@ const unique = (p: string) => `${p}-${Date.now()}-${Math.floor(Math.random() * 1
 async function requestLink(page: Page, mode: 'sign-in' | 'sign-up', email: string) {
   await page.goto(`/${mode}`)
   if (mode === 'sign-up') {
-    await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
     await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   }
   await page.getByLabel('Email').fill(email)
@@ -22,7 +21,6 @@ async function requestLink(page: Page, mode: 'sign-in' | 'sign-up', email: strin
 async function signUp(page: Page, email: string) {
   await page.context().clearCookies()
   await page.goto('/sign-up')
-  await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
   await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Create account' }).click()
@@ -40,12 +38,11 @@ async function sessionEmail(page: Page) {
   return s?.user?.email ?? null
 }
 
-test('sign up needs both ticks, then signs in at once, and sign out ends the session', async ({ page }) => {
+test('sign up needs the terms tick, then signs in at once, and sign out ends the session', async ({ page }) => {
   const email = unique('creator')
   await page.goto('/sign-up')
   await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Create account' }).click()
-  await expect(page.getByText('You must be 18 or older to join.')).toBeVisible()
   await expect(page.getByText('Tick to agree to the terms of use and the privacy policy.')).toBeVisible()
   expect(mailsTo(email)).toHaveLength(0)
 

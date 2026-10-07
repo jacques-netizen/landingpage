@@ -2,7 +2,7 @@ import 'server-only'
 import { env } from '@mde/config'
 import crypto from 'node:crypto'
 
-// Sign up records two ticks (18 or older, terms and privacy) before the account exists. They travel
+// Sign up records the terms and privacy tick before the account exists. They travel
 // to account creation in a short-lived signed cookie, and are stored with their time on the user.
 export const CONSENT_COOKIE = 'mde_signup_consent'
 const MAX_AGE_SECONDS = 30 * 60
@@ -24,7 +24,7 @@ export function makeConsentCookie(now = new Date()) {
   }
 }
 
-/** The time the person ticked both boxes, if the cookie is genuine and fresh. */
+/** The time the person ticked the box, if the cookie is genuine and fresh. */
 export function readConsent(value: string | undefined): Date | null {
   if (!value) return null
   const [payload, sig] = value.split('.')

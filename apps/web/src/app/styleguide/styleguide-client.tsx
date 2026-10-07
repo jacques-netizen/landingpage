@@ -415,7 +415,7 @@ export function StyleguideClient() {
           <Section title="Checkbox and toggle" note="Consent boxes are never ticked in advance.">
             <Row label="Checkbox">
               <Checkbox checked={checked} onCheckedChange={setChecked}>
-                I am 18 or older
+                I agree to the terms
               </Checkbox>
               <Checkbox defaultChecked>Checked</Checkbox>
               <Checkbox invalid>Error: tick to continue</Checkbox>

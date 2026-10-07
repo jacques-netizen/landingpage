@@ -12,7 +12,7 @@ export default async function HowItWorksPage() {
   const steps = [
     {
       title: 'Sign up and link your accounts',
-      body: `Create an account and confirm you are 18 or older. Link up to ${n.maxLinkedAccounts} TikTok, Instagram, YouTube or X accounts, with the official login where it is available or a short code in your profile bio.`,
+      body: `Create an account. Link up to ${n.maxLinkedAccounts} TikTok, Instagram, YouTube or X accounts, with the official login where it is available or a short code in your profile bio.`,
     },
     {
       title: 'Pick a campaign',

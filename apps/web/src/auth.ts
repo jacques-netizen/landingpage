@@ -69,7 +69,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   session: { strategy: 'database', maxAge: SESSION_MAX_AGE, updateAge: 24 * 60 * 60 },
   pages: { signIn: '/sign-in', verifyRequest: '/check-email', error: '/auth-error' },
   callbacks: {
-    // New accounts need both sign-up ticks (03_SYSTEMS.md section 13: block sign up without them).
+    // New accounts need the sign-up terms tick (03_SYSTEMS.md section 13: block sign up without them).
     async signIn({ user, account, email }) {
       const address = (user.email ?? '').trim().toLowerCase()
       const d = db()
@@ -113,10 +113,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
     async createUser({ user }) {
       const at = (await consentTime()) ?? new Date()
       const d = db()
-      await d
-        .update(tables.users)
-        .set({ isAdultConfirmed: true, adultConfirmedAt: at, termsAcceptedAt: at })
-        .where(eq(tables.users.id, user.id!))
+      await d.update(tables.users).set({ termsAcceptedAt: at }).where(eq(tables.users.id, user.id!))
       await d.insert(tables.creatorProfiles).values({ userId: user.id! }).onConflictDoNothing()
     },
     // One auth_identities row per way of signing in. OAuth rows are written by the adapter;

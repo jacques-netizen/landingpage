@@ -5,14 +5,14 @@ import { cookies } from 'next/headers'
 import { sql } from 'drizzle-orm'
 
 /**
- * Create the account for an email sign-up, with the time both boxes were ticked. An existing account
+ * Create the account for an email sign-up, with the time the terms box was ticked. An existing account
  * is left unchanged. Returns the new account's id, or null when the address already had one.
  */
 export async function createEmailAccount(email: string, consentAt: Date): Promise<string | null> {
   return db().transaction(async (tx) => {
     const [created] = await tx
       .insert(tables.users)
-      .values({ email, isAdultConfirmed: true, adultConfirmedAt: consentAt, termsAcceptedAt: consentAt })
+      .values({ email, termsAcceptedAt: consentAt })
       .onConflictDoNothing()
       .returning({ id: tables.users.id })
     if (created) await tx.insert(tables.creatorProfiles).values({ userId: created.id }).onConflictDoNothing()
