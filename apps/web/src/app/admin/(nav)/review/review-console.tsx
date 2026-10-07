@@ -2,7 +2,7 @@
 
 import { Button, ToastProvider, useToast } from '@mde/ui'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 
 export type ReviewCheck = { label: string; status: 'pass' | 'fail' | 'review' }
 export type ReviewItem = {
@@ -41,7 +41,10 @@ function Console({ state, items: initial, reasons, onApprove, onReject }: Props)
   const [reason, setReason] = useState<string | null>(null)
   const [note, setNote] = useState('')
   const [busy, start] = useTransition()
-  useEffect(() => setItems(initial), [initial])
+  // Posts decided here stay out of the list even if a refresh that started before the decision
+  // brings them back, so a quick key press never lands on a post that is already decided.
+  const decided = useRef(new Set<string>())
+  useEffect(() => setItems(initial.filter((x) => !decided.current.has(x.id))), [initial])
   const current = state === 'data' ? (items[Math.min(index, items.length - 1)] ?? null) : null
 
   const select = useCallback(
@@ -57,6 +60,7 @@ function Console({ state, items: initial, reasons, onApprove, onReject }: Props)
     (id: string, r: ReviewResult, done: string) => {
       if (!r.ok) return toast(r.error)
       toast(done)
+      decided.current.add(id)
       // Move on to the next post; the list refreshes from the server behind it.
       setItems((xs) => xs.filter((x) => x.id !== id))
       setReason(null)
