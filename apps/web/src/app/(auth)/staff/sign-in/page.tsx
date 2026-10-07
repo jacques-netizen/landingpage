@@ -17,7 +17,7 @@ export default async function StaffSignInPage({ searchParams }: { searchParams: 
       lead="For the Maison d'Élites team. We email you a link. No password needed."
       footer={<>No access yet? Ask an admin to add you on the Team page.</>}
     >
-      <AuthForm mode="sign-in" next={target} providers={enabledProviders()} />
+      <AuthForm mode="staff" next={target} providers={enabledProviders()} />
     </AuthShell>
   )
 }

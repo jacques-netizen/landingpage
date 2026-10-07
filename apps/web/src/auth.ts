@@ -82,7 +82,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
       // New email sign-ups are signed in before their address is proven. The first time the owner of
       // the inbox uses a link, every earlier session ends, so nobody keeps an address that is not theirs.
       if (existing && !existing.verified && account?.type === 'email' && !email?.verificationRequest) {
+        // The password was set before the address was proven, so it goes too, with every trusted device.
         await d.delete(tables.sessions).where(eq(tables.sessions.userId, existing.id))
+        await d.delete(tables.trustedDevices).where(eq(tables.trustedDevices.userId, existing.id))
+        await d.update(tables.users).set({ passwordHash: null }).where(eq(tables.users.id, existing.id))
       }
       let known: { id: string; status: string } | undefined = existing
       if (!known && account && account.type !== 'email') {

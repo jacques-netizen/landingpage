@@ -51,6 +51,11 @@ export const users = pgTable(
     name: text('display_name'),
     image: text('avatar_url'),
     emailVerified: tz('email_verified_at'),
+    // Chosen at sign up (owner request, 2026-10-07): shown instead of the email, and used to sign in
+    // with a password. Older accounts have none until they set one on their profile.
+    username: citext('username').unique(),
+    passwordHash: text('password_hash'),
+    discordUsername: text('discord_username'),
     isPrivateProfile: boolean('is_private_profile').notNull().default(false),
     isAdultConfirmed: boolean('is_adult_confirmed').notNull().default(false),
     adultConfirmedAt: tz('adult_confirmed_at'),
@@ -77,6 +82,39 @@ export const files = pgTable('files', {
   uploadedBy: uuid('uploaded_by').references(() => users.id),
   ...timestamps,
 })
+
+// A 6-digit code emailed when someone signs in with their password on a device we do not know yet.
+// Only a keyed hash of the code is kept; the row is deleted once used or replaced.
+export const signInCodes = pgTable(
+  'sign_in_codes',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    codeHash: text('code_hash').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: tz('expires_at').notNull(),
+    ...timestamps,
+  },
+  (t) => [index('sign_in_codes_user').on(t.userId)],
+)
+
+// Devices that passed an email code (or created the account). A password sign-in from one of them
+// needs no code. The browser keeps the token; only its hash is stored.
+export const trustedDevices = pgTable(
+  'trusted_devices',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull().unique(),
+    expiresAt: tz('expires_at').notNull(),
+    ...timestamps,
+  },
+  (t) => [index('trusted_devices_user').on(t.userId)],
+)
 
 export const STAFF_ROLE_VALUES = ['reviewer', 'finance', 'admin'] as const
 

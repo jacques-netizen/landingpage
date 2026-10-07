@@ -36,8 +36,10 @@ export async function signUpNewCreator(page: Page, prefix = 'creator') {
   await clearSignInLimits()
   await page.context().clearCookies()
   await page.goto('/sign-up')
+  await page.getByLabel('Username', { exact: true }).fill(`u${Date.now() % 1e9}${Math.floor(Math.random() * 1e4)}`)
+  await page.getByLabel('Email', { exact: true }).fill(email)
+  await page.getByLabel('Password', { exact: true }).fill('a long test password')
   await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
-  await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Create account' }).click()
   await page.waitForURL('**/campaigns')
   return email

@@ -7,28 +7,54 @@ import { latestLink, mailsTo } from './outbox'
 
 const unique = (p: string) => `${p}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@test.invalid`
 
-async function requestLink(page: Page, mode: 'sign-in' | 'sign-up', email: string) {
-  await page.goto(`/${mode}`)
-  if (mode === 'sign-up') {
-    await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
-  }
-  await page.getByLabel('Email').fill(email)
-  await page.getByRole('button', { name: mode === 'sign-up' ? 'Create account' : 'Email me a sign-in link' }).click()
+const handle = () => `u${Date.now() % 1e9}${Math.floor(Math.random() * 1e4)}`
+const PASSWORD = 'a long test password'
+
+async function requestLink(page: Page, email: string) {
+  await page.goto('/sign-in')
+  await page.getByLabel('Username or email').fill(email)
+  await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
   await page.waitForURL('**/check-email')
 }
 
-/** A new address is signed in at once and lands on the campaigns screen (testing report item 2). */
-async function signUp(page: Page, email: string) {
-  await page.context().clearCookies()
+async function fillSignUp(page: Page, email: string, username: string, tick = true) {
   await page.goto('/sign-up')
-  await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
-  await page.getByLabel('Email').fill(email)
+  await page.getByLabel('Username', { exact: true }).fill(username)
+  await page.getByLabel('Email', { exact: true }).fill(email)
+  await page.getByLabel('Password', { exact: true }).fill(PASSWORD)
+  if (tick) await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   await page.getByRole('button', { name: 'Create account' }).click()
+}
+
+/** A new account is signed in at once and lands on the campaigns screen (testing report item 2). */
+async function signUp(page: Page, email: string, username = handle()) {
+  await page.context().clearCookies()
+  await fillSignUp(page, email, username)
   await page.waitForURL((u) => u.pathname === '/campaigns')
+  return username
+}
+
+async function passwordSignIn(page: Page, identifier: string, password = PASSWORD) {
+  await page.goto('/sign-in')
+  await page.getByLabel('Username or email').fill(identifier)
+  await page.getByLabel('Password', { exact: true }).fill(password)
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+}
+
+async function latestCode(to: string) {
+  for (let i = 0; i < 50; i++) {
+    const code = mailsTo(to)
+      .filter((m) => m.subject.endsWith('sign-in code'))
+      .pop()
+      ?.text.match(/\b\d{6}\b/)?.[0]
+    if (code) return code
+    await new Promise((r) => setTimeout(r, 100))
+  }
+  throw new Error(`No sign-in code for ${to}`)
 }
 
 async function signInAs(page: Page, email: string) {
-  await requestLink(page, 'sign-in', email)
+  await requestLink(page, email)
   await page.goto(await latestLink(email))
   await page.waitForLoadState('networkidle')
 }
@@ -40,9 +66,7 @@ async function sessionEmail(page: Page) {
 
 test('sign up needs the terms tick, then signs in at once, and sign out ends the session', async ({ page }) => {
   const email = unique('creator')
-  await page.goto('/sign-up')
-  await page.getByLabel('Email').fill(email)
-  await page.getByRole('button', { name: 'Create account' }).click()
+  await fillSignUp(page, email, handle(), false)
   await expect(page.getByText('Tick to agree to the terms of use and the privacy policy.')).toBeVisible()
   expect(mailsTo(email)).toHaveLength(0)
 
@@ -63,13 +87,54 @@ test('sign up needs the terms tick, then signs in at once, and sign out ends the
   expect(await sessionEmail(page)).toBe(email)
 })
 
-test('signing up with an address that has an account sends a link and signs nobody in', async ({ page }) => {
+test('sign up refuses an email or username that is already taken', async ({ page }) => {
   const email = unique('again')
-  await signUp(page, email)
+  const username = await signUp(page, email)
   await page.context().clearCookies()
-  await requestLink(page, 'sign-up', email)
-  expect(mailsTo(email).pop()!.subject).toBe('Your sign-in link')
+  await fillSignUp(page, email, handle())
+  await expect(page.getByText('There is already an account with this email. Sign in instead.')).toBeVisible()
+  await fillSignUp(page, unique('other'), username.toUpperCase())
+  await expect(page.getByText('That username is taken. Try another.')).toBeVisible()
   expect(await sessionEmail(page)).toBeNull()
+})
+
+test('a password sign in on the same device needs no code; a new device needs the emailed code', async ({
+  browser,
+}) => {
+  const email = unique('pw')
+  const home = await browser.newPage()
+  const username = await signUp(home, email)
+  await home.goto('/sign-out')
+  await home.getByRole('button', { name: 'Sign out' }).click()
+  await home.waitForURL((u) => u.pathname === '/')
+
+  // The device that created the account: username and password are enough.
+  await passwordSignIn(home, username)
+  await home.waitForURL((u) => u.pathname === '/campaigns')
+  expect(await sessionEmail(home)).toBe(email)
+
+  // Another phone: a wrong password first, then the right one asks for the code from the email.
+  const phone = await browser.newPage()
+  await passwordSignIn(phone, username, 'not the password')
+  await expect(phone.getByText('That username or email and password do not match.')).toBeVisible()
+  await passwordSignIn(phone, email)
+  await phone.waitForURL('**/sign-in/code')
+  expect(await sessionEmail(phone)).toBeNull()
+  const code = await latestCode(email)
+  await phone.getByLabel('Code').fill(code === '000000' ? '111111' : '000000')
+  await phone.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await expect(phone.getByText('That code is not right. Check the email and try again.')).toBeVisible()
+  await phone.getByLabel('Code').fill(code)
+  await phone.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await phone.waitForURL((u) => u.pathname === '/campaigns')
+  expect(await sessionEmail(phone)).toBe(email)
+
+  // Now trusted, the phone signs in again without a code.
+  await phone.context().clearCookies({ name: 'authjs.session-token' })
+  await passwordSignIn(phone, username)
+  await phone.waitForURL((u) => u.pathname === '/campaigns')
+  await home.close()
+  await phone.close()
 })
 
 test('the first email link ends sessions started before the address was proven', async ({ browser }) => {
@@ -82,6 +147,9 @@ test('the first email link ends sessions started before the address was proven',
   await signInAs(owner, email)
   expect(await sessionEmail(owner)).toBe(email)
   expect(await sessionEmail(early)).toBeNull()
+  // The password chosen before the address was proven no longer works.
+  await passwordSignIn(early, email)
+  await expect(early.getByText('This account has no password yet.', { exact: false })).toBeVisible()
   await early.close()
   await owner.close()
 })
@@ -90,7 +158,7 @@ test('a magic link works once', async ({ page }) => {
   const email = unique('once')
   await signUp(page, email)
   await page.context().clearCookies()
-  await requestLink(page, 'sign-in', email)
+  await requestLink(page, email)
   const link = await latestLink(email)
   await page.goto(link)
   await page.waitForLoadState('networkidle')
@@ -101,14 +169,14 @@ test('a magic link works once', async ({ page }) => {
 
 test('signing in with an unknown address does not reveal it and creates no account', async ({ page }) => {
   const email = unique('unknown')
-  await requestLink(page, 'sign-in', email)
+  await requestLink(page, email)
   const mail = mailsTo(email).pop()!
   expect(mail.text).toContain('there is no account for it yet')
   expect(await sessionEmail(page)).toBeNull()
 })
 
 test('the email field explains a bad address', async ({ page }) => {
-  await page.goto('/sign-in')
+  await page.goto('/staff/sign-in')
   await page.getByLabel('Email').fill('name@')
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
   await expect(page.getByText('Enter an email address, like name@example.com.')).toBeVisible()

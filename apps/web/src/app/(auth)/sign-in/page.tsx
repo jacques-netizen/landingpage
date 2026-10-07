@@ -11,7 +11,7 @@ export default async function SignInPage({ searchParams }: { searchParams: Promi
   return (
     <AuthShell
       title="Sign in"
-      lead="We email you a link. No password needed."
+      lead="With your username and password, or a link we email you."
       footer={
         <>
           New here?{' '}
