@@ -7,7 +7,7 @@ import { campaignsForStaff } from '@/server/admin-queries'
 import { campaignPostCounts } from '@/server/campaign-overview'
 import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
-import { AdminPage, LinkButton } from '../_components/ui'
+import { AdminPage, LinkButton, Notice } from '../_components/ui'
 
 type Row = Awaited<ReturnType<typeof campaignsForStaff>>[number] & {
   usedLabel: string
@@ -48,7 +48,8 @@ const COLUMNS: Column<Row>[] = [
   },
 ]
 
-export default async function CampaignsAdminPage() {
+export default async function CampaignsAdminPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
+  const { deleted } = await searchParams
   const viewer = await requireStaff('staff', '/admin/campaigns')
   const d = db()
   const campaigns = await campaignsForStaff(d)
@@ -71,6 +72,13 @@ export default async function CampaignsAdminPage() {
       lead="Every campaign with its budget, views and posts. Open one to see every post."
       actions={hasAccess(viewer, 'money') ? <LinkButton href="/admin/campaigns/new">New campaign</LinkButton> : null}
     >
+      {deleted ? (
+        <Notice kind="ok">
+          {deleted === 'removed'
+            ? 'Campaign deleted.'
+            : 'Campaign deleted. It was closed first and its records are kept for the books.'}
+        </Notice>
+      ) : null}
       <Table
         dense
         caption="Campaigns"

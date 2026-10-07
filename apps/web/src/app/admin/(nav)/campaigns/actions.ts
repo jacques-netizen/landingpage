@@ -4,6 +4,7 @@ import {
   campaignFormSchema,
   CampaignError,
   cancelCampaign,
+  deleteCampaign,
   closeCampaign,
   copyCampaign,
   createClient,
@@ -137,6 +138,14 @@ export async function campaignAction(id: string, _prev: BuilderState, form: Form
       await db().transaction((tx) => closeCampaign(tx, viewer.id, id))
       revalidatePath(`/admin/campaigns/${id}`)
       return { ok: 'Closed. Earnings are released after the review window.' }
+    }
+    if (what === 'delete') {
+      // Deleting is for admins only, on top of the money access this action already needs.
+      await requireStaff('admin', `/admin/campaigns/${id}`)
+      const how = await deleteCampaign(db(), viewer.id, id)
+      revalidatePath('/admin/campaigns')
+      revalidatePath('/campaigns')
+      redirect(`/admin/campaigns?deleted=${how}`)
     }
     if (what === 'cancel') {
       await cancelCampaign(db(), viewer.id, id)

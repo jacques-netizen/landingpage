@@ -1,0 +1,1 @@
+ALTER TABLE "campaigns" ADD COLUMN "deleted_at" timestamp with time zone;

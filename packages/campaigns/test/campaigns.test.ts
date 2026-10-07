@@ -9,6 +9,7 @@ import {
   copyCampaign,
   createClient,
   createDraft,
+  deleteCampaign,
   fundCampaign,
   getPublicCampaign,
   goLive,
@@ -264,6 +265,22 @@ describe('changes after publishing', () => {
     await publishCampaign(db, actor, c.id)
     return { actor, client, c }
   }
+
+  it('deletes a campaign that never moved money, and hides and closes one that did', async () => {
+    const { actor, client, c } = await liveCampaign()
+    const draft = await createDraft(db, actor, form(client.id, { title: 'Never funded' }))
+    expect(await deleteCampaign(db, actor, draft.id)).toBe('removed')
+    expect(await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, draft.id))).toHaveLength(0)
+
+    expect(await deleteCampaign(db, actor, c.id)).toBe('hidden')
+    const [kept] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, c.id))
+    expect(kept!.status).toBe('closed')
+    expect(kept!.deletedAt).not.toBeNull()
+    expect((await listPublicCampaigns(db)).some((x) => x.campaign.id === c.id)).toBe(false)
+    expect(await getPublicCampaign(db, c.id)).toBeNull()
+    const audit = await db.select().from(tables.auditLog).where(eq(tables.auditLog.entityId, draft.id))
+    expect(audit.some((a) => a.action === 'campaign.delete')).toBe(true)
+  })
 
   it('keeps the money rules fixed but lets the rate change for new posts', async () => {
     const { actor, client, c } = await liveCampaign()

@@ -1,6 +1,6 @@
 import 'server-only'
 import { tables, type DbOrTx } from '@mde/db'
-import { desc, eq, sql } from 'drizzle-orm'
+import { desc, eq, sql, isNull } from 'drizzle-orm'
 
 /** Each client's holding balance (paid in, not yet moved into a campaign), from the ledger. */
 export async function clientsWithBalances(d: DbOrTx) {
@@ -50,6 +50,7 @@ export async function campaignsForStaff(d: DbOrTx) {
     .select({ c: tables.campaigns, client: tables.clients.name })
     .from(tables.campaigns)
     .leftJoin(tables.clients, eq(tables.clients.id, tables.campaigns.clientId))
+    .where(isNull(tables.campaigns.deletedAt))
     .orderBy(desc(tables.campaigns.createdAt))
   const waiting = await d.execute<{ campaign_id: string; n: string }>(
     sql`select campaign_id, count(*) as n from submissions where state in ('needs_review','flagged') group by campaign_id`,

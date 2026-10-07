@@ -38,6 +38,12 @@ export default async function CampaignAdminPage({
     .from(tables.clients)
     .orderBy(asc(tables.clients.name))
   const funded = await isFunded(d, id)
+  const [anyPost] = await d
+    .select({ id: tables.submissions.id })
+    .from(tables.submissions)
+    .where(eq(tables.submissions.campaignId, id))
+    .limit(1)
+  const hasPosts = !!anyPost
   const figures = (await campaignFigures(d, [id])).get(id)!
   const feeCents = client ? serviceFeeCents(c.budgetCents, client.serviceFeeBps) : 0
   const holding = client ? await clientHolding(d, client.id) : 0
@@ -182,7 +188,9 @@ export default async function CampaignAdminPage({
               copy: true,
               close: live,
               cancel: open && !funded,
+              delete: viewer.roles.includes('admin'),
             }}
+            keepsRecords={funded || hasPosts}
           />
         </section>
       ) : null}

@@ -273,6 +273,8 @@ export const campaigns = pgTable(
     type: text('type').notNull(),
     title: text('title').notNull(),
     coverImageUrl: text('cover_image_url'),
+    // Set when staff delete a campaign that has money or posts: hidden everywhere, kept for the books.
+    deletedAt: tz('deleted_at'),
     briefMarkdown: text('brief_markdown'),
     assets: jsonb('assets').$type<{ label: string; url: string }[]>().notNull().default([]),
     examplePosts: jsonb('example_posts').$type<string[]>().notNull().default([]),

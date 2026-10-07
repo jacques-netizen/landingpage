@@ -433,6 +433,55 @@ export async function closeCampaign(tx: DbOrTx, actorId: string | null, id: stri
   await noticeClosed(tx, c)
 }
 
+/**
+ * Delete a campaign (owner request, 2026-10-07). One that never moved money and has no posts is removed
+ * completely. Otherwise the books and creators' earnings depend on it, so it is closed if it is still
+ * running (its unspent budget goes back to the client when it releases, as for any closed campaign) and
+ * then hidden everywhere. Both are audited.
+ */
+export async function deleteCampaign(db: Db, actorId: string, id: string): Promise<'removed' | 'hidden'> {
+  return db.transaction(async (tx) => {
+    const c = await load(tx, id, true)
+    const [money] = await tx
+      .select({ id: tables.ledgerTransactions.id })
+      .from(tables.ledgerTransactions)
+      .where(eq(tables.ledgerTransactions.campaignId, id))
+      .limit(1)
+    const [post] = await tx
+      .select({ id: tables.submissions.id })
+      .from(tables.submissions)
+      .where(eq(tables.submissions.campaignId, id))
+      .limit(1)
+    if (!money && !post) {
+      await tx.delete(tables.clientReportLinks).where(eq(tables.clientReportLinks.campaignId, id))
+      await tx.delete(tables.campaignMembers).where(eq(tables.campaignMembers.campaignId, id))
+      await tx.update(tables.campaigns).set({ currentTermsVersionId: null }).where(eq(tables.campaigns.id, id))
+      await tx.delete(tables.termsVersions).where(eq(tables.termsVersions.campaignId, id))
+      await tx.delete(tables.campaigns).where(eq(tables.campaigns.id, id))
+      await writeAudit(tx, { actorId, action: 'campaign.delete', entity: 'campaign', entityId: id, before: c })
+      return 'removed'
+    }
+    if (['live', 'closing'].includes(c.status)) await closeCampaign(tx, actorId, id)
+    else if (['draft', 'awaiting_funding'].includes(c.status)) {
+      // Funded but never live: no posts can exist, so it closes at once and the budget is returned.
+      await tx
+        .update(tables.campaigns)
+        .set({ status: 'closed', closedAt: new Date(), releaseAt: new Date() })
+        .where(eq(tables.campaigns.id, id))
+    }
+    await tx.update(tables.campaigns).set({ deletedAt: new Date() }).where(eq(tables.campaigns.id, id))
+    await writeAudit(tx, {
+      actorId,
+      action: 'campaign.hide',
+      entity: 'campaign',
+      entityId: id,
+      before: { status: c.status },
+      after: { deleted: true },
+    })
+    return 'hidden'
+  })
+}
+
 /** Cancel a campaign that was never funded. A funded campaign is closed instead. */
 export async function cancelCampaign(db: Db, actorId: string, id: string) {
   return db.transaction(async (tx) => {

@@ -1,6 +1,6 @@
 // Read models for campaign pages. Money figures come from the ledger, never from stored balances.
 import { tables, type DbOrTx } from '@mde/db'
-import { and, desc, eq, inArray, sql } from 'drizzle-orm'
+import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 
 export type CampaignFigures = { budgetCents: number; leftCents: number; paidCents: number; paidPercent: number }
 
@@ -40,7 +40,13 @@ export async function listPublicCampaigns(db: DbOrTx) {
   const rows = await db
     .select()
     .from(tables.campaigns)
-    .where(and(eq(tables.campaigns.visibility, 'public'), inArray(tables.campaigns.status, [...PUBLIC_STATUSES])))
+    .where(
+      and(
+        eq(tables.campaigns.visibility, 'public'),
+        inArray(tables.campaigns.status, [...PUBLIC_STATUSES]),
+        isNull(tables.campaigns.deletedAt),
+      ),
+    )
     .orderBy(desc(tables.campaigns.createdAt))
   const figures = await campaignFigures(
     db,
@@ -57,6 +63,7 @@ export async function getPublicCampaign(db: DbOrTx, id: string, opts: { includeU
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null
   const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
   if (!c) return null
+  if (c.deletedAt && !opts.includeUnpublished) return null
   if (!opts.includeUnpublished && !PUBLIC_STATUSES.includes(c.status as (typeof PUBLIC_STATUSES)[number])) return null
   const figures = (await campaignFigures(db, [c.id])).get(c.id)!
   const [terms] = c.currentTermsVersionId

@@ -1,7 +1,7 @@
 import 'server-only'
 import { campaignFigures } from '@mde/campaigns'
 import { db, tables } from '@mde/db'
-import { and, asc, count, eq, inArray, lte, min, sql } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, lte, min, sql, isNull } from 'drizzle-orm'
 import { HOUR } from './appeals'
 
 /** Budget left at or below this share counts as near its end. */
@@ -33,7 +33,7 @@ export async function staffDashboard(now = new Date()) {
     d
       .select({ id: tables.campaigns.id, title: tables.campaigns.title })
       .from(tables.campaigns)
-      .where(eq(tables.campaigns.status, 'live')),
+      .where(and(eq(tables.campaigns.status, 'live'), isNull(tables.campaigns.deletedAt))),
   ])
   const figures = await campaignFigures(
     d,
