@@ -1,7 +1,8 @@
 // One deployment, two addresses: the brand site on the main domain (maisondelites.com) and the creator
 // app with staff admin on its own subdomain (app.maisondelites.com). The main domain shows the brand
 // site at "/" and sends everything that belongs to the app across; the app sends "/brands" back.
-// With no BRAND_HOST set (previews, tests) nothing is routed and every page is served everywhere.
+// With no BRAND_HOST set (previews, tests) nothing is routed and every page is served everywhere, except
+// that Railway's own address always moves to the app address.
 
 export type HostRoute = { kind: 'next' } | { kind: 'rewrite'; path: string } | { kind: 'redirect'; url: string }
 
@@ -26,8 +27,15 @@ export function routeForHost(
 ): HostRoute {
   const brand = cfg.brandHost?.toLowerCase()
   const app = cfg.appHost?.toLowerCase()
-  if (!brand || !app || brand === app || !host) return { kind: 'next' }
+  if (!app || !host) return { kind: 'next' }
   const h = host.toLowerCase().replace(/:\d+$/, '')
+  // Railway's own address (web-production-....up.railway.app) moves to the app's address, so people
+  // always see app.maisondelites.com. Health checks are answered where they land.
+  if (h.endsWith('.up.railway.app') && h !== app) {
+    if (path === '/api/health') return { kind: 'next' }
+    return { kind: 'redirect', url: `https://${app}${path}${search}` }
+  }
+  if (!brand || brand === app) return { kind: 'next' }
   if (h === `www.${brand}`) return { kind: 'redirect', url: `https://${brand}${path}${search}` }
   if (h === brand) {
     if (SHARED_PATHS.some((r) => r.test(path)) || ASSET.test(path)) return { kind: 'next' }

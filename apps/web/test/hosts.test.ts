@@ -33,8 +33,26 @@ describe('two addresses, one deployment', () => {
     expect(r('app.maisondelites.com', '/campaigns')).toEqual({ kind: 'next' })
   })
 
-  it('does nothing without a brand domain, or on any other address', () => {
+  it('does nothing without an app address, or on any other address', () => {
     expect(routeForHost('localhost:3000', '/', '', {})).toEqual({ kind: 'next' })
-    expect(r('web-production-5c853d.up.railway.app', '/campaigns')).toEqual({ kind: 'next' })
+    expect(routeForHost('localhost:3100', '/campaigns', '', { appHost: 'localhost:3100' })).toEqual({ kind: 'next' })
+    expect(r('preview.example.com', '/campaigns')).toEqual({ kind: 'next' })
+  })
+
+  it("sends Railway's own address to the app address, keeping the page, but answers health checks", () => {
+    expect(r('web-production-5c853d.up.railway.app', '/campaigns', '?x=1')).toEqual({
+      kind: 'redirect',
+      url: 'https://app.maisondelites.com/campaigns?x=1',
+    })
+    expect(r('web-production-5c853d.up.railway.app', '/api/health')).toEqual({ kind: 'next' })
+    expect(
+      routeForHost('web-production-5c853d.up.railway.app', '/wallet', '', { appHost: 'app.maisondelites.com' }),
+    ).toEqual({ kind: 'redirect', url: 'https://app.maisondelites.com/wallet' })
+    // When the app address itself is the Railway one, nothing moves.
+    expect(
+      routeForHost('web-production-5c853d.up.railway.app', '/wallet', '', {
+        appHost: 'web-production-5c853d.up.railway.app',
+      }),
+    ).toEqual({ kind: 'next' })
   })
 })
