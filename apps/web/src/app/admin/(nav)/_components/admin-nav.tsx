@@ -81,7 +81,7 @@ export function AdminSideNav({ email, role }: { email: string; role: string }) {
           <input
             name="q"
             placeholder="Search creators"
-            aria-label="Search creators"
+            aria-label="Find a creator"
             className="w-full border-0 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted"
           />
         </label>
