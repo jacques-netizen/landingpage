@@ -21,7 +21,7 @@ type Props = {
 const surface = (theme: Props['theme']) =>
   theme
     ? 'bg-[var(--t-pop)] backdrop-blur-[24px] font-app text-[var(--t-text)] border border-solid border-[var(--t-glass-line)] shadow-[0_40px_100px_rgba(0,0,0,0.45)]'
-    : 'bg-[#FBF7F0] font-sans text-ink shadow-[0_32px_80px_rgba(26,21,16,0.14)]'
+    : 'bg-field font-sans text-ink shadow-[0_32px_80px_rgba(26,21,16,0.14)]'
 const line = (theme: Props['theme']) => (theme ? 'border-[var(--t-hair)]' : 'border-line')
 const mutedText = (theme: Props['theme']) => (theme ? 'text-[var(--t-muted)]' : 'text-muted-2')
 const titleFont = (theme: Props['theme']) =>

@@ -29,8 +29,8 @@ export function CampaignActions({ id, can, fundLabel, goLive }: Props) {
       {state.ok ? <Notice kind="ok">{state.ok}</Notice> : null}
       {state.error ? <Notice kind="bad">{state.error}</Notice> : null}
       {goLive ? (
-        <div className="mb-6 max-w-[560px] rounded-card border border-solid border-line bg-[#FBF7F0] p-6">
-          <h3 className="m-0 font-serif text-[22px] font-normal">Go live</h3>
+        <div className="mb-6 max-w-[560px] rounded-card border border-solid border-line bg-field p-6">
+          <h3 className="m-0 font-app text-[16px] font-semibold">Go live</h3>
           <dl className="mt-4 mb-0 flex flex-col gap-2 text-[14px]">
             {goLive.lines.map(([k, v]) => (
               <div key={k} className="flex justify-between gap-4">

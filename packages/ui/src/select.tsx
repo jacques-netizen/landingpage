@@ -47,7 +47,7 @@ export function Select({ id, options, placeholder, tone = 'paper', theme, invali
           className={cn(
             'z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-input border border-solid p-1 shadow-[0_32px_80px_rgba(26,21,16,0.14)]',
             tone === 'paper'
-              ? 'border-sand bg-[#FBF7F0] font-sans text-ink'
+              ? 'border-sand bg-field font-sans text-ink'
               : 'border-[var(--t-glass-line)] bg-[var(--t-pop)] font-app text-[var(--t-text)]',
           )}
         >

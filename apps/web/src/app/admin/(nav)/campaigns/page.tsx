@@ -32,19 +32,19 @@ const COLUMNS: Column<Row>[] = [
     key: 'approved',
     header: 'Approved',
     align: 'right',
-    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=overview&show=approved`}>{r.posts.approved}</a>,
+    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=submissions&show=approved`}>{r.posts.approved}</a>,
   },
   {
     key: 'pending',
     header: 'Pending',
     align: 'right',
-    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=overview&show=pending`}>{r.posts.pending}</a>,
+    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=submissions&show=pending`}>{r.posts.pending}</a>,
   },
   {
     key: 'rejected',
     header: 'Rejected',
     align: 'right',
-    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=overview&show=rejected`}>{r.posts.rejected}</a>,
+    cell: (r) => <a href={`/admin/campaigns/${r.id}?tab=submissions&show=rejected`}>{r.posts.rejected}</a>,
   },
 ]
 

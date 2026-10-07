@@ -15,7 +15,7 @@ export default async function SettingsPage() {
   return (
     <AdminPage title="Settings" lead="Admin only. Every change is written to the audit log.">
       <section aria-labelledby="reason-codes">
-        <h2 id="reason-codes" className="m-0 font-serif text-[24px] font-normal">
+        <h2 id="reason-codes" className="m-0 font-app text-[16px] font-semibold">
           Reason codes
         </h2>
         <p className="mt-1 mb-4 max-w-[640px] text-[13px] text-muted-2">

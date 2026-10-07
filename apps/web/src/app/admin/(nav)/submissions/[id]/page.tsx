@@ -100,13 +100,13 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
         ].map(([k, v]) => (
           <div key={k}>
             <dt className="text-[13px] text-muted-2">{k}</dt>
-            <dd className="m-0 mt-1 font-serif text-[28px] tabular-nums">{v}</dd>
+            <dd className="m-0 mt-1 font-app font-semibold text-[26px] tabular-nums">{v}</dd>
           </div>
         ))}
       </dl>
 
       <section className="border-0 border-b border-solid border-line py-6 text-[14px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Creator and account</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">Creator and account</h2>
         <p className="m-0">
           <a href={`/admin/creators/${s.creatorId}`}>{row.name ?? row.email}</a> ·{' '}
           {account
@@ -133,7 +133,7 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
       </section>
 
       <section className="border-0 border-b border-solid border-line py-6 text-[13px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Checks</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">Checks</h2>
         {checks.length === 0 ? <p className="m-0 text-muted-2">No automatic check results stored.</p> : null}
         {checks.map((c) => (
           <div key={c.check} className="flex items-center gap-3 border-0 border-b border-solid border-line py-2">
@@ -153,7 +153,7 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
       </section>
 
       <section className="border-0 border-b border-solid border-line py-6 text-[13px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Flags</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">Flags</h2>
         {flags.length === 0 ? <p className="m-0 text-muted-2">No flags.</p> : null}
         {flags.map((f) => (
           <div key={f.id} className="border-0 border-b border-solid border-line py-3">
@@ -167,7 +167,7 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
       </section>
 
       <section className="border-0 border-b border-solid border-line py-6 text-[13px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Decisions</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">Decisions</h2>
         {decisions.length === 0 ? <p className="m-0 text-muted-2">No decisions yet.</p> : null}
         {decisions.map(({ dec, email }) => (
           <p key={dec.id} className="my-2">
@@ -188,7 +188,7 @@ export default async function SubmissionAdminPage({ params }: { params: Promise<
       </section>
 
       <section className="py-6">
-        <h2 className="m-0 mb-4 font-serif text-[22px] font-normal">Decide</h2>
+        <h2 className="m-0 mb-4 font-app text-[16px] font-semibold">Decide</h2>
         <DecisionForm
           id={id}
           reasons={reasons.map((r) => ({ value: r.code, label: r.label }))}

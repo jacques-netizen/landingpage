@@ -26,7 +26,7 @@ const PAYOUT: Record<string, string> = {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section aria-label={title} className="border-0 border-b border-solid border-line py-6 text-[14px]">
-      <h2 className="m-0 mb-3 font-serif text-[22px] font-normal">{title}</h2>
+      <h2 className="m-0 mb-3 font-app text-[16px] font-semibold">{title}</h2>
       {children}
     </section>
   )

@@ -9,7 +9,7 @@ const control = (tone: Tone, invalid?: boolean) =>
     'box-border w-full rounded-input border border-solid px-4 text-[14px] outline-none',
     'focus-visible:outline-2 focus-visible:outline-offset-2',
     tone === 'paper'
-      ? 'bg-[#FBF7F0] font-sans text-ink placeholder:text-muted focus-visible:outline-ink'
+      ? 'bg-field font-sans text-ink placeholder:text-muted focus-visible:outline-ink'
       : 'bg-[var(--t-glass-bg)] font-app font-medium text-[var(--t-text)] placeholder:text-[var(--t-muted)] backdrop-blur-[20px] focus-visible:outline-[var(--t-text)]',
     invalid ? 'border-bad' : tone === 'paper' ? 'border-sand' : 'border-[var(--t-glass-line)]',
     'disabled:cursor-not-allowed disabled:opacity-60',

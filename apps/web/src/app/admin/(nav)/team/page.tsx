@@ -13,8 +13,8 @@ export default async function TeamPage() {
   const [team, owners] = [await listTeam(), ownerEmails()]
   return (
     <AdminPage title="Team" lead="Give your team access. They sign in at /staff/sign-in with the email you add here.">
-      <section className="max-w-[860px] rounded-card border border-solid border-line bg-[#FBF7F0] p-6">
-        <h2 className="m-0 mb-4 font-serif text-[22px] font-normal">Add someone</h2>
+      <section className="max-w-[860px] rounded-card border border-solid border-line bg-field p-6">
+        <h2 className="m-0 mb-4 font-app text-[16px] font-semibold">Add someone</h2>
         <AddMemberForm roles={STAFF_ROLES.map((r) => ({ value: r, label: ROLE_LABEL[r].name }))} />
         <ul className="mt-5 mb-0 flex list-none flex-col gap-1 p-0 text-[13px] text-muted-2">
           {STAFF_ROLES.map((r) => (

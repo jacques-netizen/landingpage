@@ -28,7 +28,7 @@ function MediaSlot({ slot, initial }: { slot: Slot; initial: string }) {
     }
   }
   return (
-    <div className="flex flex-col gap-2 rounded-card border border-solid border-line bg-[#FBF7F0] p-4">
+    <div className="flex flex-col gap-2 rounded-card border border-solid border-line bg-field p-4">
       <span className="text-[13px] font-medium">{slot.label}</span>
       <input type="hidden" name={slot.key} value={url} />
       {slot.kind === 'link' ? (
@@ -100,7 +100,7 @@ export function BrandSiteForm({ slots, values }: { slots: Slot[]; values: Record
     <form action={action} className="flex max-w-[960px] flex-col gap-10">
       {groups.map((g) => (
         <section key={g} aria-label={g}>
-          <h2 className="m-0 mb-4 font-serif text-[22px] font-normal">{g}</h2>
+          <h2 className="m-0 mb-4 font-app text-[16px] font-semibold">{g}</h2>
           <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
             {slots
               .filter((s) => s.group === g)

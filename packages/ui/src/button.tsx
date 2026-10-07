@@ -16,8 +16,8 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 // Paper values from the review queue and client report; app values from the campaigns and wallet screens.
 const paper: Record<ButtonVariant, string> = {
   primary: 'bg-ink text-white',
-  secondary: 'border border-solid border-sand bg-[#FBF7F0] text-ink',
-  destructive: 'border border-solid border-sand bg-[#FBF7F0] text-bad',
+  secondary: 'border border-solid border-sand bg-field text-ink',
+  destructive: 'border border-solid border-sand bg-field text-bad',
   quiet: 'text-ink hover:underline underline-offset-4',
 }
 const app: Record<ButtonVariant, string> = {

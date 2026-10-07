@@ -126,6 +126,7 @@ test('the campaign overview shows the numbers and every approved, pending and re
     await sql`select id, current_terms_version_id as terms, rate_cents_per_1000 as rate from campaigns where title = 'Sample clipping'`
   const [u] =
     await sql`insert into users (email, display_name) values (${`ov-${Date.now()}@test.invalid`}, 'Overview creator') returning id`
+  await sql`insert into campaign_members (campaign_id, creator_id) values (${c!.id}, ${u!.id})`
   const tag = `ov${Date.now()}`
   for (const [i, state] of ['earning', 'needs_review', 'rejected'].entries())
     await sql`
@@ -137,8 +138,15 @@ test('the campaign overview shows the numbers and every approved, pending and re
 
   await signInAs(page, 'reviewer@seed.invalid')
   await page.goto(`/admin/campaigns/${c!.id}`)
-  for (const k of ['Views on approved posts', 'Counted views', 'Earned by creators', 'Left in budget'])
+  for (const k of ['Views on approved posts', 'Counted views', 'Approved posts', 'Pending posts', 'Rejected posts'])
     await expect(page.getByText(k, { exact: true })).toBeVisible()
+  for (const h of ['Description', 'Campaign rules']) await expect(page.getByRole('heading', { name: h })).toBeVisible()
+  const campaignTabs = page.getByRole('navigation', { name: 'Campaign', exact: true })
+  await campaignTabs.getByRole('link', { name: 'Creators', exact: true }).click()
+  await expect(page.locator(`a[href="/admin/creators/${u!.id}"]`)).toBeVisible()
+  await campaignTabs.getByRole('link', { name: 'Pages', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Pages' })).toBeVisible()
+  await campaignTabs.getByRole('link', { name: 'Submissions', exact: true }).click()
   const tabs = page.getByRole('navigation', { name: 'Posts by outcome' })
   await expect(tabs.getByRole('link', { name: /^Approved \d+$/ })).toBeVisible()
   const postLink = (i: number) => page.locator(`a[href="https://www.tiktok.com/@${tag}/video/${i}"]`)

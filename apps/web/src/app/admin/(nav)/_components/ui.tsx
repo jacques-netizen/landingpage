@@ -13,10 +13,10 @@ export function AdminPage({
   children: ReactNode
 }) {
   return (
-    <div className="max-w-[1080px] px-10 py-8">
+    <div className="mx-auto max-w-[1080px] px-10 py-8">
       <div className="flex items-start justify-between gap-6">
         <div>
-          <h1 className="m-0 font-serif text-[28px] font-normal">{title}</h1>
+          <h1 className="m-0 font-app text-[24px] font-bold tracking-[-0.01em]">{title}</h1>
           {lead ? <p className="mt-1 mb-0 text-[13px] text-muted-2">{lead}</p> : null}
         </div>
         {actions ? <div className="flex shrink-0 items-center gap-3">{actions}</div> : null}
@@ -56,7 +56,7 @@ export function LinkButton({
       className={
         variant === 'primary'
           ? 'inline-flex h-10 items-center rounded-pill bg-ink px-5 text-[13px] font-medium text-white no-underline hover:text-white'
-          : 'inline-flex h-10 items-center rounded-pill border border-solid border-sand bg-[#FBF7F0] px-5 text-[13px] font-medium text-ink no-underline'
+          : 'inline-flex h-10 items-center rounded-pill border border-solid border-sand bg-field px-5 text-[13px] font-medium text-ink no-underline'
       }
     >
       {children}

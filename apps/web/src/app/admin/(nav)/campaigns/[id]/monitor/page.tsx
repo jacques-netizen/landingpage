@@ -75,7 +75,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
     >
       <section aria-labelledby="budget" className="border-0 border-b border-solid border-line pb-8">
         <div className="flex items-center gap-4">
-          <h2 id="budget" className="m-0 font-serif text-[24px] font-normal">
+          <h2 id="budget" className="m-0 font-app text-[16px] font-semibold">
             Budget
           </h2>
           <StatusBadge status={status?.dot ?? 'neutral'}>{status?.label ?? c.status}</StatusBadge>
@@ -88,7 +88,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="text-[13px] text-muted-2">{k}</dt>
-              <dd className="m-0 mt-1 font-serif text-[28px] tabular-nums">{v}</dd>
+              <dd className="m-0 mt-1 font-app font-semibold text-[26px] tabular-nums">{v}</dd>
             </div>
           ))}
         </dl>
@@ -99,7 +99,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
       </section>
 
       <section aria-labelledby="states" className="border-0 border-b border-solid border-line py-8">
-        <h2 id="states" className="m-0 mb-4 font-serif text-[24px] font-normal">
+        <h2 id="states" className="m-0 mb-4 font-app text-[16px] font-semibold">
           Posts by state
         </h2>
         {total === 0 ? (
@@ -117,7 +117,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
       </section>
 
       <section aria-labelledby="flags" className="border-0 border-b border-solid border-line py-8">
-        <h2 id="flags" className="m-0 mb-4 font-serif text-[24px] font-normal">
+        <h2 id="flags" className="m-0 mb-4 font-app text-[16px] font-semibold">
           Flagged posts
         </h2>
         {m.flags.length === 0 ? (
@@ -143,7 +143,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
       </section>
 
       <section aria-labelledby="creators" className="border-0 border-b border-solid border-line py-8">
-        <h2 id="creators" className="m-0 mb-4 font-serif text-[24px] font-normal">
+        <h2 id="creators" className="m-0 mb-4 font-app text-[16px] font-semibold">
           Top creators
         </h2>
         {m.topCreators.length === 0 ? (
@@ -182,7 +182,7 @@ export default async function CampaignMonitorPage({ params }: { params: Promise<
       </section>
 
       <section aria-labelledby="closing" className="pt-8">
-        <h2 id="closing" className="m-0 mb-2 font-serif text-[24px] font-normal">
+        <h2 id="closing" className="m-0 mb-2 font-app text-[16px] font-semibold">
           Closing
         </h2>
         <p className="mt-0 mb-4 text-[13px] text-muted-2">

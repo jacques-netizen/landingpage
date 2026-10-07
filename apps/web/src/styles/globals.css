@@ -75,3 +75,33 @@
   outline: 2px solid #1a1510;
   outline-offset: 2px;
 }
+
+/* Staff admin: a dark console look (owner request, modelled on the layout of the Promote admin). The
+   admin keeps its own components; inside it the light tokens are swapped for dark ones. Set on body
+   so dropdowns and dialogs rendered outside the page pick it up too. */
+body:has(.mde-admin-dark) {
+  color-scheme: dark;
+  --color-page: #0e0e10;
+  --color-panel: #161618;
+  --color-field: #1a1a1d;
+  --color-field-2: #222226;
+  --color-ink: #ececee;
+  --color-line: #27272b;
+  --color-sand: #35353b;
+  --color-muted: #7d7d86;
+  --color-muted-2: #9d9da6;
+  --color-white: #121214;
+  --color-ok-ink: #5cc98f;
+  --color-bad: #ef6b62;
+  --color-gold-ink: #d8c58f;
+  background: #0e0e10;
+}
+/* Plain links read in gold on the dark console; any link with its own colour class keeps it. */
+@layer base {
+  .mde-admin-dark a {
+    color: var(--color-gold-soft);
+  }
+  .mde-admin-dark a:hover {
+    color: var(--color-ink);
+  }
+}

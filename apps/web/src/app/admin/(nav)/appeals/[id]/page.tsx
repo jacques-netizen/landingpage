@@ -45,7 +45,7 @@ export default async function AppealPage({ params }: { params: Promise<{ id: str
       }
     >
       <section className="border-0 border-b border-solid border-line pb-6 text-[14px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">Original decision</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">Original decision</h2>
         <p className="m-0">{reason ? `${reason.label}: ${reason.creatorMessage}` : 'No reason recorded.'}</p>
         {a.reasonNote ? <p className="mt-1 mb-0 text-muted-2">Note: {a.reasonNote}</p> : null}
         <ul className="mt-3 mb-0 pl-5 text-[13px] text-muted-2">
@@ -64,7 +64,7 @@ export default async function AppealPage({ params }: { params: Promise<{ id: str
         </p>
       </section>
       <section className="border-0 border-b border-solid border-line py-6 text-[14px]">
-        <h2 className="m-0 mb-2 font-serif text-[22px] font-normal">The creator says</h2>
+        <h2 className="m-0 mb-2 font-app text-[16px] font-semibold">The creator says</h2>
         <p className="m-0 whitespace-pre-line">{a.message}</p>
         {a.links?.length ? (
           <ul className="mt-3 mb-0 pl-5 text-[13px]">

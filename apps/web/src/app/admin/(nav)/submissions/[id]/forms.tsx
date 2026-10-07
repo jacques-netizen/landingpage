@@ -70,7 +70,7 @@ export function ClearFlag({ id, flagId }: { id: string; flagId: string }) {
         name="note"
         aria-label="Why this flag is cleared"
         placeholder="Why it is fine"
-        className="h-9 flex-1 rounded-input border border-solid border-sand bg-[#FBF7F0] px-3 font-sans text-[13px]"
+        className="h-9 flex-1 rounded-input border border-solid border-sand bg-field px-3 font-sans text-[13px]"
       />
       <Button type="submit" size="sm" variant="secondary" loading={pending}>
         Clear flag

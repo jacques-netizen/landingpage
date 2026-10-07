@@ -102,3 +102,76 @@ export async function campaignPostCounts() {
     ]),
   )
 }
+
+/** Everyone who joined the campaign, newest first, with their linked accounts and their posts here. */
+export async function campaignCreators(campaignId: string, q?: string) {
+  const term = q?.trim() ? `%${q.trim()}%` : null
+  const rows = await db().execute<{
+    id: string
+    email: string
+    name: string | null
+    joined_at: Date
+    status: string
+    posts: string
+    approved: string
+    accounts: { platform: string; handle: string; status: string }[] | null
+  }>(sql`
+    select u.id, u.email, u.display_name as name, m.joined_at, u.status,
+      (select count(*) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id)::bigint as posts,
+      (select count(*) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id
+         and s.state in (${inList(BUCKETS.approved.states)}))::bigint as approved,
+      (select json_agg(json_build_object('platform', a.platform, 'handle', a.handle, 'status', a.status) order by a.created_at)
+         from linked_accounts a where a.creator_id = u.id and a.status <> 'removed') as accounts
+    from campaign_members m join users u on u.id = m.creator_id
+    where m.campaign_id = ${campaignId}
+      ${term ? sql`and (u.email ilike ${term} or u.display_name ilike ${term})` : sql``}
+    order by m.joined_at desc limit 500`)
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name ?? r.email,
+    email: r.email,
+    joinedAt: new Date(r.joined_at),
+    suspended: r.status === 'suspended',
+    posts: Number(r.posts),
+    approved: Number(r.approved),
+    accounts: r.accounts ?? [],
+  }))
+}
+
+/** The accounts (pages) posting into the campaign, with followers and how their posts are doing. */
+export async function campaignPages(campaignId: string) {
+  const rows = await db().execute<{
+    id: string
+    platform: string
+    handle: string
+    status: string
+    followers: number | null
+    creator: string
+    creator_id: string
+    posts: string
+    views: string
+    earned: string
+  }>(sql`
+    select a.id, a.platform, a.handle, a.status, a.followers, coalesce(u.display_name, u.email) as creator, u.id as creator_id,
+      count(s.id)::bigint as posts,
+      coalesce(sum(s.latest_views - s.baseline_views) filter (where s.state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
+      coalesce(sum(s.earned_cents), 0)::bigint as earned
+    from linked_accounts a
+    join users u on u.id = a.creator_id
+    join campaign_members m on m.creator_id = a.creator_id and m.campaign_id = ${campaignId}
+    left join submissions s on s.linked_account_id = a.id and s.campaign_id = ${campaignId}
+    where a.status <> 'removed'
+    group by a.id, u.id order by count(s.id) desc, a.followers desc nulls last limit 500`)
+  return rows.map((r) => ({
+    id: r.id,
+    platform: r.platform,
+    handle: r.handle,
+    status: r.status,
+    followers: r.followers,
+    creator: r.creator,
+    creatorId: r.creator_id,
+    posts: Number(r.posts),
+    views: Number(r.views),
+    earnedCents: Number(r.earned),
+  }))
+}

@@ -37,7 +37,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
       />
       {canEdit ? (
         <section className="mt-12">
-          <h2 className="m-0 mb-1 font-serif text-[28px] font-normal">Record funding</h2>
+          <h2 className="m-0 mb-1 font-app text-[16px] font-semibold">Record funding</h2>
           <p className="mt-0 mb-6 text-[13px] text-muted-2">
             Money the client paid by invoice or bank transfer. Each reference is recorded once.
           </p>
@@ -45,7 +45,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
         </section>
       ) : null}
       <section className="mt-12">
-        <h2 className="m-0 mb-4 font-serif text-[28px] font-normal">Funding received</h2>
+        <h2 className="m-0 mb-4 font-app text-[16px] font-semibold">Funding received</h2>
         <Table
           dense
           caption="Funding received"
@@ -60,7 +60,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
         />
       </section>
       <section className="mt-12">
-        <h2 className="m-0 mb-4 font-serif text-[28px] font-normal">Campaigns</h2>
+        <h2 className="m-0 mb-4 font-app text-[16px] font-semibold">Campaigns</h2>
         <Table
           dense
           caption="Campaigns for this client"

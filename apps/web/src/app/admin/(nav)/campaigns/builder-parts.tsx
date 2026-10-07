@@ -96,7 +96,7 @@ function DropZone({
         onFiles([...e.dataTransfer.files])
       }}
       className={`flex flex-col items-center justify-center gap-3 rounded-card border border-dashed px-6 py-8 text-center text-[14px] ${
-        over ? 'border-ink bg-[#F6F0E4]' : 'border-sand bg-[#FBF7F0]'
+        over ? 'border-ink bg-field-2' : 'border-sand bg-field'
       }`}
     >
       {children}
@@ -150,7 +150,7 @@ export function CoverUpload({ defaultValue, error }: { defaultValue: string; err
             className="h-[180px] w-[140px] rounded-card border border-solid border-line object-cover"
           />
           <div className="flex gap-2">
-            <label className="inline-flex h-10 cursor-pointer items-center rounded-pill border border-solid border-sand bg-[#FBF7F0] px-5 text-[13px] font-medium">
+            <label className="inline-flex h-10 cursor-pointer items-center rounded-pill border border-solid border-sand bg-field px-5 text-[13px] font-medium">
               Replace
               <input
                 type="file"
@@ -307,7 +307,7 @@ export function ClientPicker({
     <div className="flex flex-col gap-2">
       <input type="hidden" name="clientId" value={value} />
       {adding ? (
-        <div className="flex flex-col gap-3 rounded-card border border-solid border-line bg-[#FBF7F0] p-4">
+        <div className="flex flex-col gap-3 rounded-card border border-solid border-line bg-field p-4">
           <span className="text-[13px] font-medium">New client</span>
           <div className="grid grid-cols-[2fr_1fr] gap-3">
             <Input

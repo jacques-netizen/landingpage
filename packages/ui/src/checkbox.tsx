@@ -29,7 +29,7 @@ export function Checkbox({ children, onCheckedChange, invalid, ...rest }: Checkb
         className={cn(
           bare,
           focusRing,
-          'mt-px box-border flex size-5 flex-none cursor-pointer items-center justify-center rounded-[6px] border border-solid bg-[#FBF7F0]',
+          'mt-px box-border flex size-5 flex-none cursor-pointer items-center justify-center rounded-[6px] border border-solid bg-field',
           invalid ? 'border-bad' : 'border-sand',
           'data-[state=checked]:border-ink data-[state=checked]:bg-ink data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
         )}

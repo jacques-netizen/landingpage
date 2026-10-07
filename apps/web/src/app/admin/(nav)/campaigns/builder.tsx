@@ -43,7 +43,7 @@ export type BuilderValues = {
 function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (
     <section className="border-0 border-t border-solid border-line py-8">
-      <h2 className="m-0 font-serif text-[24px] font-normal">{title}</h2>
+      <h2 className="m-0 font-app text-[16px] font-semibold">{title}</h2>
       {note ? <p className="mt-1 mb-0 text-[13px] text-muted-2">{note}</p> : null}
       <div className="mt-6 grid grid-cols-2 gap-5">{children}</div>
     </section>
@@ -277,7 +277,7 @@ export function CampaignBuilder({
       </Section>
 
       <details className="group border-0 border-t border-solid border-line py-8" open={hasAdvancedErrors(f)}>
-        <summary className="cursor-pointer list-none font-serif text-[24px]">
+        <summary className="cursor-pointer list-none font-app font-semibold text-[16px]">
           More rules <span className="font-sans text-[13px] text-muted-2">(optional: caps, accounts, content)</span>
         </summary>
         <div className="mt-6 grid grid-cols-2 gap-5">

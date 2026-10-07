@@ -14,7 +14,7 @@ const when = (d: Date) => d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section aria-label={title} className="mb-10">
-      <h2 className="m-0 mb-3 font-serif text-[20px] font-normal">{title}</h2>
+      <h2 className="m-0 mb-3 font-app text-[16px] font-semibold">{title}</h2>
       {children}
     </section>
   )
