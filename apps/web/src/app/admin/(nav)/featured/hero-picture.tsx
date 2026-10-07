@@ -6,8 +6,9 @@ import { uploadFile } from '../campaigns/builder-parts'
 
 const DESIGN = '/designed/camp-hero.png'
 
-// The picture behind the featured campaign. Empty means the design's own picture.
-export function HeroPicture({ defaultValue }: { defaultValue: string }) {
+// The picture behind the featured campaign. Empty means the campaign's own picture (its card picture),
+// or the design's when it has none.
+export function HeroPicture({ defaultValue, fallback }: { defaultValue: string; fallback: string | null }) {
   const [url, setUrl] = useState(defaultValue)
   const [busy, setBusy] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
@@ -30,12 +31,13 @@ export function HeroPicture({ defaultValue }: { defaultValue: string }) {
       <span className="text-[13px] font-medium">Picture</span>
       <input type="hidden" name="image" value={url} />
       <img
-        src={url || DESIGN}
+        src={url || fallback || DESIGN}
         alt="Featured campaign picture"
         className="block aspect-[970/370] w-full rounded-[14px] border border-solid border-line object-cover object-right"
       />
       <span className="text-[13px] text-muted-2">
-        Wide picture, about 1940 by 740 pixels. The text sits on the left, so keep the subject on the right.
+        The campaign&apos;s own picture is used unless you upload a different one here. Wide works best, about 1940 by
+        740 pixels, with the subject on the right because the text sits on the left.
       </span>
       <div className="flex gap-2">
         <input
@@ -54,7 +56,7 @@ export function HeroPicture({ defaultValue }: { defaultValue: string }) {
         </Button>
         {url ? (
           <Button type="button" variant="quiet" size="sm" onClick={() => setUrl('')}>
-            Use the design&apos;s picture
+            Use the campaign&apos;s picture
           </Button>
         ) : null}
       </div>

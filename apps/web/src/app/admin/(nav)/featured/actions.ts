@@ -33,12 +33,12 @@ export async function saveFeaturedAction(_prev: FeaturedState, form: FormData): 
   const current = await getContentOverrides(db(), 'browse')
   const next: Record<string, string> = { ...current }
   for (const k of KEYS) delete next[k]
-  if (image) next['featured.image'] = image
   if (campaignId) {
     next['featured.campaign'] = campaignId
     if (title) next['featured.title'] = title
     if (body) next['featured.body'] = body
     if (tags.length) next['featured.tags'] = tags.join(',')
+    if (image) next['featured.image'] = image
   }
   await updateContentOverrides(db(), viewer.id, 'browse', next)
   revalidatePath('/campaigns')

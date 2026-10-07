@@ -16,6 +16,7 @@ export default async function FeaturedPage() {
     .map(({ campaign: c }) => ({
       id: c.id,
       title: c.title,
+      cover: c.coverImageUrl,
       tags: [TEMPLATES[c.type as CampaignType].label, PLATFORM_LABELS[c.platforms[0] as Platform] ?? ''].join(', '),
     }))
   const chosen = live.some((c) => c.id === content['featured.campaign']) ? content['featured.campaign']! : ''
@@ -36,7 +37,7 @@ export default async function FeaturedPage() {
           title: chosen ? (content['featured.title'] ?? '') : '',
           body: chosen ? (content['featured.body'] ?? '') : '',
           tags: chosen ? (content['featured.tags'] ?? '') : '',
-          image: content['featured.image'] ?? '',
+          image: chosen ? (content['featured.image'] ?? '') : '',
         }}
       />
     </AdminPage>

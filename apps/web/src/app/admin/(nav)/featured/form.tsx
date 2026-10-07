@@ -6,7 +6,7 @@ import { Notice } from '../_components/ui'
 import { HeroPicture } from './hero-picture'
 import { saveFeaturedAction, type FeaturedState } from './actions'
 
-type Campaign = { id: string; title: string; tags: string }
+type Campaign = { id: string; title: string; tags: string; cover: string | null }
 const AUTO = 'auto'
 
 export function FeaturedForm({
@@ -38,12 +38,16 @@ export function FeaturedForm({
           />
         )}
       </Field>
-      <HeroPicture defaultValue={values.image} />
       {campaigns.length === 0 ? (
         <p className="m-0 text-[13px] text-muted-2">No live public campaigns yet. Publish one first.</p>
       ) : null}
       {picked ? (
         <>
+          <HeroPicture
+            key={picked.id}
+            defaultValue={picked.id === values.campaign ? values.image : ''}
+            fallback={picked.cover}
+          />
           <Field label="Headline (optional)" helper={`Leave empty to use "${picked.title}".`}>
             {(p) => (
               <Input
