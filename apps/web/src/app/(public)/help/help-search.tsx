@@ -63,7 +63,7 @@ export function HelpSearch({
         {supportHref ? (
           <>
             {' '}
-            or ask in our <a href={supportHref}>Discord</a>
+            or open a ticket in our <a href={supportHref}>Discord</a>
           </>
         ) : null}
         .

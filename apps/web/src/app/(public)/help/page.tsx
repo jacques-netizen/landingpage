@@ -63,6 +63,11 @@ export default async function HelpPage() {
       a: `Open an appeal from the submission. You can appeal a rejected or removed post once, and staff reply within ${n.appealReplyDays} business days.`,
     },
     {
+      topic: 'Getting started',
+      q: 'I am stuck. How do I get help?',
+      a: `Open a ticket in our Discord${b.supportDiscordUrl ? '' : ' server'} and the team will reply there. You can also email ${b.contactEmail}.`,
+    },
+    {
       topic: 'Clients',
       q: 'I want to run a campaign. Where do I start?',
       a: 'Send an enquiry from the For clients page and we will reply by email.',
@@ -71,6 +76,28 @@ export default async function HelpPage() {
   return (
     <>
       <PageHeading title="Questions," italic="answered." />
+      {/* Kymen's request (2026-10-07): point anyone stuck to a Discord support ticket first. */}
+      <section
+        aria-label="Get help on Discord"
+        className="mb-12 flex flex-wrap items-center justify-between gap-5 rounded-card border border-solid border-line bg-white px-7 py-6"
+      >
+        <div>
+          <h2 className="m-0 font-sans text-[20px] font-semibold">Stuck? Open a ticket in our Discord.</h2>
+          <p className="mt-2 mb-0 max-w-[560px] text-[15px] leading-[1.5] text-muted">
+            Join the Maison d&apos;Élites Discord and open a ticket in the support channel. The team replies there.
+          </p>
+        </div>
+        {b.supportDiscordUrl ? (
+          <a
+            href={b.supportDiscordUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 items-center gap-2 rounded-pill bg-ink px-[22px] text-[14px] font-medium text-white no-underline hover:text-white"
+          >
+            Open a ticket on Discord <span aria-hidden>↗</span>
+          </a>
+        ) : null}
+      </section>
       <HelpSearch questions={questions} contactEmail={b.contactEmail} supportHref={b.supportDiscordUrl ?? null} />
     </>
   )
