@@ -23,6 +23,19 @@ test('an admin deletes a draft campaign, and it is gone', async ({ page }) => {
   expect(await sql`select id from campaigns where id = ${c!.id}`).toHaveLength(0)
 })
 
+test('an admin deletes a closed campaign, which is hidden but kept for the books', async ({ page }) => {
+  const [c] = await sql`select id, title from campaigns where title = 'Seed closed campaign'`
+  await signInAs(page, 'admin@seed.invalid')
+  await page.goto(`/admin/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Delete campaign' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete campaign' }).click()
+  await page.waitForURL('**/admin/campaigns?deleted=*')
+  await expect(page.getByRole('link', { name: c!.title as string })).toHaveCount(0)
+  const [kept] = await sql`select status, deleted_at from campaigns where id = ${c!.id}`
+  expect(kept!.status).toBe('closed')
+  expect(kept!.deleted_at).not.toBeNull()
+})
+
 test('only admins see Delete campaign', async ({ page }) => {
   const [c] = await sql`select id from campaigns where title = 'Sample music'`
   await signInAs(page, 'finance@seed.invalid')

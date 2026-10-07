@@ -161,7 +161,8 @@ export default async function CampaignAdminPage({
         </div>
       ) : null}
 
-      {canMoney && (open || live) ? (
+      {/* Ended campaigns keep the actions box so admins can still delete them. */}
+      {canMoney && (open || live || viewer.roles.includes('admin')) ? (
         <section className="mt-4">
           <CampaignActions
             id={c.id}
