@@ -4,7 +4,7 @@ import { db } from '@mde/db'
 import { approve, reject, ReviewError } from '@mde/review'
 import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/server/guard'
-import type { ReviewResult } from '@/designed/review-view'
+import type { ReviewResult } from './review-console'
 
 async function run(fn: (reviewerId: string) => Promise<unknown>): Promise<ReviewResult> {
   const viewer = await requireStaff('staff', '/admin/review')

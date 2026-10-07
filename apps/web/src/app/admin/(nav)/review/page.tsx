@@ -1,13 +1,13 @@
 import { db } from '@mde/db'
 import { listReasonCodes } from '@mde/submissions'
-import { ReviewView } from '@/designed/review-view'
+import { ReviewConsole } from './review-console'
 import { requireStaff } from '@/server/guard'
 import { reviewQueue } from '@/server/review-queue'
 import { approveAction, rejectAction } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-// The review queue ("Creator Site v1", screen review) with real posts. Filters come from the address:
+// The review queue with real posts, in the staff console. Filters come from the address:
 // ?campaign=<id>, ?platform=tiktok, ?flagged=1 (links from the campaign monitor use them).
 export default async function ReviewPage({
   searchParams,
@@ -25,7 +25,7 @@ export default async function ReviewPage({
     listReasonCodes(db()),
   ])
   return (
-    <ReviewView
+    <ReviewConsole
       state="data"
       items={items}
       reasons={reasons.map((r) => ({ code: r.code, label: r.label }))}

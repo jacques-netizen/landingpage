@@ -2,7 +2,7 @@ import 'server-only'
 import { db, tables } from '@mde/db'
 import type { CheckResult } from '@mde/submissions/checks'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
-import type { ReviewItem } from '@/designed/review-view'
+import type { ReviewItem } from '@/app/admin/(nav)/review/review-console'
 
 const FLAG_LABEL: Record<string, string> = {
   view_jump: 'View jump',
