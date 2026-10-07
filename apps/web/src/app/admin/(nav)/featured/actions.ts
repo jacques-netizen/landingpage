@@ -7,7 +7,7 @@ import { requireStaff } from '@/server/guard'
 
 export type FeaturedState = { ok?: string; error?: string }
 
-const KEYS = ['featured.campaign', 'featured.title', 'featured.body', 'featured.tags'] as const
+const KEYS = ['featured.campaign', 'featured.title', 'featured.body', 'featured.tags', 'featured.image'] as const
 
 // Chooses the campaign at the top of the campaigns screen and, optionally, its words there. Saved
 // into the screen's content settings (audited); the layout stays as designed.
@@ -20,6 +20,8 @@ export async function saveFeaturedAction(_prev: FeaturedState, form: FormData): 
     .split(',')
     .map((t) => t.trim())
     .filter(Boolean)
+  const image = String(form.get('image') ?? '').trim()
+  if (image && !/^\/files\/[0-9a-f-]{36}\//.test(image)) return { error: 'Upload the picture again.' }
   if (title.length > 80) return { error: 'Keep the headline under 80 characters.' }
   if (body.length > 220) return { error: 'Keep the text under 220 characters.' }
   if (tags.length > 2 || tags.some((t) => t.length > 20)) return { error: 'Use at most two short tags.' }
@@ -31,6 +33,7 @@ export async function saveFeaturedAction(_prev: FeaturedState, form: FormData): 
   const current = await getContentOverrides(db(), 'browse')
   const next: Record<string, string> = { ...current }
   for (const k of KEYS) delete next[k]
+  if (image) next['featured.image'] = image
   if (campaignId) {
     next['featured.campaign'] = campaignId
     if (title) next['featured.title'] = title

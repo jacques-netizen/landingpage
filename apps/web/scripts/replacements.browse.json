@@ -44,5 +44,8 @@
   },
   "$children": {
     "width:220px;flex:none;box-sizing:border-box;padding:22px 16px": "v.menu"
+  },
+  "$attrs": {
+    "src=assets/camp-hero.png": "v.featured.img"
   }
 }

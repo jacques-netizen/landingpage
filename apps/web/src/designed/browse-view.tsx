@@ -21,7 +21,16 @@ export type BrowseCard = {
   img: string | null
 }
 
-export type BrowseFeatured = { id: string; title: string; body: string; tag1: string; tag2: string; leftCents: number }
+export type BrowseFeatured = {
+  id: string
+  title: string
+  body: string
+  tag1: string
+  tag2: string
+  leftCents: number
+  /** The hero picture: one staff uploaded, or the design's own. */
+  img?: string
+}
 
 type Props = {
   state: 'data' | 'loading' | 'error'
@@ -90,6 +99,7 @@ export function BrowseView({
           tag1: featured.tag1,
           tag2: featured.tag2,
           leftLabel: `${formatDollars(featured.leftCents)} left`,
+          img: featured.img || '/designed/camp-hero.png',
           go: () => router.push(`/campaigns/${featured.id}`),
         }
       : null,

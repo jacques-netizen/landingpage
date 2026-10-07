@@ -17,6 +17,14 @@ test('an admin changes the featured campaign and its words, and the campaigns sc
     await page.goto('/admin/featured')
     await page.getByLabel('Campaign').click()
     await page.getByRole('option', { name: 'Sample music', exact: true }).click()
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      'base64',
+    )
+    await page
+      .getByLabel('Choose the featured picture')
+      .setInputFiles({ name: 'hero.png', mimeType: 'image/png', buffer: png })
+    await expect(page.getByRole('img', { name: 'Featured campaign picture' })).toHaveAttribute('src', /^\/files\//)
     await page.getByLabel('Headline (optional)').fill('New music push')
     await page.getByLabel('Text (optional)').fill('Use the sound in your next clip.')
     await page.getByRole('button', { name: 'Save featured campaign' }).click()
@@ -25,6 +33,7 @@ test('an admin changes the featured campaign and its words, and the campaigns sc
     await page.goto('/campaigns')
     await expect(page.getByText('New music push')).toBeVisible()
     await expect(page.getByText('Use the sound in your next clip.')).toBeVisible()
+    await expect(page.locator('[data-m~="a-hero"] img').first()).toHaveAttribute('src', /^\/files\//)
     const [audit] = await sql`select action from audit_log where entity = 'settings' order by id desc limit 1`
     expect(audit).toBeTruthy()
   } finally {

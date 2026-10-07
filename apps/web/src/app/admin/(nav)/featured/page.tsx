@@ -36,6 +36,7 @@ export default async function FeaturedPage() {
           title: chosen ? (content['featured.title'] ?? '') : '',
           body: chosen ? (content['featured.body'] ?? '') : '',
           tags: chosen ? (content['featured.tags'] ?? '') : '',
+          image: content['featured.image'] ?? '',
         }}
       />
     </AdminPage>

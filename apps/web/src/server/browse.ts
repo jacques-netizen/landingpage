@@ -58,6 +58,8 @@ export async function loadFeatured(): Promise<{ featured: BrowseFeatured | null;
       tag1: tags[0] ?? '',
       tag2: tags[1] ?? '',
       leftCents: pick.figures.leftCents,
+      // Staff can replace the hero picture at /admin/featured; it stays with the screen, not the campaign.
+      img: content['featured.image'] || undefined,
     },
   }
 }
