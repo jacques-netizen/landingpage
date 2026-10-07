@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
         host: req.headers.get('host'),
         xForwardedHost: req.headers.get('x-forwarded-host'),
         forwarded: req.headers.get('forwarded'),
+        viaCloudflare: !!req.headers.get('cf-ray'),
         appUrl: process.env.APP_URL ?? null,
         brandHost: process.env.BRAND_HOST ?? null,
       }

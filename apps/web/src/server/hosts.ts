@@ -36,7 +36,15 @@ export function pickHost(
     .flatMap((v) => (v ?? '').split(','))
     .map((v) => v.trim().toLowerCase())
     .filter(Boolean)
-  return candidates.find((c) => known.includes(c.replace(/:\d+$/, ''))) ?? candidates[0] ?? null
+  const match = candidates.find((c) => known.includes(c.replace(/:\d+$/, '')))
+  if (match) return match
+  // Cloudflare in front of the main domain, pointed at Railway's own address, forwards the request with
+  // that address as Host. Only the main domain goes through Cloudflare (the app's record goes straight
+  // to Railway), so a Railway-addressed request that came through Cloudflare is the main domain.
+  const viaCloudflare = !!headers.get('cf-ray') || /cloudflare/i.test(headers.get('cdn-loop') ?? '')
+  if (cfg.brandHost && viaCloudflare && candidates.every((c) => c.endsWith('.up.railway.app')))
+    return cfg.brandHost.toLowerCase()
+  return candidates[0] ?? null
 }
 
 export function routeForHost(

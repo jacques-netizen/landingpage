@@ -70,5 +70,10 @@ describe('two addresses, one deployment', () => {
     expect(pickHost(h({ host: 'web-production-5c853d.up.railway.app' }), cfg)).toBe(
       'web-production-5c853d.up.railway.app',
     )
+    // The main domain through Cloudflare, forwarded to Railway's own address.
+    expect(pickHost(h({ host: 'web-production-5c853d.up.railway.app', 'cf-ray': 'a46f635eae23cef2-EWR' }), cfg)).toBe(
+      'maisondelites.com',
+    )
+    expect(pickHost(h({ host: 'app.maisondelites.com', 'cf-ray': 'x' }), cfg)).toBe('app.maisondelites.com')
   })
 })
