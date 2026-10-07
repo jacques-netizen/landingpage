@@ -16,6 +16,7 @@ export type MoneyErrorCode =
   | 'campaign_not_closed'
   | 'memo_required'
   | 'actor_required'
+  | 'budget_below_spent'
 
 export class MoneyError extends Error {
   constructor(

@@ -114,6 +114,76 @@ export async function fundCampaign(store: MoneyStore, i: { campaignId: string; a
   })
 }
 
+/**
+ * Change a funded campaign's budget (owner request, 2026-10-07). A raise moves the difference from the
+ * client's held funds into the budget; a cut moves the unspent difference back. The service fee moves
+ * with it, so the fee taken always equals the fee on the whole new budget. The budget can never drop
+ * below what creators have already earned from it. requestKey makes a repeated request a no-op.
+ */
+export async function changeCampaignBudget(
+  store: MoneyStore,
+  i: { campaignId: string; budgetCents: number; actorId: string | null; requestKey: string },
+) {
+  assertWhole(i.budgetCents, 'Budget')
+  if (i.budgetCents <= 0) throw new MoneyError('not_whole_cents', 'The budget must be more than zero')
+  return store.transaction(async (tx) => {
+    const c = await tx.campaign(i.campaignId)
+    if (!c) throw new MoneyError('not_found', 'No such campaign')
+    const feeBps = await tx.clientServiceFeeBps(c.clientId)
+    if (feeBps === null) throw new MoneyError('not_found', 'No such client')
+    const key = `budget_change:${c.id}:${i.requestKey}`
+    const [budget, hold, revenue] = await tx.lockAccounts([
+      account.budget(c.id),
+      account.holding(c.clientId),
+      account.revenue(),
+    ])
+    const fromCents = c.budgetCents
+    if (await tx.transactionExists(key)) return { fromCents, toCents: c.budgetCents, feeChangeCents: 0, applied: false }
+    const delta = i.budgetCents - fromCents
+    const feeChangeCents = serviceFeeCents(i.budgetCents, feeBps) - serviceFeeCents(fromCents, feeBps)
+    if (delta === 0) return { fromCents, toCents: fromCents, feeChangeCents: 0, applied: false }
+    if (delta > 0) {
+      const held = await tx.balance(hold!)
+      if (held < delta + feeChangeCents)
+        throw new MoneyError(
+          'insufficient_client_funds',
+          `The client has ${held} cents available; this raise needs ${delta + feeChangeCents}`,
+        )
+    } else {
+      const left = await tx.balance(budget!)
+      if (-delta > left)
+        throw new MoneyError(
+          'budget_below_spent',
+          `Creators have already earned ${fromCents - left} cents; the budget cannot go below that`,
+        )
+    }
+    await post(tx, { kind: 'campaign_budget_changed', idempotencyKey: key, campaignId: c.id, createdBy: i.actorId }, [
+      { id: hold!, amountCents: -delta },
+      { id: budget!, amountCents: delta },
+    ])
+    if (feeChangeCents !== 0)
+      await post(
+        tx,
+        { kind: 'service_fee_adjusted', idempotencyKey: `${key}:fee`, campaignId: c.id, createdBy: i.actorId },
+        [
+          { id: hold!, amountCents: -feeChangeCents },
+          { id: revenue!, amountCents: feeChangeCents },
+        ],
+      )
+    await tx.setCampaignBudget(c.id, i.budgetCents)
+    if (i.actorId)
+      await tx.audit({
+        actorId: i.actorId,
+        action: 'campaign.budget_change',
+        entity: 'campaign',
+        entityId: c.id,
+        before: { budgetCents: fromCents },
+        after: { budgetCents: i.budgetCents, feeChangeCents },
+      })
+    return { fromCents, toCents: i.budgetCents, feeChangeCents, applied: true }
+  })
+}
+
 // ---------- Earnings ----------
 
 const EARNING_STATES = ['approved', 'earning']

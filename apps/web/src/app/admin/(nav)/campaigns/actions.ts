@@ -97,6 +97,7 @@ export async function saveCampaignAction(
       redirect(`/admin/campaigns/${c.id}?saved=1`)
     }
     await updateCampaign(db(), viewer.id, id, parsed.data)
+    revalidatePath('/campaigns')
   } catch (e) {
     if (e instanceof CampaignError) return { error: e.message }
     throw e

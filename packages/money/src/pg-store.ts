@@ -99,6 +99,10 @@ function pgTx(tx: Tx): MoneyTx {
       await tx.update(tables.campaigns).set({ status }).where(eq(tables.campaigns.id, id))
     },
 
+    async setCampaignBudget(id, budgetCents) {
+      await tx.update(tables.campaigns).set({ budgetCents }).where(eq(tables.campaigns.id, id))
+    },
+
     async clientServiceFeeBps(clientId) {
       const [c] = await tx
         .select({ bps: tables.clients.serviceFeeBps })

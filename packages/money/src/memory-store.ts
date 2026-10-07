@@ -105,6 +105,9 @@ export function createMemoryStore() {
       async setCampaignStatus(id, status) {
         s.campaigns[id]!.status = status
       },
+      async setCampaignBudget(id, budgetCents) {
+        s.campaigns[id]!.budgetCents = budgetCents
+      },
       async clientServiceFeeBps(id) {
         return s.clients[id]?.serviceFeeBps ?? null
       },

@@ -104,12 +104,15 @@ export function CampaignBuilder({
   initial,
   clients,
   locked,
+  funded = false,
 }: {
   id: string | null
   initial: BuilderValues
   clients: { id: string; name: string }[]
-  /** Fields that can no longer change (after funding or going live). */
+  /** Fields that can no longer change (after going live). */
   locked: string[]
+  /** The budget is already in the campaign, so a change moves money. */
+  funded?: boolean
 }) {
   const [state, action, pending] = useActionState<BuilderState, FormData>(saveCampaignAction.bind(null, id), {})
   const [type] = useState<CampaignType>(initial.type)
@@ -207,8 +210,8 @@ export function CampaignBuilder({
           name="budget"
           label="Budget"
           helper={
-            isLocked('budget')
-              ? 'Fixed once the campaign is funded or live.'
+            funded
+              ? 'Raising it records the client paying the difference plus the fee; lowering it returns the unspent difference to their balance.'
               : 'The total creators can earn. The service fee is added on top.'
           }
           error={f.budget}

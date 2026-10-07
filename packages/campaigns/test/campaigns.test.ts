@@ -2,6 +2,7 @@ import { createDb, tables } from '@mde/db'
 import { and, eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
+  campaignFigures,
   campaignFormSchema,
   CampaignError,
   cancelCampaign,
@@ -269,11 +270,22 @@ describe('changes after publishing', () => {
     await expect(
       updateCampaign(db, actor, c.id, form(client.id, { capPerPostCents: '$400.00' })),
     ).rejects.toBeInstanceOf(CampaignError)
-    await expect(updateCampaign(db, actor, c.id, form(client.id, { budgetCents: '$2,000.00' }))).rejects.toThrow(
-      /budget/,
-    )
     const after = await updateCampaign(db, actor, c.id, form(client.id, { rateCentsPer1000: '$3.00' }))
     expect(after.rateCentsPer1000).toBe(300)
+  })
+
+  it('changes the budget of a live campaign through the ledger, recording what the client pays for a raise', async () => {
+    const { actor, client, c } = await liveCampaign()
+    const before = (await campaignFigures(db, [c.id])).get(c.id)!
+    const raised = await updateCampaign(db, actor, c.id, form(client.id, { budgetCents: '$2,000.00' }))
+    expect(raised.budgetCents).toBe(200_000)
+    const up = (await campaignFigures(db, [c.id])).get(c.id)!
+    expect(up.leftCents - before.leftCents).toBe(200_000 - before.budgetCents)
+    const lowered = await updateCampaign(db, actor, c.id, form(client.id, { budgetCents: '$1,500.00' }))
+    expect(lowered.budgetCents).toBe(150_000)
+    expect((await campaignFigures(db, [c.id])).get(c.id)!.leftCents).toBe(up.leftCents - 50_000)
+    const audit = await db.select().from(tables.auditLog).where(eq(tables.auditLog.action, 'campaign.budget_change'))
+    expect(audit.some((a) => a.entityId === c.id)).toBe(true)
   })
 
   it('saves changed rules as a new terms version and keeps the old one', async () => {

@@ -3,6 +3,7 @@
 import { getSetting, tables, writeAudit, type Db, type DbOrTx } from '@mde/db'
 import {
   createPgStore,
+  changeCampaignBudget as changeCampaignBudgetMoney,
   fundCampaign as fundCampaignMoney,
   recordClientFunding as recordFundingMoney,
   MoneyError,
@@ -24,7 +25,8 @@ export class CampaignError extends Error {
       | 'wrong_status'
       | 'not_joinable'
       | 'access_code'
-      | 'insufficient_client_funds',
+      | 'insufficient_client_funds'
+      | 'budget_below_spent',
     message: string,
   ) {
     super(message)
@@ -104,38 +106,85 @@ export async function createDraft(db: Db, actorId: string, f: CampaignForm) {
   })
 }
 
-// Once funded, the budget is fixed. Once live, the money rules that existing posts were earned under
-// (budget, caps, minimum views) and the type stay as they are. The rate may change: existing posts keep
-// their locked rate (section 5.6).
-const LOCKED_AFTER_FUNDING = ['budgetCents'] as const
-const LOCKED_AFTER_LIVE = [
-  'budgetCents',
-  'capPerPostCents',
-  'capPerCreatorCents',
-  'minViewsToEarn',
-  'type',
-  'clientId',
-] as const
+// Once live, the money rules that existing posts were earned under (caps, minimum views) and the type
+// stay as they are. The rate may change: existing posts keep their locked rate (section 5.6). The budget
+// may change at any time (owner request, 2026-10-07): the difference moves through the ledger.
+const LOCKED_AFTER_FUNDING = [] as const
+const LOCKED_AFTER_LIVE = ['capPerPostCents', 'capPerCreatorCents', 'minViewsToEarn', 'type', 'clientId'] as const
+
+/**
+ * Change a funded campaign's budget. A raise first records the client's payment for whatever their
+ * held funds do not cover (budget difference plus fee), as going live does; a cut returns the unspent
+ * difference and its fee to the client's balance. Never below what creators have already earned.
+ */
+export async function changeBudget(db: Db, actorId: string, id: string, budgetCents: number) {
+  const c = await load(db, id)
+  if (['closed', 'cancelled'].includes(c.status))
+    throw new CampaignError('not_editable', 'Closed and cancelled campaigns cannot be edited.')
+  if (budgetCents === c.budgetCents) return { recordedCents: 0 }
+  if (!(await isFunded(db, id)) || !c.clientId) {
+    await db.update(tables.campaigns).set({ budgetCents }).where(eq(tables.campaigns.id, id))
+    return { recordedCents: 0 }
+  }
+  let recordedCents = 0
+  if (budgetCents > c.budgetCents) {
+    const [client] = await db.select().from(tables.clients).where(eq(tables.clients.id, c.clientId))
+    const needed =
+      budgetCents -
+      c.budgetCents +
+      serviceFeeCents(budgetCents, client!.serviceFeeBps) -
+      serviceFeeCents(c.budgetCents, client!.serviceFeeBps)
+    const rows = await db.execute<{ b: string }>(sql`
+      select coalesce(sum(e.amount_cents), 0) as b from ledger_entries e join ledger_accounts a on a.id = e.account_id
+      where a.kind = 'client_funds_holding' and a.owner_id = ${c.clientId}`)
+    const short = needed - Number(rows[0]!.b)
+    if (short > 0) {
+      await recordClientFunding(db, actorId, { clientId: c.clientId, amountCents: short, reference: `budget:${id}` })
+      recordedCents = short
+    }
+  }
+  try {
+    await changeCampaignBudgetMoney(createPgStore(db), {
+      campaignId: id,
+      budgetCents,
+      actorId,
+      requestKey: crypto.randomUUID(),
+    })
+  } catch (e) {
+    if (e instanceof MoneyError && e.code === 'budget_below_spent')
+      throw new CampaignError('budget_below_spent', 'The budget cannot go below what creators have already earned.')
+    throw e
+  }
+  return { recordedCents }
+}
 
 /** Save changes. Rule text changes on a published campaign become a new terms version. */
+async function checkLocked(tx: DbOrTx, before: Campaign, next: ReturnType<typeof columnsFrom>) {
+  if (['closed', 'cancelled'].includes(before.status))
+    throw new CampaignError('not_editable', 'Closed and cancelled campaigns cannot be edited.')
+  const funded = await isFunded(tx, before.id)
+  const published = ['live', 'closing'].includes(before.status)
+  const locked: readonly string[] = published ? LOCKED_AFTER_LIVE : funded ? LOCKED_AFTER_FUNDING : []
+  for (const k of locked) {
+    const a = before[k as keyof Campaign]
+    const b = next[k as keyof typeof next]
+    if (JSON.stringify(a ?? null) !== JSON.stringify(b ?? null))
+      throw new CampaignError(
+        'locked_after_funding',
+        `${labelFor(k)} cannot change once the campaign is ${published ? 'live' : 'funded'}.`,
+      )
+  }
+  return published
+}
+
 export async function updateCampaign(db: Db, actorId: string, id: string, f: CampaignForm) {
+  const next = columnsFrom(f)
+  // Refuse locked changes before any money moves, then change the budget through the ledger.
+  await checkLocked(db, await load(db, id), next)
+  if (next.budgetCents) await changeBudget(db, actorId, id, next.budgetCents)
   return db.transaction(async (tx) => {
     const before = await load(tx, id, true)
-    if (['closed', 'cancelled'].includes(before.status))
-      throw new CampaignError('not_editable', 'Closed and cancelled campaigns cannot be edited.')
-    const next = columnsFrom(f)
-    const funded = await isFunded(tx, id)
-    const published = ['live', 'closing'].includes(before.status)
-    const locked: readonly string[] = published ? LOCKED_AFTER_LIVE : funded ? LOCKED_AFTER_FUNDING : []
-    for (const k of locked) {
-      const a = before[k as keyof Campaign]
-      const b = next[k as keyof typeof next]
-      if (JSON.stringify(a ?? null) !== JSON.stringify(b ?? null))
-        throw new CampaignError(
-          'locked_after_funding',
-          `${labelFor(k)} cannot change once the campaign is ${published ? 'live' : 'funded'}.`,
-        )
-    }
+    const published = await checkLocked(tx, before, next)
     const [after] = await tx
       .update(tables.campaigns)
       .set({ ...next, budgetCents: next.budgetCents!, rateCentsPer1000: next.rateCentsPer1000! })

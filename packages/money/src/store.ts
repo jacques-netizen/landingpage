@@ -49,6 +49,8 @@ export type TransactionKind =
   | 'withdrawal_paid'
   | 'withdrawal_failed'
   | 'campaign_remainder_returned'
+  | 'campaign_budget_changed'
+  | 'service_fee_adjusted'
   | 'manual_adjustment'
 
 export type NewTransaction = {
@@ -116,6 +118,7 @@ export interface MoneyTx {
 
   campaign(id: string): Promise<CampaignMoney | null>
   setCampaignStatus(id: string, status: string): Promise<void>
+  setCampaignBudget(id: string, budgetCents: number): Promise<void>
   clientServiceFeeBps(clientId: string): Promise<number | null>
 
   /** Read a submission, locking its row when asked. */

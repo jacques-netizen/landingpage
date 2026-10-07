@@ -45,11 +45,8 @@ export default async function CampaignAdminPage({
   const open = ['draft', 'awaiting_funding'].includes(c.status)
   const live = ['live', 'closing'].includes(c.status)
   const missing = missingForPublish(c)
-  const locked = live
-    ? ['budget', 'capPerPost', 'capPerCreator', 'minViewsToEarn', 'clientId']
-    : funded
-      ? ['budget']
-      : []
+  // The budget can always change; its difference moves through the ledger (see changeBudget).
+  const locked = live ? ['capPerPost', 'capPerCreator', 'minViewsToEarn', 'clientId'] : []
   const status = CAMPAIGN_STATUS[c.status]
   const TABS = ['overview', 'creators', 'pages', 'submissions', 'edit'] as const
   type Tab = (typeof TABS)[number]
@@ -511,7 +508,7 @@ export default async function CampaignAdminPage({
           </Card>
         ) : canMoney && !['closed', 'cancelled'].includes(c.status) ? (
           <Card title="Edit campaign">
-            <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} />
+            <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} funded={funded} />
           </Card>
         ) : (
           <Card title="Edit campaign">
