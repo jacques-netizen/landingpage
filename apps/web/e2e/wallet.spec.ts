@@ -22,6 +22,27 @@ test('a new creator sees an empty wallet', async ({ page }) => {
   await expect(page.getByText('No withdrawals yet.')).toBeVisible()
 })
 
+test('withdraw asks for a payout method first, then the wallet shows it', async ({ page }) => {
+  const email = await signUpNewCreator(page)
+  await page.goto('/wallet')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('link', { name: /^Add payout method/ }).click()
+  const dialog = page.getByRole('dialog', { name: 'Add payout method' })
+  await dialog.getByLabel('Name on the account').fill('Sam Creator')
+  await dialog.getByLabel('PayPal email').fill('not-an-email')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(dialog.getByText('Enter your PayPal email, like name@example.com.')).toBeVisible()
+  await dialog.getByRole('button', { name: 'Bank transfer' }).click()
+  await dialog.getByLabel('IBAN or account number').fill('BE71 0961 2345 6769')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(page.getByText('Bank transfer, ending 6769')).toBeVisible()
+  const [p] =
+    await sql`select p.payout_provider, p.payout_provider_ref from creator_profiles p join users u on u.id = p.user_id where u.email = ${email}`
+  expect(p).toMatchObject({ payout_provider: 'bank_transfer', payout_provider_ref: 'Sam Creator | BE71096123456769' })
+  await page.getByRole('link', { name: /^Withdraw\s*→/ }).click()
+  await expect(page.getByRole('dialog', { name: 'Withdrawals open soon' })).toBeVisible()
+})
+
 test('earnings from a view check show in the wallet', async ({ page }) => {
   const { handle } = await readyCreator(page, sql)
   const link = scriptPost(handle, 'New sound #mde')

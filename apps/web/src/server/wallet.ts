@@ -41,7 +41,8 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
 
   const counted = posts.filter((p) => [...APPROVED, 'flagged'].includes(p.state))
   const p = profile[0]
-  const ref = p?.payoutProviderRef?.replace(/\D/g, '') ?? ''
+  // Saved as "name | details"; only a bank account shows its last four characters.
+  const details = p?.payoutProviderRef?.split(' | ').pop() ?? ''
   return {
     availableCents,
     pendingCents,
@@ -53,7 +54,7 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
     payout: p?.payoutProvider
       ? {
           method: p.payoutProvider === 'paypal' ? 'paypal' : 'bank_transfer',
-          last4: ref.length >= 4 ? ref.slice(-4) : null,
+          last4: p.payoutProvider !== 'paypal' && details.length >= 4 ? details.slice(-4) : null,
         }
       : null,
     posts,

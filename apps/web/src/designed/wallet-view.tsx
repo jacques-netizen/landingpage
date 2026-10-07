@@ -4,6 +4,7 @@ import { Button, Dialog } from '@mde/ui'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AppFrame } from '@/components/app-frame'
+import { PayoutMethodDialog } from './payout-method-dialog'
 import { makeCopy } from './runtime'
 import { saveThemeCookie, themeSwitch, THEMES, type ThemeName } from './themes'
 import { WalletDesign } from './wallet'
@@ -46,6 +47,8 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
   const [period, setPeriod] = useState<Period>('month')
   const [banner, setBanner] = useState(done)
   const [soon, setSoon] = useState(false)
+  const [addMethod, setAddMethod] = useState(false)
+  const hasMethod = !!data?.payout
   const T = THEMES[th]
   const dk = th === 'dark'
   const m = walletModel(data ?? EMPTY, { now: now ? new Date(now) : new Date(), period, colours: T })
@@ -88,8 +91,9 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
     ].map(([k, label]) => ({ label, go: () => {}, bg: k === 'data' ? '#D8C58F' : 'transparent', fg: k === 'data' ? '#1A1510' : T.muted })),
     done: banner,
     closeDone: () => setBanner(false),
-    withdraw: () => setSoon(true),
-    changeMethod: () => setSoon(true),
+    // Withdraw needs a payout method first (testing report item 5).
+    withdraw: () => (!data || hasMethod ? setSoon(true) : setAddMethod(true)),
+    changeMethod: () => setAddMethod(true),
     cyclePeriod: () => setPeriod((p) => NEXT_PERIOD[p]),
     retry: () => (onRetry ? onRetry() : router.refresh()),
     toBrowse: () => router.push('/campaigns'),
@@ -132,19 +136,32 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
   return (
     <AppFrame theme={th} active="wallet" signedIn>
       <div className="mde-wallet-in-app">
-        <WalletDesign v={v} copy={makeCopy(walletContent, overrides)} />
+        <WalletDesign
+          v={v}
+          // The Withdraw button's words (copy slot wallet.007) read "Add payout method" until one is saved.
+          copy={makeCopy(walletContent, !data || hasMethod ? overrides : { ...overrides, 'wallet.007': 'Add payout method' })}
+        />
       </div>
       <Dialog
         theme={dk ? 'dark' : 'glass'}
         open={soon}
         onOpenChange={setSoon}
         title="Withdrawals open soon"
-        description="Withdrawals and payout methods arrive with payouts. Your balance is safe and keeps growing as your posts earn."
+        description="Your payout method is saved. Withdrawals open with payouts; your balance is safe and keeps growing as your posts earn."
         footer={
           <Button tone="app" size="sm" onClick={() => setSoon(false)}>
             Got it
           </Button>
         }
+      />
+      <PayoutMethodDialog
+        theme={dk ? 'dark' : 'glass'}
+        open={addMethod}
+        onOpenChange={setAddMethod}
+        onSaved={() => {
+          setAddMethod(false)
+          router.refresh()
+        }}
       />
     </AppFrame>
   )

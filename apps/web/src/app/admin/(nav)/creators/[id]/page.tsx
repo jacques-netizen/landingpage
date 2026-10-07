@@ -77,6 +77,18 @@ export default async function CreatorPage({ params }: { params: Promise<{ id: st
           Payouts: {PAYOUT[c.profile.payoutStatus] ?? c.profile.payoutStatus}. Tax form:{' '}
           {c.profile.taxStatus === 'not_collected' ? 'not collected' : c.profile.taxStatus}.
         </p>
+        {/* Where to send this creator's money; only finance and admins see the account details. */}
+        <p className="mt-2 mb-0 text-[13px]">
+          Payout method:{' '}
+          {!c.profile.payoutProvider
+            ? 'none yet'
+            : `${c.profile.payoutProvider === 'paypal' ? 'PayPal' : 'Bank transfer'}${
+                viewer.roles.some((r) => r === 'admin' || r === 'finance') && c.profile.payoutProviderRef
+                  ? `, ${c.profile.payoutProviderRef}`
+                  : ''
+              }`}
+          .
+        </p>
       </Section>
 
       <Section title="Accounts">
