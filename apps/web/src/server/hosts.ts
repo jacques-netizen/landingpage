@@ -19,6 +19,26 @@ const SHARED_PATHS = [
 ]
 const ASSET = /\.(png|jpe?g|gif|webp|avif|svg|ico|mp4|webm|woff2?|ttf|css|js|txt|xml|json)$/i
 
+/**
+ * The address the visitor asked for. Proxies in front of the app (Cloudflare, Railway) may put the
+ * public address in Host or X-Forwarded-Host and their own in the other, so a known address wins
+ * over whatever comes first.
+ */
+export function pickHost(
+  headers: { get(name: string): string | null },
+  cfg: { brandHost?: string; appHost?: string },
+): string | null {
+  const known = [cfg.brandHost, cfg.brandHost && `www.${cfg.brandHost}`, cfg.appHost]
+    .filter(Boolean)
+    .map((h) => h!.toLowerCase())
+  const forwarded = headers.get('forwarded')?.match(/host="?([^;,"]+)/i)?.[1]
+  const candidates = [headers.get('x-forwarded-host'), forwarded, headers.get('x-original-host'), headers.get('host')]
+    .flatMap((v) => (v ?? '').split(','))
+    .map((v) => v.trim().toLowerCase())
+    .filter(Boolean)
+  return candidates.find((c) => known.includes(c.replace(/:\d+$/, ''))) ?? candidates[0] ?? null
+}
+
 export function routeForHost(
   host: string | null,
   path: string,

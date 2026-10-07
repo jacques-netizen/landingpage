@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { routeForHost } from '../src/server/hosts'
+import { pickHost, routeForHost } from '../src/server/hosts'
 
 const cfg = { brandHost: 'maisondelites.com', appHost: 'app.maisondelites.com' }
 const r = (host: string, path: string, search = '') => routeForHost(host, path, search, cfg)
@@ -54,5 +54,21 @@ describe('two addresses, one deployment', () => {
         appHost: 'web-production-5c853d.up.railway.app',
       }),
     ).toEqual({ kind: 'next' })
+  })
+
+  it('picks the public address when a proxy puts its own address first', () => {
+    const h = (o: Record<string, string>) => ({ get: (k: string) => o[k] ?? null })
+    expect(
+      pickHost(h({ host: 'maisondelites.com', 'x-forwarded-host': 'web-production-5c853d.up.railway.app' }), cfg),
+    ).toBe('maisondelites.com')
+    expect(pickHost(h({ host: 'x.up.railway.app', 'x-forwarded-host': 'app.maisondelites.com' }), cfg)).toBe(
+      'app.maisondelites.com',
+    )
+    expect(
+      pickHost(h({ host: 'x.up.railway.app', forwarded: 'for=1.2.3.4;host=maisondelites.com;proto=https' }), cfg),
+    ).toBe('maisondelites.com')
+    expect(pickHost(h({ host: 'web-production-5c853d.up.railway.app' }), cfg)).toBe(
+      'web-production-5c853d.up.railway.app',
+    )
   })
 })
