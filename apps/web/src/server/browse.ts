@@ -4,6 +4,7 @@ import { db, getContentOverrides } from '@mde/db'
 import { cookies } from 'next/headers'
 import type { BrowseCard, BrowseFeatured } from '@/designed/browse-view'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
+import { shownFigures } from '@/lib/shown-figures'
 import { getViewer } from './viewer'
 
 const opened = (c: { startAt: Date | null; createdAt: Date }) => (c.startAt ?? c.createdAt).getTime()
@@ -43,7 +44,8 @@ export async function loadPastCards(): Promise<BrowseCard[]> {
         (b.campaign.endAt ?? b.campaign.createdAt).getTime() - (a.campaign.endAt ?? a.campaign.createdAt).getTime(),
     )
     .slice(0, 12)
-    .map(({ campaign: c, figures: f }) => ({
+    .map(({ campaign: c, figures }) => ({ c, f: shownFigures(c.status, figures) }))
+    .map(({ c, f }) => ({
       id: c.id,
       title: c.title,
       label: c.status === 'closed' ? 'Ended' : 'Ending',

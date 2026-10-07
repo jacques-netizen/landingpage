@@ -1,4 +1,5 @@
 import { CAMPAIGN_STATUS } from '@mde/campaigns/status'
+import { shownFigures } from '@/lib/shown-figures'
 import {
   getPublicCampaign,
   isMember,
@@ -63,7 +64,8 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
   const d = db()
   const data = await getPublicCampaign(d, id, { includeUnpublished: isStaff })
   if (!data) notFound()
-  const { campaign: c, figures: f, terms } = data
+  const { campaign: c, terms } = data
+  const f = shownFigures(c.status, data.figures)
   const theme = readThemeCookie((await cookies()).get(THEME_COOKIE)?.value)
   const template = TEMPLATES[c.type as CampaignType]
   const status = CAMPAIGN_STATUS[c.status]
