@@ -11,6 +11,5 @@ export const browseContent: Record<string, string> = {
   "browse.008": "Try again",
   "browse.009": "No campaigns match these filters.",
   "browse.010": "Clear a filter to see everything that is open.",
-  "browse.011": "Clear filters",
-  "browse.012": "Sample data and artwork for layout only."
+  "browse.011": "Clear filters"
 }

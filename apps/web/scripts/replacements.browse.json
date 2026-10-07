@@ -1,6 +1,6 @@
 {
   "wz": "\"var(--mde-app-zoom)\"",
-  "$hide": ["list:bstates", "text:Sample data and artwork for layout only."],
+  "$hide": ["list:bstates"],
   "$text": {
     "Search campaigns, labels or platforms": "<input type=\"search\" aria-label=\"Search campaigns, labels or platforms\" placeholder=\"Search campaigns, labels or platforms\" value={v.search} onChange={v.onSearch} className=\"mde-search\" />",
     "Sign in": "{v.account.label}",
@@ -8,7 +8,8 @@
     "TikTok": "{v.featured.tag2}",
     "Sample clipping campaign": "{v.featured.title}",
     "Cut the best moments, post on your own account, and earn $2.00 for every 1,000 counted views.": "{v.featured.body}",
-    "$4,800.00 left": "{v.featured.leftLabel}"
+    "$4,800.00 left": "{v.featured.leftLabel}",
+    "Sample data and artwork for layout only.": "{v.past}"
   },
   "$attach": {
     "div:Sign in": {

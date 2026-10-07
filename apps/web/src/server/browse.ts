@@ -24,13 +24,35 @@ export async function loadCards(): Promise<BrowseCard[]> {
   return live.map(({ campaign: c, figures: f }) => ({
     id: c.id,
     title: c.title,
-    label: TEMPLATES[c.type as CampaignType].label as BrowseCard['label'],
+    label: TEMPLATES[c.type as CampaignType].label,
     leftCents: f.leftCents,
     rateCents: c.rateCentsPer1000,
     paidPercent: f.paidPercent,
     platforms: c.platforms.map((p) => PLATFORM_LABELS[p as Platform] ?? p),
     img: c.coverImageUrl,
   }))
+}
+
+/** Public campaigns that have ended or are ending, most recent first (owner request, 2026-10-07). */
+export async function loadPastCards(): Promise<BrowseCard[]> {
+  const all = await listPublicCampaigns(db())
+  return all
+    .filter((x) => x.campaign.status === 'closed' || x.campaign.status === 'closing')
+    .sort(
+      (a, b) =>
+        (b.campaign.endAt ?? b.campaign.createdAt).getTime() - (a.campaign.endAt ?? a.campaign.createdAt).getTime(),
+    )
+    .slice(0, 12)
+    .map(({ campaign: c, figures: f }) => ({
+      id: c.id,
+      title: c.title,
+      label: c.status === 'closed' ? 'Ended' : 'Ending',
+      leftCents: f.leftCents,
+      rateCents: c.rateCentsPer1000,
+      paidPercent: f.paidPercent,
+      platforms: c.platforms.map((p) => PLATFORM_LABELS[p as Platform] ?? p),
+      img: c.coverImageUrl,
+    }))
 }
 
 /**

@@ -4,6 +4,7 @@ import { formatDollars } from '@mde/money/dollars'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { AppMenu } from '@/components/app-menu'
+import { PastCampaigns } from './past-campaigns'
 import { BrowseDesign } from './browse'
 import { browseContent } from './browse.content'
 import { DesignedFrame } from './frame'
@@ -13,7 +14,7 @@ import { saveThemeCookie, themeSwitch, THEMES, type ThemeName } from './themes'
 export type BrowseCard = {
   id: string
   title: string
-  label: 'Clipping' | 'Music' | 'Logo' | 'UGC'
+  label: string
   leftCents: number
   rateCents: number
   paidPercent: number
@@ -35,6 +36,8 @@ export type BrowseFeatured = {
 type Props = {
   state: 'data' | 'loading' | 'error'
   cards: BrowseCard[]
+  /** Campaigns that have ended, shown under the active ones. */
+  pastCards?: BrowseCard[]
   featured: BrowseFeatured | null
   theme: ThemeName
   account: { label: string; href: string }
@@ -50,6 +53,7 @@ type Props = {
 export function BrowseView({
   state,
   cards,
+  pastCards = [],
   featured,
   theme: initialTheme,
   account,
@@ -112,6 +116,22 @@ export function BrowseView({
     bRows: state === 'data' && shown.length > 0,
     bRetry: () => (onRetry ? onRetry() : router.refresh()),
     clearFilters: () => setSearch(''),
+    past:
+      state === 'data' && pastCards.length ? (
+        <PastCampaigns
+          T={T}
+          cards={pastCards.map((c) => ({
+            title: c.title,
+            label: c.label,
+            left: formatDollars(c.leftCents),
+            rate: formatDollars(c.rateCents),
+            pct: `${c.paidPercent}%`,
+            plats: c.platforms,
+            img: c.img ?? '/designed/camp-hero.png',
+            go: () => router.push(`/campaigns/${c.id}`),
+          }))}
+        />
+      ) : null,
     bcards: shown.map((c) => ({
       title: c.title,
       label: c.label,
