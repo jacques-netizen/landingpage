@@ -30,6 +30,11 @@ for (const [key] of Object.entries(files)) {
   views.push([key, 'review', { s: 'review' }]);
   views.push([key, 'report', { s: 'report' }]);
 }
+// The creator campaigns screen and wallet changed at the owner's written request (2026-10-07): their
+// references now come from the product (apps/web/scripts/capture-phone-references.mjs), never from here.
+for (let i = views.length - 1; i >= 0; i--) {
+  if (views[i][0] === 'creator' && /^(browse|wallet)-/.test(views[i][1])) views.splice(i, 1);
+}
 
 const server = http.createServer((req, res) => {
   const p = path.join(VAR, decodeURIComponent(req.url.split('?')[0]));

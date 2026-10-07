@@ -51,3 +51,45 @@
   outline: 2px solid #1a1510;
   outline-offset: 2px;
 }
+
+/* The wallet inside the shared app frame (owner request, 2026-10-07): the mockup's own page padding,
+   header (logo, Campaigns/Wallet pill, theme switch, balance), icon column and outer card give way to
+   the frame and menu the campaigns screen uses. The "Next payout" card sits inside the layout instead
+   of hanging off the bottom of the card (testing report item 10). */
+.mde-wallet-in-app > div {
+  min-height: 0 !important;
+  background: transparent !important;
+}
+.mde-wallet-in-app [data-m~='w-page'] {
+  max-width: none !important;
+  padding: 0 !important;
+}
+.mde-wallet-in-app [data-m~='w-head'],
+.mde-wallet-in-app [data-m~='w-side'] {
+  display: none !important;
+}
+.mde-wallet-in-app [data-m~='w-zoom'] {
+  margin-top: 0 !important;
+  /* The mockup's content area is 1,108px wide; scale it to the frame's content column. */
+  zoom: var(--mde-wallet-zoom, 0.877) !important;
+}
+.mde-wallet-in-app [data-m~='w-frame'] {
+  width: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.mde-wallet-in-app [data-m~='w-next'] {
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
+  margin: 16px 0 0 auto !important;
+}
+@media (max-width: 639.98px) {
+  /* On phones the wallet uses its approved single-column layout at full size. */
+  .mde-wallet-in-app [data-m~='w-zoom'] {
+    zoom: 1 !important;
+  }
+}

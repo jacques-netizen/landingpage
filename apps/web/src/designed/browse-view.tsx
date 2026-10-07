@@ -3,6 +3,7 @@
 import { formatDollars } from '@mde/money/dollars'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
+import { AppMenu } from '@/components/app-menu'
 import { BrowseDesign } from './browse'
 import { browseContent } from './browse.content'
 import { DesignedFrame } from './frame'
@@ -28,20 +29,27 @@ type Props = {
   featured: BrowseFeatured | null
   theme: ThemeName
   account: { label: string; href: string }
+  /** Signed-in creators get their own items in the shared menu. */
+  signedIn?: boolean
   overrides?: Record<string, string>
   onRetry?: () => void
 }
 
-const LABELS = ['All', 'Clipping', 'Music', 'Logo', 'UGC']
-const PLATFORMS = ['All', 'TikTok', 'Instagram', 'YouTube']
 
 // The campaigns screen ("Creator Site v1", screen browse). Values are built exactly as the mockup's
 // script builds them, from real campaigns instead of samples.
-export function BrowseView({ state, cards, featured, theme: initialTheme, account, overrides = {}, onRetry }: Props) {
+export function BrowseView({
+  state,
+  cards,
+  featured,
+  theme: initialTheme,
+  account,
+  signedIn = false,
+  overrides = {},
+  onRetry,
+}: Props) {
   const router = useRouter()
   const [th, setTh] = useState<ThemeName>(initialTheme)
-  const [bl, setBl] = useState('All')
-  const [bp, setBp] = useState('All')
   const [search, setSearch] = useState('')
   const T = THEMES[th]
 
@@ -49,36 +57,19 @@ export function BrowseView({ state, cards, featured, theme: initialTheme, accoun
     const q = search.trim().toLowerCase()
     return cards.filter(
       (c) =>
-        (bl === 'All' || c.label === bl) &&
-        (bp === 'All' || c.platforms.includes(bp)) &&
-        (!q || [c.title, c.label, ...c.platforms].some((s) => s.toLowerCase().includes(q))),
+        !q || [c.title, c.label, ...c.platforms].some((s) => s.toLowerCase().includes(q)),
     )
-  }, [cards, bl, bp, search])
-
-  const filt = (list: string[], cur: string, set: (v: string) => void) =>
-    list.map((n) => ({
-      label: n,
-      go: () => set(n),
-      bg: cur === n ? 'rgba(216,197,143,0.2)' : 'transparent',
-      fg: cur === n ? T.accentInk : T.muted,
-      dot: cur === n ? '#D8C58F' : T.hair2,
-    }))
+  }, [cards, search])
 
   const v = {
     T,
     goHome: () => router.push('/'),
-    sideNav: [
-      ['Home', '/'],
-      ['Campaigns', '/campaigns'],
-      ['Wallet', '/wallet'],
-    ].map(([label, href]) => ({
-      label,
-      go: () => router.push(href!),
-      bg: href === '/campaigns' ? 'rgba(216,197,143,0.2)' : 'transparent',
-      fg: href === '/campaigns' ? T.accentInk : T.muted,
-    })),
-    labelFilters: filt(LABELS, bl, setBl),
-    platFilters: filt(PLATFORMS, bp, setBp),
+    // The shared app menu replaces the mockup's sidebar contents (owner request, 2026-10-07).
+    menu: (
+      <div data-theme={th === 'light' ? 'glass' : 'dark'} style={{ display: 'contents' }}>
+        <AppMenu active="campaigns" signedIn={signedIn} />
+      </div>
+    ),
     // The mockup's Data / Loading / Error switch is preview tooling: rendered invisible to keep the layout.
     bstates: [
       ['data', 'Data'],
@@ -110,11 +101,7 @@ export function BrowseView({ state, cards, featured, theme: initialTheme, accoun
     bEmpty: state === 'data' && shown.length === 0,
     bRows: state === 'data' && shown.length > 0,
     bRetry: () => (onRetry ? onRetry() : router.refresh()),
-    clearFilters: () => {
-      setBl('All')
-      setBp('All')
-      setSearch('')
-    },
+    clearFilters: () => setSearch(''),
     bcards: shown.map((c) => ({
       title: c.title,
       label: c.label,

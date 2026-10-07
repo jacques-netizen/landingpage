@@ -29,6 +29,7 @@ export default async function CampaignsPage() {
       overrides={featured?.overrides}
       theme={chrome.theme}
       account={chrome.account}
+      signedIn={chrome.signedIn}
     />
   )
 }

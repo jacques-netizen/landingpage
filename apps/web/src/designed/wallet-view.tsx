@@ -3,7 +3,7 @@
 import { Button, Dialog } from '@mde/ui'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { DesignedFrame } from './frame'
+import { AppFrame } from '@/components/app-frame'
 import { makeCopy } from './runtime'
 import { saveThemeCookie, themeSwitch, THEMES, type ThemeName } from './themes'
 import { WalletDesign } from './wallet'
@@ -127,9 +127,13 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
     bars: m.bars,
   }
 
+  // The wallet sits in the same frame and menu as the campaigns screen (owner request, 2026-10-07):
+  // the mockup's own header, icon column and outer card are hidden by designed.css (.mde-wallet-in-app).
   return (
-    <DesignedFrame>
-      <WalletDesign v={v} copy={makeCopy(walletContent, overrides)} />
+    <AppFrame theme={th} active="wallet" signedIn>
+      <div className="mde-wallet-in-app">
+        <WalletDesign v={v} copy={makeCopy(walletContent, overrides)} />
+      </div>
       <Dialog
         theme={dk ? 'dark' : 'glass'}
         open={soon}
@@ -142,6 +146,6 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
           </Button>
         }
       />
-    </DesignedFrame>
+    </AppFrame>
   )
 }

@@ -32,8 +32,6 @@
     "a-zoom": "zoom:{{ wz }}",
     "a-frame": "width:1240px;margin:0 auto;box-sizing:border-box;padding:16px;border-radius:38px",
     "a-side": "width:220px;flex:none;box-sizing:border-box;padding:22px 16px",
-    "a-divider": "margin:22px 8px 6px;height:1px",
-    "a-heading": "letter-spacing:0.1em",
     "a-top": "=display:flex;gap:12px;align-items:center",
     "a-search": "flex:1;height:48px;border-radius:14px",
     "a-hero": "position:relative;color:#F4F1EA;height:370px",
@@ -43,5 +41,8 @@
     "a-grid": "display:grid;grid-template-columns:repeat(4,1fr);gap:16px",
     "a-hero-shade": "background:linear-gradient(90deg,rgba(12,10,18,0.92)",
     "a-hero-buttons": "margin-top:22px;display:flex;gap:12px;align-items:center"
+  },
+  "$children": {
+    "width:220px;flex:none;box-sizing:border-box;padding:22px 16px": "v.menu"
   }
 }

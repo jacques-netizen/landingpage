@@ -79,9 +79,7 @@ async function previewMasks(page: Page) {
 
 const BROWSE_VIEWS: { name: string; path: string; filters?: string[] }[] = [
   { name: 'data', path: '/campaigns' },
-  { name: 'filtered-clipping', path: '/campaigns', filters: ['Clipping'] },
-  { name: 'filtered-tiktok', path: '/campaigns', filters: ['TikTok'] },
-  { name: 'empty', path: '/campaigns', filters: ['UGC', 'Instagram'] },
+  { name: 'empty', path: '/design-states/browse?state=empty' },
   { name: 'loading', path: '/design-states/browse?state=loading' },
   { name: 'error', path: '/design-states/browse?state=error' },
 ]

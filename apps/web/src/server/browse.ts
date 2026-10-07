@@ -67,5 +67,6 @@ export async function browseChrome() {
   return {
     theme: readThemeCookie(jar.get(THEME_COOKIE)?.value),
     account: viewer ? { label: 'Sign out', href: '/sign-out' } : { label: 'Sign in', href: '/sign-in?next=/campaigns' },
+    signedIn: !!viewer,
   }
 }

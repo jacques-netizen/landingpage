@@ -14,15 +14,15 @@ const OUT = path.resolve(import.meta.dirname, '../../../docs/design/reference-sc
 const BASE = process.env.BASE_URL ?? 'http://localhost:3100'
 
 const browser = await chromium.launch()
-async function shot(route, name, tab, theme) {
-  const page = await browser.newPage({ viewport: { width: 390, height: 900 } })
+async function shot(route, name, tab, theme, width = 390) {
+  const page = await browser.newPage({ viewport: { width, height: 900 } })
   if (theme) await page.context().addCookies([{ name: 'mde_theme', value: theme, url: BASE }])
   await page.goto(BASE + route, { waitUntil: 'networkidle' })
   for (const t of [tab ?? []].flat()) await page.getByText(t, { exact: true }).first().click()
   await page.evaluate(() => globalThis.document.fonts.ready)
   await page.waitForTimeout(500)
-  await page.screenshot({ path: path.join(OUT, `${name}-390.png`), fullPage: true, animations: 'disabled' })
-  console.log(`${name}-390.png`)
+  await page.screenshot({ path: path.join(OUT, `${name}-${width}.png`), fullPage: true, animations: 'disabled' })
+  console.log(`${name}-${width}.png`)
   await page.close()
 }
 await shot('/', 'creator-home')
@@ -34,19 +34,21 @@ for (const [tab, slug] of [
 ]) {
   await shot('/brands', `platform-brands-${slug}`, tab)
 }
+// The campaigns screen and the wallet are captured from the product at every width: on 2026-10-07 the
+// owner asked in writing for the creator app's one menu on both and the wallet inside the campaigns
+// screen's frame, so the mockup no longer shows them as they ship.
+const APP_WIDTHS = [1440, 1024, 390]
 // Campaigns screen, both themes, every state (approved by the owner on 2026-10-05).
 const BROWSE_VIEWS = [
   ['data', '/campaigns'],
-  ['filtered-clipping', '/campaigns', ['Clipping']],
-  ['filtered-tiktok', '/campaigns', ['TikTok']],
-  ['empty', '/campaigns', ['UGC', 'Instagram']],
+  ['empty', '/design-states/browse?state=empty'],
   ['loading', '/design-states/browse?state=loading'],
   ['error', '/design-states/browse?state=error'],
 ]
 for (const theme of ['dark', 'light']) {
   for (const [view, route, filters] of BROWSE_VIEWS) {
     const url = route.includes('?') ? `${route}&theme=${theme}` : route
-    await shot(url, `creator-browse-${theme}-${view}`, filters, theme)
+    for (const w of APP_WIDTHS) await shot(url, `creator-browse-${theme}-${view}`, filters, theme, w)
   }
 }
 // Wallet, both themes, every state (approved by the owner on 2026-10-05). Rendered from the
@@ -60,12 +62,15 @@ for (const theme of ['dark', 'light']) {
     ['error', 'error'],
     ['withdraw-done', 'done'],
   ]) {
-    await shot(
-      `/design-states/wallet?state=${state}&theme=${theme}`,
-      `creator-wallet-${theme}-${view}`,
-      undefined,
-      theme,
-    )
+    for (const w of APP_WIDTHS) {
+      await shot(
+        `/design-states/wallet?state=${state}&theme=${theme}`,
+        `creator-wallet-${theme}-${view}`,
+        undefined,
+        theme,
+        w,
+      )
+    }
   }
 }
 await browser.close()
