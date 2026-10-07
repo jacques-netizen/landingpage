@@ -68,7 +68,8 @@ export function routeForHost(
   if (h === brand) {
     if (SHARED_PATHS.some((r) => r.test(path)) || ASSET.test(path)) return { kind: 'next' }
     if (path === '/') return { kind: 'rewrite', path: '/brands' }
-    if (path === '/brands') return { kind: 'redirect', url: `https://${brand}/${search}` }
+    // /brands is served as it is: the rewrite of "/" reaches the proxy again as /brands, and a redirect
+    // back to "/" here looped forever.
     if (BRAND_PATHS.some((r) => r.test(path))) return { kind: 'next' }
     return { kind: 'redirect', url: `https://${app}${path}${search}` }
   }

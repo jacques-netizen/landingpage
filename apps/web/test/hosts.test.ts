@@ -7,7 +7,7 @@ const r = (host: string, path: string, search = '') => routeForHost(host, path, 
 describe('two addresses, one deployment', () => {
   it('shows the brand site at the root of the main domain', () => {
     expect(r('maisondelites.com', '/')).toEqual({ kind: 'rewrite', path: '/brands' })
-    expect(r('maisondelites.com', '/brands')).toEqual({ kind: 'redirect', url: 'https://maisondelites.com/' })
+    expect(r('maisondelites.com', '/brands')).toEqual({ kind: 'next' })
     expect(r('maisondelites.com', '/for-clients')).toEqual({ kind: 'next' })
     expect(r('maisondelites.com', '/legal/brand-terms')).toEqual({ kind: 'next' })
   })
