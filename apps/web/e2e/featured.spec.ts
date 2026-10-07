@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import postgres from 'postgres'
-import { signInAs } from './helpers'
+import { signInAs, signUpNewCreator } from './helpers'
 
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
   max: 1,
@@ -13,6 +13,10 @@ test.afterAll(async () => {
 test('an admin changes the featured campaign and its words, and the campaigns screen shows it', async ({ page }) => {
   const [before] = await sql`select value from settings where key = 'content.browse'`
   try {
+    // The featured campaign's own card picture fills the banner unless staff upload another.
+    await page.goto('/campaigns')
+    await expect(page.locator('[data-m~="a-hero"] img').first()).toHaveAttribute('src', '/designed/camp-clip.png')
+
     await signInAs(page, 'admin@seed.invalid')
     await page.goto('/admin/featured')
     await page.getByLabel('Campaign').click()
@@ -46,4 +50,13 @@ test('kymencarter@gmail.com is an admin', async () => {
   const rows =
     await sql`select r.role from staff_roles r join users u on u.id = r.user_id where u.email = 'kymencarter@gmail.com'`
   expect(rows.map((r) => r.role)).toContain('admin')
+})
+
+test('the creator menu has Sign out at the bottom', async ({ page }) => {
+  await signUpNewCreator(page)
+  await page.goto('/dashboard')
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('button', { name: 'Sign out' }).click()
+  await page.waitForURL((u) => u.pathname === '/')
+  const s = (await (await page.request.get('/api/auth/session')).json()) as { user?: unknown } | null
+  expect(s?.user).toBeUndefined()
 })

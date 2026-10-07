@@ -1,3 +1,5 @@
+import { signOutAction } from '@/app/(auth)/actions'
+
 // The creator app's one menu (owner request and testing report, 2026-10-07): the same items, in the
 // same place, on every app screen, drawn in the campaigns screen's sidebar style.
 export type AppSection =
@@ -62,6 +64,17 @@ export function AppMenu({ active, signedIn }: { active: AppSection | null; signe
           />
           {mine.map(link)}
         </>
+      ) : null}
+      {signedIn ? (
+        // Sign out sits at the bottom of the menu (owner request, 2026-10-07).
+        <form action={signOutAction} className="mt-auto pt-3 max-sm:mt-0 max-sm:pt-0">
+          <button
+            type="submit"
+            className="flex h-[42px] w-full cursor-pointer items-center rounded-[12px] border-0 bg-transparent px-[14px] text-left font-app text-[14px] font-semibold text-[var(--t-muted)] hover:text-[var(--t-text)]"
+          >
+            Sign out
+          </button>
+        </form>
       ) : null}
     </>
   )
