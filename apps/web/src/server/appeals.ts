@@ -1,6 +1,6 @@
 import 'server-only'
 import { db, tables } from '@mde/db'
-import { asc, desc, eq, ne } from 'drizzle-orm'
+import { asc, desc, eq, ne, sql } from 'drizzle-orm'
 
 const base = () =>
   db()
@@ -22,7 +22,7 @@ const base = () =>
       campaignTitle: tables.campaigns.title,
       creatorId: tables.appeals.creatorId,
       email: tables.users.email,
-      name: tables.users.name,
+      name: sql<string | null>`coalesce(${tables.users.username}, ${tables.users.name})`,
     })
     .from(tables.appeals)
     .innerJoin(tables.submissions, eq(tables.submissions.id, tables.appeals.submissionId))

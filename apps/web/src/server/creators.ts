@@ -11,7 +11,7 @@ export async function listCreators(q?: string) {
     .select({
       id: users.id,
       email: users.email,
-      name: users.name,
+      name: sql<string | null>`coalesce(${users.username}, ${users.name})`,
       status: users.status,
       strikes: creatorProfiles.strikesActive,
       payoutStatus: creatorProfiles.payoutStatus,
@@ -21,7 +21,11 @@ export async function listCreators(q?: string) {
     })
     .from(creatorProfiles)
     .innerJoin(users, eq(users.id, creatorProfiles.userId))
-    .where(term ? or(ilike(users.email, `%${term}%`), ilike(users.name, `%${term}%`)) : undefined)
+    .where(
+      term
+        ? or(ilike(users.email, `%${term}%`), ilike(users.name, `%${term}%`), ilike(users.username, `%${term}%`))
+        : undefined,
+    )
     .orderBy(desc(users.createdAt))
     .limit(200)
 }

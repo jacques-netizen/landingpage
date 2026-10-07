@@ -29,11 +29,11 @@ export async function campaignMonitor(campaignId: string) {
       counted: string
       earned: string
     }>(sql`
-      select s.creator_id, u.email, u.display_name as name, count(*)::bigint as posts,
+      select s.creator_id, u.email, coalesce(u.username, u.display_name) as name, count(*)::bigint as posts,
         coalesce(sum(s.counted_views), 0)::bigint as counted, coalesce(sum(s.earned_cents), 0)::bigint as earned
       from submissions s join users u on u.id = s.creator_id
       where s.campaign_id = ${campaignId} and s.state not in ('rejected_auto', 'rejected', 'removed')
-      group by s.creator_id, u.email, u.display_name order by earned desc, counted desc limit 10`),
+      group by s.creator_id, u.email, u.username, u.display_name order by earned desc, counted desc limit 10`),
   ])
   return {
     byState: Object.fromEntries(states.map((r) => [r.state, Number(r.n)])) as Record<string, number>,

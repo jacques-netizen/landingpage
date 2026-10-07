@@ -30,7 +30,7 @@ export async function reviewQueue(
       checks: tables.submissions.checkResults,
       campaignTitle: tables.campaigns.title,
       email: tables.users.email,
-      name: tables.users.name,
+      name: sql<string | null>`coalesce(${tables.users.username}, ${tables.users.name})`,
     })
     .from(tables.submissions)
     .innerJoin(tables.campaigns, eq(tables.campaigns.id, tables.submissions.campaignId))

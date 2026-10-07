@@ -44,7 +44,7 @@ export async function campaignOverview(campaignId: string, bucket: Bucket) {
       creator_id: string
     }>(sql`
       select s.id, s.state, s.platform, s.post_url, s.latest_views, s.baseline_views, s.counted_views, s.earned_cents,
-        s.submitted_at, s.reason_code, u.email, u.display_name as name, s.creator_id
+        s.submitted_at, s.reason_code, u.email, coalesce(u.username, u.display_name) as name, s.creator_id
       from submissions s join users u on u.id = s.creator_id
       where s.campaign_id = ${campaignId} and s.state in (${inList(BUCKETS[bucket].states)})
       order by ${bucket === 'approved' ? sql`s.counted_views desc` : sql`s.submitted_at desc`}
@@ -116,7 +116,7 @@ export async function campaignCreators(campaignId: string, q?: string) {
     approved: string
     accounts: { platform: string; handle: string; status: string }[] | null
   }>(sql`
-    select u.id, u.email, u.display_name as name, m.joined_at, u.status,
+    select u.id, u.email, coalesce(u.username, u.display_name) as name, m.joined_at, u.status,
       (select count(*) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id)::bigint as posts,
       (select count(*) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id
          and s.state in (${inList(BUCKETS.approved.states)}))::bigint as approved,
@@ -124,7 +124,7 @@ export async function campaignCreators(campaignId: string, q?: string) {
          from linked_accounts a where a.creator_id = u.id and a.status <> 'removed') as accounts
     from campaign_members m join users u on u.id = m.creator_id
     where m.campaign_id = ${campaignId}
-      ${term ? sql`and (u.email ilike ${term} or u.display_name ilike ${term})` : sql``}
+      ${term ? sql`and (u.email ilike ${term} or u.display_name ilike ${term} or u.username ilike ${term})` : sql``}
     order by m.joined_at desc limit 500`)
   return rows.map((r) => ({
     id: r.id,
@@ -152,7 +152,7 @@ export async function campaignPages(campaignId: string) {
     views: string
     earned: string
   }>(sql`
-    select a.id, a.platform, a.handle, a.status, a.followers, coalesce(u.display_name, u.email) as creator, u.id as creator_id,
+    select a.id, a.platform, a.handle, a.status, a.followers, coalesce(u.username, u.display_name, u.email) as creator, u.id as creator_id,
       count(s.id)::bigint as posts,
       coalesce(sum(s.latest_views - s.baseline_views) filter (where s.state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
       coalesce(sum(s.earned_cents), 0)::bigint as earned

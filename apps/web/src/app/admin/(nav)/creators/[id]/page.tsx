@@ -50,9 +50,16 @@ export default async function CreatorPage({ params }: { params: Promise<{ id: st
 
   return (
     <AdminPage
-      title={c.user.name ?? c.user.email}
-      lead={`${c.user.email} · joined ${day(c.user.createdAt)} · ${suspended ? 'Suspended' : c.user.status === 'closed' ? 'Closed' : 'Active'}`}
+      title={c.user.username ? `@${c.user.username}` : (c.user.name ?? c.user.email)}
+      lead={`${c.user.email}${c.user.discordUsername ? ` · Discord ${c.user.discordUsername}` : ''} · joined ${day(c.user.createdAt)} · ${suspended ? 'Suspended' : c.user.status === 'closed' ? 'Closed' : 'Active'}`}
     >
+      {c.user.image ? (
+        <img
+          src={c.user.image}
+          alt={`Profile picture of ${c.user.username ?? c.user.email}`}
+          className="mb-4 block size-[88px] rounded-[20px] border border-solid border-line object-cover"
+        />
+      ) : null}
       {active >= SUSPENSION_SUGGESTED_AT && !suspended ? (
         <p role="status" className="m-0 mb-2 text-[14px] font-medium text-bad">
           {active} active strikes. Consider suspending this creator.

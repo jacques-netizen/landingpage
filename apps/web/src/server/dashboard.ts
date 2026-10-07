@@ -1,7 +1,7 @@
 import 'server-only'
 import { campaignFigures } from '@mde/campaigns'
 import { db, tables } from '@mde/db'
-import { and, asc, count, eq, inArray, lte, min } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, lte, min, sql } from 'drizzle-orm'
 import { HOUR } from './appeals'
 
 /** Budget left at or below this share counts as near its end. */
@@ -21,7 +21,7 @@ export async function staffDashboard(now = new Date()) {
         id: tables.appeals.id,
         dueAt: tables.appeals.dueAt,
         campaignTitle: tables.campaigns.title,
-        name: tables.users.name,
+        name: sql<string | null>`coalesce(${tables.users.username}, ${tables.users.name})`,
         email: tables.users.email,
       })
       .from(tables.appeals)
