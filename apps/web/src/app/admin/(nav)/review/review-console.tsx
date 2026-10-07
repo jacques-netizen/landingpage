@@ -40,7 +40,7 @@ function Console({ state, items: initial, reasons, onApprove, onReject }: Props)
   const [index, setIndex] = useState(0)
   const [reason, setReason] = useState<string | null>(null)
   const [note, setNote] = useState('')
-  const [busy, start] = useTransition()
+  const [, start] = useTransition()
   // Posts decided here stay out of the list even if a refresh that started before the decision
   // brings them back, so a quick key press never lands on a post that is already decided.
   const decided = useRef(new Set<string>())
@@ -56,32 +56,40 @@ function Console({ state, items: initial, reasons, onApprove, onReject }: Props)
     [items.length],
   )
 
-  const finish = useCallback(
-    (id: string, r: ReviewResult, done: string) => {
-      if (!r.ok) return toast(r.error)
-      toast(done)
+  // A decision takes effect on screen at once, so a reviewer can keep pressing keys while it saves.
+  // If the server refuses it, the post comes back with the reason.
+  const decide = useCallback(
+    (id: string, run: () => Promise<ReviewResult>, done: string) => {
       decided.current.add(id)
-      // Move on to the next post; the list refreshes from the server behind it.
       setItems((xs) => xs.filter((x) => x.id !== id))
       setReason(null)
       setNote('')
-      setTimeout(() => router.refresh(), 0)
+      start(async () => {
+        const r = await run()
+        if (!r.ok) {
+          decided.current.delete(id)
+          toast(r.error)
+        } else toast(done)
+        router.refresh()
+      })
     },
     [router, toast],
   )
 
   const approve = useCallback(() => {
-    if (!current || busy || !onApprove) return
+    if (!current || !onApprove) return
     const id = current.id
-    start(async () => finish(id, await onApprove(id, note), 'Approved.'))
-  }, [busy, current, finish, note, onApprove])
+    const n = note
+    decide(id, () => onApprove(id, n), 'Approved.')
+  }, [current, decide, note, onApprove])
 
   const reject = useCallback(() => {
-    if (!current || busy || !onReject) return
+    if (!current || !onReject) return
     if (!reason) return toast('Choose a reason, then reject.')
     const id = current.id
-    start(async () => finish(id, await onReject(id, reason, note), 'Rejected.'))
-  }, [busy, current, finish, note, onReject, reason, toast])
+    const [code, n] = [reason, note]
+    decide(id, () => onReject(id, code, n), 'Rejected.')
+  }, [current, decide, note, onReject, reason, toast])
 
   // J next, K previous, A approve, R reject, never while typing a note.
   useEffect(() => {
@@ -237,10 +245,10 @@ function Console({ state, items: initial, reasons, onApprove, onReject }: Props)
             />
 
             <div className="mt-4 flex gap-3">
-              <Button type="button" onClick={approve} loading={busy} disabled={busy}>
+              <Button type="button" onClick={approve}>
                 Approve
               </Button>
-              <Button type="button" variant="secondary" onClick={reject} disabled={busy}>
+              <Button type="button" variant="secondary" onClick={reject}>
                 Reject
               </Button>
             </div>
