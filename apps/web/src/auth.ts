@@ -10,7 +10,8 @@ import { cookies } from 'next/headers'
 import { CONSENT_COOKIE, readConsent } from './server/consent'
 import { escapeHtml, sendEmail } from './server/email'
 
-const THIRTY_DAYS = 30 * 24 * 60 * 60
+// Sessions last 90 days and renew while used, so people stay signed in (testing report item 8).
+const SESSION_MAX_AGE = 90 * 24 * 60 * 60
 
 // Email magic link. Sent through Resend, or written to the dev outbox without an API key.
 const emailProvider: EmailConfig = {
@@ -64,21 +65,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => ({
   providers: providers(),
   secret: env().AUTH_SECRET,
   trustHost: true,
-  // Database sessions: a new token on every sign in, expiry after 30 days without use.
-  session: { strategy: 'database', maxAge: THIRTY_DAYS, updateAge: 24 * 60 * 60 },
+  // Database sessions: a new token on every sign in, expiry after 90 days without use.
+  session: { strategy: 'database', maxAge: SESSION_MAX_AGE, updateAge: 24 * 60 * 60 },
   pages: { signIn: '/sign-in', verifyRequest: '/check-email', error: '/auth-error' },
   callbacks: {
     // New accounts need both sign-up ticks (03_SYSTEMS.md section 13: block sign up without them).
-    async signIn({ user, account }) {
+    async signIn({ user, account, email }) {
       const address = (user.email ?? '').trim().toLowerCase()
       const d = db()
       const [existing] = address
         ? await d
-            .select({ id: tables.users.id, status: tables.users.status })
+            .select({ id: tables.users.id, status: tables.users.status, verified: tables.users.emailVerified })
             .from(tables.users)
             .where(sql`email = ${address}`)
         : []
-      let known = existing
+      // New email sign-ups are signed in before their address is proven. The first time the owner of
+      // the inbox uses a link, every earlier session ends, so nobody keeps an address that is not theirs.
+      if (existing && !existing.verified && account?.type === 'email' && !email?.verificationRequest) {
+        await d.delete(tables.sessions).where(eq(tables.sessions.userId, existing.id))
+      }
+      let known: { id: string; status: string } | undefined = existing
       if (!known && account && account.type !== 'email') {
         const [linked] = await d
           .select({ id: tables.users.id, status: tables.users.status })

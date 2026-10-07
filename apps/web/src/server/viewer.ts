@@ -10,8 +10,14 @@ export type Viewer = { id: string; email: string; name: string | null; roles: St
  * The owner's addresses from ADMIN_EMAIL get the admin role the first time they are seen signed in,
  * so a fresh deploy needs no command line. Signing in proves the address. Written to the audit log.
  */
-async function withOwnerAdmin(userId: string, email: string, roles: StaffRole[]): Promise<StaffRole[]> {
-  if (roles.includes('admin')) return roles
+async function withOwnerAdmin(
+  userId: string,
+  email: string,
+  verified: boolean,
+  roles: StaffRole[],
+): Promise<StaffRole[]> {
+  // Only a proven address: a new sign-up is signed in before its email link is used.
+  if (roles.includes('admin') || !verified) return roles
   const owners = (env().ADMIN_EMAIL ?? '')
     .split(',')
     .map((e) => e.trim().toLowerCase())
@@ -48,6 +54,7 @@ export async function getViewer(): Promise<Viewer | null> {
     roles: await withOwnerAdmin(
       u.id,
       u.email,
+      !!u.emailVerified,
       roles.map((r) => r.role as StaffRole),
     ),
   }
@@ -58,7 +65,12 @@ export const SESSION_COOKIES = ['__Secure-authjs.session-token', 'authjs.session
 /** Staff roles for a raw session token. Used by the proxy, which runs before rendering. */
 export async function rolesForSessionToken(token: string): Promise<{ userId: string; roles: StaffRole[] } | null> {
   const rows = await db()
-    .select({ userId: tables.sessions.userId, email: tables.users.email, role: tables.staffRoles.role })
+    .select({
+      userId: tables.sessions.userId,
+      email: tables.users.email,
+      verified: tables.users.emailVerified,
+      role: tables.staffRoles.role,
+    })
     .from(tables.sessions)
     .innerJoin(tables.users, eq(tables.users.id, tables.sessions.userId))
     .leftJoin(tables.staffRoles, eq(tables.staffRoles.userId, tables.sessions.userId))
@@ -70,9 +82,9 @@ export async function rolesForSessionToken(token: string): Promise<{ userId: str
       ),
     )
   if (rows.length === 0) return null
-  const { userId, email } = rows[0]!
+  const { userId, email, verified } = rows[0]!
   const roles = rows.flatMap((r) => (r.role ? [r.role as StaffRole] : []))
-  return { userId, roles: await withOwnerAdmin(userId, email, roles) }
+  return { userId, roles: await withOwnerAdmin(userId, email, !!verified, roles) }
 }
 
 export function hasAccess(viewer: Pick<Viewer, 'roles'> | null, access: Access) {

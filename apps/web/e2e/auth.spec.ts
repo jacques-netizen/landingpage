@@ -14,8 +14,19 @@ async function requestLink(page: Page, mode: 'sign-in' | 'sign-up', email: strin
     await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
   }
   await page.getByLabel('Email').fill(email)
-  await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
+  await page.getByRole('button', { name: mode === 'sign-up' ? 'Create account' : 'Email me a sign-in link' }).click()
   await page.waitForURL('**/check-email')
+}
+
+/** A new address is signed in at once and lands on the campaigns screen (testing report item 2). */
+async function signUp(page: Page, email: string) {
+  await page.context().clearCookies()
+  await page.goto('/sign-up')
+  await page.getByRole('checkbox', { name: 'I am 18 or older.' }).check()
+  await page.getByRole('checkbox', { name: 'I agree to the terms of use and the privacy policy.' }).check()
+  await page.getByLabel('Email').fill(email)
+  await page.getByRole('button', { name: 'Create account' }).click()
+  await page.waitForURL((u) => u.pathname === '/campaigns')
 }
 
 async function signInAs(page: Page, email: string) {
@@ -29,35 +40,60 @@ async function sessionEmail(page: Page) {
   return s?.user?.email ?? null
 }
 
-test('sign up needs both ticks, then the magic link signs in, and sign out ends the session', async ({ page }) => {
+test('sign up needs both ticks, then signs in at once, and sign out ends the session', async ({ page }) => {
   const email = unique('creator')
   await page.goto('/sign-up')
   await page.getByLabel('Email').fill(email)
-  await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
+  await page.getByRole('button', { name: 'Create account' }).click()
   await expect(page.getByText('You must be 18 or older to join.')).toBeVisible()
   await expect(page.getByText('Tick to agree to the terms of use and the privacy policy.')).toBeVisible()
   expect(mailsTo(email)).toHaveLength(0)
 
-  await requestLink(page, 'sign-up', email)
-  const mail = mailsTo(email).pop()!
-  expect(mail.subject).toBe('Your sign-in link')
-  await page.goto(await latestLink(email))
-  await page.waitForLoadState('networkidle')
+  await signUp(page, email)
   expect(await sessionEmail(page)).toBe(email)
+  // Signed in, the home address opens the campaigns screen.
+  await page.goto('/')
+  expect(new URL(page.url()).pathname).toBe('/campaigns')
 
   await page.goto('/sign-out')
   await page.getByRole('button', { name: 'Sign out' }).click()
   await page.waitForURL((u) => u.pathname === '/')
   expect(await sessionEmail(page)).toBeNull()
 
-  // Sign in again with the same address.
+  // Sign in again with the same address: the link lands on the campaigns screen.
   await signInAs(page, email)
+  expect(new URL(page.url()).pathname).toBe('/campaigns')
   expect(await sessionEmail(page)).toBe(email)
+})
+
+test('signing up with an address that has an account sends a link and signs nobody in', async ({ page }) => {
+  const email = unique('again')
+  await signUp(page, email)
+  await page.context().clearCookies()
+  await requestLink(page, 'sign-up', email)
+  expect(mailsTo(email).pop()!.subject).toBe('Your sign-in link')
+  expect(await sessionEmail(page)).toBeNull()
+})
+
+test('the first email link ends sessions started before the address was proven', async ({ browser }) => {
+  const email = unique('proven')
+  const early = await browser.newPage()
+  await signUp(early, email)
+  expect(await sessionEmail(early)).toBe(email)
+
+  const owner = await browser.newPage()
+  await signInAs(owner, email)
+  expect(await sessionEmail(owner)).toBe(email)
+  expect(await sessionEmail(early)).toBeNull()
+  await early.close()
+  await owner.close()
 })
 
 test('a magic link works once', async ({ page }) => {
   const email = unique('once')
-  await requestLink(page, 'sign-up', email)
+  await signUp(page, email)
+  await page.context().clearCookies()
+  await requestLink(page, 'sign-in', email)
   const link = await latestLink(email)
   await page.goto(link)
   await page.waitForLoadState('networkidle')
@@ -98,10 +134,7 @@ test('signed-out visitors are sent to the staff sign in and get 401 from the sta
 })
 
 test('a non-staff user gets 403 on every staff page and staff API route', async ({ page }) => {
-  const email = unique('nonstaff')
-  await requestLink(page, 'sign-up', email)
-  await page.goto(await latestLink(email))
-  await page.waitForLoadState('networkidle')
+  await signUp(page, unique('nonstaff'))
   for (const path of ADMIN_PAGES) {
     const res = await page.goto(path)
     expect(res?.status(), path).toBe(403)

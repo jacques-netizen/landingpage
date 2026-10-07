@@ -111,7 +111,7 @@ export function AuthForm({ mode, next, providers, initialError }: Props) {
         disabled={pending}
         onClick={() => setIntent('email')}
       >
-        Email me a sign-in link
+        {mode === 'sign-up' ? 'Create account' : 'Email me a sign-in link'}
       </Button>
     </form>
   )

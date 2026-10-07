@@ -15,7 +15,7 @@ export default async function SignUpPage({
 }: {
   searchParams: Promise<{ next?: string; error?: string }>
 }) {
-  const { next = '/', error } = await searchParams
+  const { next = '/campaigns', error } = await searchParams
   return (
     <AuthShell
       title="Create an account"
@@ -23,7 +23,7 @@ export default async function SignUpPage({
       footer={
         <>
           Already have an account?{' '}
-          <a href={`/sign-in${next !== '/' ? `?next=${encodeURIComponent(next)}` : ''}`}>Sign in</a>
+          <a href={`/sign-in${next !== '/campaigns' ? `?next=${encodeURIComponent(next)}` : ''}`}>Sign in</a>
         </>
       }
     >

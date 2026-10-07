@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { signIn, signOut } from '@/auth'
-import { accountExists, createEmailAccount } from '@/server/accounts'
+import { accountExists, createEmailAccount, startSessionFor } from '@/server/accounts'
 import { clientIp } from '@/server/client-ip'
 import { makeConsentCookie } from '@/server/consent'
 import { escapeHtml, sendEmail } from '@/server/email'
@@ -22,7 +22,7 @@ const emailSchema = z.string().trim().toLowerCase().pipe(z.email()).pipe(z.strin
 /** Only same-site relative paths, so a crafted link cannot send people elsewhere after sign in. */
 function safeNext(value: FormDataEntryValue | null) {
   const v = typeof value === 'string' ? value : ''
-  return v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') ? v : '/'
+  return v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') && v !== '/' ? v : '/campaigns'
 }
 
 const TOO_MANY = 'Too many attempts. Wait an hour and try again.'
@@ -61,7 +61,12 @@ export async function authAction(
   if (!(await rateLimit(`auth:email:${email}`, 5, 3600))) return { error: TOO_MANY, email: rawEmail }
 
   if (mode === 'sign-up' && consentAt) {
-    await createEmailAccount(email, consentAt)
+    // A new address is signed straight in; an address that already has an account gets the email link.
+    const createdId = await createEmailAccount(email, consentAt)
+    if (createdId) {
+      await startSessionFor(createdId)
+      redirect(next)
+    }
   } else if (!(await accountExists(email))) {
     // Do not reveal whether an address has an account. Tell the owner of the inbox instead.
     const { name } = brand()
