@@ -83,3 +83,17 @@ body {
 .guide-prose strong { font-weight: 600; color: var(--color-ink); }
 .guide-prose a { display: inline-flex; align-items: center; height: 52px; padding: 0 28px; margin-top: 0.5em; border-radius: 999px; background: var(--color-ink); color: #fff; font-size: 15px; font-weight: 500; text-decoration: none; }
 .guide-prose-dark p, .guide-prose-dark p:first-child { color: rgb(244 241 234 / 0.8); }
+
+/* A returning visitor stays hidden until their place is restored (no flash of the cold open). */
+html[data-resuming] .funnel-stage { visibility: hidden; }
+html[data-resuming] body { background: var(--color-ink-black); }
+
+/* Cold open text entrance. Pure CSS so the server HTML paints at once. */
+@keyframes mde-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.mde-rise { animation: mde-rise 0.7s var(--ease-cut) both; }
+@media (prefers-reduced-motion: reduce) {
+  .mde-rise { animation-name: none; }
+}

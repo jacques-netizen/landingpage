@@ -22,6 +22,13 @@ With no credentials set, the app uses an embedded database (PGlite under
 `.data/`), stores PDFs on local disk and logs CRM, email, Discord, Meta and
 ManyChat calls instead of sending them.
 
+## Docs
+
+- [`docs/SETUP.md`](docs/SETUP.md): connecting Vercel, Postgres, R2, Resend, GoHighLevel, Cal.com, ManyChat, Meta, Discord, Turnstile and Mux, plus the rollback switch
+- [`docs/QA.md`](docs/QA.md): launch checklist with what is checked and what still needs devices, accounts or the owner
+- [`docs/video-scripts.md`](docs/video-scripts.md): draft scripts for the founder films
+- [`docs/guide-samples/`](docs/guide-samples/): six sample PDFs for copy review
+
 ## Checks
 
 ```bash
@@ -29,6 +36,8 @@ npm run lint
 npm run typecheck
 npm test
 npm run check:dashes   # no em dashes anywhere
+npm run guides:sample  # builds six sample PDFs and checks them
+node tests/e2e/walk.mjs http://localhost:3000 creator /tmp/walk --refresh   # phone sized walk through
 ```
 
 ## Where things live
@@ -39,3 +48,7 @@ npm run check:dashes   # no em dashes anywhere
 | `docs/reference/` | Screenshots and computed styles of the live site |
 | `public/brand/` | Logo, imagery and client logos re-hosted from the site |
 | `public/media/placeholder/` | Clearly marked placeholder films (built by `scripts/make-placeholders.sh`) |
+| `content/` | Every question, branch, line of copy, result, proof item and media id |
+| `content/guide/` | Guide blocks (markdown with front matter) and the outline |
+| `src/components/funnel/` | The scene machine and scenes |
+| `src/lib/server/` | Sessions, leads, jobs, GHL, email, guide PDF, Meta, Discord, ManyChat |

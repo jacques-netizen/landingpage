@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from "framer-motion";
-import { copy, type ProgressMode, type Step, type Variant } from "@/lib/content";
+import { type ProgressMode, type Step, type Variant } from "@/lib/content";
 import { pathOf, progressShare, resumeStep, stepsFor, type Answers } from "@/lib/flow";
 import { postJson, setApiToken, track } from "@/lib/client/api";
 import { safeStorage } from "@/lib/client/storage";
@@ -18,7 +18,8 @@ import { ProgressLine } from "./ui";
 import { ColdOpen } from "./scenes/ColdOpen";
 import { QuestionScene } from "./scenes/Question";
 
-const FilmScene = dynamic(() => import("./scenes/Film").then((x) => x.FilmScene), { ssr: false });
+// Server rendered too: it is the first scene of the plain arm.
+const FilmScene = dynamic(() => import("./scenes/Film").then((x) => x.FilmScene));
 const StepsScene = dynamic(() => import("./scenes/Steps").then((x) => x.StepsScene), { ssr: false });
 const GateScene = dynamic(() => import("./scenes/Gate").then((x) => x.GateScene), { ssr: false });
 const BuildingScene = dynamic(() => import("./scenes/Building").then((x) => x.BuildingScene), { ssr: false });
@@ -54,46 +55,57 @@ function writeHashToken(token: string) {
 
 function readParams() {
   const q = new URLSearchParams(window.location.search);
-  const fnRaw = q.get("fn") || "";
-  // First name stays in the browser only. Letters, spaces, hyphens, apostrophes.
-  const fn = fnRaw.normalize("NFKC").replace(/[^\p{L}\s'\-]/gu, "").trim().slice(0, 30);
   const source: Record<string, string> = {};
   for (const k of ["src", "mc", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"]) {
     const v = q.get(k);
     if (v) source[k] = v.slice(0, 255);
   }
-  return { firstName: fn || null, source, force: { variant: q.get("_v") || undefined, progress: q.get("_p") || undefined } };
+  return { source };
 }
 
-export function Funnel({ config }: { config: PublicConfig }) {
+export type FunnelInitial = { variant: Variant; progressMode: ProgressMode; firstName: string | null };
+
+export function Funnel({ config, initial }: { config: PublicConfig; initial: FunnelInitial }) {
   const reducedPref = useReducedMotion();
-  const [ready, setReady] = useState(false);
-  const [variant, setVariant] = useState<Variant>("full");
-  const [progressMode, setProgressMode] = useState<ProgressMode>("front_loaded");
+  // The first scene renders on the server straight away; a returning visitor
+  // (token in the hash or storage) is hidden by an inline script until resumed.
+  const [variant, setVariant] = useState<Variant>(initial.variant);
+  const [progressMode, setProgressMode] = useState<ProgressMode>(initial.progressMode);
   const [answers, setAnswers] = useState<Answers>({});
-  const [stepId, setStepId] = useState<string>("cold_open");
+  const [stepId, setStepId] = useState<string>(() => stepsFor(initial.variant, {})[0].id);
   const [lead, setLead] = useState<LeadView | null>(null);
   const [leadSettled, setLeadSettled] = useState(false);
-  const [firstName, setFirstName] = useState<string | null>(null);
+  const firstName = initial.firstName;
   const tokenRef = useRef<string | null>(null);
   const answersRef = useRef(answers);
   const stepIdRef = useRef(stepId);
+  // Answers given before the session exists are sent once it does.
+  const pending = useRef<[string, unknown][]>([]);
 
   // Boot: resume or create the session. Never blocks on failure.
   useEffect(() => {
     const params = readParams();
     const token = readHashToken() || safeStorage.get(STORE_KEY);
     let cancelled = false;
+    const reveal = () => {
+      delete document.documentElement.dataset.resuming;
+    };
     (async () => {
-      const res = await postJson<SessionResponse>("/api/session", { token, source: params.source, force: params.force }, 6000);
+      const force = { variant: initial.variant, progress: initial.progressMode };
+      const res = await postJson<SessionResponse>("/api/session", { token, source: params.source, force }, 6000);
       if (cancelled) return;
-      setFirstName(params.firstName);
       if (res.ok && res.data) {
         const s = res.data;
         tokenRef.current = s.token;
         setApiToken(s.token);
         safeStorage.set(STORE_KEY, s.token);
         writeHashToken(s.token);
+        for (const [questionId, value] of pending.current.splice(0)) void postJson("/api/answer", { token: s.token, questionId, value });
+        // A brand new session: the visitor may already be past the cold open. Keep their place.
+        if (!token || s.token !== token) {
+          reveal();
+          return;
+        }
         setVariant(s.variant);
         setProgressMode(s.progressMode);
         const a = s.lead ? s.lead.answers : s.answers;
@@ -105,19 +117,14 @@ export function Funnel({ config }: { config: PublicConfig }) {
         const resumeAt = resumeStep(s.variant, a, s.lastScene, Boolean(s.lead));
         stepIdRef.current = resumeAt;
         setStepId(resumeAt);
-      } else {
-        // Offline or server down: run in memory. The gate will retry the server.
-        const fallback: Variant = params.force.variant === "plain" ? "plain" : "full";
-        setVariant(fallback);
-        stepIdRef.current = stepsFor(fallback, {})[0].id;
-        setStepId(stepIdRef.current);
       }
-      setReady(true);
+      // Offline or server down: keep running in memory. The gate retries the server.
+      reveal();
     })();
     return () => {
       cancelled = true;
     };
-  }, [config.metaPixelId]);
+  }, [config.metaPixelId, initial.variant, initial.progressMode]);
 
   const steps = useMemo(() => stepsFor(variant, answers), [variant, answers]);
   const stepIndex = Math.max(0, steps.findIndex((s) => s.id === stepId));
@@ -127,14 +134,16 @@ export function Funnel({ config }: { config: PublicConfig }) {
 
   // One scene_view per scene shown. The server keeps it as last_scene.
   useEffect(() => {
-    if (!ready || !step) return;
+    if (!step) return;
     track("scene_view", { scene: step.id, variant, path: path ?? "none" });
     if (step.scene === "gate") track("gate_view", { variant, path: path ?? "none" });
-    // Warm up the next film while this scene is on screen.
+    // Warm up the next film while this scene is on screen, but only once the
+    // visitor has settled on it, so it never competes with the first paint.
     const upcoming = steps.slice(stepIndex + 1).find((s) => s.media);
-    if (upcoming?.media) preload(videoSource(upcoming.media));
+    const warm = upcoming?.media ? window.setTimeout(() => preload(videoSource(upcoming.media!)), 4000) : 0;
+    return () => window.clearTimeout(warm);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, step?.id]);
+  }, [step?.id]);
 
   const go = useCallback((id: string) => {
     stepIdRef.current = id;
@@ -172,6 +181,7 @@ export function Funnel({ config }: { config: PublicConfig }) {
         value: Array.isArray(value) ? value.join(",") : typeof value === "object" && value ? String((value as { band?: string }).band) : String(value),
       });
       if (tokenRef.current) void postJson("/api/answer", { token: tokenRef.current, questionId, value });
+      else pending.current.push([questionId, value]);
       if (opts?.advance !== false) {
         const s = stepsFor(variant, nextAnswers);
         const i = s.findIndex((x) => x.id === stepIdRef.current);
@@ -242,19 +252,14 @@ export function Funnel({ config }: { config: PublicConfig }) {
   };
 
   const dark = step ? step.scene === "film" || step.scene === "cold_open" || step.scene === "steps" || step.scene === "building" : false;
-  const showProgress = ready && step && step.scene !== "cold_open" && step.scene !== "result" && step.scene !== "building";
+  const showProgress = step && step.scene !== "cold_open" && step.scene !== "result" && step.scene !== "building";
 
   return (
     <Ctx.Provider value={ctx}>
       <LazyMotion features={domAnimation} strict>
-        <div className={`relative h-dvh w-full overflow-hidden ${dark ? "bg-ink-black" : "bg-paper"}`}>
+        <div className={`funnel-stage relative h-dvh w-full overflow-hidden ${dark ? "bg-ink-black" : "bg-paper"}`}>
           {showProgress && <ProgressLine share={progressShare(variant, answers, step.id)} mode={progressMode} dark={dark} />}
-          {!ready ? (
-            <div className="flex h-full items-center justify-center bg-ink-black" aria-busy="true">
-              <span className="sr-only">{copy.common.loading}</span>
-            </div>
-          ) : (
-            <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="wait" initial={false}>
               <m.div
                 key={step.id}
                 className="absolute inset-0"
@@ -264,8 +269,7 @@ export function Funnel({ config }: { config: PublicConfig }) {
               >
                 <SceneFor step={step} />
               </m.div>
-            </AnimatePresence>
-          )}
+          </AnimatePresence>
         </div>
       </LazyMotion>
     </Ctx.Provider>

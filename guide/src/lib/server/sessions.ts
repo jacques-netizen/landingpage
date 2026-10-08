@@ -18,7 +18,7 @@ export async function findSession(token: unknown): Promise<SessionRow | null> {
 }
 
 /** Random split from config. QA can force an arm with ?_v= and ?_p= on a new session. */
-function assign(force: { variant?: unknown; progress?: unknown }): { variant: Variant; progressMode: ProgressMode } {
+export function assign(force: { variant?: unknown; progress?: unknown }): { variant: Variant; progressMode: ProgressMode } {
   const c = config();
   const variant: Variant =
     force.variant === "full" || force.variant === "plain" ? force.variant : crypto.randomInt(1_000_000) / 1_000_000 < c.variantSplit ? "full" : "plain";

@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${garamond.variable} ${archivo.variable}`}>
+    <html lang="en" className={`${garamond.variable} ${archivo.variable}`} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
