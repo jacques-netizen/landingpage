@@ -562,7 +562,7 @@ export const ledgerEntries = pgTable(
   (t) => [index('ledger_entries_account').on(t.accountId), index('ledger_entries_transaction').on(t.transactionId)],
 )
 
-export const WITHDRAWAL_METHODS = ['stripe_connect', 'paypal'] as const
+export const WITHDRAWAL_METHODS = ['stripe_connect', 'paypal', 'crypto'] as const
 export const WITHDRAWAL_STATUSES = ['requested', 'approved', 'in_batch', 'sent', 'paid', 'failed', 'cancelled'] as const
 
 export const payoutBatches = pgTable('payout_batches', {
@@ -584,6 +584,8 @@ export const withdrawals = pgTable(
     amountCents: cents('amount_cents').notNull(),
     feeCents: cents('fee_cents').notNull(),
     netCents: cents('net_cents').notNull(),
+    // Where the money goes, as it was when requested (for crypto: "ASSET|network|address").
+    destination: text('destination'),
     status: text('status').notNull().default('requested'),
     batchId: uuid('batch_id').references(() => payoutBatches.id),
     partnerReference: text('partner_reference'),

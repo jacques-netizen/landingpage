@@ -129,7 +129,9 @@ export function createMemoryStore() {
         return s.creators[id] ? { ...s.creators[id]! } : null
       },
       async hasRequestedWithdrawal(creatorId) {
-        return Object.values(s.withdrawals).some((w) => w.creatorId === creatorId && w.status === 'requested')
+        return Object.values(s.withdrawals).some(
+          (w) => w.creatorId === creatorId && (w.status === 'requested' || w.status === 'approved'),
+        )
       },
       async insertWithdrawal(w) {
         const id = randomUUID()

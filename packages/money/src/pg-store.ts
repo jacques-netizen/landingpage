@@ -1,6 +1,6 @@
 // Postgres implementation of the money store, on Drizzle. Row locks use SELECT ... FOR UPDATE.
 import { getSettings, tables, writeAudit, type Db, type Tx } from '@mde/db'
-import { and, eq, sql } from 'drizzle-orm'
+import { and, eq, inArray, sql } from 'drizzle-orm'
 import type { AccountRef, MoneyStore, MoneyTx } from './store'
 
 const refKey = (r: AccountRef) => `${r.kind}|${r.ownerType}|${r.ownerId ?? ''}`
@@ -164,7 +164,12 @@ function pgTx(tx: Tx): MoneyTx {
       const rows = await tx
         .select({ id: tables.withdrawals.id })
         .from(tables.withdrawals)
-        .where(and(eq(tables.withdrawals.creatorId, creatorId), eq(tables.withdrawals.status, 'requested')))
+        .where(
+          and(
+            eq(tables.withdrawals.creatorId, creatorId),
+            inArray(tables.withdrawals.status, ['requested', 'approved']),
+          ),
+        )
       return rows.length > 0
     },
 

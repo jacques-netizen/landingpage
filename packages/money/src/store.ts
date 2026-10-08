@@ -89,10 +89,11 @@ export type SubmissionMoney = {
 export type WithdrawalMoney = {
   id: string
   creatorId: string
-  method: 'stripe_connect' | 'paypal'
+  method: 'stripe_connect' | 'paypal' | 'crypto'
   amountCents: number
   feeCents: number
   netCents: number
+  destination?: string | null
   status: string
 }
 

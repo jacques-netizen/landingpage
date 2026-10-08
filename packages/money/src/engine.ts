@@ -328,9 +328,17 @@ export async function releaseEarnings(store: MoneyStore, i: { submissionId: stri
 /** A creator asks to withdraw. The fee and net come from the same quote the form shows (section 6). */
 export async function requestWithdrawal(
   store: MoneyStore,
-  i: { creatorId: string; amountCents: number; method: 'stripe_connect' | 'paypal' },
+  i: {
+    creatorId: string
+    amountCents: number
+    method: 'stripe_connect' | 'paypal' | 'crypto'
+    /** For crypto, the wallet as "ASSET|network|address", kept with the withdrawal. */
+    destination?: string | null
+  },
 ) {
   return store.transaction(async (tx) => {
+    if (i.method === 'crypto' && !i.destination?.trim())
+      throw new MoneyError('payout_not_verified', 'Add the wallet to send it to first')
     const creator = await tx.lockCreator(i.creatorId)
     if (!creator) throw new MoneyError('not_found', 'No such creator')
     if (creator.userStatus !== 'active')
@@ -348,6 +356,7 @@ export async function requestWithdrawal(
     const id = await tx.insertWithdrawal({
       creatorId: i.creatorId,
       method: i.method,
+      destination: i.destination?.trim() || null,
       amountCents: q.amountCents,
       feeCents: q.feeCents,
       netCents: q.netCents,
@@ -369,7 +378,31 @@ export async function requestWithdrawal(
   })
 }
 
-const SENT_STATES = ['in_batch', 'sent']
+// Paid needs staff to have verified it first; a failure or rejection can happen at any step before paid.
+const SENT_STATES = ['approved', 'in_batch', 'sent']
+const FAILABLE_STATES = ['requested', ...SENT_STATES]
+
+/** Staff verify a requested withdrawal before sending it (crypto, owner request 2026-10-08). */
+export async function approveWithdrawal(store: MoneyStore, i: { withdrawalId: string; actorId: string | null }) {
+  return store.transaction(async (tx) => {
+    const w = await tx.withdrawal(i.withdrawalId, true)
+    if (!w) throw new MoneyError('not_found', 'No such withdrawal')
+    if (w.status === 'approved') return { alreadyDone: true }
+    if (w.status !== 'requested')
+      throw new MoneyError('wrong_withdrawal_status', `A ${w.status} withdrawal cannot be verified`)
+    await tx.setWithdrawal(w.id, { status: 'approved' })
+    if (i.actorId)
+      await tx.audit({
+        actorId: i.actorId,
+        action: 'withdrawal.approved',
+        entity: 'withdrawal',
+        entityId: w.id,
+        before: { status: w.status },
+        after: { status: 'approved' },
+      })
+    return { alreadyDone: false }
+  })
+}
 
 /** The payout partner confirms payment. Only now is the fee taken (section 4). */
 export async function markWithdrawalPaid(
@@ -425,7 +458,7 @@ export async function markWithdrawalFailed(
     const w = await tx.withdrawal(i.withdrawalId, true)
     if (!w) throw new MoneyError('not_found', 'No such withdrawal')
     if (w.status === 'failed') return { alreadyDone: true }
-    if (!SENT_STATES.includes(w.status))
+    if (!FAILABLE_STATES.includes(w.status))
       throw new MoneyError('wrong_withdrawal_status', `A ${w.status} withdrawal cannot be marked failed`)
     const [availableId, transitId] = await tx.lockAccounts([account.available(w.creatorId), account.inTransit()])
     await post(
