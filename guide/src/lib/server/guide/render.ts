@@ -11,7 +11,7 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 
 const fileData = (rel: string, mime: string) => {
   try {
-    return `data:${mime};base64,${fs.readFileSync(path.join(process.cwd(), rel)).toString("base64")}`;
+    return `data:${mime};base64,${fs.readFileSync(path.join(/*turbopackIgnore: true*/ process.cwd(), rel)).toString("base64")}`;
   } catch {
     return "";
   }

@@ -96,6 +96,7 @@ export async function sessionState(s: SessionRow) {
           email: lead.email,
           emailMasked: maskEmail(lead.email),
           company: lead.company,
+          metaEventId: lead.metaEventId,
           firstName: lead.firstName,
           path: lead.path,
           qualified: lead.qualified,

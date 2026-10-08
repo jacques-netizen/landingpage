@@ -8,6 +8,7 @@ import Cal, { getCalApi } from "@calcom/embed-react";
 import { copy } from "@/lib/content";
 import { budgetOf } from "@/lib/flow";
 import { track } from "@/lib/client/api";
+import { pixelEvent } from "@/lib/client/pixel";
 import type { LeadView } from "../context";
 
 const NAMESPACE = "guide";
@@ -43,9 +44,14 @@ export function BookingEmbed({ lead, bookingUrl, redirectUrl }: { lead: LeadView
       const cal = await getCalApi({ namespace: NAMESPACE });
       if (!alive) return;
       cal("ui", { hideEventTypeDetails: false, layout: "month_view", styles: { branding: { brandColor: "#1a1510" } } } as never);
+      let sent = false;
       const done = () => {
+        if (sent) return;
+        sent = true;
+        // Same event id as the server side Schedule event, so Meta counts it once.
+        pixelEvent("Schedule", `schedule-${lead.ref}`);
         // The webhook records the booking server side; this only moves the person on.
-        window.location.href = redirectUrl;
+        window.setTimeout(() => (window.location.href = redirectUrl), 400);
       };
       cal("on", { action: "bookingSuccessfulV2", callback: done } as never);
       cal("on", { action: "bookingSuccessful", callback: done } as never);
@@ -53,7 +59,7 @@ export function BookingEmbed({ lead, bookingUrl, redirectUrl }: { lead: LeadView
     return () => {
       alive = false;
     };
-  }, [lead.path, redirectUrl]);
+  }, [lead.path, lead.ref, redirectUrl]);
 
   if (!target) return null;
   return (

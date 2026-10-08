@@ -9,6 +9,7 @@ export type LeadView = {
   email: string;
   emailMasked: string;
   company: string | null;
+  metaEventId: string;
   firstName: string;
   path: string;
   qualified: boolean;

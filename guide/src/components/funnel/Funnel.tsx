@@ -9,6 +9,7 @@ import { copy, type ProgressMode, type Step, type Variant } from "@/lib/content"
 import { pathOf, progressShare, resumeStep, stepsFor, type Answers } from "@/lib/flow";
 import { postJson, setApiToken, track } from "@/lib/client/api";
 import { safeStorage } from "@/lib/client/storage";
+import { loadPixel, pixelEvent } from "@/lib/client/pixel";
 import { preload } from "@/lib/video/player";
 import { videoSource } from "@/lib/video/source";
 import type { PublicConfig } from "@/lib/server/config";
@@ -100,6 +101,7 @@ export function Funnel({ config }: { config: PublicConfig }) {
         setAnswers(a);
         setLead(s.lead);
         setLeadSettled(Boolean(s.lead));
+        if (s.lead) loadPixel(config.metaPixelId);
         const resumeAt = resumeStep(s.variant, a, s.lastScene, Boolean(s.lead));
         stepIdRef.current = resumeAt;
         setStepId(resumeAt);
@@ -115,7 +117,7 @@ export function Funnel({ config }: { config: PublicConfig }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [config.metaPixelId]);
 
   const steps = useMemo(() => stepsFor(variant, answers), [variant, answers]);
   const stepIndex = Math.max(0, steps.findIndex((s) => s.id === stepId));
@@ -205,13 +207,16 @@ export function Funnel({ config }: { config: PublicConfig }) {
       if (res.ok && res.data?.lead) {
         setLead(res.data.lead);
         setLeadSettled(true);
+        // Consent was just given at the gate: the pixel may load now.
+        loadPixel(config.metaPixelId);
+        pixelEvent("Lead", res.data.lead.metaEventId, { content_category: res.data.lead.path });
         return { ok: true };
       }
       setLeadSettled(true);
       if (res.status === 429) return { ok: false, error: "rateLimited" };
       return { ok: false, error: res.data?.error || "network", field: res.data?.field };
     },
-    [],
+    [config.metaPixelId],
   );
 
   const updateLead = useCallback((patch: Partial<LeadView>) => setLead((l) => (l ? { ...l, ...patch } : l)), []);

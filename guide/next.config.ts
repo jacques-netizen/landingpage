@@ -7,10 +7,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   devIndicators: false,
   // Migrations and guide content are read from disk at runtime.
+  // The PDF renderer also embeds fonts and brand images read at runtime.
   outputFileTracingIncludes: {
-    "/api/**": ["./drizzle/**", "./content/**"],
+    "/api/**": ["./drizzle/**", "./content/**", "./assets/fonts/**", "./public/brand/**"],
+    "/g/**": ["./drizzle/**", "./content/**"],
+    "/u/**": ["./drizzle/**"],
     "/dashboard": ["./drizzle/**"],
-    "/": ["./drizzle/**"],
+    "/": ["./drizzle/**", "./content/**"],
   },
   serverExternalPackages: ["playwright-core", "@electric-sql/pglite", "@sparticuz/chromium"],
   turbopack: {

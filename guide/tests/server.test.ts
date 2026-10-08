@@ -80,3 +80,20 @@ describe("Cal.com webhook signature", () => {
     expect(verifyCalSignature(body + " ", sig, "s3cret")).toBe(false);
   });
 });
+
+import { alertFor, discordMessage } from "@/lib/server/discord";
+describe("Discord alerts", () => {
+  it("covers the three alert types and never includes an email", () => {
+    const base = lead({ email: "private@example.com", igHandle: "sam.clips", company: "Label Co", humanPriority: true });
+    expect(alertFor(base)).toBe("priority");
+    expect(alertFor(lead())).toBe("qualified");
+    expect(alertFor(lead({ qualified: false }))).toBeNull();
+    for (const kind of ["qualified", "priority", "booking"] as const) {
+      const json = JSON.stringify(discordMessage(kind, base));
+      expect(json).not.toContain("private@example.com");
+      expect(json).not.toMatch(/[\w.+-]+@[\w-]+\.[\w.]+/);
+      expect(json).toContain("Label Co");
+    }
+    expect(JSON.stringify(discordMessage("priority", base))).toContain("HUMAN PRIORITY");
+  });
+});
