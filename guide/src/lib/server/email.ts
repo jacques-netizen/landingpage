@@ -7,6 +7,7 @@ import emailCopy from "../../../content/email.json";
 import { fill, resultText, type Path } from "@/lib/content";
 import { pathOf } from "@/lib/flow";
 import { config } from "./config";
+import { dataDir } from "./datadir";
 import type { LeadRow } from "./leads";
 import { guideUrl } from "./leadview";
 import { signToken } from "./tokens";
@@ -87,7 +88,7 @@ ${next.href && next.button ? `<tr><td style="padding-bottom:36px">${button(next.
 export async function sendEmail(to: string, msg: { subject: string; text: string; html: string; unsub: string }, idempotencyKey: string) {
   const c = config();
   if (!c.resendApiKey) {
-    const dir = path.join(process.cwd(), ".data", "outbox");
+    const dir = dataDir("outbox");
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, `${idempotencyKey}.html`), msg.html);
     fs.writeFileSync(path.join(dir, `${idempotencyKey}.txt`), `To: ${to}\nSubject: ${msg.subject}\n\n${msg.text}`);

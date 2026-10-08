@@ -4,8 +4,9 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import { config } from "./config";
+import { dataDir } from "./datadir";
 
-const localDir = () => path.join(process.cwd(), ".data", "guides");
+const localDir = () => dataDir("guides");
 const enabled = () => {
   const s = config().storage;
   return Boolean(s.endpoint && s.bucket && s.accessKeyId && s.secretAccessKey);

@@ -5,6 +5,7 @@ import path from "node:path";
 import fs from "node:fs";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
+import { dataDir } from "@/lib/server/datadir";
 
 export type DB = PostgresJsDatabase<typeof schema>;
 
@@ -26,12 +27,12 @@ async function connect(): Promise<DB> {
   const { PGlite } = await import("@electric-sql/pglite");
   const { drizzle } = await import("drizzle-orm/pglite");
   const { migrate } = await import("drizzle-orm/pglite/migrator");
-  let dataDir: string | undefined;
+  let dir: string | undefined;
   if (url !== "pglite:memory") {
-    dataDir = url.startsWith("pglite:") ? url.slice("pglite:".length) : path.join(process.cwd(), ".data", "pglite");
-    fs.mkdirSync(dataDir, { recursive: true });
+    dir = url.startsWith("pglite:") ? url.slice("pglite:".length) : dataDir("pglite");
+    fs.mkdirSync(dir, { recursive: true });
   }
-  const client = new PGlite(dataDir);
+  const client = new PGlite(dir);
   const db = drizzle(client, { schema });
   await migrate(db, { migrationsFolder: MIGRATIONS });
   return db as unknown as DB;
