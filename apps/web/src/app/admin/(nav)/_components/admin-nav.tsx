@@ -38,6 +38,7 @@ const SECTIONS: { title?: string; links: [string, string, keyof typeof I][] }[] 
       ['Clients', '/admin/clients', 'clients'],
       ['Ledger', '/admin/ledger', 'ledger'],
       ['Payouts', '/admin/payouts', 'payouts'],
+      ['Credit a user', '/admin/credits', 'ledger'],
       ['Featured campaign', '/admin/featured', 'campaigns'],
       ['Brand site', '/admin/brand-site', 'brand'],
     ],
