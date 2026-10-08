@@ -1,13 +1,12 @@
 'use client'
 
-import { Button, Dialog, Field, Input } from '@mde/ui'
+import { Button, Dialog, Field, Input, Select } from '@mde/ui'
 import { useState, useTransition } from 'react'
 import { savePayoutMethodAction } from '@/app/wallet/actions'
+import { CRYPTO_WALLETS } from '@/lib/crypto-wallets'
 
-type Method = 'paypal' | 'bank_transfer'
-
-// "Add payout method" for the wallet (testing report item 5). Not in the mockups: built from the
-// wallet's own dialog, fields and buttons in the app tone.
+// "Add payout method" for the wallet: the crypto wallet withdrawals are sent to (owner request,
+// 2026-10-08). Not in the mockups: built from the wallet's own dialog, fields and buttons.
 export function PayoutMethodDialog({
   theme,
   open,
@@ -19,42 +18,21 @@ export function PayoutMethodDialog({
   onOpenChange: (open: boolean) => void
   onSaved: () => void
 }) {
-  const [method, setMethod] = useState<Method>('paypal')
-  const [name, setName] = useState('')
-  const [details, setDetails] = useState('')
-  const [errors, setErrors] = useState<{ name?: string; details?: string; form?: string }>({})
+  const [wallet, setWallet] = useState<string>(CRYPTO_WALLETS[0].id)
+  const [address, setAddress] = useState('')
+  const [errors, setErrors] = useState<{ wallet?: string; address?: string; form?: string }>({})
   const [busy, start] = useTransition()
 
   const save = () =>
     start(async () => {
-      const r = await savePayoutMethodAction({ method, name, details })
+      const r = await savePayoutMethodAction({ wallet, address })
       if (r.ok) {
         setErrors({})
-        setDetails('')
+        setAddress('')
         return onSaved()
       }
       setErrors(r.field ? { [r.field]: r.error } : { form: r.error })
     })
-
-  const pill = (m: Method, label: string) => (
-    <button
-      key={m}
-      type="button"
-      aria-pressed={method === m}
-      onClick={() => {
-        setMethod(m)
-        setErrors({})
-      }}
-      className="h-10 flex-1 cursor-pointer rounded-pill border border-solid px-4 font-app text-[14px] font-semibold"
-      style={{
-        background: method === m ? 'rgba(216,197,143,0.2)' : 'transparent',
-        color: method === m ? 'var(--t-accent-ink)' : 'var(--t-muted)',
-        borderColor: method === m ? 'rgba(216,197,143,0.6)' : 'var(--t-glass-line)',
-      }}
-    >
-      {label}
-    </button>
-  )
 
   return (
     <Dialog
@@ -62,40 +40,37 @@ export function PayoutMethodDialog({
       open={open}
       onOpenChange={onOpenChange}
       title="Add payout method"
-      description="Where your earnings are sent when you withdraw."
+      description="Withdrawals are paid in crypto stablecoins, one coin per dollar, to your own wallet."
       footer={
         <>
           <Button tone="app" size="sm" variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
             Cancel
           </Button>
           <Button tone="app" size="sm" onClick={save} loading={busy}>
-            Save payout method
+            Save wallet
           </Button>
         </>
       }
     >
       <div className="flex flex-col gap-5" data-theme={theme}>
-        <div className="flex gap-2" role="group" aria-label="Payout method">
-          {pill('paypal', 'PayPal')}
-          {pill('bank_transfer', 'Bank transfer')}
-        </div>
-        <Field tone="app" label="Name on the account" error={errors.name}>
+        <Field tone="app" label="Coin and network" error={errors.wallet}>
           {(p) => (
-            <Input
+            <Select
               tone="app"
+              theme={theme}
               id={p.id}
               aria-describedby={p.describedBy}
-              invalid={p.invalid}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoComplete="name"
+              value={wallet}
+              onValueChange={setWallet}
+              options={CRYPTO_WALLETS.map((w) => ({ value: w.id, label: w.label }))}
             />
           )}
         </Field>
         <Field
           tone="app"
-          label={method === 'paypal' ? 'PayPal email' : 'IBAN or account number'}
-          error={errors.details}
+          label="Wallet address"
+          error={errors.address}
+          helper="Copy it from your wallet app for this exact coin and network. Money sent on the wrong network is lost."
         >
           {(p) => (
             <Input
@@ -103,11 +78,12 @@ export function PayoutMethodDialog({
               id={p.id}
               aria-describedby={p.describedBy}
               invalid={p.invalid}
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              inputMode={method === 'paypal' ? 'email' : 'text'}
-              autoComplete={method === 'paypal' ? 'email' : 'off'}
-              placeholder={method === 'paypal' ? 'name@example.com' : ''}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
+              className="font-mono text-[14px]"
             />
           )}
         </Field>

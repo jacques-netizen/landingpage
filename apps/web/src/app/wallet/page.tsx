@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { db, getSettings } from '@mde/db'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
@@ -15,6 +16,15 @@ export default async function WalletPage() {
   const viewer = await getViewer()
   if (!viewer) redirect('/sign-in?next=/wallet')
   const theme = readThemeCookie((await cookies()).get(THEME_COOKIE)?.value)
-  const [data, overrides] = await Promise.all([loadWallet(viewer.id), loadContentOverrides('wallet')])
-  return <WalletView state="data" data={data} theme={theme} overrides={overrides} />
+  const [data, overrides, s] = await Promise.all([
+    loadWallet(viewer.id),
+    loadContentOverrides('wallet'),
+    getSettings(db()),
+  ])
+  const fees = {
+    withdrawal_fee_bps: s.withdrawal_fee_bps,
+    withdrawal_fee_min_cents: s.withdrawal_fee_min_cents,
+    withdrawal_min_cents: s.withdrawal_min_cents,
+  }
+  return <WalletView state="data" data={data} theme={theme} overrides={overrides} fees={fees} />
 }

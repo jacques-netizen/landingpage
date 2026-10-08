@@ -13,6 +13,19 @@ export type WalletPost = {
 
 export type WalletBar = { cents: number; kind: 'available' | 'pending' | 'held' }
 
+/** A withdrawal as the creator sees it (crypto payouts, owner request 2026-10-08). */
+export type WalletWithdrawal = {
+  id: string
+  amountCents: number
+  netCents: number
+  status: string
+  /** "USDT on Tron (TRC-20), TQn9Y2…bLSE". */
+  to: string
+  explorerUrl: string | null
+  failureReason: string | null
+  requestedAt: Date
+}
+
 export type WalletData = {
   availableCents: number
   pendingCents: number
@@ -23,7 +36,9 @@ export type WalletData = {
   bestCentsAll: number
   /** Counted views on approved posts, ever: what the rating is based on. */
   lifetimeCountedViews: number
-  payout: { method: 'bank_transfer' | 'paypal'; last4: string | null } | null
+  payout: { method: 'bank_transfer' | 'paypal' | 'crypto'; last4: string | null; label?: string } | null
+  /** Withdrawals, newest first. Absent in the mockup's sample. */
+  withdrawals?: WalletWithdrawal[]
   /** Recent posts, newest first. */
   posts: WalletPost[]
   /** Days (UTC, YYYY-MM-DD) with at least one post that passed the automatic checks. */
@@ -100,6 +115,17 @@ export function inPeriod(d: Date, period: Period, now: Date) {
   return d.getTime() >= start && d.getTime() < end
 }
 
+// Verifying: staff check the request. Processing: verified and being sent. Paid: sent to the wallet.
+const WITHDRAWAL_STATUS: Record<string, { label: string; dot: string }> = {
+  requested: { label: 'Verifying', dot: '#E0A94A' },
+  approved: { label: 'Processing', dot: '#E0A94A' },
+  in_batch: { label: 'Processing', dot: '#E0A94A' },
+  sent: { label: 'Processing', dot: '#E0A94A' },
+  paid: { label: 'Paid', dot: '#4FB286' },
+  failed: { label: 'Returned to balance', dot: '#E26B5E' },
+  cancelled: { label: 'Cancelled', dot: '#E26B5E' },
+}
+
 export const WEEKLY_POST_GOAL = 5
 const RING = 276.5 // 2 x pi x 44, the ring's circumference in the mockup
 
@@ -143,7 +169,8 @@ export function walletModel(data: WalletData, opts: { now: Date; period: Period;
     rateFmt: fmt(data.countedViewsAll ? Math.floor((data.earnedCentsAll * 1000) / data.countedViewsAll) : 0),
     bestFmt: fmt(data.bestCentsAll),
     payoutLabel: data.payout
-      ? `${data.payout.method === 'paypal' ? 'PayPal' : 'Bank transfer'}${data.payout.last4 ? `, ending ${data.payout.last4}` : ''}`
+      ? data.payout.label ??
+        `${data.payout.method === 'paypal' ? 'PayPal' : 'Bank transfer'}${data.payout.last4 ? `, ending ${data.payout.last4}` : ''}`
       : 'No payout method yet',
     streakLabel: `${streak} ${streak === 1 ? 'day' : 'days'}, goal ${WEEKLY_POST_GOAL} posts`,
     streakDays: weekPosted(data.postDays, now).map((on) => (on ? '#D8C58F' : colours.soft)),
@@ -152,6 +179,19 @@ export function walletModel(data: WalletData, opts: { now: Date; period: Period;
     groupB: rowsB[0] ? dayLabel(rowsB[0].submittedAt, now) : '',
     rowsA: rowsA.map(row),
     rowsB: rowsB.map(row),
+    // The Withdrawals tab, in the same row style as the posts.
+    withdrawalRows: (data.withdrawals ?? []).slice(0, 8).map((w) => {
+      const status = WITHDRAWAL_STATUS[w.status] ?? WITHDRAWAL_STATUS.requested!
+      return {
+        name: 'Withdrawal',
+        pf: w.to.slice(0, 2).toUpperCase(),
+        meta: `${dayLabel(w.requestedAt, now)} · ${w.status === 'failed' && w.failureReason ? w.failureReason : w.to}`,
+        status: status.label,
+        dot: status.dot,
+        amt: `-${fmt(w.amountCents)}`,
+        href: w.explorerUrl,
+      }
+    }),
     periodLabel: PERIOD_LABEL[period],
     approvedPct: `${decided ? Math.round((approved * 100) / decided) : 0}%`,
     ringDash: `${decided ? Math.round((approved * RING) / decided) : 0} ${RING}`,

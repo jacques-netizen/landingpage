@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test'
 import { createDb } from '@mde/db'
+import { createPgStore, manualAdjustment } from '@mde/money'
 import { MockProvider, ProviderRouter, writeMockState } from '@mde/platforms'
 import { runViewCheck } from '@mde/tracking'
 import postgres from 'postgres'
-import { readyCreator, scriptPost, signUpNewCreator } from './helpers'
+import { readyCreator, scriptPost, signInAs, signUpNewCreator } from './helpers'
 
 const url = process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde'
 const sql = postgres(url, { max: 1, onnotice: () => {} })
@@ -22,25 +23,64 @@ test('a new creator sees an empty wallet', async ({ page }) => {
   await expect(page.getByText('No withdrawals yet.')).toBeVisible()
 })
 
-test('withdraw asks for a payout method first, then the wallet shows it', async ({ page }) => {
+test('a creator adds a crypto wallet and withdraws; staff verify and mark it paid', async ({ page }) => {
   const email = await signUpNewCreator(page)
+  const [me] = await sql`select id from users where email = ${email}`
+  const [admin] = await sql`select id from users where email = 'admin@seed.invalid'`
+  // $50.00 available, put there the audited way staff would correct a balance.
+  await manualAdjustment(createPgStore(db), {
+    from: { kind: 'external', ownerType: 'platform', ownerId: null },
+    to: { kind: 'creator_available', ownerType: 'creator', ownerId: me!.id as string },
+    amountCents: 5_000,
+    memo: 'e2e balance',
+    actorId: admin!.id as string,
+    idempotencyKey: `e2e-${me!.id}`,
+  })
+
   await page.goto('/wallet')
   await page.waitForLoadState('networkidle')
   await page.getByRole('link', { name: /^Add payout method/ }).click()
   const dialog = page.getByRole('dialog', { name: 'Add payout method' })
-  await dialog.getByLabel('Name on the account').fill('Sam Creator')
-  await dialog.getByLabel('PayPal email').fill('not-an-email')
-  await dialog.getByRole('button', { name: 'Save payout method' }).click()
-  await expect(dialog.getByText('Enter your PayPal email, like name@example.com.')).toBeVisible()
-  await dialog.getByRole('button', { name: 'Bank transfer' }).click()
-  await dialog.getByLabel('IBAN or account number').fill('BE71 0961 2345 6769')
-  await dialog.getByRole('button', { name: 'Save payout method' }).click()
-  await expect(page.getByText('Bank transfer, ending 6769')).toBeVisible()
-  const [p] =
-    await sql`select p.payout_provider, p.payout_provider_ref from creator_profiles p join users u on u.id = p.user_id where u.email = ${email}`
-  expect(p).toMatchObject({ payout_provider: 'bank_transfer', payout_provider_ref: 'Sam Creator | BE71096123456769' })
+  await dialog.getByLabel('Wallet address').fill('0x52908400098527886E0F7030069857D2E4169EE7')
+  await dialog.getByRole('button', { name: 'Save wallet' }).click()
+  await expect(dialog.getByText('That is not an address on this network.', { exact: false })).toBeVisible()
+  await dialog.getByLabel('Wallet address').fill('TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE')
+  await dialog.getByRole('button', { name: 'Save wallet' }).click()
+  await expect(page.getByText('USDT on Tron (TRC-20), TQn9Y2…bLSE').first()).toBeVisible()
+
   await page.getByRole('link', { name: /^Withdraw\s*→/ }).click()
-  await expect(page.getByRole('dialog', { name: 'Withdrawals open soon' })).toBeVisible()
+  const w = page.getByRole('dialog', { name: 'Withdraw' })
+  await expect(w.getByLabel('Amount in USD')).toHaveValue('50.00')
+  await w.getByRole('button', { name: 'Request withdrawal' }).click()
+  await expect(page.getByText('Verifying').first()).toBeVisible()
+  const [req] = await sql`select id, status, destination, amount_cents from withdrawals where creator_id = ${me!.id}`
+  expect(req).toMatchObject({ status: 'requested', destination: 'USDT|tron|TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE' })
+  expect(Number(req!.amount_cents)).toBe(5_000)
+
+  await signInAs(page, 'finance@seed.invalid')
+  await page.goto('/admin/payouts')
+  const row = page
+    .getByRole('region', { name: new RegExp(`Withdrawal by .*`) })
+    .filter({ hasText: email.split('@')[0]! })
+  await expect(row.getByText('TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE')).toBeVisible()
+  await row.getByRole('button', { name: 'Verify' }).click()
+  // Verified, it moves from To verify to To send.
+  await expect(row).toHaveCount(0)
+  expect((await sql`select status from withdrawals where id = ${req!.id}`)[0]!.status).toBe('approved')
+  await page.goto('/admin/payouts?show=send')
+  const sendRow = page.getByRole('region').filter({ hasText: email })
+  await sendRow.getByLabel('Transaction hash').fill('not-a-hash')
+  await sendRow.getByRole('button', { name: 'Mark paid' }).click()
+  await expect(sendRow.getByText('Paste the transaction hash', { exact: false })).toBeVisible()
+  await sendRow.getByLabel('Transaction hash').fill('a'.repeat(64))
+  await sendRow.getByRole('button', { name: 'Mark paid' }).click()
+  await expect(sendRow).toHaveCount(0)
+  const [done] = await sql`select status, partner_reference from withdrawals where id = ${req!.id}`
+  expect(done).toMatchObject({ status: 'paid', partner_reference: 'a'.repeat(64) })
+  const notes = await sql`select title from notifications where user_id = ${me!.id} and kind = 'withdrawal_status'`
+  expect(notes.map((n) => n.title)).toEqual(
+    expect.arrayContaining(['Your withdrawal is verified', 'Your withdrawal was sent']),
+  )
 })
 
 test('earnings from a view check show in the wallet', async ({ page }) => {

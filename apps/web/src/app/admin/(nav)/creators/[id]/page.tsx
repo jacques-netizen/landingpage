@@ -1,4 +1,5 @@
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
+import { parseDestination } from '@/lib/crypto-wallets'
 import { db } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { SUSPENSION_SUGGESTED_AT } from '@mde/review'
@@ -89,11 +90,15 @@ export default async function CreatorPage({ params }: { params: Promise<{ id: st
           Payout method:{' '}
           {!c.profile.payoutProvider
             ? 'none yet'
-            : `${c.profile.payoutProvider === 'paypal' ? 'PayPal' : 'Bank transfer'}${
-                viewer.roles.some((r) => r === 'admin' || r === 'finance') && c.profile.payoutProviderRef
-                  ? `, ${c.profile.payoutProviderRef}`
-                  : ''
-              }`}
+            : c.profile.payoutProvider === 'crypto'
+              ? viewer.roles.some((r) => r === 'admin' || r === 'finance')
+                ? `${parseDestination(c.profile.payoutProviderRef)?.option.label ?? 'Crypto'}, ${parseDestination(c.profile.payoutProviderRef)?.address ?? ''}`
+                : 'Crypto wallet'
+              : `${c.profile.payoutProvider === 'paypal' ? 'PayPal' : 'Bank transfer'}${
+                  viewer.roles.some((r) => r === 'admin' || r === 'finance') && c.profile.payoutProviderRef
+                    ? `, ${c.profile.payoutProviderRef}`
+                    : ''
+                }`}
           .
         </p>
       </Section>

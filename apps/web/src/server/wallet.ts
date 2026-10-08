@@ -2,6 +2,7 @@ import 'server-only'
 import { db, tables } from '@mde/db'
 import { and, desc, eq, sql } from 'drizzle-orm'
 import type { WalletBar, WalletData } from '@/designed/wallet-model'
+import { describeDestination, explorerLink } from '@/lib/crypto-wallets'
 
 const APPROVED = ['approved', 'earning', 'final', 'paid_out']
 
@@ -14,7 +15,7 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
       join ledger_accounts a on a.id = e.account_id where a.kind = ${kind} and a.owner_id = ${creatorId}`)
     return Number(rows[0]!.b)
   }
-  const [availableCents, pendingCents, paidRows, profile, posts, bars] = await Promise.all([
+  const [availableCents, pendingCents, paidRows, profile, posts, bars, withdrawals] = await Promise.all([
     balance('creator_available'),
     balance('creator_pending'),
     d.execute<{ p: string }>(
@@ -37,6 +38,12 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
       .orderBy(desc(tables.submissions.submittedAt))
       .limit(2000),
     lastDaysOfEarnings(creatorId, now),
+    d
+      .select()
+      .from(tables.withdrawals)
+      .where(eq(tables.withdrawals.creatorId, creatorId))
+      .orderBy(desc(tables.withdrawals.createdAt))
+      .limit(20),
   ])
 
   const counted = posts.filter((p) => [...APPROVED, 'flagged'].includes(p.state))
@@ -51,12 +58,25 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
     earnedCentsAll: counted.reduce((s, x) => s + x.earnedCents, 0),
     bestCentsAll: Math.max(0, ...posts.map((x) => x.earnedCents)),
     lifetimeCountedViews: posts.filter((x) => APPROVED.includes(x.state)).reduce((s, x) => s + x.countedViews, 0),
-    payout: p?.payoutProvider
-      ? {
-          method: p.payoutProvider === 'paypal' ? 'paypal' : 'bank_transfer',
-          last4: p.payoutProvider !== 'paypal' && details.length >= 4 ? details.slice(-4) : null,
-        }
-      : null,
+    payout:
+      p?.payoutProvider === 'crypto'
+        ? { method: 'crypto', last4: null, label: describeDestination(p.payoutProviderRef) ?? 'Crypto wallet' }
+        : p?.payoutProvider
+          ? {
+              method: p.payoutProvider === 'paypal' ? 'paypal' : 'bank_transfer',
+              last4: p.payoutProvider !== 'paypal' && details.length >= 4 ? details.slice(-4) : null,
+            }
+          : null,
+    withdrawals: withdrawals.map((w) => ({
+      id: w.id,
+      amountCents: w.amountCents,
+      netCents: w.netCents,
+      status: w.status,
+      to: describeDestination(w.destination) ?? (w.method === 'paypal' ? 'PayPal' : 'Bank transfer'),
+      explorerUrl: w.status === 'paid' ? explorerLink(w.destination, w.partnerReference) : null,
+      failureReason: w.failureReason,
+      requestedAt: w.createdAt,
+    })),
     posts,
     postDays: [
       ...new Set(posts.filter((x) => x.state !== 'rejected_auto').map((x) => x.submittedAt.toISOString().slice(0, 10))),

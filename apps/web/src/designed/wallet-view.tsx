@@ -1,10 +1,12 @@
 'use client'
 
-import { Button, Dialog } from '@mde/ui'
+
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AppFrame } from '@/components/app-frame'
 import { PayoutMethodDialog } from './payout-method-dialog'
+import { WithdrawDialog } from './withdraw-dialog'
+import type { WithdrawalFeeSettings } from '@mde/money/quote'
 import { makeCopy } from './runtime'
 import { saveThemeCookie, themeSwitch, THEMES, type ThemeName } from './themes'
 import { WalletDesign } from './wallet'
@@ -22,7 +24,11 @@ type Props = {
   done?: boolean
   overrides?: Record<string, string>
   onRetry?: () => void
+  /** Withdrawal fee settings, for the fee shown before confirming. */
+  fees?: WithdrawalFeeSettings
 }
+
+const NO_FEES: WithdrawalFeeSettings = { withdrawal_fee_bps: 0, withdrawal_fee_min_cents: 0, withdrawal_min_cents: 2000 }
 
 const EMPTY: WalletData = {
   availableCents: 0,
@@ -40,13 +46,23 @@ const EMPTY: WalletData = {
 
 // The wallet ("Creator Site v1", screen wallet). Values are built as the mockup's script builds them,
 // from the creator's real balances and posts (wallet-model.ts).
-export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', done = false, overrides = {}, onRetry }: Props) {
+export function WalletView({
+  state,
+  data,
+  theme: initialTheme,
+  now,
+  tab = 'tx',
+  done = false,
+  overrides = {},
+  onRetry,
+  fees = NO_FEES,
+}: Props) {
   const router = useRouter()
   const [th, setTh] = useState<ThemeName>(initialTheme)
   const [wt, setWt] = useState<'tx' | 'wd'>(tab)
   const [period, setPeriod] = useState<Period>('month')
   const [banner, setBanner] = useState(done)
-  const [soon, setSoon] = useState(false)
+  const [withdrawOpen, setWithdrawOpen] = useState(false)
   const [addMethod, setAddMethod] = useState(false)
   const hasMethod = !!data?.payout
   const T = THEMES[th]
@@ -56,7 +72,9 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
   const known = !!data
   const blank = (s: string) => (known ? s : '')
 
-  const hasRows = state === 'data' && wt === 'tx' && m.hasRows
+  // Overview lists posts; Withdrawals lists withdrawals in the same rows.
+  const onWd = wt === 'wd'
+  const hasRows = state === 'data' && (onWd ? m.withdrawalRows.length > 0 : m.hasRows)
   const emptyView = state === 'data' && !hasRows
 
   const v = {
@@ -92,7 +110,7 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
     done: banner,
     closeDone: () => setBanner(false),
     // Withdraw needs a payout method first (testing report item 5).
-    withdraw: () => (!data || hasMethod ? setSoon(true) : setAddMethod(true)),
+    withdraw: () => (!data || hasMethod ? setWithdrawOpen(true) : setAddMethod(true)),
     changeMethod: () => setAddMethod(true),
     cyclePeriod: () => setPeriod((p) => NEXT_PERIOD[p]),
     retry: () => (onRetry ? onRetry() : router.refresh()),
@@ -115,10 +133,10 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
     payoutLabel: blank(m.payoutLabel),
     streakLabel: blank(m.streakLabel),
     streakDays: m.streakDays,
-    groupA: m.groupA,
-    groupB: m.groupB,
-    rowsA: m.rowsA,
-    rowsB: m.rowsB,
+    groupA: onWd ? 'WITHDRAWALS' : m.groupA,
+    groupB: onWd ? '' : m.groupB,
+    rowsA: onWd ? m.withdrawalRows : m.rowsA,
+    rowsB: onWd ? [] : m.rowsB,
     periodLabel: m.periodLabel,
     approvedPct: blank(m.approvedPct),
     ringDash: m.ringDash,
@@ -142,18 +160,22 @@ export function WalletView({ state, data, theme: initialTheme, now, tab = 'tx', 
           copy={makeCopy(walletContent, !data || hasMethod ? overrides : { ...overrides, 'wallet.007': 'Add payout method' })}
         />
       </div>
-      <Dialog
-        theme={dk ? 'dark' : 'glass'}
-        open={soon}
-        onOpenChange={setSoon}
-        title="Withdrawals open soon"
-        description="Your payout method is saved. Withdrawals open with payouts; your balance is safe and keeps growing as your posts earn."
-        footer={
-          <Button tone="app" size="sm" onClick={() => setSoon(false)}>
-            Got it
-          </Button>
-        }
-      />
+      {data ? (
+        <WithdrawDialog
+          theme={dk ? 'dark' : 'glass'}
+          open={withdrawOpen}
+          onOpenChange={setWithdrawOpen}
+          availableCents={data.availableCents}
+          fees={fees}
+          to={data.payout?.label ?? ''}
+          onDone={() => {
+            setWithdrawOpen(false)
+            setBanner(true)
+            setWt('wd')
+            router.refresh()
+          }}
+        />
+      ) : null}
       <PayoutMethodDialog
         theme={dk ? 'dark' : 'glass'}
         open={addMethod}
