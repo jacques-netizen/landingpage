@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Theme written from DESIGN_TOKENS.md (captured from maisondelites.com). */
+@theme {
+  --color-paper: #f2eee6;
+  --color-paper-deep: #eee9db;
+  --color-paper-light: #f7f3ea;
+  --color-ink: #1a1510;
+  --color-ink-deep: #15110d;
+  --color-ink-black: #0b0907;
+  --color-ink-soft: #4f493f;
+  --color-muted: #6e675c;
+  --color-muted-light: #8a8378;
+  --color-line: #d8cdb9;
+  --color-line-strong: #cdbfa8;
+  --color-gold: #a8843a;
+  --color-gold-deep: #8a6a22;
+  --color-gold-light: #d8c58f;
+  --color-cream: #f4f1ea;
+  --color-proof-1: #6e1522;
+  --color-proof-2: #b3331f;
+  --color-proof-3: #c2412a;
+  --color-proof-4: #e8803a;
+
+  --font-serif: var(--font-garamond), "EB Garamond", Georgia, serif;
+  --font-sans: var(--font-archivo), "Archivo", system-ui, sans-serif;
+
+  --text-hero: clamp(2.75rem, 11vw, 4.75rem);
+  --text-hero--line-height: 0.96;
+  --text-hero--letter-spacing: -0.035em;
+  --text-display: clamp(2.5rem, 9.5vw, 4rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.03em;
+  --text-title: clamp(2rem, 7.5vw, 3.6rem);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.028em;
+  --text-subtitle: clamp(1.6rem, 5.5vw, 2.2rem);
+  --text-subtitle--line-height: 1.08;
+  --text-subtitle--letter-spacing: -0.02em;
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.6;
+
+  --radius-pill: 999px;
+  --radius-media: 28px;
+
+  --ease-cut: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.64, 0, 0.78, 0);
+
+  --animate-drift: drift 8s ease-in-out infinite;
+  @keyframes drift {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+}
+
+html, body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  overscroll-behavior: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

@@ -1,0 +1,1586 @@
+{
+  "390": {
+    "colors": [
+      [
+        "rgb(26, 21, 16)",
+        71
+      ],
+      [
+        "rgb(138, 131, 120)",
+        30
+      ],
+      [
+        "rgb(110, 103, 92)",
+        26
+      ],
+      [
+        "rgb(255, 255, 255)",
+        17
+      ],
+      [
+        "rgb(244, 241, 234)",
+        14
+      ],
+      [
+        "rgb(138, 106, 34)",
+        9
+      ],
+      [
+        "rgba(244, 241, 234, 0.7)",
+        6
+      ],
+      [
+        "rgb(79, 73, 63)",
+        5
+      ],
+      [
+        "rgb(168, 132, 58)",
+        4
+      ],
+      [
+        "rgba(255, 255, 255, 0.92)",
+        2
+      ],
+      [
+        "rgba(244, 241, 234, 0.72)",
+        2
+      ],
+      [
+        "rgb(216, 197, 143)",
+        1
+      ],
+      [
+        "rgba(244, 241, 234, 0.55)",
+        1
+      ]
+    ],
+    "bgs": [
+      [
+        "rgba(255, 255, 255, 0.78)",
+        23
+      ],
+      [
+        "rgb(168, 132, 58)",
+        13
+      ],
+      [
+        "rgb(26, 21, 16)",
+        9
+      ],
+      [
+        "rgba(26, 21, 16, 0.06)",
+        8
+      ],
+      [
+        "rgb(255, 255, 255)",
+        7
+      ],
+      [
+        "rgb(138, 106, 34)",
+        7
+      ],
+      [
+        "rgb(0, 0, 0)",
+        6
+      ],
+      [
+        "rgb(21, 17, 13)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.88)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.35)",
+        5
+      ],
+      [
+        "rgb(11, 9, 7)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.9)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.55)",
+        4
+      ],
+      [
+        "rgba(255, 255, 255, 0.16)",
+        4
+      ],
+      [
+        "rgb(238, 233, 219)",
+        3
+      ],
+      [
+        "rgb(245, 241, 232)",
+        3
+      ],
+      [
+        "rgb(189, 180, 164)",
+        2
+      ],
+      [
+        "rgb(216, 205, 185)",
+        2
+      ],
+      [
+        "rgb(216, 197, 143)",
+        2
+      ],
+      [
+        "rgb(242, 238, 230)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.5)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.85)",
+        1
+      ],
+      [
+        "rgb(194, 65, 42)",
+        1
+      ],
+      [
+        "rgba(0, 0, 0, 0.18)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.92)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.14)",
+        1
+      ],
+      [
+        "rgb(244, 241, 234)",
+        1
+      ],
+      [
+        "rgb(18, 15, 11)",
+        1
+      ]
+    ],
+    "fonts": [
+      [
+        "Archivo, system-ui, sans-serif",
+        60
+      ],
+      [
+        "Archivo",
+        57
+      ],
+      [
+        "\"EB Garamond\", serif",
+        47
+      ],
+      [
+        "\"Geist Mono\", monospace",
+        22
+      ],
+      [
+        "\"EB Garamond\", Georgia, serif",
+        2
+      ]
+    ],
+    "sizes": [
+      [
+        "34px / 34px / 400 / normal / none / \"EB Garamond\"",
+        24
+      ],
+      [
+        "15px / normal / 400 / normal / none / Archivo",
+        22
+      ],
+      [
+        "15px / 23.25px / 400 / normal / none / Archivo",
+        13
+      ],
+      [
+        "14px / normal / 500 / normal / none / Archivo",
+        12
+      ],
+      [
+        "15px / normal / 500 / normal / none / Archivo",
+        10
+      ],
+      [
+        "20px / normal / 600 / -0.2px / none / Archivo",
+        10
+      ],
+      [
+        "11px / normal / 500 / 1.54px / uppercase / \"Geist Mono\"",
+        8
+      ],
+      [
+        "12px / normal / 500 / 3.36px / uppercase / \"Geist Mono\"",
+        7
+      ],
+      [
+        "40px / 40.8px / 400 / -1.2px / none / \"EB Garamond\"",
+        7
+      ],
+      [
+        "17px / 27.2px / 400 / normal / none / Archivo",
+        7
+      ],
+      [
+        "40px / 40px / 400 / -1.2px / none / \"EB Garamond\"",
+        6
+      ],
+      [
+        "12px / normal / 400 / normal / none / Archivo",
+        4
+      ],
+      [
+        "13px / normal / 500 / normal / none / Archivo",
+        4
+      ],
+      [
+        "64px / 64px / 400 / -2.56px / none / \"EB Garamond\"",
+        4
+      ],
+      [
+        "22px / normal / 600 / normal / none / Archivo",
+        3
+      ],
+      [
+        "33px / 32.34px / 400 / -1.155px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "18px / 21.6px / 600 / -0.18px / none / Archivo",
+        2
+      ],
+      [
+        "13px / 18.2px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "14px / 20.3px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "17px / 28.9px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "12px / normal / 500 / 2.88px / uppercase / \"Geist Mono\"",
+        2
+      ],
+      [
+        "32px / 33.28px / 400 / -0.8px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "16px / 25.6px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "15px / normal / 700 / 1.2px / none / Archivo",
+        2
+      ],
+      [
+        "14px / 21px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "13px / normal / 600 / 0.78px / none / Archivo",
+        2
+      ],
+      [
+        "36px / 36px / 600 / -1.08px / none / Archivo",
+        2
+      ],
+      [
+        "36px / 37.8px / 400 / -1.08px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "14px / normal / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "48px / 47.04px / 400 / -1.68px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "15px / normal / 600 / normal / none / Archivo",
+        2
+      ],
+      [
+        "17px / normal / 600 / normal / none / Archivo",
+        2
+      ],
+      [
+        "12px / normal / 500 / 2.4px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "16px / 23.2px / 400 / normal / none / Archivo",
+        1
+      ],
+      [
+        "9.5px / normal / 400 / 2.2px / none / Archivo",
+        1
+      ],
+      [
+        "12px / normal / 500 / 3.6px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "17px / 28.9px / 700 / normal / none / Archivo",
+        1
+      ],
+      [
+        "12px / normal / 500 / 2.16px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "13px / normal / 600 / 1.82px / none / Archivo",
+        1
+      ],
+      [
+        "12px / normal / 600 / 1.68px / none / Archivo",
+        1
+      ]
+    ],
+    "weights": [
+      [
+        "400",
+        109
+      ],
+      [
+        "500",
+        48
+      ],
+      [
+        "600",
+        27
+      ],
+      [
+        "700",
+        4
+      ]
+    ],
+    "radii": [
+      [
+        "999px",
+        37
+      ],
+      [
+        "50%",
+        24
+      ],
+      [
+        "2px",
+        10
+      ],
+      [
+        "26px",
+        8
+      ],
+      [
+        "10px",
+        8
+      ],
+      [
+        "28px",
+        6
+      ],
+      [
+        "20px",
+        5
+      ],
+      [
+        "30px 30px 18px 18px",
+        4
+      ],
+      [
+        "32px",
+        4
+      ],
+      [
+        "36px",
+        3
+      ],
+      [
+        "24px",
+        3
+      ],
+      [
+        "21px",
+        2
+      ],
+      [
+        "22px",
+        1
+      ],
+      [
+        "18px",
+        1
+      ],
+      [
+        "29px",
+        1
+      ],
+      [
+        "17px",
+        1
+      ],
+      [
+        "0px 0px 16px",
+        1
+      ],
+      [
+        "34px",
+        1
+      ],
+      [
+        "40px",
+        1
+      ]
+    ],
+    "borders": [
+      [
+        "1px solid rgba(255, 255, 255, 0.95)",
+        27
+      ],
+      [
+        "1px solid rgb(216, 205, 185)",
+        8
+      ],
+      [
+        "1px solid rgb(205, 191, 168)",
+        5
+      ],
+      [
+        "1px solid rgba(255, 255, 255, 0.28)",
+        4
+      ],
+      [
+        "1px solid rgba(255, 255, 255, 0.9)",
+        1
+      ],
+      [
+        "1px solid rgb(26, 21, 16)",
+        1
+      ],
+      [
+        "1px solid rgb(168, 132, 58)",
+        1
+      ]
+    ],
+    "transitions": [],
+    "buttons": [
+      {
+        "text": "",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "20px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "For creators",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 10px",
+        "h": "14px",
+        "font": "12px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Case studies",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 10px",
+        "h": "14px",
+        "font": "12px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Pricing",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 10px",
+        "h": "14px",
+        "font": "12px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call ↗",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 22px",
+        "h": "44px",
+        "font": "13px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "Book a call →",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 28px",
+        "h": "50px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "See the results",
+        "bg": "rgba(255, 255, 255, 0.5)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "50px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Walmart",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(26, 21, 16)"
+      },
+      {
+        "text": "Wale",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "Kojo Blak",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "Jake & Logan Paul",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "34px",
+        "pad": "0px",
+        "h": "500px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "229.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "229.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "229.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "229.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Kojo Blak",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "420px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgb(216, 197, 143)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Book a call →",
+        "bg": "rgb(244, 241, 234)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "54px",
+        "font": "15px 600 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Privacy Policy",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Creator Terms of Use",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Brand Terms of Use",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Contact Us",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Support",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      }
+    ],
+    "headings": [],
+    "fontFaces": [
+      "Archivo 400 normal unloaded",
+      "Archivo 400 normal loaded",
+      "Archivo 500 normal unloaded",
+      "Archivo 500 normal loaded",
+      "Archivo 600 normal unloaded",
+      "Archivo 600 normal loaded",
+      "Archivo 700 normal unloaded",
+      "Archivo 700 normal loaded",
+      "EB Garamond 400 italic unloaded",
+      "EB Garamond 400 italic loaded",
+      "EB Garamond 400 normal unloaded",
+      "EB Garamond 400 normal loaded",
+      "EB Garamond 500 normal unloaded",
+      "Geist Mono 400 normal unloaded",
+      "Geist Mono 400 normal loaded",
+      "Plus Jakarta Sans 400 normal unloaded",
+      "Plus Jakarta Sans 500 normal unloaded",
+      "Plus Jakarta Sans 600 normal unloaded",
+      "Plus Jakarta Sans 700 normal unloaded"
+    ],
+    "text": "For creators\nFor brands\nCase studies\nPricing\nBook a call\n↗\n1B+ VIEWS DELIVERED\nReach that ads can’t buy.\nClips on every feed, at scale.\n\nA network of clippers turns your best moments into short videos across TikTok, Reels and Shorts, so your brand shows up where attention already is.\n\nBook a call\n→\nSee the results\nClips built to travel\nShort, native videos made for every feed.\nPay for what counts\nOnly views that pass review are paid.\nCLIP MORE · PAY PER VIEW ·\n1B+ views generated for\nthe biggest brands and\nartists in the world.\nLess guesswork.\nMore views.\nCAMPAIGNS DELIVERED FOR\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nTHE NETWORK\nA clipping network built for reach, not roster limits\n\nInstead of booking a fixed roster, brands plug into a network of clippers who choose campaigns that fit their audience and style. Distribution scales without mismatched placements or inflated media pricing.\n\nBrands plug in. Clippers post. You pay for counted views.\n\nLIVE ON EVERY FEED\nMusic and releases\nSports highlights\nGaming clips\nFilm and TV\nRetail\nPodcasts\nLive streams\nStreamer clips\nUGC\nLifestyle\nBrand launches\n+ many more\nINDUSTRIES\nBuilt for the brands that need reach most\n\nRelease cycles, product launches and live moments all move faster when clips are already on every feed.\n\nMUSIC AND ARTISTS\nReleases that travel\nLabels and artists put tracks, videos and moments in front of new audiences. Clippers turn a release into clips that live on every feed.\nSOUND PROMOS\nRELEASE CLIPS\nLIVE PERFORMANCE\nTOUR CONTENT\nBRANDS AND LAUNCHES\nAwareness at scale\nRetail, gaming and consumer brands get their product and content shown across feeds, with every counted view tracked.\nPRODUCT LAUNCHES\nGAMING CLIPS\nBRAND MOMENTS\nUGC\nPROCESS\nHow it works\n\nYou set the goal. We run the network.\n\n01\nBrief and strategy\nWork with our team to define your niche, content, rate per 1,000 views and budget.\n02\nClippers activate\nYour campaign goes live to the network. Clippers choose it based on fit and audience.\n03\nReview before it counts\nEvery post is checked before it counts, and every approved post links to its source.\n04\nPay for counted views\nYou pay only for views that pass review. Posts keep working after the budget is spent.\nWHY MAISON D’ÉLITES\nThe unfair advantage\n\nClipping scale, clear reporting and per-view pricing in one channel built for measurable distribution.\n\nPay only for counted views\nYour spend follows verified views, not estimates or promises.\nClips in every niche\nMusic, sports, gaming, retail and more. Clippers pick campaigns that fit their audience.\nContent that keeps working\nWhen the budget is spent, the posts stay live and keep earning views.\nFull transparency\nA live dashboard with a direct link to every approved post. No guesswork.\nZero operational lift\nWe handle clipper outreach, briefing, review and payouts.\nRules and approvals you control\nSet the rules, the rate and the budget. Nothing counts until it passes review.\nCASE STUDIES\nNumbers that don’t lie\n\nOver 1B views delivered. Proof for every campaign below.\n\nWalmart\nWale\nKojo Blak\nJake & Logan Paul\nCASE STUDY\nWalmart / Maison d’Élites\nCLIPPING\nOBJECTIVE\nDrive attention to Walmart’s beauty box.\nSTRATEGY\nEngage influencers to post about it.\nPERFORMANCE SUMMARY\nTOTAL VIEWS\n3M\nEFFECTIVE CPM\n$2.30\nKojo Blak\nIN HIS WORDS\nHear it from Kojo Blak.\n\nHis testimonial on working with Maison d’Élites.\n\nKojo Blak\nArtist\nRecommends Maison d’Élites\nLater won Best New Ghanaian Artist\nPRICING\nSimple. Performance-based.\n\nOnly pay for verified views delivered, not performance estimates. Larger spend commitments unlock lower fees.\n\nStarter\n$3K to $10K\nA low-friction entry point for sound promos, logo placements and first campaigns on the network.\nSound promo or logo placement\nLive campaign dashboard\nAutomated content moderation\nVerified-view billing\nBook a call\nMOST POPULAR\nGrowth\n$10K to $50K\nRecurring campaigns with broader targeting, creative support and better commercial terms as volume scales.\nGeo-targeted or worldwide campaigns\nSports and entertainment audience targeting\nFree animated logo creative\nLower fees at higher volume\nDedicated niche expert\nDedicated fan pages\nBook a call\nScale\nCustom\nCustom commercial structure for brands buying at serious volume across multiple niches, markets or campaign waves.\nDedicated strategic support\nEnterprise reporting and brand controls\nMulti-segment campaign strategy\nVolume-based pricing\nPriority clipper allocation\nDedicated fan pages\nBook a call\nPut your content\nto work.\nBUILT FOR REACH. PAID FOR VIEWS.\n\nWalmart, Nintendo, WYDE, Sony and DEF JAM have run campaigns through our network.\n\nBook a call\n→\nLegal\nPrivacy Policy\nCreator Terms of Use\nBrand Terms of Use\nCompany\nContact Us\nSupport\nCareers\n© 2026 Maison d’Élites. All rights reserved."
+  },
+  "1440": {
+    "colors": [
+      [
+        "rgb(26, 21, 16)",
+        71
+      ],
+      [
+        "rgb(138, 131, 120)",
+        30
+      ],
+      [
+        "rgb(110, 103, 92)",
+        26
+      ],
+      [
+        "rgb(255, 255, 255)",
+        17
+      ],
+      [
+        "rgb(244, 241, 234)",
+        14
+      ],
+      [
+        "rgb(138, 106, 34)",
+        9
+      ],
+      [
+        "rgba(244, 241, 234, 0.7)",
+        6
+      ],
+      [
+        "rgb(79, 73, 63)",
+        5
+      ],
+      [
+        "rgb(168, 132, 58)",
+        4
+      ],
+      [
+        "rgba(255, 255, 255, 0.92)",
+        2
+      ],
+      [
+        "rgba(244, 241, 234, 0.72)",
+        2
+      ],
+      [
+        "rgb(216, 197, 143)",
+        1
+      ],
+      [
+        "rgba(244, 241, 234, 0.55)",
+        1
+      ]
+    ],
+    "bgs": [
+      [
+        "rgba(255, 255, 255, 0.78)",
+        23
+      ],
+      [
+        "rgb(168, 132, 58)",
+        13
+      ],
+      [
+        "rgb(26, 21, 16)",
+        9
+      ],
+      [
+        "rgba(26, 21, 16, 0.06)",
+        8
+      ],
+      [
+        "rgb(255, 255, 255)",
+        7
+      ],
+      [
+        "rgb(138, 106, 34)",
+        7
+      ],
+      [
+        "rgb(0, 0, 0)",
+        6
+      ],
+      [
+        "rgb(21, 17, 13)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.88)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.35)",
+        5
+      ],
+      [
+        "rgb(11, 9, 7)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.9)",
+        5
+      ],
+      [
+        "rgba(255, 255, 255, 0.55)",
+        4
+      ],
+      [
+        "rgba(255, 255, 255, 0.16)",
+        4
+      ],
+      [
+        "rgb(238, 233, 219)",
+        3
+      ],
+      [
+        "rgb(245, 241, 232)",
+        3
+      ],
+      [
+        "rgb(189, 180, 164)",
+        2
+      ],
+      [
+        "rgb(216, 205, 185)",
+        2
+      ],
+      [
+        "rgb(216, 197, 143)",
+        2
+      ],
+      [
+        "rgb(242, 238, 230)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.5)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.85)",
+        1
+      ],
+      [
+        "rgb(194, 65, 42)",
+        1
+      ],
+      [
+        "rgba(0, 0, 0, 0.18)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.92)",
+        1
+      ],
+      [
+        "rgba(255, 255, 255, 0.14)",
+        1
+      ],
+      [
+        "rgb(244, 241, 234)",
+        1
+      ],
+      [
+        "rgb(18, 15, 11)",
+        1
+      ]
+    ],
+    "fonts": [
+      [
+        "Archivo, system-ui, sans-serif",
+        60
+      ],
+      [
+        "Archivo",
+        57
+      ],
+      [
+        "\"EB Garamond\", serif",
+        47
+      ],
+      [
+        "\"Geist Mono\", monospace",
+        22
+      ],
+      [
+        "\"EB Garamond\", Georgia, serif",
+        2
+      ]
+    ],
+    "sizes": [
+      [
+        "34px / 34px / 400 / normal / none / \"EB Garamond\"",
+        24
+      ],
+      [
+        "15px / normal / 400 / normal / none / Archivo",
+        22
+      ],
+      [
+        "15px / 23.25px / 400 / normal / none / Archivo",
+        13
+      ],
+      [
+        "14px / normal / 500 / normal / none / Archivo",
+        12
+      ],
+      [
+        "15px / normal / 500 / normal / none / Archivo",
+        10
+      ],
+      [
+        "20px / normal / 600 / -0.2px / none / Archivo",
+        10
+      ],
+      [
+        "11px / normal / 500 / 1.54px / uppercase / \"Geist Mono\"",
+        8
+      ],
+      [
+        "12px / normal / 500 / 3.36px / uppercase / \"Geist Mono\"",
+        7
+      ],
+      [
+        "17px / 27.2px / 400 / normal / none / Archivo",
+        7
+      ],
+      [
+        "58px / 58px / 400 / -1.74px / none / \"EB Garamond\"",
+        6
+      ],
+      [
+        "13px / normal / 400 / normal / none / Archivo",
+        4
+      ],
+      [
+        "13px / normal / 500 / normal / none / Archivo",
+        4
+      ],
+      [
+        "64px / 65.28px / 400 / -1.92px / none / \"EB Garamond\"",
+        4
+      ],
+      [
+        "64px / 64px / 400 / -2.56px / none / \"EB Garamond\"",
+        4
+      ],
+      [
+        "60px / 61.2px / 400 / -1.8px / none / \"EB Garamond\"",
+        3
+      ],
+      [
+        "22px / normal / 600 / normal / none / Archivo",
+        3
+      ],
+      [
+        "76px / 72.96px / 400 / -2.66px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "18px / 21.6px / 600 / -0.18px / none / Archivo",
+        2
+      ],
+      [
+        "13px / 18.2px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "15px / 21.75px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "17px / 28.9px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "12px / normal / 500 / 2.88px / uppercase / \"Geist Mono\"",
+        2
+      ],
+      [
+        "44px / 45.76px / 400 / -1.1px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "16px / 25.6px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "15px / normal / 700 / 1.2px / none / Archivo",
+        2
+      ],
+      [
+        "14px / 21px / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "13px / normal / 600 / 0.78px / none / Archivo",
+        2
+      ],
+      [
+        "36px / 36px / 600 / -1.08px / none / Archivo",
+        2
+      ],
+      [
+        "52px / 54.6px / 400 / -1.56px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "14px / normal / 400 / normal / none / Archivo",
+        2
+      ],
+      [
+        "84px / 82.32px / 400 / -2.94px / none / \"EB Garamond\"",
+        2
+      ],
+      [
+        "15px / normal / 600 / normal / none / Archivo",
+        2
+      ],
+      [
+        "17px / normal / 600 / normal / none / Archivo",
+        2
+      ],
+      [
+        "12px / normal / 500 / 2.4px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "18px / 26.1px / 400 / normal / none / Archivo",
+        1
+      ],
+      [
+        "9.5px / normal / 400 / 2.2px / none / Archivo",
+        1
+      ],
+      [
+        "12px / normal / 500 / 3.6px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "17px / 28.9px / 700 / normal / none / Archivo",
+        1
+      ],
+      [
+        "12px / normal / 500 / 2.16px / none / \"Geist Mono\"",
+        1
+      ],
+      [
+        "13px / normal / 600 / 1.82px / none / Archivo",
+        1
+      ]
+    ],
+    "weights": [
+      [
+        "400",
+        109
+      ],
+      [
+        "500",
+        48
+      ],
+      [
+        "600",
+        27
+      ],
+      [
+        "700",
+        4
+      ]
+    ],
+    "radii": [
+      [
+        "999px",
+        37
+      ],
+      [
+        "50%",
+        24
+      ],
+      [
+        "2px",
+        10
+      ],
+      [
+        "26px",
+        8
+      ],
+      [
+        "10px",
+        8
+      ],
+      [
+        "28px",
+        6
+      ],
+      [
+        "20px",
+        5
+      ],
+      [
+        "30px 30px 18px 18px",
+        4
+      ],
+      [
+        "36px",
+        3
+      ],
+      [
+        "24px",
+        3
+      ],
+      [
+        "32px",
+        3
+      ],
+      [
+        "21px",
+        2
+      ],
+      [
+        "40px",
+        2
+      ],
+      [
+        "22px",
+        1
+      ],
+      [
+        "18px",
+        1
+      ],
+      [
+        "29px",
+        1
+      ],
+      [
+        "17px",
+        1
+      ],
+      [
+        "0px 0px 16px",
+        1
+      ],
+      [
+        "34px",
+        1
+      ]
+    ],
+    "borders": [
+      [
+        "1px solid rgba(255, 255, 255, 0.95)",
+        27
+      ],
+      [
+        "1px solid rgb(216, 205, 185)",
+        8
+      ],
+      [
+        "1px solid rgb(205, 191, 168)",
+        5
+      ],
+      [
+        "1px solid rgba(255, 255, 255, 0.28)",
+        4
+      ],
+      [
+        "1px solid rgba(255, 255, 255, 0.9)",
+        1
+      ],
+      [
+        "1px solid rgb(26, 21, 16)",
+        1
+      ],
+      [
+        "1px solid rgb(168, 132, 58)",
+        1
+      ]
+    ],
+    "transitions": [],
+    "buttons": [
+      {
+        "text": "",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "26px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "For creators",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 16px",
+        "h": "14px",
+        "font": "13px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Case studies",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 16px",
+        "h": "14px",
+        "font": "13px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Pricing",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "9px 16px",
+        "h": "14px",
+        "font": "13px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call ↗",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 22px",
+        "h": "44px",
+        "font": "13px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "Book a call →",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 28px",
+        "h": "50px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "See the results",
+        "bg": "rgba(255, 255, 255, 0.5)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "50px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Walmart",
+        "bg": "rgb(26, 21, 16)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(26, 21, 16)"
+      },
+      {
+        "text": "Wale",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "Kojo Blak",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "Jake & Logan Paul",
+        "bg": "rgba(255, 255, 255, 0.55)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px 24px",
+        "h": "46px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(216, 205, 185)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(255, 255, 255)",
+        "radius": "34px",
+        "pad": "0px",
+        "h": "500px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(255, 255, 255)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "395.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "395.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "395.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "26px",
+        "pad": "0px",
+        "h": "395.328px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Kojo Blak",
+        "bg": "rgb(0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "560px",
+        "font": "16px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgb(216, 197, 143)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Book a call",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "52px",
+        "font": "15px 500 Archivo",
+        "ls": "normal",
+        "border": "1px solid rgb(205, 191, 168)"
+      },
+      {
+        "text": "Book a call →",
+        "bg": "rgb(244, 241, 234)",
+        "color": "rgb(26, 21, 16)",
+        "radius": "999px",
+        "pad": "0px",
+        "h": "54px",
+        "font": "15px 600 Archivo",
+        "ls": "normal",
+        "border": "0px none rgb(26, 21, 16)"
+      },
+      {
+        "text": "Privacy Policy",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Creator Terms of Use",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Brand Terms of Use",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Contact Us",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      },
+      {
+        "text": "Support",
+        "bg": "rgba(0, 0, 0, 0)",
+        "color": "rgba(244, 241, 234, 0.7)",
+        "radius": "0px",
+        "pad": "0px",
+        "h": "16px",
+        "font": "15px 400 Archivo",
+        "ls": "normal",
+        "border": "0px none rgba(244, 241, 234, 0.7)"
+      }
+    ],
+    "headings": [],
+    "fontFaces": [
+      "Archivo 400 normal unloaded",
+      "Archivo 400 normal loaded",
+      "Archivo 500 normal unloaded",
+      "Archivo 500 normal loaded",
+      "Archivo 600 normal unloaded",
+      "Archivo 600 normal loaded",
+      "Archivo 700 normal unloaded",
+      "Archivo 700 normal loaded",
+      "EB Garamond 400 italic unloaded",
+      "EB Garamond 400 italic loaded",
+      "EB Garamond 400 normal unloaded",
+      "EB Garamond 400 normal loaded",
+      "EB Garamond 500 normal unloaded",
+      "Geist Mono 400 normal unloaded",
+      "Geist Mono 400 normal loaded",
+      "Plus Jakarta Sans 400 normal unloaded",
+      "Plus Jakarta Sans 500 normal unloaded",
+      "Plus Jakarta Sans 600 normal unloaded",
+      "Plus Jakarta Sans 700 normal unloaded"
+    ],
+    "text": "For creators\nFor brands\nCase studies\nPricing\nBook a call\n↗\n1B+ VIEWS DELIVERED\nReach that ads can’t buy.\nClips on every feed, at scale.\n\nA network of clippers turns your best moments into short videos across TikTok, Reels and Shorts, so your brand shows up where attention already is.\n\nBook a call\n→\nSee the results\nClips built to travel\nShort, native videos made for every feed.\nPay for what counts\nOnly views that pass review are paid.\nCLIP MORE · PAY PER VIEW ·\n1B+ views generated for\nthe biggest brands and\nartists in the world.\nLess guesswork.\nMore views.\nCAMPAIGNS DELIVERED FOR\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nMusic\nGaming\nRetail\nFilm and TV\nLive events\nSports\nTHE NETWORK\nA clipping network built for reach, not roster limits\n\nInstead of booking a fixed roster, brands plug into a network of clippers who choose campaigns that fit their audience and style. Distribution scales without mismatched placements or inflated media pricing.\n\nBrands plug in. Clippers post. You pay for counted views.\n\nLIVE ON EVERY FEED\nMusic and releases\nSports highlights\nGaming clips\nFilm and TV\nRetail\nPodcasts\nLive streams\nStreamer clips\nUGC\nLifestyle\nBrand launches\n+ many more\nINDUSTRIES\nBuilt for the brands that need reach most\n\nRelease cycles, product launches and live moments all move faster when clips are already on every feed.\n\nMUSIC AND ARTISTS\nReleases that travel\nLabels and artists put tracks, videos and moments in front of new audiences. Clippers turn a release into clips that live on every feed.\nSOUND PROMOS\nRELEASE CLIPS\nLIVE PERFORMANCE\nTOUR CONTENT\nBRANDS AND LAUNCHES\nAwareness at scale\nRetail, gaming and consumer brands get their product and content shown across feeds, with every counted view tracked.\nPRODUCT LAUNCHES\nGAMING CLIPS\nBRAND MOMENTS\nUGC\nPROCESS\nHow it works\n\nYou set the goal. We run the network.\n\n01\nBrief and strategy\nWork with our team to define your niche, content, rate per 1,000 views and budget.\n02\nClippers activate\nYour campaign goes live to the network. Clippers choose it based on fit and audience.\n03\nReview before it counts\nEvery post is checked before it counts, and every approved post links to its source.\n04\nPay for counted views\nYou pay only for views that pass review. Posts keep working after the budget is spent.\nWHY MAISON D’ÉLITES\nThe unfair advantage\n\nClipping scale, clear reporting and per-view pricing in one channel built for measurable distribution.\n\nPay only for counted views\nYour spend follows verified views, not estimates or promises.\nClips in every niche\nMusic, sports, gaming, retail and more. Clippers pick campaigns that fit their audience.\nContent that keeps working\nWhen the budget is spent, the posts stay live and keep earning views.\nFull transparency\nA live dashboard with a direct link to every approved post. No guesswork.\nZero operational lift\nWe handle clipper outreach, briefing, review and payouts.\nRules and approvals you control\nSet the rules, the rate and the budget. Nothing counts until it passes review.\nCASE STUDIES\nNumbers that don’t lie\n\nOver 1B views delivered. Proof for every campaign below.\n\nWalmart\nWale\nKojo Blak\nJake & Logan Paul\nCASE STUDY\nWalmart / Maison d’Élites\nCLIPPING\nOBJECTIVE\nDrive attention to Walmart’s beauty box.\nSTRATEGY\nEngage influencers to post about it.\nPERFORMANCE SUMMARY\nTOTAL VIEWS\n3M\nEFFECTIVE CPM\n$2.30\nKojo Blak\nIN HIS WORDS\nHear it from Kojo Blak.\n\nHis testimonial on working with Maison d’Élites.\n\nKojo Blak\nArtist\nRecommends Maison d’Élites\nLater won Best New Ghanaian Artist\nPRICING\nSimple. Performance-based.\n\nOnly pay for verified views delivered, not performance estimates. Larger spend commitments unlock lower fees.\n\nStarter\n$3K to $10K\nA low-friction entry point for sound promos, logo placements and first campaigns on the network.\nSound promo or logo placement\nLive campaign dashboard\nAutomated content moderation\nVerified-view billing\nBook a call\nMOST POPULAR\nGrowth\n$10K to $50K\nRecurring campaigns with broader targeting, creative support and better commercial terms as volume scales.\nGeo-targeted or worldwide campaigns\nSports and entertainment audience targeting\nFree animated logo creative\nLower fees at higher volume\nDedicated niche expert\nDedicated fan pages\nBook a call\nScale\nCustom\nCustom commercial structure for brands buying at serious volume across multiple niches, markets or campaign waves.\nDedicated strategic support\nEnterprise reporting and brand controls\nMulti-segment campaign strategy\nVolume-based pricing\nPriority clipper allocation\nDedicated fan pages\nBook a call\nPut your content\nto work.\nBUILT FOR REACH. PAID FOR VIEWS.\n\nWalmart, Nintendo, WYDE, Sony and DEF JAM have run campaigns through our network.\n\nBook a call\n→\nLegal\nPrivacy Policy\nCreator Terms of Use\nBrand Terms of Use\nCompany\nContact Us\nSupport\nCareers\n© 2026 Maison d’Élites. All rights reserved."
+  }
+}
