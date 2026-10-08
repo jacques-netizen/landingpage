@@ -5,3 +5,7 @@ import type { JobOutcome } from "../jobs";
 export async function runDiscordLead(_leadId: string): Promise<JobOutcome> {
   return "skipped";
 }
+
+export async function runDiscordBooking(_leadId: string): Promise<JobOutcome> {
+  return "skipped";
+}

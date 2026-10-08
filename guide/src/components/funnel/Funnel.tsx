@@ -227,6 +227,7 @@ export function Funnel({ config }: { config: PublicConfig }) {
     stepIndex,
     reduced,
     leadSettled,
+    getSessionToken: () => tokenRef.current,
     next,
     back,
     go,

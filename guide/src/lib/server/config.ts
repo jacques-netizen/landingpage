@@ -76,6 +76,7 @@ export function publicConfig() {
     priorityMin: c.priorityMin,
     whopJoinUrl: c.whopJoinUrl,
     calBookingUrl: c.calBookingUrl,
+    calBookedRedirectUrl: c.calBookedRedirectUrl,
     turnstileSiteKey: c.turnstileSiteKey,
     metaPixelId: c.metaPixelId,
     videoProvider: c.videoProvider,

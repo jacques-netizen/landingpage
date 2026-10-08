@@ -168,14 +168,17 @@
     "cta": {
       "book": {
         "headline": "Pick a time to talk it through.",
-        "body": "Choose a slot that works for you. We will go through your plan on the call."
+        "body": "Choose a slot that works for you. We will go through your plan on the call.",
+        "loading": "Loading the calendar",
+        "fallback": "Open the calendar"
       },
       "soft": {
         "headline": "Want to talk numbers?",
         "body": "Reply to the guide email with a rough budget and we will tell you what it can do. Or add a number here.",
         "amountLabel": "Roughly how much, in dollars?",
         "amountSubmit": "Send",
-        "amountThanks": "Thanks. We have it."
+        "amountThanks": "Thanks. We have it.",
+        "amountError": "Please add a number in dollars."
       },
       "join": {
         "headline": "Join the network.",

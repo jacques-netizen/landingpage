@@ -5,7 +5,10 @@ import type { PublicConfig } from "@/lib/server/config";
 
 export type LeadView = {
   guideToken: string;
+  ref: string;
+  email: string;
   emailMasked: string;
+  company: string | null;
   firstName: string;
   path: string;
   qualified: boolean;
@@ -38,6 +41,7 @@ export type FunnelCtx = {
   reduced: boolean;
   /** True once the gate request has settled (ok or not). */
   leadSettled: boolean;
+  getSessionToken: () => string | null;
   next: () => void;
   back: () => void;
   go: (id: string) => void;

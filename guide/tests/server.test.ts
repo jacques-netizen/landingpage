@@ -67,3 +67,16 @@ describe("tokens and events", () => {
     expect(cleanProps({ scene: "gate", email: "a@b.c", first_name: "x", note: "a@b.c", pct: 25 })).toEqual({ scene: "gate", pct: 25 });
   });
 });
+
+import { verifyCalSignature } from "@/lib/server/cal";
+import crypto from "node:crypto";
+describe("Cal.com webhook signature", () => {
+  it("accepts the right signature and rejects others", () => {
+    const body = JSON.stringify({ triggerEvent: "BOOKING_CREATED" });
+    const sig = crypto.createHmac("sha256", "s3cret").update(body).digest("hex");
+    expect(verifyCalSignature(body, sig, "s3cret")).toBe(true);
+    expect(verifyCalSignature(body, sig, "other")).toBe(false);
+    expect(verifyCalSignature(body, null, "s3cret")).toBe(false);
+    expect(verifyCalSignature(body + " ", sig, "s3cret")).toBe(false);
+  });
+});

@@ -7,7 +7,8 @@ import { and, eq, inArray, lte, or, isNull, lt, sql } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 
 export const JOB_KINDS = ["pdf", "crm", "email", "capi", "discord", "manychat"] as const;
-export type JobKind = (typeof JOB_KINDS)[number];
+export const BOOKING_JOB_KINDS = ["booking_crm", "booking_capi", "booking_discord"] as const;
+export type JobKind = (typeof JOB_KINDS)[number] | (typeof BOOKING_JOB_KINDS)[number];
 
 export type JobOutcome = "done" | "skipped";
 export type JobHandler = (leadId: string) => Promise<JobOutcome>;
@@ -22,6 +23,9 @@ const handlers: Partial<Record<JobKind, () => Promise<JobHandler>>> = {
   capi: async () => (await import("./jobs/capi")).runCapiLead,
   discord: async () => (await import("./jobs/discord")).runDiscordLead,
   manychat: async () => (await import("./jobs/manychat")).runManychat,
+  booking_crm: async () => (await import("./jobs/booking")).runBookingCrm,
+  booking_capi: async () => (await import("./jobs/capi")).runCapiSchedule,
+  booking_discord: async () => (await import("./jobs/discord")).runDiscordBooking,
 };
 
 export async function enqueue(leadId: string, kinds: readonly JobKind[]) {
@@ -30,6 +34,16 @@ export async function enqueue(leadId: string, kinds: readonly JobKind[]) {
     .insert(schema.jobs)
     .values(kinds.map((kind) => ({ leadId, kind })))
     .onConflictDoNothing();
+}
+
+/** Puts finished jobs back in the queue, for when the lead changed after they ran. */
+export async function rerun(leadId: string, kinds: readonly JobKind[]) {
+  const db = await getDb();
+  await enqueue(leadId, kinds);
+  await db
+    .update(schema.jobs)
+    .set({ status: "pending", attempts: 0, runAfter: sql`now()`, doneAt: null, lastError: null })
+    .where(and(eq(schema.jobs.leadId, leadId), inArray(schema.jobs.kind, [...kinds]), inArray(schema.jobs.status, ["done", "skipped", "dead", "failed"])));
 }
 
 /** Claims one job row so two runners never work the same job. */

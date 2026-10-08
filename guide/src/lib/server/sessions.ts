@@ -91,7 +91,11 @@ export async function sessionState(s: SessionRow) {
     lead: lead
       ? {
           guideToken: guideToken(lead.id),
+          ref: lead.id,
+          // Returned only to the browser holding this session's token, for the calendar prefill.
+          email: lead.email,
           emailMasked: maskEmail(lead.email),
+          company: lead.company,
           firstName: lead.firstName,
           path: lead.path,
           qualified: lead.qualified,
