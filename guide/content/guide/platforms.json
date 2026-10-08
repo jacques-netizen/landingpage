@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "_note": "Deterministic platform order for 'Where to post first'. Only platforms the lead picked are listed, highest weight first. Ties keep the order below.",
+  "order": ["tiktok", "instagram_reels", "youtube_shorts", "x"],
+  "weights": {
+    "views": { "tiktok": 4, "youtube_shorts": 3, "instagram_reels": 2, "x": 1 },
+    "streams": { "tiktok": 4, "instagram_reels": 3, "youtube_shorts": 2, "x": 1 },
+    "sales": { "instagram_reels": 4, "tiktok": 3, "youtube_shorts": 2, "x": 1 },
+    "awareness": { "tiktok": 4, "instagram_reels": 3, "youtube_shorts": 2, "x": 1 },
+    "side_income": { "tiktok": 4, "youtube_shorts": 3, "instagram_reels": 2, "x": 1 },
+    "full_time": { "tiktok": 4, "youtube_shorts": 3, "instagram_reels": 2, "x": 1 },
+    "learn_editing": { "tiktok": 4, "instagram_reels": 3, "youtube_shorts": 2, "x": 1 },
+    "own_audience": { "tiktok": 4, "instagram_reels": 3, "youtube_shorts": 2, "x": 1 }
+  },
+  "lead": {
+    "buyer": "Start with {first}. Add the others once the first clips are moving.",
+    "buyerOne": "Start with {first} and put the whole first wave there.",
+    "clipper": "Post on {first} first. Add the others once you know which clips work."
+  },
+  "platforms": {
+    "tiktok": {
+      "name": "TikTok",
+      "buyer": "The feed shows clips to people who do not follow anyone yet, so a new song, product or moment can reach strangers on day one.",
+      "clipper": "New accounts can reach people fast, because the feed does not wait for followers. Good for testing which clips work."
+    },
+    "instagram_reels": {
+      "name": "Instagram Reels",
+      "buyer": "Reels sit next to Stories, profiles and links, so people who like a clip can find you, follow you and buy in a few taps.",
+      "clipper": "Reels reward clean, well edited clips. Many campaigns ask for Reels, so it is worth having an account ready."
+    },
+    "youtube_shorts": {
+      "name": "YouTube Shorts",
+      "buyer": "Shorts keep getting views for longer, and they point people to full videos, podcasts and streams on the same platform.",
+      "clipper": "Shorts can keep picking up views for weeks after you post, which matters when you are paid per counted view."
+    },
+    "x": {
+      "name": "X",
+      "buyer": "X moves fast around news, sport and culture. It works best next to a moment people are already talking about.",
+      "clipper": "X is good for timely clips: a goal, a quote, a moment from last night. Speed matters more than polish there."
+    }
+  }
+}

@@ -98,5 +98,15 @@ await page.waitForTimeout(1200);
 await shot('result');
 await page.screenshot({ path: `${out}/${String(++n).padStart(2, '0')}-result-full.png`, fullPage: true });
 const html = await page.content();
-console.log(JSON.stringify({ path, url: page.url(), hasCalendarCopy: html.includes('Pick a time'), hasJoin: html.includes('Join the network'), hasSoft: html.includes('Want to talk numbers'), errors }, null, 2));
+const guideHref = await page.getByRole('link', { name: /Open your guide/ }).getAttribute('href').catch(() => null);
+let guide = null;
+if (guideHref) {
+  const g = await page.request.get(base + guideHref);
+  const pdf = await page.request.get(base + guideHref.replace('/g/', '/api/guide/') + '?from=test', { timeout: 90000 });
+  const bad = await page.request.get(base + guideHref.replace('/g/', '/api/guide/').slice(0, -3) + 'xyz');
+  guide = { page: g.status(), pdf: pdf.status(), type: pdf.headers()['content-type'], bytes: (await pdf.body()).length, tampered: bad.status() };
+  await page.goto(base + guideHref);
+  await page.screenshot({ path: `${out}/${String(++n).padStart(2, '0')}-web-guide.png`, fullPage: true });
+}
+console.log(JSON.stringify({ path, url: page.url(), hasCalendarCopy: html.includes('Pick a time'), hasJoin: html.includes('Join the network'), hasSoft: html.includes('Want to talk numbers'), guide, errors }, null, 2));
 await browser.close();

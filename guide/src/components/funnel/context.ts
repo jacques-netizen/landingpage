@@ -11,6 +11,7 @@ export type LeadView = {
   qualified: boolean;
   humanPriority: boolean;
   answers: Answers;
+  guideSections?: string[];
 };
 
 export type GateInput = {

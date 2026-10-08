@@ -11,7 +11,8 @@
     "test": "vitest run --passWithNoTests",
     "check:dashes": "node scripts/check-dashes.mjs",
     "db:generate": "drizzle-kit generate",
-    "capture:design": "node scripts/capture-design.mjs"
+    "capture:design": "node scripts/capture-design.mjs",
+    "guides:sample": "tsx --conditions=react-server scripts/sample-guides.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1148.0",

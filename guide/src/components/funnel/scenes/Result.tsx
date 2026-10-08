@@ -57,11 +57,20 @@ export function ResultScene() {
 
       <div className="mx-auto max-w-3xl px-5 py-20 md:px-12">
         <h2 className="font-serif text-title">{r.guideTitle}</h2>
+        {f.lead?.guideSections && f.lead.guideSections.length > 0 && (
+          <ol className="mt-8 border-t border-line">
+            {f.lead.guideSections.map((t, i) => (
+              <li key={t} className="flex items-baseline gap-5 border-b border-line py-4">
+                <span className="font-serif text-[1.1rem] text-gold-deep">{String(i + 1).padStart(2, "0")}</span>
+                <span className="font-serif text-[1.4rem] leading-tight">{t}</span>
+              </li>
+            ))}
+          </ol>
+        )}
         {guideHref ? (
           <a
             href={guideHref}
-            onClick={() => track("guide_download", { from: "result" })}
-            className="mt-6 inline-flex h-[52px] items-center gap-2 rounded-pill bg-ink px-7 text-[15px] font-medium text-white hover:bg-ink-soft"
+            className="mt-8 inline-flex h-[52px] items-center gap-2 rounded-pill bg-ink px-7 text-[15px] font-medium text-white hover:bg-ink-soft"
           >
             {r.guideOpen} <span aria-hidden="true">&rarr;</span>
           </a>

@@ -6,6 +6,7 @@ import type { Answers } from "@/lib/flow";
 import type { ProgressMode, Variant } from "@/lib/content";
 import { config } from "./config";
 import { maskEmail, randomToken, signToken } from "./tokens";
+import { guideFor } from "./guide";
 
 export type SessionRow = typeof schema.sessions.$inferSelect;
 
@@ -96,6 +97,7 @@ export async function sessionState(s: SessionRow) {
           qualified: lead.qualified,
           humanPriority: lead.humanPriority,
           answers: lead.answers,
+          guideSections: guideFor(lead).sections.map((x) => x.title),
         }
       : null,
   };

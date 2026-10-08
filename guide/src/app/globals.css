@@ -76,3 +76,10 @@ body {
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Guide body copy rendered from content/guide markdown. */
+.guide-prose p { margin-bottom: 1.1em; font-size: 1.0625rem; line-height: 1.65; color: var(--color-muted); }
+.guide-prose p:first-child { font-family: var(--font-serif); font-size: 1.45rem; line-height: 1.4; color: var(--color-ink); }
+.guide-prose strong { font-weight: 600; color: var(--color-ink); }
+.guide-prose a { display: inline-flex; align-items: center; height: 52px; padding: 0 28px; margin-top: 0.5em; border-radius: 999px; background: var(--color-ink); color: #fff; font-size: 15px; font-weight: 500; text-decoration: none; }
+.guide-prose-dark p, .guide-prose-dark p:first-child { color: rgb(244 241 234 / 0.8); }

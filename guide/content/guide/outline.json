@@ -1,0 +1,72 @@
+{
+  "version": "2026-10-08.1",
+  "_note": "Section order per audience. Each section is filled by the blocks in this folder whose front matter matches the lead's answers. 'generated' sections add content built from proof.json or platforms.json after the block text.",
+  "buyer": [
+    {
+      "key": "what_it_does"
+    },
+    {
+      "key": "how_it_runs"
+    },
+    {
+      "key": "where_to_post",
+      "generated": "platforms"
+    },
+    {
+      "key": "what_counts"
+    },
+    {
+      "key": "proof",
+      "generated": "proof"
+    },
+    {
+      "key": "next_step"
+    }
+  ],
+  "clipper": [
+    {
+      "key": "how_it_pays"
+    },
+    {
+      "key": "set_up"
+    },
+    {
+      "key": "what_travels",
+      "generated": "platforms"
+    },
+    {
+      "key": "rules"
+    },
+    {
+      "key": "your_niche"
+    },
+    {
+      "key": "next_step"
+    }
+  ],
+  "cover": {
+    "preparedFor": "Prepared for {firstName}",
+    "kicker": "",
+    "footer": "Maison d’Élites"
+  },
+  "labels": {
+    "download": "Download the PDF",
+    "contents": "In this guide",
+    "page": "Page",
+    "downloadShort": "PDF"
+  },
+  "coverImages": {
+    "music_release": "concert-s.webp",
+    "music": "concert-s.webp",
+    "product_launch": "bb-b.webp",
+    "personal_brand": "bh-3.webp",
+    "podcast_stream": "sky-b.webp",
+    "sports_gaming": "sky-b.webp",
+    "other": "bh-3.webp",
+    "sports": "story-2-s.webp",
+    "gaming": "story-3-s.webp",
+    "podcasts_streams": "story-4-s.webp",
+    "film_tv": "story-1-s.webp",
+    "anything": "story-1-s.webp"
+  }
+}
