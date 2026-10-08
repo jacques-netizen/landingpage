@@ -7,7 +7,7 @@ import { useState, useTransition } from 'react'
 import { requestWithdrawalAction } from '@/app/wallet/actions'
 import { fmt } from './wallet-model'
 
-// Withdraw to the saved crypto wallet (owner request, 2026-10-08). Shows the fee and what arrives,
+// Withdraw to the saved crypto wallet or bank account (owner requests, 2026-10-08). Shows the fee and what arrives,
 // worked out with the same function the server uses. Not in the mockups: the wallet's own dialog style.
 export function WithdrawDialog({
   theme,
@@ -48,7 +48,7 @@ export function WithdrawDialog({
       open={open}
       onOpenChange={onOpenChange}
       title="Withdraw"
-      description={`Available: ${fmt(availableCents)}. We verify every withdrawal, then send it to your wallet.`}
+      description={`Available: ${fmt(availableCents)}. We verify every withdrawal, then pay it to your payout method.`}
       footer={
         <>
           <Button tone="app" size="sm" variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
@@ -79,7 +79,7 @@ export function WithdrawDialog({
           {(
             [
               ['Fee', quote?.ok ? fmt(quote.feeCents) : '...'],
-              ['You receive', quote?.ok ? `${fmt(quote.netCents)} in stablecoins` : '...'],
+              ['You receive', quote?.ok ? `${fmt(quote.netCents)}${to.startsWith('Bank') ? '' : ' in stablecoins'}` : '...'],
               ['To', to],
             ] as const
           ).map(([k, v]) => (

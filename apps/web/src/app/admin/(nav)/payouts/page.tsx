@@ -1,7 +1,8 @@
 import { db, tables } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { desc, eq, inArray, sql } from 'drizzle-orm'
-import { describeDestination, explorerLink, parseDestination } from '@/lib/crypto-wallets'
+import { countryName } from '@/lib/countries'
+import { describeDestination, explorerLink, parseBank, parseDestination } from '@/lib/crypto-wallets'
 import { requireStaff } from '@/server/guard'
 import { AdminPage } from '../_components/ui'
 import { PayoutRow } from './row'
@@ -45,7 +46,7 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
   return (
     <AdminPage
       title="Payouts"
-      lead="Crypto withdrawals. Verify each one, send it from the company wallet, then mark it paid with the transaction hash."
+      lead="Withdrawals to crypto wallets and bank accounts. Verify each one, pay it, then mark it paid with the transaction hash or bank reference."
     >
       <nav aria-label="Payouts" className="mb-5 flex gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
         {(Object.keys(TABS) as Tab[]).map((t) => (
@@ -67,6 +68,7 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
         <div className="flex flex-col gap-3">
           {rows.map(({ w, email, username, discord }) => {
             const dest = parseDestination(w.destination)
+            const bank = parseBank(w.destination)
             return (
               <PayoutRow
                 key={w.id}
@@ -78,8 +80,15 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
                 amount={formatDollars(w.amountCents)}
                 fee={formatDollars(w.feeCents)}
                 net={formatDollars(w.netCents)}
-                coin={dest?.option.label ?? describeDestination(w.destination) ?? w.method}
-                address={dest?.address ?? ''}
+                kind={bank ? 'bank' : 'crypto'}
+                coin={
+                  dest?.option.label ??
+                  (bank
+                    ? `Bank transfer, ${countryName(bank.country)}`
+                    : (describeDestination(w.destination) ?? w.method))
+                }
+                address={dest?.address ?? bank?.accountNumber ?? ''}
+                bank={bank ? { bankName: bank.bankName, name: bank.name } : null}
                 requested={w.createdAt.toISOString()}
                 hash={w.partnerReference}
                 explorer={explorerLink(w.destination, w.partnerReference)}

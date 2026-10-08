@@ -24,8 +24,10 @@ export function PayoutRow(p: {
   amount: string
   fee: string
   net: string
+  kind: 'crypto' | 'bank'
   coin: string
   address: string
+  bank: { bankName: string; name: string } | null
   requested: string
   hash: string | null
   explorer: string | null
@@ -61,6 +63,16 @@ export function PayoutRow(p: {
 
       <div className="mt-4 rounded-[10px] border border-solid border-line bg-field px-4 py-3">
         <div className="text-[12px] text-muted-2">{p.coin}</div>
+        {p.bank ? (
+          <dl className="m-0 mt-2 grid grid-cols-[140px_1fr] gap-x-3 gap-y-1 text-[13px]">
+            <dt className="text-muted-2">Bank</dt>
+            <dd className="m-0">{p.bank.bankName}</dd>
+            <dt className="text-muted-2">Name on account</dt>
+            <dd className="m-0">{p.bank.name}</dd>
+            <dt className="text-muted-2">Account number</dt>
+            <dd className="m-0" />
+          </dl>
+        ) : null}
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <code className="text-[14px] break-all">{p.address}</code>
           {p.address ? (
@@ -72,7 +84,7 @@ export function PayoutRow(p: {
                 setCopied(true)
               }}
             >
-              {copied ? 'Copied' : 'Copy address'}
+              {copied ? 'Copied' : p.kind === 'bank' ? 'Copy account number' : 'Copy address'}
             </button>
           ) : null}
         </div>
@@ -80,7 +92,7 @@ export function PayoutRow(p: {
 
       {p.status === 'paid' && p.hash ? (
         <p className="mt-3 mb-0 text-[13px] break-all">
-          Transaction:{' '}
+          {p.kind === 'bank' ? 'Bank reference' : 'Transaction'}:{' '}
           {p.explorer ? (
             <a href={p.explorer} target="_blank" rel="noreferrer">
               {p.hash}
@@ -120,8 +132,10 @@ export function PayoutRow(p: {
               <input type="hidden" name="action" value="paid" />
               <Input
                 name="hash"
-                aria-label="Transaction hash"
-                placeholder="Transaction hash after sending"
+                aria-label={p.kind === 'bank' ? 'Bank reference' : 'Transaction hash'}
+                placeholder={
+                  p.kind === 'bank' ? 'Bank transfer reference after paying' : 'Transaction hash after sending'
+                }
                 className="h-10 min-w-[320px] flex-1 font-mono text-[13px]"
                 autoComplete="off"
               />
@@ -139,7 +153,7 @@ export function PayoutRow(p: {
               <Input
                 name="reason"
                 aria-label="Reason for rejecting"
-                placeholder="Reason the creator will see, like: the address is not a valid wallet"
+                placeholder="Reason the creator will see, like: the account number is wrong"
                 className="h-10 min-w-[320px] flex-1 text-[13px]"
               />
               <Button type="submit" size="sm" variant="destructive" loading={pending}>

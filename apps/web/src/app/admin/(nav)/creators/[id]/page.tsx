@@ -1,5 +1,5 @@
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
-import { parseDestination } from '@/lib/crypto-wallets'
+import { fullDestination, methodOf } from '@/lib/crypto-wallets'
 import { db } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { SUSPENSION_SUGGESTED_AT } from '@mde/review'
@@ -88,17 +88,13 @@ export default async function CreatorPage({ params }: { params: Promise<{ id: st
         {/* Where to send this creator's money; only finance and admins see the account details. */}
         <p className="mt-2 mb-0 text-[13px]">
           Payout method:{' '}
-          {!c.profile.payoutProvider
+          {!c.profile.payoutProviderRef || !methodOf(c.profile.payoutProviderRef)
             ? 'none yet'
-            : c.profile.payoutProvider === 'crypto'
-              ? viewer.roles.some((r) => r === 'admin' || r === 'finance')
-                ? `${parseDestination(c.profile.payoutProviderRef)?.option.label ?? 'Crypto'}, ${parseDestination(c.profile.payoutProviderRef)?.address ?? ''}`
-                : 'Crypto wallet'
-              : `${c.profile.payoutProvider === 'paypal' ? 'PayPal' : 'Bank transfer'}${
-                  viewer.roles.some((r) => r === 'admin' || r === 'finance') && c.profile.payoutProviderRef
-                    ? `, ${c.profile.payoutProviderRef}`
-                    : ''
-                }`}
+            : viewer.roles.some((r) => r === 'admin' || r === 'finance')
+              ? fullDestination(c.profile.payoutProviderRef)
+              : methodOf(c.profile.payoutProviderRef) === 'crypto'
+                ? 'Crypto wallet'
+                : 'Bank account'}
           .
         </p>
       </Section>

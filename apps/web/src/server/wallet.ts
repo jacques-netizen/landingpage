@@ -2,7 +2,7 @@ import 'server-only'
 import { db, tables } from '@mde/db'
 import { and, desc, eq, sql } from 'drizzle-orm'
 import type { WalletBar, WalletData } from '@/designed/wallet-model'
-import { describeDestination, explorerLink } from '@/lib/crypto-wallets'
+import { describeDestination, explorerLink, methodOf } from '@/lib/crypto-wallets'
 
 const APPROVED = ['approved', 'earning', 'final', 'paid_out']
 
@@ -48,8 +48,6 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
 
   const counted = posts.filter((p) => [...APPROVED, 'flagged'].includes(p.state))
   const p = profile[0]
-  // Saved as "name | details"; only a bank account shows its last four characters.
-  const details = p?.payoutProviderRef?.split(' | ').pop() ?? ''
   return {
     availableCents,
     pendingCents,
@@ -59,14 +57,14 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
     bestCentsAll: Math.max(0, ...posts.map((x) => x.earnedCents)),
     lifetimeCountedViews: posts.filter((x) => APPROVED.includes(x.state)).reduce((s, x) => s + x.countedViews, 0),
     payout:
-      p?.payoutProvider === 'crypto'
-        ? { method: 'crypto', last4: null, label: describeDestination(p.payoutProviderRef) ?? 'Crypto wallet' }
-        : p?.payoutProvider
-          ? {
-              method: p.payoutProvider === 'paypal' ? 'paypal' : 'bank_transfer',
-              last4: p.payoutProvider !== 'paypal' && details.length >= 4 ? details.slice(-4) : null,
-            }
-          : null,
+      methodOf(p?.payoutProviderRef) !== null
+        ? {
+            method: methodOf(p!.payoutProviderRef)!,
+            last4: null,
+            label: describeDestination(p!.payoutProviderRef)!,
+          }
+        : // Details saved in an older format count as none: the creator adds them again.
+          null,
     withdrawals: withdrawals.map((w) => ({
       id: w.id,
       amountCents: w.amountCents,

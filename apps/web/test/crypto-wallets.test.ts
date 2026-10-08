@@ -37,3 +37,27 @@ describe('crypto wallets', () => {
     )
   })
 })
+
+describe('bank details', () => {
+  const ok = { country: 'us', bankName: ' Chase  Bank ', accountNumber: '1234 5678-9', name: 'Kymen Carter' }
+  it('saves clean bank details and refuses wrong fields', async () => {
+    const { bankDestination, parseBank, describeDestination, methodOf, validTransaction } =
+      await import('../src/lib/crypto-wallets')
+    const r = bankDestination(ok)
+    expect(r).toEqual({ ok: true, destination: 'BANK|US|Chase Bank|123456789|Kymen Carter' })
+    expect(bankDestination({ ...ok, country: 'ZZ' })).toEqual({ ok: false, field: 'country' })
+    expect(bankDestination({ ...ok, accountNumber: '12' })).toEqual({ ok: false, field: 'accountNumber' })
+    expect(bankDestination({ ...ok, name: 'K|C' })).toMatchObject({ ok: true })
+    const dest = 'BANK|US|Chase Bank|123456789|Kymen Carter'
+    expect(parseBank(dest)).toEqual({
+      country: 'US',
+      bankName: 'Chase Bank',
+      accountNumber: '123456789',
+      name: 'Kymen Carter',
+    })
+    expect(describeDestination(dest)).toBe('Bank transfer, Chase Bank, ending 6789 (United States)')
+    expect(methodOf(dest)).toBe('bank_transfer')
+    expect(validTransaction(dest, 'WIRE-2026-001')).toBe(true)
+    expect(validTransaction(dest, '')).toBe(false)
+  })
+})

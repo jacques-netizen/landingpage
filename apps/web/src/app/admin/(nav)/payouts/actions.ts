@@ -6,13 +6,13 @@ import { formatDollars } from '@mde/money/dollars'
 import { tables } from '@mde/db'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { explorerLink, validTransaction } from '@/lib/crypto-wallets'
+import { explorerLink, parseBank, validTransaction } from '@/lib/crypto-wallets'
 import { requireStaff } from '@/server/guard'
 
 export type PayoutState = { ok?: string; error?: string }
 
-// Finance and admins work through crypto withdrawals: verify, send from the company wallet, then mark
-// paid with the transaction hash; or reject, which returns the money to the creator. Each step is
+// Finance and admins work through withdrawals: verify, pay from the company wallet or bank, then mark
+// paid with the transaction hash or bank reference; or reject, which returns the money to the creator. Each step is
 // audited by the money engine and the creator is notified.
 export async function payoutAction(id: string, _prev: PayoutState, form: FormData): Promise<PayoutState> {
   const viewer = await requireStaff('money', '/admin/payouts')
@@ -27,7 +27,7 @@ export async function payoutAction(id: string, _prev: PayoutState, form: FormDat
       await approveWithdrawal(store, { withdrawalId: id, actorId: viewer.id })
       await notify(d, w.creatorId, 'withdrawal_status', {
         title: 'Your withdrawal is verified',
-        body: `We verified your withdrawal of ${formatDollars(w.amountCents)} and are sending ${amount} to your wallet.`,
+        body: `We verified your withdrawal of ${formatDollars(w.amountCents)} and are sending ${amount} to your payout method.`,
         link: '/wallet',
       })
       revalidatePath('/admin/payouts')
@@ -36,11 +36,17 @@ export async function payoutAction(id: string, _prev: PayoutState, form: FormDat
     if (what === 'paid') {
       const hash = String(form.get('hash') ?? '').trim()
       if (!w.destination || !validTransaction(w.destination, hash))
-        return { error: 'Paste the transaction hash from the network this wallet is on.' }
+        return {
+          error: parseBank(w.destination)
+            ? 'Paste the bank transfer reference.'
+            : 'Paste the transaction hash from the network this wallet is on.',
+        }
       await markWithdrawalPaid(store, { withdrawalId: id, partnerReference: hash, actorId: viewer.id })
       await notify(d, w.creatorId, 'withdrawal_status', {
         title: 'Your withdrawal was sent',
-        body: `${amount} in stablecoins is on its way to your wallet. It can take a few minutes to arrive.`,
+        body: parseBank(w.destination)
+          ? `${amount} is on its way to your bank account. Bank transfers can take a few working days.`
+          : `${amount} in stablecoins is on its way to your wallet. It can take a few minutes to arrive.`,
         link: explorerLink(w.destination, hash) ?? '/wallet',
       })
       revalidatePath('/admin/payouts')
