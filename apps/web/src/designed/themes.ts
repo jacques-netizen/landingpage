@@ -72,7 +72,8 @@ export function themeSwitch(current: ThemeName, set: (t: ThemeName) => void) {
 }
 
 export function readThemeCookie(value: string | undefined): ThemeName {
-  return value === 'light' ? 'light' : 'dark'
+  // Glass is the default (owner request, 2026-10-08); dark only when chosen.
+  return value === 'dark' ? 'dark' : 'light'
 }
 
 export function saveThemeCookie(t: ThemeName) {
