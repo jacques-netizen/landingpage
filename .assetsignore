@@ -10,3 +10,4 @@ lib
 functions
 *.md
 guide
+.github
