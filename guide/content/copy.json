@@ -186,5 +186,12 @@
   },
   "errors": {
     "generic": "Something went wrong. Please refresh the page."
+  },
+  "unsubscribe": {
+    "title": "Unsubscribe",
+    "body": "Stop guide and follow-up emails from Maison d’Élites to {email}?",
+    "button": "Unsubscribe",
+    "done": "Done. You will not get any more of these emails.",
+    "invalid": "This link does not work any more. Reply to any of our emails and we will take you off the list."
   }
 }

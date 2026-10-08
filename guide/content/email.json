@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "subject": "{headline}",
+  "preheader": "Your guide is ready. Built from your answers.",
+  "greeting": "Hi {firstName},",
+  "intro": "Here is your guide, built from the answers you gave us.",
+  "guideButton": "Open your guide",
+  "next": {
+    "book": {
+      "text": "If you want to go through it together, pick a time that works for you.",
+      "button": "Pick a time"
+    },
+    "soft": {
+      "text": "Want to talk numbers? Reply to this email with a rough budget and we will tell you what it can do."
+    },
+    "join": {
+      "text": "When you are ready, join the network. Live campaigns, briefs and rates are all inside.",
+      "button": "Join the network"
+    }
+  },
+  "unsubscribe": "Unsubscribe",
+  "unsubscribeNote": "You are getting this because you asked for a guide on our site."
+}
