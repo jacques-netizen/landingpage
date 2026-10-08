@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "_note": "Result page text, chosen by path then asset. Plain sentences, no labels.",
+  "buyer": {
+    "music_release": {
+      "headline": "Your plan for a music release",
+      "body": "Your track works best when people hear it many times, in many places, in a short window. Your guide shows how clips get the release onto feeds, where to post first, and what counts as a view."
+    },
+    "podcast_stream": {
+      "headline": "Your plan for a podcast or stream",
+      "body": "Long shows are full of short moments. Your guide shows how clips turn those moments into reasons to watch the full thing, where to post first, and what counts as a view."
+    },
+    "product_launch": {
+      "headline": "Your plan for a product launch",
+      "body": "A launch needs to be seen fast and seen often. Your guide shows how clips put the product on feeds during launch week, where to post first, and how you only pay for counted views."
+    },
+    "sports_gaming": {
+      "headline": "Your plan for sports and gaming content",
+      "body": "Highlights already travel. Your guide shows how clips push your best moments further, where to post first, and what counts as a view."
+    },
+    "personal_brand": {
+      "headline": "Your plan for your personal brand",
+      "body": "People follow people they keep seeing. Your guide shows how clips put you in front of new people again and again, where to post first, and what counts as a view."
+    },
+    "other": {
+      "headline": "Your plan for your content",
+      "body": "Your guide shows how clips get your content onto more feeds, where to post first, and how you only pay for views that pass review."
+    }
+  },
+  "clipper": {
+    "music": {
+      "headline": "Your plan for clipping music",
+      "body": "Music campaigns pay for counted views on clips that use the track. Your guide covers how pay works, how to set up, and what makes a clip travel."
+    },
+    "sports": {
+      "headline": "Your plan for clipping sports",
+      "body": "Sports moments travel fast. Your guide covers how pay works, how to set up, and how to pick the right campaigns."
+    },
+    "gaming": {
+      "headline": "Your plan for clipping gaming",
+      "body": "Gaming clips live and die on the first second. Your guide covers how pay works, how to set up, and what makes a clip travel."
+    },
+    "podcasts_streams": {
+      "headline": "Your plan for clipping podcasts and streams",
+      "body": "Long shows are full of short moments worth posting. Your guide covers how pay works, how to set up, and what makes a clip travel."
+    },
+    "film_tv": {
+      "headline": "Your plan for clipping film and TV",
+      "body": "Scenes people already love are a strong start. Your guide covers how pay works, how to set up, and the rules that keep you paid."
+    },
+    "anything": {
+      "headline": "Your plan for getting started in clipping",
+      "body": "Your guide covers how pay works, how to set up, what makes a clip travel, and how to pick campaigns that fit you."
+    }
+  },
+  "fallback": {
+    "buyer": {
+      "headline": "Your plan for your content",
+      "body": "Your guide shows how clips get your content onto more feeds, where to post first, and how you only pay for views that pass review."
+    },
+    "clipper": {
+      "headline": "Your plan for getting started in clipping",
+      "body": "Your guide covers how pay works, how to set up, what makes a clip travel, and how to pick campaigns that fit you."
+    }
+  }
+}

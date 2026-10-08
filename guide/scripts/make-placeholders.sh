@@ -8,7 +8,7 @@ OUT="$(cd "$(dirname "$0")/.." && pwd)/public/media/placeholder"
 mkdir -p "$OUT"
 FONT=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
 W=540; H=960
-TAG="drawtext=fontfile=$FONT:text='PLACEHOLDER':fontcolor=white@0.55:fontsize=18:x=w-tw-20:y=24:box=1:boxcolor=black@0.35:boxborderw=8"
+TAG="drawtext=fontfile=$FONT:text='PLACEHOLDER':fontcolor=white@0.35:fontsize=44:x=(w-tw)/2:y=h*0.42"
 
 # Cut one vertical segment from a clip, scaled and cropped to 9:16.
 seg() { # in start dur out
@@ -30,7 +30,7 @@ concat() { # out label inputs...
   local list="$TMP/list.txt"; : > "$list"
   for f in "$@"; do echo "file '$f'" >> "$list"; done
   ffmpeg -v error -y -f concat -safe 0 -i "$list" -an \
-    -vf "$TAG,drawtext=fontfile=$FONT:text='$label':fontcolor=white@0.55:fontsize=16:x=20:y=28" \
+    -vf "$TAG,drawtext=fontfile=$FONT:text='$label':fontcolor=white@0.35:fontsize=20:x=(w-tw)/2:y=h*0.42+56" \
     -c:v libx264 -preset veryfast -crf 31 -pix_fmt yuv420p -movflags +faststart "$out"
   ffmpeg -v error -y -ss 0.5 -i "$out" -frames:v 1 -q:v 5 "${out%.mp4}.jpg"
 }

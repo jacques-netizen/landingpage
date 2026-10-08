@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "_note": "Only items with status approved may appear in the app, the PDF or emails. pending_owner items are held until the owner confirms them (build plan section 14, item 4).",
+  "items": {
+    "views_delivered": {
+      "status": "approved",
+      "headline": "1B+",
+      "text": "Over 1B views delivered across campaigns.",
+      "short": "1B+ views delivered"
+    },
+    "clients": {
+      "status": "approved",
+      "text": "Walmart, Nintendo, WYDE, Sony and DEF JAM have run campaigns through the network.",
+      "logos": [
+        { "name": "Walmart", "src": "/brand/logos/walmart.png" },
+        { "name": "Nintendo", "src": "/brand/logos/nintendo-t.png" },
+        { "name": "WYDE", "src": "/brand/logos/wyde.svg" },
+        { "name": "Sony", "src": "/brand/logos/sony.png" },
+        { "name": "DEF JAM", "src": "/brand/logos/defjam.png" }
+      ]
+    },
+    "walmart": {
+      "status": "approved",
+      "title": "Walmart beauty box",
+      "objective": "Drive attention to Walmart’s beauty box.",
+      "strategy": "Get creators to post about it.",
+      "figures": [
+        { "value": "3M", "label": "total views" },
+        { "value": "$2.30", "label": "effective CPM" }
+      ],
+      "text": "Walmart used clipping to drive attention to its beauty box: 3M total views at an effective CPM of $2.30."
+    },
+    "kojo_testimonial": {
+      "status": "approved",
+      "title": "Kojo Blak, artist",
+      "text": "Kojo Blak talks about working with Maison d’Élites.",
+      "url": "https://youtu.be/j4dHabFOMJw",
+      "poster": "/brand/proof/poster-kojo-blak.webp"
+    },
+    "paul_case": {
+      "status": "pending_owner",
+      "title": "Jake and Logan Paul",
+      "text": "Figures to be confirmed by the owner before use."
+    },
+    "wale_mannywellz": {
+      "status": "pending_owner",
+      "title": "Wale and Mannywellz",
+      "figures": [{ "value": "2.2M", "label": "views" }],
+      "text": "Wale and Mannywellz: 2.2M views."
+    },
+    "kojo_fantana": {
+      "status": "pending_owner",
+      "title": "Kojo Blak with Fantana",
+      "figures": [
+        { "value": "1.6M", "label": "views" },
+        { "value": "$1.30", "label": "CPM" }
+      ],
+      "text": "Kojo Blak with Fantana: 1.6M views at a $1.30 CPM."
+    }
+  },
+  "byAsset": {
+    "music_release": ["kojo_testimonial", "wale_mannywellz", "kojo_fantana", "views_delivered"],
+    "podcast_stream": ["paul_case", "views_delivered", "clients"],
+    "product_launch": ["walmart", "clients"],
+    "sports_gaming": ["paul_case", "views_delivered", "clients"],
+    "personal_brand": ["kojo_testimonial", "views_delivered"],
+    "other": ["views_delivered", "clients"],
+    "music": ["kojo_testimonial", "views_delivered"],
+    "sports": ["paul_case", "views_delivered"],
+    "gaming": ["paul_case", "views_delivered"],
+    "podcasts_streams": ["paul_case", "views_delivered"],
+    "film_tv": ["views_delivered", "clients"],
+    "anything": ["views_delivered", "clients"]
+  }
+}

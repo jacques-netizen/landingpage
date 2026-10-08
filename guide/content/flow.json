@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "variants": {
+    "full": [
+      { "id": "cold_open", "scene": "cold_open", "media": "cold_open" },
+      { "id": "q_role", "scene": "question", "question": "role" },
+      { "id": "chapter1", "scene": "film", "media": "chapter1", "chapter": "chapter1", "unlockAt": 0.85 },
+      { "id": "q_asset", "scene": "question", "question": "asset" },
+      { "id": "q_platforms", "scene": "question", "question": "platforms" },
+      { "id": "chapter2", "scene": "film", "media": "chapter2", "chapter": "chapter2", "unlockAt": 0.85 },
+      { "id": "q_goal", "scene": "question", "question": "goal" },
+      { "id": "q_timing", "scene": "question", "question": "timing" },
+      { "id": "q_budget", "scene": "question", "question": "budget", "paths": ["creator", "brand"] },
+      { "id": "q_deciding", "scene": "question", "question": "deciding", "paths": ["creator", "brand"] },
+      { "id": "chapter3", "scene": "steps", "chapter": "chapter3" },
+      { "id": "gate", "scene": "gate" },
+      { "id": "building", "scene": "building" },
+      { "id": "result", "scene": "result" }
+    ],
+    "plain": [
+      { "id": "plain_film", "scene": "film", "media": "chapter1", "chapter": "plain", "unlockAt": 0.85 },
+      { "id": "gate", "scene": "gate", "roleSelect": true },
+      { "id": "building", "scene": "building" },
+      { "id": "result", "scene": "result" }
+    ]
+  }
+}

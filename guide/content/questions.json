@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "paths": ["clipper", "creator", "brand"],
+  "questions": [
+    {
+      "id": "role",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["*"],
+          "prompt": "First, which one sounds like you?",
+          "options": [
+            { "value": "clipper", "label": "I want to earn by clipping" },
+            { "value": "creator", "label": "I’m a creator or artist" },
+            { "value": "brand", "label": "I run or represent a brand, label or talent" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asset",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "What do you want people to see?",
+          "options": [
+            { "value": "music_release", "label": "A music release" },
+            { "value": "podcast_stream", "label": "A podcast or stream" },
+            { "value": "product_launch", "label": "A product or launch" },
+            { "value": "sports_gaming", "label": "Sports or gaming content" },
+            { "value": "personal_brand", "label": "My personal brand" },
+            { "value": "other", "label": "Something else" }
+          ]
+        },
+        {
+          "paths": ["clipper"],
+          "prompt": "What do you want to clip?",
+          "options": [
+            { "value": "music", "label": "Music" },
+            { "value": "sports", "label": "Sports" },
+            { "value": "gaming", "label": "Gaming" },
+            { "value": "podcasts_streams", "label": "Podcasts and streams" },
+            { "value": "film_tv", "label": "Film and TV" },
+            { "value": "anything", "label": "Anything that pays" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "platforms",
+      "type": "multi",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "Where do you want to be seen?",
+          "help": "Pick as many as you like.",
+          "options": [
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "instagram_reels", "label": "Instagram Reels" },
+            { "value": "youtube_shorts", "label": "YouTube Shorts" },
+            { "value": "x", "label": "X" }
+          ]
+        },
+        {
+          "paths": ["clipper"],
+          "prompt": "Where do you post?",
+          "help": "Pick as many as you like.",
+          "options": [
+            { "value": "tiktok", "label": "TikTok" },
+            { "value": "instagram_reels", "label": "Instagram Reels" },
+            { "value": "youtube_shorts", "label": "YouTube Shorts" },
+            { "value": "x", "label": "X" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "goal",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "What should a campaign do for you?",
+          "options": [
+            { "value": "views", "label": "More views" },
+            { "value": "streams", "label": "More streams or listens" },
+            { "value": "sales", "label": "More sales or sign-ups" },
+            { "value": "awareness", "label": "More people knowing the name" }
+          ]
+        },
+        {
+          "paths": ["clipper"],
+          "prompt": "What do you want from clipping?",
+          "options": [
+            { "value": "side_income", "label": "Some money on the side" },
+            { "value": "full_time", "label": "A full-time income" },
+            { "value": "learn_editing", "label": "To learn editing" },
+            { "value": "own_audience", "label": "To grow my own audience" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "timing",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "When do you want to start?",
+          "options": [
+            { "value": "two_weeks", "label": "In the next 2 weeks" },
+            { "value": "this_month", "label": "This month" },
+            { "value": "next_quarter", "label": "Next quarter" },
+            { "value": "exploring", "label": "Just exploring for now" }
+          ]
+        },
+        {
+          "paths": ["clipper"],
+          "prompt": "How much have you clipped before?",
+          "options": [
+            { "value": "new", "label": "I’m new to clipping" },
+            { "value": "some", "label": "I have some experience" },
+            { "value": "paid", "label": "I already clip for pay" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "What budget do you have in mind?",
+          "options": [
+            { "value": "under_3k", "label": "Under $3K", "min": 0 },
+            { "value": "3k_10k", "label": "$3K to $10K", "min": 3000 },
+            { "value": "10k_50k", "label": "$10K to $50K", "min": 10000 },
+            { "value": "50k_plus", "label": "$50K or more", "min": 50000 },
+            { "value": "not_sure", "label": "Not sure yet", "amountField": true }
+          ],
+          "amountField": {
+            "label": "Roughly how much, in dollars?",
+            "help": "Optional. A rough number is fine.",
+            "placeholder": "5000",
+            "continue": "Continue",
+            "skip": "Skip"
+          }
+        }
+      ]
+    },
+    {
+      "id": "deciding",
+      "type": "single",
+      "variants": [
+        {
+          "paths": ["creator", "brand"],
+          "prompt": "Are you deciding for a company, label or team?",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "no", "label": "No, it’s just me" }
+          ]
+        }
+      ]
+    }
+  ]
+}
