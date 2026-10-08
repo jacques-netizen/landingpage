@@ -121,4 +121,26 @@ describe('crypto withdrawals', () => {
       requestWithdrawal(store, { creatorId: creator, amountCents: 5_000, method: 'crypto', destination: '' }),
     ).rejects.toMatchObject({ code: 'payout_not_verified' })
   })
+
+  it('works the same way for a bank transfer, with the bank reference as proof of payment', async () => {
+    const creator = await creatorWithBalance()
+    const bank = 'BANK|US|Chase Bank|123456789|Kymen Carter'
+    const w = await requestWithdrawal(store, {
+      creatorId: creator,
+      amountCents: 10_000,
+      method: 'bank_transfer',
+      destination: bank,
+    })
+    expect(await withdrawal(w.id)).toMatchObject({ method: 'bank_transfer', destination: bank })
+    await approveWithdrawal(store, { withdrawalId: w.id, actorId: null })
+    await markWithdrawalPaid(store, { withdrawalId: w.id, partnerReference: 'WIRE-2026-001', actorId: null })
+    expect(await withdrawal(w.id)).toMatchObject({ status: 'paid', partnerReference: 'WIRE-2026-001' })
+  })
+
+  it('needs bank details for a bank transfer', async () => {
+    const creator = await creatorWithBalance()
+    await expect(
+      requestWithdrawal(store, { creatorId: creator, amountCents: 5_000, method: 'bank_transfer', destination: null }),
+    ).rejects.toMatchObject({ code: 'payout_not_verified' })
+  })
 })

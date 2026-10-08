@@ -331,14 +331,14 @@ export async function requestWithdrawal(
   i: {
     creatorId: string
     amountCents: number
-    method: 'stripe_connect' | 'paypal' | 'crypto'
-    /** For crypto, the wallet as "ASSET|network|address", kept with the withdrawal. */
+    method: 'stripe_connect' | 'paypal' | 'crypto' | 'bank_transfer'
+    /** For crypto and bank transfers, where the money goes, kept with the withdrawal. */
     destination?: string | null
   },
 ) {
   return store.transaction(async (tx) => {
-    if (i.method === 'crypto' && !i.destination?.trim())
-      throw new MoneyError('payout_not_verified', 'Add the wallet to send it to first')
+    if ((i.method === 'crypto' || i.method === 'bank_transfer') && !i.destination?.trim())
+      throw new MoneyError('payout_not_verified', 'Add where to send it first')
     const creator = await tx.lockCreator(i.creatorId)
     if (!creator) throw new MoneyError('not_found', 'No such creator')
     if (creator.userStatus !== 'active')

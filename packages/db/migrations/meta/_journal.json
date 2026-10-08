@@ -127,6 +127,13 @@
       "when": 1791461420646,
       "tag": "0017_crypto_withdrawals",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791465439261,
+      "tag": "0018_bank_withdrawals",
+      "breakpoints": true
     }
   ]
 }
