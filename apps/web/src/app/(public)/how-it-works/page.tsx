@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ACCOUNT_LINKING } from '@/lib/features'
 import { PageHeading } from '@/components/public-page'
 import { publicNumbers } from '@/server/public-settings'
 
@@ -11,8 +12,10 @@ export default async function HowItWorksPage() {
   const n = await publicNumbers()
   const steps = [
     {
-      title: 'Sign up and link your accounts',
-      body: `Create an account. Link up to ${n.maxLinkedAccounts} TikTok, Instagram, YouTube or X accounts, with the official login where it is available or a short code in your profile bio.`,
+      title: ACCOUNT_LINKING ? 'Sign up and link your accounts' : 'Sign up',
+      body: ACCOUNT_LINKING
+        ? `Create an account. Link up to ${n.maxLinkedAccounts} TikTok, Instagram, YouTube or X accounts, with the official login where it is available or a short code in your profile bio.`
+        : 'Create an account with a username and password. You post on your own TikTok, Instagram, YouTube or X account; there is nothing to connect.',
     },
     {
       title: 'Pick a campaign',

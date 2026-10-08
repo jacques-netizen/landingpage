@@ -31,7 +31,7 @@ test('a creator sets a username, Discord name and picture, and Home greets them 
   await page.goto('/dashboard')
   await expect(page.getByRole('heading', { name: `Welcome back, ${name}` })).toBeVisible()
   await expect(page.locator('section[aria-label="Profile"] img[src^="/files/"]')).toBeVisible()
-  await expect(page.getByText('Connect an account to get started')).toBeVisible()
+  await expect(page.getByText('Join a campaign to get started')).toBeVisible()
 })
 
 test('the Support page tells creators to open a Discord ticket', async ({ page }) => {

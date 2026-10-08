@@ -24,6 +24,8 @@ import {
   checkPublic,
   checkTiming,
   type CheckResult,
+  authorForReview,
+  accountRulesForReview,
 } from './checks'
 import { mediaHashFromUrl } from './media-hash'
 import { nextCheckAt } from './schedule'
@@ -46,6 +48,11 @@ export type SubmitInput = {
   /** The account the creator says they posted from. The post must come from it. */
   linkedAccountId?: string | null
   note?: string | null
+  /**
+   * False while account linking is switched off: a post that is not from a linked account goes to a
+   * reviewer instead of being rejected. Defaults to true.
+   */
+  requireLinkedAccount?: boolean
 }
 export type SubmitDeps = {
   router: ProviderRouter
@@ -114,7 +121,9 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
   }
 
   // 3.
-  const author = checkAuthor(accounts, platform, post, parsed.handle)
+  let author = checkAuthor(accounts, platform, post, parsed.handle)
+  if (input.requireLinkedAccount === false && author.result.status === 'fail')
+    author = { result: authorForReview(), account: null }
   checks.push(author.result)
   const account = author.account
 
@@ -141,7 +150,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
 
   const s = await getSettings(db)
   const failedAt = () => checks.find((r) => r.status === 'fail')
-  if (author.result.status === 'pass') {
+  if (author.result.status !== 'fail') {
     checks.push(checkNotDuplicate(!!existing && !retry))
     if (checks.at(-1)!.status === 'fail') return stop()
     const [{ n }] = (await db
@@ -150,7 +159,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
       .where(
         and(
           eq(submissions.campaignId, c.id),
-          eq(submissions.linkedAccountId, account!.id),
+          account ? eq(submissions.linkedAccountId, account.id) : eq(submissions.creatorId, input.creatorId),
           notInArray(submissions.state, NOT_COUNTED),
         ),
       )) as [{ n: number }]
@@ -158,7 +167,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
       () => checkPostLimit(rules, n),
       () => checkPublic(post),
       () => checkTiming(rules, post, s.max_post_age_hours, now),
-      () => checkAccountRules(rules, account!, now),
+      () => (account ? checkAccountRules(rules, account, now) : accountRulesForReview(rules)),
       () => checkDuration(rules, post),
       () => checkCaption(rules, post),
     ]) {

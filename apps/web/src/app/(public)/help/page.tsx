@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { brand } from '@mde/config'
+import { ACCOUNT_LINKING } from '@/lib/features'
 import { PageHeading } from '@/components/public-page'
 import { publicNumbers } from '@/server/public-settings'
 import { HelpSearch, type Question } from './help-search'
@@ -22,11 +23,15 @@ export default async function HelpPage() {
       q: 'Does it cost anything to join?',
       a: 'No. Joining a campaign and posting are free. The only creator fee is the withdrawal fee on the fees page.',
     },
-    {
-      topic: 'Accounts',
-      q: 'How do I link an account?',
-      a: `Use the official login where it is available, or place the short code we give you in your profile bio and press Verify. You can link up to ${n.maxLinkedAccounts} accounts.`,
-    },
+    ...(ACCOUNT_LINKING
+      ? [
+          {
+            topic: 'Accounts',
+            q: 'How do I link an account?',
+            a: `Use the official login where it is available, or place the short code we give you in your profile bio and press Verify. You can link up to ${n.maxLinkedAccounts} accounts.`,
+          },
+        ]
+      : []),
     {
       topic: 'Posting',
       q: 'How soon after posting do I submit the link?',

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import postgres from 'postgres'
-import { readyCreator, scriptPost } from './helpers'
+import { readyCreator, scriptPost, signUpNewCreator } from './helpers'
 
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
   max: 1,
@@ -46,4 +46,20 @@ test('a link that is not a post is turned away with nothing saved', async ({ pag
   const [row] =
     await sql`select count(*)::int as n from submissions where campaign_id = ${campaignId} and post_url = 'https://www.tiktok.com/@someone'`
   expect(row!.n).toBe(0)
+})
+
+test('with account linking off, a creator submits without linking and a reviewer checks the post', async ({ page }) => {
+  await signUpNewCreator(page)
+  const [c] = await sql`select id from campaigns where title = 'Sample music'`
+  await page.goto(`/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Join campaign' }).click()
+  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
+  await expect(page.getByText('Account you posted from')).toHaveCount(0)
+  await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Accounts' })).toHaveCount(0)
+  const link = scriptPost(`unlinked${Date.now() % 1e6}`, 'New sound #mde')
+  await page.getByLabel('Link to your post').fill(link)
+  await page.getByRole('button', { name: 'Submit post' }).click()
+  await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
+  const [s] = await sql`select state, linked_account_id from submissions where post_url = ${link}`
+  expect(s).toMatchObject({ state: 'needs_review', linked_account_id: null })
 })

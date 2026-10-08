@@ -1,6 +1,7 @@
 'use server'
 
 import { CampaignError, joinCampaign } from '@mde/campaigns'
+import { ACCOUNT_LINKING } from '@/lib/features'
 import { db } from '@mde/db'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -48,13 +49,13 @@ export async function submitAction(campaignId: string, _prev: SubmitState, form:
     linkedAccountId: String(form.get('linkedAccountId') ?? ''),
   }
   if (!values.postUrl.trim()) return { error: 'Paste the link to your post.', values }
-  if (!values.linkedAccountId) return { error: 'Choose the account you posted from.', values }
+  if (ACCOUNT_LINKING && !values.linkedAccountId) return { error: 'Choose the account you posted from.', values }
   if (!(await rateLimit(`submit:${viewer.id}`, 30, 3600)))
     return { error: 'Too many submissions in an hour. Wait a little and try again.', values }
 
   const result = await submitPost(
     db(),
-    { creatorId: viewer.id, campaignId, ...values },
+    { creatorId: viewer.id, campaignId, ...values, requireLinkedAccount: ACCOUNT_LINKING },
     { router: providers(), tokenFor },
   )
   const messages = await reasonMessages()

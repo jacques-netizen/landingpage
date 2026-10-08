@@ -1,4 +1,5 @@
 import { signOutAction } from '@/app/(auth)/actions'
+import { ACCOUNT_LINKING } from '@/lib/features'
 
 // The creator app's one menu (owner request and testing report, 2026-10-07): the same items, in the
 // same place, on every app screen, drawn in the campaigns screen's sidebar style.
@@ -27,7 +28,7 @@ export function AppMenu({ active, signedIn }: { active: AppSection | null; signe
   const mine: Item[] = signedIn
     ? [
         ['submissions', 'Submissions', '/submissions'],
-        ['accounts', 'Accounts', '/accounts'],
+        ...(ACCOUNT_LINKING ? ([['accounts', 'Accounts', '/accounts']] as Item[]) : []),
         ['notifications', 'Notifications', '/notifications'],
       ]
     : []

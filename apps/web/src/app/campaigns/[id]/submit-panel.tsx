@@ -1,6 +1,7 @@
 'use client'
 
 import { Button, Field, Input, Select, Textarea } from '@mde/ui'
+import { ACCOUNT_LINKING } from '@/lib/features'
 import { useActionState } from 'react'
 import { submitAction, type SubmitCheck, type SubmitState } from './actions'
 
@@ -73,7 +74,7 @@ export function SubmitPanel({
   theme: 'dark' | 'glass'
 }) {
   const [state, action, pending] = useActionState<SubmitState, FormData>(submitAction.bind(null, campaignId), {})
-  if (!accounts.length)
+  if (ACCOUNT_LINKING && !accounts.length)
     return (
       <div className="flex flex-col gap-3">
         <p className="m-0 text-[15px] font-semibold">You have joined this campaign.</p>
@@ -92,20 +93,28 @@ export function SubmitPanel({
   return (
     <div className="flex flex-col gap-4">
       <form action={action} className="flex flex-col gap-4">
-        <Field label="Account you posted from" tone="app">
-          {(p) => (
-            <Select
-              tone="app"
-              theme={theme}
-              id={p.id}
-              name="linkedAccountId"
-              aria-describedby={p.describedBy}
-              defaultValue={state.values?.linkedAccountId || (accounts.length === 1 ? accounts[0]!.id : undefined)}
-              placeholder="Choose an account"
-              options={accounts.map((a) => ({ value: a.id, label: a.label }))}
-            />
-          )}
-        </Field>
+        {!ACCOUNT_LINKING ? <p className="m-0 text-[15px] font-semibold">You have joined this campaign.</p> : null}
+        {!ACCOUNT_LINKING ? (
+          <p className="m-0 text-[13px] text-[var(--t-muted)]">
+            Paste the link to a post on your own account. A reviewer checks it before it earns.
+          </p>
+        ) : null}
+        {ACCOUNT_LINKING ? (
+          <Field label="Account you posted from" tone="app">
+            {(p) => (
+              <Select
+                tone="app"
+                theme={theme}
+                id={p.id}
+                name="linkedAccountId"
+                aria-describedby={p.describedBy}
+                defaultValue={state.values?.linkedAccountId || (accounts.length === 1 ? accounts[0]!.id : undefined)}
+                placeholder="Choose an account"
+                options={accounts.map((a) => ({ value: a.id, label: a.label }))}
+              />
+            )}
+          </Field>
+        ) : null}
         <Field label="Link to your post" tone="app" helper="Copy it from the post itself.">
           {(p) => (
             <Input

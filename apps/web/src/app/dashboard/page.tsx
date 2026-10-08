@@ -7,6 +7,7 @@ import type { ReactNode } from 'react'
 import { AppFrame } from '@/components/app-frame'
 import { panel, StatusDot } from '@/components/app-ui'
 import { AvatarImage } from '@/components/avatar-image'
+import { ACCOUNT_LINKING } from '@/lib/features'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
 import { rating } from '@/designed/wallet-model'
 import { creatorHome, type Split } from '@/server/creator-home'
@@ -109,7 +110,22 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {me.accounts.length === 0 ? (
+          {!ACCOUNT_LINKING ? (
+            <a
+              href="/campaigns"
+              className="mt-5 flex items-center justify-between gap-4 rounded-[16px] border border-solid border-[rgba(216,197,143,0.45)] bg-[rgba(216,197,143,0.1)] px-5 py-4 text-[var(--t-text)] no-underline"
+            >
+              <span>
+                <span className="block text-[16px] font-bold">Join a campaign to get started</span>
+                <span className="mt-1 block text-[13px] text-[var(--t-muted)]">
+                  Post on your own account and submit the link to start earning
+                </span>
+              </span>
+              <span aria-hidden className="text-[20px] text-[var(--t-accent-ink)]">
+                →
+              </span>
+            </a>
+          ) : me.accounts.length === 0 ? (
             <a
               href="/accounts"
               className="mt-5 flex items-center justify-between gap-4 rounded-[16px] border border-solid border-[rgba(216,197,143,0.45)] bg-[rgba(216,197,143,0.1)] px-5 py-4 text-[var(--t-text)] no-underline"
@@ -144,17 +160,21 @@ export default async function DashboardPage() {
           )}
 
           <div className="mt-5 grid grid-cols-3 gap-3 max-sm:grid-cols-1">
-            <Tile label="Followers">{count(me.followers)}</Tile>
-            <Tile
-              label="Pages"
-              action={
-                <a href="/accounts" aria-label="Link an account" className="text-[var(--t-accent-ink)] no-underline">
-                  ⊕
-                </a>
-              }
-            >
-              {count(me.accounts.length)}
-            </Tile>
+            {ACCOUNT_LINKING ? <Tile label="Followers">{count(me.followers)}</Tile> : null}
+            {!ACCOUNT_LINKING ? <Tile label="Approved posts">{count(me.posts.approved)}</Tile> : null}
+            {!ACCOUNT_LINKING ? <Tile label="In review">{count(me.posts.pending)}</Tile> : null}
+            {ACCOUNT_LINKING ? (
+              <Tile
+                label="Pages"
+                action={
+                  <a href="/accounts" aria-label="Link an account" className="text-[var(--t-accent-ink)] no-underline">
+                    ⊕
+                  </a>
+                }
+              >
+                {count(me.accounts.length)}
+              </Tile>
+            ) : null}
             <Tile label="Campaigns">{count(me.campaignsJoined)}</Tile>
           </div>
         </section>

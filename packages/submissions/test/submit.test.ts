@@ -273,6 +273,75 @@ describe('submitting a post', () => {
   })
 })
 
+describe('while account linking is switched off', () => {
+  async function joinedWithoutAccount(campaignId: string) {
+    const id = await user('creator')
+    await joinCampaign(db, id, campaignId)
+    return id
+  }
+  const off = { requireLinkedAccount: false }
+
+  it('sends a post from an unlinked creator to a reviewer instead of rejecting it', async () => {
+    const c = await liveCampaign()
+    const me = await joinedWithoutAccount(c.id)
+    const p = post()
+    script(p.pid, { ...p.data, authorPlatformUserId: 'someone-unknown' })
+    const r = await submitPost(db, { creatorId: me, campaignId: c.id, postUrl: p.url, ...off }, deps())
+    expect(r.outcome).toBe('needs_review')
+    expect(r.checks.find((x) => x.check === 3)).toMatchObject({ status: 'review' })
+    expect(r.checks.some((x) => x.status === 'fail')).toBe(false)
+    const [s] = await db.select().from(tables.submissions).where(eq(tables.submissions.id, r.submissionId!))
+    expect(s).toMatchObject({ state: 'needs_review', linkedAccountId: null })
+  })
+
+  it('still runs the other checks: a missing hashtag is rejected', async () => {
+    const c = await liveCampaign()
+    const me = await joinedWithoutAccount(c.id)
+    const p = post({ caption: 'no tag here' })
+    script(p.pid, p.data)
+    const r = await submitPost(db, { creatorId: me, campaignId: c.id, postUrl: p.url, ...off }, deps())
+    expect(r.outcome).toBe('rejected_auto')
+    expect(r.checks.find((x) => x.status === 'fail')?.reason).toBe('missing_hashtag')
+  })
+
+  it('never auto-approves, even for clean creators', async () => {
+    await updateSetting(db, staffId, 'auto_approve_clean_creators', true)
+    try {
+      const c = await liveCampaign()
+      const me = await joinedWithoutAccount(c.id)
+      const p = post()
+      script(p.pid, p.data)
+      const r = await submitPost(db, { creatorId: me, campaignId: c.id, postUrl: p.url, ...off }, deps())
+      expect(r.outcome).toBe('needs_review')
+    } finally {
+      await updateSetting(db, staffId, 'auto_approve_clean_creators', false)
+    }
+  })
+
+  it('counts the post limit per creator', async () => {
+    const c = await liveCampaign({ maxPostsPerAccount: '1' })
+    const me = await joinedWithoutAccount(c.id)
+    const a = post()
+    script(a.pid, a.data)
+    expect((await submitPost(db, { creatorId: me, campaignId: c.id, postUrl: a.url, ...off }, deps())).outcome).toBe(
+      'needs_review',
+    )
+    const b = post()
+    script(b.pid, b.data)
+    const r = await submitPost(db, { creatorId: me, campaignId: c.id, postUrl: b.url, ...off }, deps())
+    expect(r.checks.find((x) => x.status === 'fail')?.reason).toBe('post_limit_reached')
+  })
+
+  it('uses a verified account when the creator has one', async () => {
+    const c = await liveCampaign()
+    const me = await creatorIn(c.id)
+    const p = post()
+    script(p.pid, { ...p.data, authorPlatformUserId: me.account.platformUserId })
+    const r = await submitPost(db, { creatorId: me.id, campaignId: c.id, postUrl: p.url, ...off }, deps())
+    expect(r.checks.find((x) => x.check === 3)?.status).toBe('pass')
+  })
+})
+
 describe('the account the creator picks', () => {
   it('must be the one the post came from', async () => {
     const c = await liveCampaign()

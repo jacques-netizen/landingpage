@@ -87,6 +87,25 @@ export function checkAuthor(
   return { result: pass(3, label, `@${account.handle}`), account }
 }
 
+/**
+ * 3 and 8 while account linking is switched off (owner decision, 2026-10-08): nobody links an account, so
+ * a reviewer checks that the post is the creator's own, and that the account meets any follower or
+ * account age minimum. Never a rejection on its own.
+ */
+export function authorForReview(): CheckResult {
+  return review(
+    3,
+    'Posted on a linked account',
+    'Accounts are not linked for now. A reviewer checks this post is yours.',
+  )
+}
+export function accountRulesForReview(c: CampaignRules): CheckResult {
+  const label = 'Account meets the rules'
+  if (c.minFollowers !== null || c.minAccountAgeDays !== null)
+    return review(8, label, 'A reviewer checks the account meets the follower and age rules.')
+  return pass(8, label)
+}
+
 /** 4. The same post is not already in this campaign. */
 export function checkNotDuplicate(alreadySubmitted: boolean): CheckResult {
   const label = 'Not already in this campaign'
