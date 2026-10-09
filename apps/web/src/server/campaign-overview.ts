@@ -6,7 +6,7 @@ import { sql } from 'drizzle-orm'
 export const BUCKETS = {
   approved: { label: 'Approved', states: ['approved', 'earning', 'final', 'paid_out'] },
   pending: { label: 'Pending', states: ['checking', 'needs_review', 'needs_info', 'flagged', 'appealed'] },
-  rejected: { label: 'Rejected', states: ['rejected', 'rejected_auto', 'removed'] },
+  rejected: { label: 'Denied', states: ['rejected', 'rejected_auto', 'removed'] },
 } as const
 export type Bucket = keyof typeof BUCKETS
 
@@ -16,8 +16,10 @@ const inList = (states: readonly string[]) =>
     sql`, `,
   )
 
-export async function campaignOverview(campaignId: string, bucket: Bucket) {
+export async function campaignOverview(campaignId: string, bucket: Bucket, q?: string) {
   const d = db()
+  // Search by creator, account handle or post link (testing report, 2026-10-08).
+  const term = q?.trim() ? `%${q.trim()}%` : null
   const [[totals], counts, posts] = await Promise.all([
     d.execute<{ views: string; counted: string; earned: string; creators: string }>(sql`
       select coalesce(sum(latest_views - baseline_views) filter (where state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
@@ -42,11 +44,29 @@ export async function campaignOverview(campaignId: string, bucket: Bucket) {
       email: string
       name: string | null
       creator_id: string
+      handle: string | null
+      likes: string | null
+      comments: string | null
+      shares: string | null
+      checked_at: Date | null
     }>(sql`
       select s.id, s.state, s.platform, s.post_url, s.latest_views, s.baseline_views, s.counted_views, s.earned_cents,
-        s.submitted_at, s.reason_code, u.email, coalesce(u.username, u.display_name) as name, s.creator_id
+        s.submitted_at, s.reason_code, u.email, coalesce(u.username, u.display_name) as name, s.creator_id,
+        a.handle, v.likes, v.comments, v.shares, v.taken_at as checked_at
       from submissions s join users u on u.id = s.creator_id
+      left join linked_accounts a on a.id = s.linked_account_id
+      -- Likes, comments and shares from the post's latest check (it runs every 2 hours).
+      left join lateral (
+        select likes, comments, shares, taken_at from view_snapshots
+        where submission_id = s.id order by taken_at desc limit 1
+      ) v on true
       where s.campaign_id = ${campaignId} and s.state in (${inList(BUCKETS[bucket].states)})
+        ${
+          term
+            ? sql`and (u.email ilike ${term} or u.username ilike ${term} or u.display_name ilike ${term}
+                or a.handle ilike ${term} or s.post_url ilike ${term})`
+            : sql``
+        }
       order by ${bucket === 'approved' ? sql`s.counted_views desc` : sql`s.submitted_at desc`}
       limit 500`),
   ])
@@ -71,6 +91,11 @@ export async function campaignOverview(campaignId: string, bucket: Bucket) {
       reasonCode: p.reason_code,
       creator: p.name ?? p.email,
       creatorId: p.creator_id,
+      handle: p.handle,
+      likes: p.likes === null ? null : Number(p.likes),
+      comments: p.comments === null ? null : Number(p.comments),
+      shares: p.shares === null ? null : Number(p.shares),
+      checkedAt: p.checked_at ? new Date(p.checked_at) : null,
     })),
   }
 }

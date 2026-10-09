@@ -138,7 +138,7 @@ test('the campaign overview shows the numbers and every approved, pending and re
 
   await signInAs(page, 'reviewer@seed.invalid')
   await page.goto(`/admin/campaigns/${c!.id}`)
-  for (const k of ['Views on approved posts', 'Counted views', 'Approved posts', 'Pending posts', 'Rejected posts'])
+  for (const k of ['Views on approved posts', 'Counted views', 'Approved posts', 'Pending posts', 'Denied posts'])
     await expect(page.getByText(k, { exact: true })).toBeVisible()
   for (const h of ['Description', 'Campaign rules']) await expect(page.getByRole('heading', { name: h })).toBeVisible()
   const campaignTabs = page.getByRole('navigation', { name: 'Campaign', exact: true })
@@ -154,6 +154,6 @@ test('the campaign overview shows the numbers and every approved, pending and re
   await tabs.getByRole('link', { name: /^Pending/ }).click()
   await expect(postLink(1)).toBeVisible()
   await expect(postLink(0)).toHaveCount(0)
-  await tabs.getByRole('link', { name: /^Rejected/ }).click()
+  await tabs.getByRole('link', { name: /^Denied/ }).click()
   await expect(postLink(2)).toBeVisible()
 })

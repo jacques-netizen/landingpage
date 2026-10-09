@@ -14,6 +14,7 @@ import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
 import { Notice } from '../../_components/ui'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
+import { PostActions } from './post-actions'
 import { CampaignBuilder } from '../builder'
 import { CampaignActions } from '../campaign-actions'
 import { valuesFrom } from '../values'
@@ -59,10 +60,26 @@ export default async function CampaignAdminPage({
   const tab: Tab = TABS.includes(tabParam as Tab) ? (tabParam as Tab) : open ? 'edit' : 'overview'
   const bucket: Bucket = show === 'pending' || show === 'rejected' ? show : 'approved'
   const [o, creators, pages] = await Promise.all([
-    campaignOverview(id, bucket),
+    campaignOverview(id, bucket, tab === 'submissions' ? q : undefined),
     tab === 'creators' ? campaignCreators(id, q) : Promise.resolve([]),
     tab === 'pages' ? campaignPages(id) : Promise.resolve([]),
   ])
+  const reasons =
+    tab === 'submissions'
+      ? await d
+          .select({ code: tables.reasonCodes.code, label: tables.reasonCodes.label })
+          .from(tables.reasonCodes)
+          .orderBy(asc(tables.reasonCodes.label))
+      : []
+  const canDelete = hasAccess(viewer, 'admin')
+  const now = Date.now()
+  // How long ago a post's stats were fetched, e.g. "13m ago".
+  const ago = (t: Date | null) => {
+    if (!t) return 'Not yet'
+    const m = Math.max(0, Math.round((now - t.getTime()) / 60_000))
+    return m < 60 ? `${m}m ago` : m < 48 * 60 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`
+  }
+  const stat = (v: number | null) => (v === null ? '-' : n(v))
   const usedPercent = c.budgetCents > 0 ? Math.min(100, Math.round((figures.paidCents / c.budgetCents) * 100)) : 0
   const cpm = o.countedViews > 0 ? Math.round((o.earnedCents * 1000) / o.countedViews) : null
   const base = `/admin/campaigns/${c.id}`
@@ -232,7 +249,7 @@ export default async function CampaignAdminPage({
                 ['Cost per 1,000 counted views', cpm === null ? 'None yet' : formatDollars(cpm)],
                 ['Approved posts', n(o.counts.approved)],
                 ['Pending posts', n(o.counts.pending)],
-                ['Rejected posts', n(o.counts.rejected)],
+                ['Denied posts', n(o.counts.rejected)],
                 ['Budget earned', `${usedPercent}%`],
               ].map(([k, v]) => (
                 <div key={k} className="rounded-[12px] border border-solid border-line bg-panel px-4 py-3">
@@ -449,67 +466,124 @@ export default async function CampaignAdminPage({
             )}
           </Card>
         ) : tab === 'submissions' ? (
-          <Card title="Submissions">
-            <nav aria-label="Posts by outcome" className="mb-4 flex gap-2">
-              {(Object.keys(BUCKETS) as Bucket[]).map((b) => (
-                <a
-                  key={b}
-                  href={`${base}?tab=submissions&show=${b}`}
-                  aria-current={bucket === b ? 'true' : undefined}
-                  className={`flex items-center gap-3 rounded-pill border border-solid px-4 py-[6px] text-[13px] no-underline ${
-                    bucket === b
-                      ? 'border-gold-soft bg-[rgba(216,197,143,0.12)] text-gold-soft'
-                      : 'border-line text-muted-2'
-                  }`}
+          <Card title="Submissions" note="Views, likes and comments refresh with each check, every 2 hours.">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <form action={base} className="flex gap-2">
+                <input type="hidden" name="tab" value="submissions" />
+                <input type="hidden" name="show" value={bucket} />
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={q ?? ''}
+                  aria-label="Search posts"
+                  placeholder="Search creator, account or link"
+                  className="h-9 w-[260px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+                />
+                <button
+                  type="submit"
+                  className="h-9 cursor-pointer rounded-[10px] border border-solid border-line bg-field-2 px-4 text-[13px] text-ink"
                 >
-                  {BUCKETS[b].label}
-                  <span className="tabular-nums">{o.counts[b]}</span>
-                </a>
-              ))}
-            </nav>
+                  Search
+                </button>
+              </form>
+              <nav aria-label="Posts by outcome" className="flex gap-2">
+                {(Object.keys(BUCKETS) as Bucket[]).map((b) => (
+                  <a
+                    key={b}
+                    href={`${base}?tab=submissions&show=${b}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
+                    aria-current={bucket === b ? 'true' : undefined}
+                    className={`flex items-center gap-3 rounded-pill border border-solid px-4 py-[6px] text-[13px] no-underline ${
+                      bucket === b
+                        ? 'border-gold-soft bg-[rgba(216,197,143,0.12)] text-gold-soft'
+                        : 'border-line text-muted-2'
+                    }`}
+                  >
+                    {BUCKETS[b].label}
+                    <span className="tabular-nums">{o.counts[b]}</span>
+                  </a>
+                ))}
+              </nav>
+            </div>
             {o.posts.length === 0 ? (
-              <EmptyState body={`No ${BUCKETS[bucket].label.toLowerCase()} posts yet.`} />
+              <EmptyState
+                body={
+                  q
+                    ? `No ${BUCKETS[bucket].label.toLowerCase()} posts match "${q}".`
+                    : `No ${BUCKETS[bucket].label.toLowerCase()} posts yet.`
+                }
+              />
             ) : (
               <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
                 <table className="w-full border-collapse text-[13px]">
                   <caption className="sr-only">{BUCKETS[bucket].label} posts</caption>
                   <thead className="bg-field">
                     <tr>
-                      <Th>Creator</Th>
+                      <Th>Actions</Th>
                       <Th>Post</Th>
-                      <Th>State</Th>
+                      <Th>Submitted by</Th>
+                      <Th>Status</Th>
+                      <Th>Fetch</Th>
                       <Th right>Views</Th>
-                      <Th right>Counted</Th>
+                      <Th>Engagement</Th>
                       <Th right>Earned</Th>
                       <Th right>Submitted</Th>
                     </tr>
                   </thead>
                   <tbody>
-                    {o.posts.map((p) => (
-                      <tr key={p.id} className="border-0 border-t border-solid border-line">
-                        <td className="px-3 py-3">
-                          <a href={`/admin/creators/${p.creatorId}`} className="text-ink">
-                            {p.creator}
-                          </a>
-                        </td>
-                        <td className="px-3 py-3">
-                          <a href={p.postUrl} target="_blank" rel="noreferrer" className="text-gold-soft">
-                            {PLATFORM_LABELS[p.platform as keyof typeof PLATFORM_LABELS] ?? p.platform} post
-                          </a>
-                          <span className="text-muted"> · </span>
-                          <a href={`/admin/submissions/${p.id}`} className="text-muted-2">
-                            Details
-                          </a>
-                        </td>
-                        <td className="px-3 py-3">{CREATOR_STATE[p.state]?.label ?? p.state}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{n(p.views)}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{n(p.countedViews)}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(p.earnedCents)}</td>
-                        <td className="px-3 py-3 text-right whitespace-nowrap text-muted">
-                          {p.submittedAt.toISOString().slice(0, 10)}
-                        </td>
-                      </tr>
-                    ))}
+                    {o.posts.map((p) => {
+                      const engaged = (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0)
+                      return (
+                        <tr key={p.id} className="border-0 border-t border-solid border-line align-top">
+                          <td className="px-3 py-3">
+                            <PostActions
+                              campaignId={c.id}
+                              id={p.id}
+                              state={p.state}
+                              reasons={reasons}
+                              canDelete={canDelete}
+                            />
+                          </td>
+                          <td className="px-3 py-3">
+                            <a href={p.postUrl} target="_blank" rel="noreferrer" className="text-gold-soft">
+                              {p.handle
+                                ? `@${p.handle}`
+                                : `${PLATFORM_LABELS[p.platform as keyof typeof PLATFORM_LABELS] ?? p.platform} post`}
+                            </a>
+                            <div className="mt-1 flex items-center gap-2">
+                              <PlatformTag platform={p.platform} small />
+                              <a href={`/admin/submissions/${p.id}`} className="text-[12px] text-muted-2">
+                                Details
+                              </a>
+                            </div>
+                          </td>
+                          <td className="px-3 py-3">
+                            <a href={`/admin/creators/${p.creatorId}`} className="text-ink">
+                              {p.creator}
+                            </a>
+                          </td>
+                          <td className="px-3 py-3">{CREATOR_STATE[p.state]?.label ?? p.state}</td>
+                          <td className="px-3 py-3 whitespace-nowrap text-muted-2">{ago(p.checkedAt)}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">{n(p.views)}</td>
+                          <td className="px-3 py-3 whitespace-nowrap tabular-nums">
+                            {p.likes === null && p.comments === null ? (
+                              <span className="text-muted">No check yet</span>
+                            ) : (
+                              <>
+                                <span>{stat(p.likes)} likes</span>
+                                <span className="ml-3">{stat(p.comments)} comments</span>
+                                <span className="ml-3 text-muted" title="Likes, comments and shares per view">
+                                  {p.views > 0 ? `${((engaged / p.views) * 100).toFixed(2)}%` : ''}
+                                </span>
+                              </>
+                            )}
+                          </td>
+                          <td className="px-3 py-3 text-right tabular-nums">{formatDollars(p.earnedCents)}</td>
+                          <td className="px-3 py-3 text-right whitespace-nowrap text-muted">
+                            {p.submittedAt.toISOString().slice(0, 10)}
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
