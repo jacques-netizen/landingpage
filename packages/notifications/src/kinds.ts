@@ -6,6 +6,7 @@ export const EMAIL_SUBJECT: Record<NotificationKind, string> = {
   submission_approved: 'Your post was approved',
   submission_rejected: 'An update on your post',
   submission_removed: 'An update on your post',
+  submission_pending: 'An update on your post',
   needs_info: 'A reviewer has a question about your post',
   earnings_released: 'Earnings released to your wallet',
   withdrawal_status: 'An update on your withdrawal',

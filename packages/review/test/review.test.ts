@@ -7,12 +7,14 @@ import {
   addBusinessDays,
   approve,
   clearFlag,
+  deleteSubmission,
   expireStrikes,
   issueWarning,
   openAppeal,
   reject,
   requestInfo,
   resolveAppeal,
+  setPending,
   setStaffNotes,
   setSuspended,
 } from '../src'
@@ -131,6 +133,63 @@ describe('reviewer decisions', () => {
       .where(and(eq(tables.fraudFlags.submissionId, t.id), eq(tables.fraudFlags.kind, 'view_jump')))
     expect(flags[0]!.status).toBe('confirmed')
     expect(await activeStrikes(db, t.creator)).toBe(1)
+  })
+})
+
+// Submission management inside a campaign (testing report, 2026-10-08): staff can put a decided post
+// back to pending, or delete it. Money moves only through the engine, exactly as for a rejection.
+describe('set to pending and delete', () => {
+  it('putting an approved post back to pending reverses its earnings and returns it to review', async () => {
+    const t = await postInReview()
+    await approve(db, t.staffId, t.id)
+    t.views(10_500)
+    await t.check(2)
+    expect((await t.sub()).earnedCents).toBe(2_000) // 10,000 counted at $2.00 per 1,000
+    const budgetBefore = await t.balance('campaign_budget', t.campaignId)
+    const r = await setPending(db, t.staffId, t.id)
+    expect(r).toEqual({ previousState: 'earning', reversedCents: 2_000 })
+    expect(await t.sub()).toMatchObject({ state: 'needs_review', earnedCents: 0, countedViews: 0, reasonCode: null })
+    expect(await t.balance('creator_pending', t.creator)).toBe(0)
+    expect(await t.balance('campaign_budget', t.campaignId)).toBe(budgetBefore + 2_000)
+    expect((await audits(t.id)).map((a) => a.action)).toContain('submission.set_pending')
+    expect((await notes(t.creator))[0]).toMatchObject({ kind: 'submission_pending', title: 'Your post is back in review' })
+    // Approving again pays it from the same views, once.
+    const again = await approve(db, t.staffId, t.id)
+    expect(again.deltaCents).toBe(2_000)
+    expect(await t.balance('creator_pending', t.creator)).toBe(2_000)
+  })
+
+  it('puts a denied post back to pending, and refuses posts already pending or paid out', async () => {
+    const t = await postInReview()
+    await expect(setPending(db, t.staffId, t.id)).rejects.toMatchObject({ code: 'wrong_state' })
+    await reject(db, t.staffId, t.id, { reasonCode: 'not_original' })
+    await setPending(db, t.staffId, t.id)
+    expect(await t.sub()).toMatchObject({ state: 'needs_review', reasonCode: null, reasonNote: null })
+    await db.update(tables.submissions).set({ state: 'paid_out' }).where(eq(tables.submissions.id, t.id))
+    await expect(setPending(db, t.staffId, t.id)).rejects.toMatchObject({ code: 'paid_out' })
+  })
+
+  it('deleting a post reverses its earnings, removes it and keeps the audit record', async () => {
+    const t = await postInReview()
+    await approve(db, t.staffId, t.id)
+    t.views(5_500)
+    await t.check(2)
+    expect((await t.sub()).earnedCents).toBe(1_000)
+    const budgetBefore = await t.balance('campaign_budget', t.campaignId)
+    const r = await deleteSubmission(db, t.staffId, t.id)
+    expect(r).toEqual({ reversedCents: 1_000 })
+    expect(await db.select().from(tables.submissions).where(eq(tables.submissions.id, t.id))).toEqual([])
+    expect(await t.balance('creator_pending', t.creator)).toBe(0)
+    expect(await t.balance('campaign_budget', t.campaignId)).toBe(budgetBefore + 1_000)
+    const [a] = (await audits(t.id)).filter((x) => x.action === 'submission.delete')
+    expect(a).toMatchObject({ actorId: t.staffId, before: expect.objectContaining({ state: 'earning' }) })
+    await expect(deleteSubmission(db, t.staffId, t.id)).rejects.toMatchObject({ code: 'not_found' })
+  })
+
+  it('never deletes a paid out post', async () => {
+    const t = await postInReview()
+    await db.update(tables.submissions).set({ state: 'paid_out' }).where(eq(tables.submissions.id, t.id))
+    await expect(deleteSubmission(db, t.staffId, t.id)).rejects.toMatchObject({ code: 'paid_out' })
   })
 })
 

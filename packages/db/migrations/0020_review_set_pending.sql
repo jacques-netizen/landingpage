@@ -1,0 +1,2 @@
+ALTER TABLE "review_decisions" DROP CONSTRAINT "review_decisions_outcome_check";--> statement-breakpoint
+ALTER TABLE "review_decisions" ADD CONSTRAINT "review_decisions_outcome_check" CHECK (outcome in ('approve','reject','request_info','reverse','remove','set_pending'));

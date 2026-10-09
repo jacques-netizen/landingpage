@@ -426,7 +426,7 @@ export const viewSnapshots = pgTable(
   (t) => [index('view_snapshots_submission_taken').on(t.submissionId, t.takenAt.desc())],
 )
 
-export const REVIEW_OUTCOMES = ['approve', 'reject', 'request_info', 'reverse', 'remove'] as const
+export const REVIEW_OUTCOMES = ['approve', 'reject', 'request_info', 'reverse', 'remove', 'set_pending'] as const
 
 export const reviewDecisions = pgTable(
   'review_decisions',

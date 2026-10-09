@@ -9,11 +9,13 @@ import { and, eq } from 'drizzle-orm'
 import { ReviewError } from './errors'
 import { issueWarning } from './warnings'
 
-const { submissions, campaigns, reviewDecisions, fraudFlags, reasonCodes } = tables
+const { submissions, campaigns, reviewDecisions, fraudFlags, reasonCodes, viewSnapshots, appeals, warnings } = tables
 
 const APPROVABLE = ['needs_review', 'needs_info', 'flagged']
 const REVERSIBLE = ['rejected', 'rejected_auto', 'removed']
 const REJECTABLE = ['needs_review', 'needs_info', 'flagged', 'approved', 'earning', 'final']
+// Decided posts staff can put back to pending (testing report, 2026-10-08).
+const UNDECIDABLE = ['approved', 'earning', 'final', 'rejected', 'rejected_auto', 'removed']
 // Confirming one of these flags rejects the post with its reason and creates a warning (section 6).
 const CONFIRM_REASON: Record<string, string> = {
   view_jump: 'suspected_view_inflation',
@@ -255,4 +257,84 @@ export async function clearFlag(db: Db, reviewerId: string, flagId: string, note
   // An earning post picks up any views it missed while paused.
   const [s] = await db.select({ state: submissions.state }).from(submissions).where(eq(submissions.id, id))
   if (['approved', 'earning'].includes(s!.state)) await accrueEarnings(createPgStore(db), { submissionId: id })
+}
+
+/**
+ * Put an approved or denied post back to pending, in the review queue (testing report, 2026-10-08).
+ * Anything it earned is reversed exactly, back to the campaign budget; approving it again pays it from
+ * the same views. Released (paid out) posts stay as they are.
+ */
+export async function setPending(db: Db, reviewerId: string, id: string, opts: { note?: string | null } = {}) {
+  const note = opts.note?.trim() || null
+  const s0 = await load(db, id)
+  if (s0.state === 'paid_out')
+    throw new ReviewError('paid_out', 'This post was already paid out. Released money is not taken back automatically.')
+  if (!UNDECIDABLE.includes(s0.state))
+    throw new ReviewError('wrong_state', `A post that is ${s0.state.replace('_', ' ')} is not decided yet.`)
+  const reversed = (await reverseEarnings(createPgStore(db), { submissionId: id, actorId: reviewerId })).reversedCents
+  const previousState = await db.transaction(async (tx) => {
+    const s = await load(tx, id, true)
+    if (!UNDECIDABLE.includes(s.state))
+      throw new ReviewError('wrong_state', `A post that is ${s.state.replace('_', ' ')} is not decided yet.`)
+    await tx
+      .update(submissions)
+      .set({ state: 'needs_review', reasonCode: null, reasonNote: null, countedViews: 0 })
+      .where(eq(submissions.id, id))
+    await tx.insert(reviewDecisions).values({ submissionId: id, reviewerId, outcome: 'set_pending', note })
+    await writeAudit(tx, {
+      actorId: reviewerId,
+      action: 'submission.set_pending',
+      entity: 'submission',
+      entityId: id,
+      before: { state: s.state, reasonCode: s.reasonCode, earnedCents: s.earnedCents + reversed },
+      after: { state: 'needs_review', note, reversedCents: reversed },
+    })
+    await notify(tx, s.creatorId, 'submission_pending', {
+      title: 'Your post is back in review',
+      body: 'A reviewer will look at it again. Any earnings from it are on hold until then.',
+      link: link(id),
+    })
+    return s.state
+  })
+  return { previousState, reversedCents: reversed }
+}
+
+/**
+ * Delete a post from its campaign (testing report, 2026-10-08). Anything it earned is reversed first,
+ * back to the campaign budget, so the books stay whole; the audit log keeps the post as it was. Its
+ * checks, decisions, flags and appeals go with it; a warning it caused stays on the creator.
+ * Released (paid out) posts cannot be deleted.
+ */
+export async function deleteSubmission(db: Db, staffId: string, id: string) {
+  const s0 = await load(db, id)
+  if (s0.state === 'paid_out')
+    throw new ReviewError('paid_out', 'This post was already paid out, so it stays on the books.')
+  const reversed = (await reverseEarnings(createPgStore(db), { submissionId: id, actorId: staffId })).reversedCents
+  await db.transaction(async (tx) => {
+    const s = await load(tx, id, true)
+    if (s.state === 'paid_out')
+      throw new ReviewError('paid_out', 'This post was already paid out, so it stays on the books.')
+    await tx.delete(viewSnapshots).where(eq(viewSnapshots.submissionId, id))
+    await tx.delete(reviewDecisions).where(eq(reviewDecisions.submissionId, id))
+    await tx.delete(fraudFlags).where(eq(fraudFlags.submissionId, id))
+    await tx.delete(appeals).where(eq(appeals.submissionId, id))
+    await tx.update(warnings).set({ submissionId: null }).where(eq(warnings.submissionId, id))
+    await tx.delete(submissions).where(eq(submissions.id, id))
+    await writeAudit(tx, {
+      actorId: staffId,
+      action: 'submission.delete',
+      entity: 'submission',
+      entityId: id,
+      before: {
+        state: s.state,
+        campaignId: s.campaignId,
+        creatorId: s.creatorId,
+        postUrl: s.postUrl,
+        latestViews: s.latestViews,
+        earnedCents: s.earnedCents + reversed,
+      },
+      after: { deleted: true, reversedCents: reversed },
+    })
+  })
+  return { reversedCents: reversed }
 }

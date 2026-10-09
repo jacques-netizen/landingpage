@@ -7,6 +7,7 @@ export type NotificationKind =
   | 'submission_approved'
   | 'submission_rejected'
   | 'submission_removed'
+  | 'submission_pending'
   | 'needs_info'
   | 'earnings_released'
   | 'withdrawal_status'
