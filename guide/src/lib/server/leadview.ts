@@ -6,6 +6,16 @@ import { config } from "./config";
 import type { LeadRow } from "./leads";
 import { guideToken } from "./sessions";
 
+/**
+ * Whether this lead is offered the booking calendar. Clippers never are.
+ * Buyers are when they qualified, or when they came through the plain arm,
+ * which asks no budget question (the calendar form asks it instead).
+ */
+export function offersCall(lead: Pick<LeadRow, "path" | "qualified" | "variant">): boolean {
+  if (lead.path === "clipper") return false;
+  return lead.qualified || lead.variant === "plain";
+}
+
 export const guideUrl = (leadId: string) => `${config().siteUrl}/g/${guideToken(leadId)}`;
 
 export function budgetBand(answers: Answers): string {

@@ -1,5 +1,5 @@
 // Builds sample guides for six answer combinations and checks them against
-// the Phase 3 acceptance rules: 4 to 6 pages, no em dashes, only approved
+// the acceptance rules: 6 to 12 pages, no em dashes, only approved
 // proof figures. Usage: npx tsx --conditions=react-server scripts/sample-guides.ts [outDir]
 import fs from "node:fs";
 import path from "node:path";
@@ -8,7 +8,11 @@ import { renderGuideHtml } from "../src/lib/server/guide/render";
 import { execFileSync } from "node:child_process";
 import { htmlToPdf, pdfPageCount } from "../src/lib/server/guide/pdf";
 import proofJson from "../content/proof.json";
+import matter from "gray-matter";
 
+// The owner asked for a fuller guide than the plan's 4 to 6 pages.
+const MIN_PAGES = 6;
+const MAX_PAGES = 12;
 const out = process.argv[2] || ".data/samples";
 fs.mkdirSync(out, { recursive: true });
 
@@ -24,11 +28,16 @@ const cases: [string, GuideInput][] = [
 
 const figure = /(\$\d[\d.,]*\d[KMB]?\+?|\$\d[KMB]?\+?|\b\d[\d.]*[KMB]\+?(?=[\s<.,]|$))/g;
 // Every figure that appears anywhere in an approved proof item is allowed.
-const approved = new Set(
+// Worked example figures listed in guide block front matter are allowed too.
+const guideDir = path.join(process.cwd(), "content", "guide");
+const exampleFigures = fs.readdirSync(guideDir).filter((f) => f.endsWith(".md")).flatMap((f) => (matter(fs.readFileSync(path.join(guideDir, f), "utf8")).data.examples as string[]) ?? []);
+const approved = new Set<string>([
+  ...exampleFigures,
+  ...
   (Object.values(proofJson.items) as { status: string }[])
     .filter((i) => i.status === "approved")
     .flatMap((i) => JSON.stringify(i).match(figure) ?? []),
-);
+]);
 
 async function main() {
 let failed = false;
@@ -49,7 +58,7 @@ for (const [name, input] of cases) {
   } catch {
     /* poppler not installed */
   }
-  const ok = pages >= 4 && pages <= 6 && !dashes && figs.length === 0 && blank.length === 0;
+  const ok = pages >= MIN_PAGES && pages <= MAX_PAGES && !dashes && figs.length === 0 && blank.length === 0;
   if (!ok) failed = true;
   console.log(`${ok ? "ok  " : "FAIL"} ${name}: ${pages} pages, sections: ${guide.sections.map((s) => s.key).join(", ")}${dashes ? ", EM DASH" : ""}${blank.length ? `, blank pages: ${blank.join(" ")}` : ""}${figs.length ? `, unapproved figures: ${figs.join(" ")}` : ""}`);
 }

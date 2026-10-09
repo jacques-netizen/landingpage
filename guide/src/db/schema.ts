@@ -39,6 +39,8 @@ export const leads = pgTable(
     qualified: boolean("qualified").notNull(),
     humanPriority: boolean("human_priority").notNull(),
     path: text("path").notNull(),
+    // A/B arm at gate time. The plain arm asks no budget, so its buyers are offered the call.
+    variant: text("variant").notNull().default("full"),
     // Snapshot of the answers at gate time, so the guide and CRM never drift.
     answers: jsonb("answers").$type<Record<string, unknown>>().notNull(),
     ghlContactId: text("ghl_contact_id"),

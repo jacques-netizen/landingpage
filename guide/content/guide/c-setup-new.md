@@ -7,10 +7,10 @@ order: 1
 ---
 You do not need much to start: a phone, an editing app and an account on each platform you want to post on.
 
-**Make new accounts.** Use accounts made for clipping, with a clear name and photo that fit your niche. Never make an account that looks like an official page.
+**Make new accounts for clipping.** One niche per account, with a clear name and photo that fit the niche. Never make an account that looks like an official page of the artist, brand or show.
 
-**Pick one niche.** Music, sports, gaming or shows. A page that always posts the same kind of clip grows faster than one that posts everything.
+**Warm them up.** Before you post campaign clips, use the accounts like a real person for a few days: watch, like and follow in your niche. It helps the app understand who to show your clips to.
 
-**Learn one editing app well.** Cutting, captions and timing matter more than effects.
+**Learn one editing app well.** CapCut or the platform's own editor is enough. Cutting, captions and timing matter more than effects.
 
-**Post a few practice clips** before you join a campaign, so you know how your accounts behave.
+**Post practice clips.** Make a few clips before you join a campaign, so you learn how your accounts behave and where people stop watching.

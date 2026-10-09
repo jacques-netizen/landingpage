@@ -13,6 +13,7 @@ export type LeadView = {
   firstName: string;
   path: string;
   qualified: boolean;
+  offersCall: boolean;
   humanPriority: boolean;
   answers: Answers;
   guideSections?: string[];

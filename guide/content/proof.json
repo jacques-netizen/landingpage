@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "_note": "Only items with status approved may appear in the app, the PDF or emails. pending_owner items are held until the owner confirms them (build plan section 14, item 4).",
+  "_note": "Only items with status approved may appear in the app, the PDF or emails. Figures match the case studies on maisondelites.com (read 2026-10-09); the owner approved all of them.",
   "items": {
     "views_delivered": {
       "status": "approved",
@@ -12,11 +12,26 @@
       "status": "approved",
       "text": "Walmart, Nintendo, WYDE, Sony and DEF JAM have run campaigns through the network.",
       "logos": [
-        { "name": "Walmart", "src": "/brand/logos/walmart.png" },
-        { "name": "Nintendo", "src": "/brand/logos/nintendo-t.png" },
-        { "name": "WYDE", "src": "/brand/logos/wyde.svg" },
-        { "name": "Sony", "src": "/brand/logos/sony.png" },
-        { "name": "DEF JAM", "src": "/brand/logos/defjam.png" }
+        {
+          "name": "Walmart",
+          "src": "/brand/logos/walmart.png"
+        },
+        {
+          "name": "Nintendo",
+          "src": "/brand/logos/nintendo-t.png"
+        },
+        {
+          "name": "WYDE",
+          "src": "/brand/logos/wyde.svg"
+        },
+        {
+          "name": "Sony",
+          "src": "/brand/logos/sony.png"
+        },
+        {
+          "name": "DEF JAM",
+          "src": "/brand/logos/defjam.png"
+        }
       ]
     },
     "walmart": {
@@ -25,8 +40,14 @@
       "objective": "Drive attention to Walmart’s beauty box.",
       "strategy": "Get creators to post about it.",
       "figures": [
-        { "value": "3M", "label": "total views" },
-        { "value": "$2.30", "label": "effective CPM" }
+        {
+          "value": "3M",
+          "label": "total views"
+        },
+        {
+          "value": "$2.30",
+          "label": "effective CPM"
+        }
       ],
       "text": "Walmart used clipping to drive attention to its beauty box: 3M total views at an effective CPM of $2.30."
     },
@@ -38,38 +59,114 @@
       "poster": "/brand/proof/poster-kojo-blak.webp"
     },
     "paul_case": {
-      "status": "pending_owner",
-      "title": "Jake and Logan Paul",
-      "text": "Figures to be confirmed by the owner before use."
+      "status": "approved",
+      "title": "Jake and Logan Paul, Paul American",
+      "objective": "Drive views for their TV show, Paul American.",
+      "strategy": "Clippers reposted clips from episodes 2 and 3 at $2.00 per 1,000 views.",
+      "figures": [
+        {
+          "value": "11.2M",
+          "label": "total views"
+        },
+        {
+          "value": "$1.78",
+          "label": "effective CPM"
+        }
+      ],
+      "text": "Paul American, the TV show from Jake and Logan Paul: clippers reposted clips from episodes 2 and 3 at $2.00 per 1,000 views, for 11.2M total views at an effective CPM of $1.78."
     },
     "wale_mannywellz": {
-      "status": "pending_owner",
-      "title": "Wale and Mannywellz",
-      "figures": [{ "value": "2.2M", "label": "views" }],
-      "text": "Wale and Mannywellz: 2.2M views."
-    },
-    "kojo_fantana": {
-      "status": "pending_owner",
-      "title": "Kojo Blak with Fantana",
+      "status": "approved",
+      "title": "Mannywellz ft. Wale",
+      "objective": "Promote the Mannywellz ft. Wale release.",
+      "strategy": "Clippers across the network posted clips of the release.",
       "figures": [
-        { "value": "1.6M", "label": "views" },
-        { "value": "$1.30", "label": "CPM" }
+        {
+          "value": "4.6M",
+          "label": "total views"
+        },
+        {
+          "value": "19",
+          "label": "creators"
+        },
+        {
+          "value": "$0.48",
+          "label": "effective CPM"
+        }
       ],
-      "text": "Kojo Blak with Fantana: 1.6M views at a $1.30 CPM."
+      "text": "The Mannywellz ft. Wale release: 19 creators posted clips across the network for 4.6M total views at an effective CPM of $0.48."
+    },
+    "kojo_case": {
+      "status": "approved",
+      "title": "Kojo Blak",
+      "objective": "Promote Kojo Blak’s two latest songs: his feature with Fantana, and Excellent.",
+      "strategy": "Clippers earned $2.00 per 1,000 views for posting clips of the release.",
+      "figures": [
+        {
+          "value": "1.9M",
+          "label": "total views"
+        }
+      ],
+      "text": "Kojo Blak’s feature with Fantana and his song Excellent: clippers earned $2.00 per 1,000 views posting clips, for 1.9M total views. He later won Best New Ghanaian Artist."
     }
   },
   "byAsset": {
-    "music_release": ["kojo_testimonial", "wale_mannywellz", "kojo_fantana", "views_delivered"],
-    "podcast_stream": ["paul_case", "views_delivered", "clients"],
-    "product_launch": ["walmart", "clients"],
-    "sports_gaming": ["paul_case", "views_delivered", "clients"],
-    "personal_brand": ["kojo_testimonial", "views_delivered"],
-    "other": ["views_delivered", "clients"],
-    "music": ["kojo_testimonial", "views_delivered"],
-    "sports": ["paul_case", "views_delivered"],
-    "gaming": ["paul_case", "views_delivered"],
-    "podcasts_streams": ["paul_case", "views_delivered"],
-    "film_tv": ["views_delivered", "clients"],
-    "anything": ["views_delivered", "clients"]
+    "music_release": [
+      "wale_mannywellz",
+      "kojo_case",
+      "kojo_testimonial",
+      "views_delivered"
+    ],
+    "podcast_stream": [
+      "paul_case",
+      "views_delivered",
+      "clients"
+    ],
+    "product_launch": [
+      "walmart",
+      "paul_case",
+      "clients"
+    ],
+    "sports_gaming": [
+      "paul_case",
+      "views_delivered",
+      "clients"
+    ],
+    "personal_brand": [
+      "paul_case",
+      "kojo_case",
+      "kojo_testimonial"
+    ],
+    "other": [
+      "walmart",
+      "paul_case",
+      "views_delivered"
+    ],
+    "music": [
+      "wale_mannywellz",
+      "kojo_case",
+      "views_delivered"
+    ],
+    "sports": [
+      "paul_case",
+      "views_delivered"
+    ],
+    "gaming": [
+      "paul_case",
+      "views_delivered"
+    ],
+    "podcasts_streams": [
+      "paul_case",
+      "views_delivered"
+    ],
+    "film_tv": [
+      "paul_case",
+      "views_delivered"
+    ],
+    "anything": [
+      "paul_case",
+      "wale_mannywellz",
+      "views_delivered"
+    ]
   }
 }

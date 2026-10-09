@@ -4,4 +4,6 @@ paths: [clipper]
 goals: [side_income]
 order: 2
 ---
-You told us you want some money on the side. Start with one campaign you understand well and do it properly. Consistency on one campaign beats ten clips spread across ten.
+### Your goal: some money on the side
+
+Start with one campaign you understand well and do it properly. A few strong clips a day on one campaign beats ten rushed clips spread across ten.

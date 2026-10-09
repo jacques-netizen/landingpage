@@ -4,4 +4,6 @@ paths: [clipper]
 goals: [learn_editing]
 order: 2
 ---
-You told us you want to learn editing. Clipping is a good way to do it, because every post shows you what works. Watch your own numbers and copy what keeps people watching.
+### Your goal: learning to edit
+
+Clipping is a good school, because every post gives you a score. Watch where people stop watching and fix that part on the next clip.

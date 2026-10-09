@@ -6,6 +6,7 @@ import { pathOf } from "@/lib/flow";
 import { config } from "../config";
 import { bookingUrl } from "../email";
 import type { LeadRow } from "../leads";
+import { offersCall } from "../leadview";
 import { objectExists, putObject } from "../storage";
 import { assembleGuide, manifestVersion, type GuideInput } from "./assemble";
 import { htmlToPdf } from "./pdf";
@@ -17,9 +18,10 @@ export function guideInput(lead: LeadRow): GuideInput {
   return {
     path,
     answers: lead.answers,
-    qualified: lead.qualified,
+    // Picks the "book a call" next step in the guide, not the CRM flag.
+    qualified: offersCall(lead),
     firstName: lead.firstName,
-    bookingUrl: path !== "clipper" && lead.qualified ? bookingUrl(lead) : "",
+    bookingUrl: offersCall(lead) ? bookingUrl(lead) : "",
     joinUrl: path === "clipper" ? c.whopJoinUrl : "",
   };
 }

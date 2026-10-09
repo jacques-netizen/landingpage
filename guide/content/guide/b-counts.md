@@ -10,4 +10,6 @@ Not every view is paid for. Every post is checked before it counts.
 
 **What does not count.** Clips that break the brief or the platform's rules, posts that are deleted, and anything that does not pass review.
 
+**Real views, not bots.** Review is how fake views are kept out. Posts that look wrong do not count, and you can open any approved post and check it yourself.
+
 You see it all on a live dashboard with a direct link to every approved post. You set the rules, the rate and the budget. Nothing counts until it passes review.

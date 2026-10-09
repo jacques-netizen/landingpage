@@ -95,6 +95,7 @@ export async function POST(req: Request) {
       qualified: score.qualified,
       humanPriority: score.humanPriority,
       path: score.path,
+      variant: session.variant,
       answers,
       metaEventId: newMetaEventId(),
       fbp: b.fbp || null,

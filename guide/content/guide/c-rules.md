@@ -10,4 +10,8 @@ order: 1
 
 **Say when content is paid.** Where the rules require it, label paid posts clearly.
 
+**Never fake views.** Bought views, bots and engagement tricks are caught in review. Posts like that do not count, and they can get you removed from campaigns.
+
+**Do not delete posts.** Deleted posts stop counting. Leave approved posts up.
+
 **Follow the brief.** Every post is checked before it counts. A clip that breaks the brief is not paid.

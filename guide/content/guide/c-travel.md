@@ -4,12 +4,16 @@ paths: [clipper]
 title: What makes a clip travel
 order: 1
 ---
-**A strong hook.** The first second decides everything. Start on the moment, not before it.
+**A strong hook.** The first second decides everything. Start on the moment, not before it. If you need setup, put it in a caption on screen.
 
-**Trending audio, used well.** Sound pulls people in, but only when it fits the clip.
+**Captions on screen.** Many people watch with the sound off. Big, readable words keep them watching and tell them why to care.
 
-**A clear ending.** End on the payoff, or point people where to go next.
+**Trending audio, used well.** Sound pulls people in, but only when it fits the clip. On music campaigns, use the official track the brief asks for.
+
+**The right length.** As long as the moment needs and no longer. Cut every second where nothing happens.
+
+**A clear ending.** End on the payoff, or point people where to go next, as the brief asks.
 
 **Edit for emotion.** Find the most striking moment: the laugh, the shock, the drop. Cut everything around it.
 
-**Quality and originality.** Do not just repost. Add captions, timing and framing that make the clip yours.
+**Quality and originality.** Vertical, sharp and clean. Do not just repost. Add captions, timing and framing that make the clip yours.

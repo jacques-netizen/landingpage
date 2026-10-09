@@ -9,7 +9,7 @@ import { pathOf } from "@/lib/flow";
 import { config } from "./config";
 import { dataDir } from "./datadir";
 import type { LeadRow } from "./leads";
-import { guideUrl } from "./leadview";
+import { guideUrl, offersCall } from "./leadview";
 import { signToken } from "./tokens";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -37,7 +37,7 @@ export function buildDeliveryEmail(lead: LeadRow) {
   type Next = { text: string; button?: string; href?: string };
   let next: Next;
   if (p === "clipper") next = { ...e.next.join, href: c.whopJoinUrl || undefined };
-  else if (lead.qualified && c.calBookingUrl) next = { ...e.next.book, href: bookingUrl(lead) };
+  else if (offersCall(lead) && c.calBookingUrl) next = { ...e.next.book, href: bookingUrl(lead) };
   else next = e.next.soft;
 
   const subject = fill(e.subject, { headline });

@@ -21,7 +21,7 @@ export function config() {
     progressSplit: share(e.PROGRESS_SPLIT, 0.5),
     funnelEnabled: str(e.FUNNEL_ENABLED, "true") !== "false",
     oldGuideUrl: str(e.OLD_GUIDE_URL),
-    whopJoinUrl: str(e.WHOP_JOIN_URL),
+    whopJoinUrl: str(e.WHOP_JOIN_URL, "https://app.maisondelites.com"),
     calBookingUrl: str(e.CAL_BOOKING_URL),
     calWebhookSecret: str(e.CAL_WEBHOOK_SECRET),
     calBookedRedirectUrl: str(e.CAL_BOOKED_REDIRECT_URL, "https://book.maisondelites.com/booked"),

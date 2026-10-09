@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { flow, getQuestion, media, PATHS, questionFor } from "@/lib/content";
 import proofJson from "../content/proof.json";
+import matter from "gray-matter";
 
 const contentDir = path.resolve(__dirname, "../content");
 const files = (dir: string): string[] =>
@@ -44,14 +45,16 @@ describe("content", () => {
   });
 
   it("only shows figures from approved proof", () => {
+    const figure = /(\$\d[\d.,]*\d[KMB]?\+?|\$\d[KMB]?\+?|\b\d[\d.]*[KMB]\+?(?=[\s<.,]|$))/g;
     const items = Object.values(proofJson.items) as { status: string; headline?: string; figures?: { value: string }[] }[];
-    const approved = new Set(items.filter((i) => i.status === "approved").flatMap((i) => [i.headline, ...(i.figures ?? []).map((x) => x.value)]).filter(Boolean) as string[]);
-    // Budget bands and the per 1,000 views rate unit are not claims.
-    const figure = /(\$\d[\d.,]*[KMB]?\+?|\b\d[\d.]*[KMB]\+?(?=\s|$|[.,]))/g;
+    // Every figure that appears anywhere in an approved proof item is allowed.
+    const approved = new Set(items.filter((i) => i.status === "approved").flatMap((i) => JSON.stringify(i).match(figure) ?? []));
     const allowedFiles = new Set(["proof.json", "questions.json"]);
     for (const { f, text } of all) {
       if (allowedFiles.has(f)) continue;
-      for (const m of text.match(figure) ?? []) expect(approved.has(m), `${f}: ${m}`).toBe(true);
+      // A guide block may list worked example figures (pay or pricing maths) in its front matter.
+      const examples = new Set<string>(f.endsWith(".md") ? ((matter(text).data.examples as string[]) ?? []) : []);
+      for (const m of text.match(figure) ?? []) expect(approved.has(m) || examples.has(m), `${f}: ${m}`).toBe(true);
     }
   });
 });

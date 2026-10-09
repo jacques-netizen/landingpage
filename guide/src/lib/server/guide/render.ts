@@ -98,12 +98,15 @@ body{font-family:"Archivo",Arial,sans-serif;color:#1a1510;background:#f2eee6;fon
 .cover .intro{margin-top:8mm;font-size:12pt;line-height:1.55;color:#4f493f;max-width:120mm}
 .cover .meta{position:absolute;left:18mm;right:18mm;bottom:16mm;display:flex;justify-content:space-between;border-top:.3mm solid #d8cdb9;padding-top:4mm;font-size:9.5pt;color:#6e675c}
 .cover .meta b{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-style:italic;font-size:14pt;color:#8a6a22}
-.sec{padding:0 22mm 0 52mm;position:relative;margin-bottom:16mm;break-inside:avoid}
+.sec{padding:0 22mm 0 52mm;position:relative;margin-bottom:14mm;break-inside:auto}
+.sec h2+.body>p:first-child{break-inside:avoid}
 .sec .num{position:absolute;left:18mm;top:1mm;font-family:"EB Garamond",Georgia,serif;font-size:22pt;color:#a8843a;line-height:1}
 .sec h2{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-size:28pt;line-height:1.02;letter-spacing:-.025em;margin-bottom:7mm;break-after:avoid}
 .sec .body{max-width:118mm}
 .sec .body p{margin-bottom:3.6mm;orphans:3;widows:3}
 .sec .body strong{font-weight:600;color:#1a1510}
+.sec .body h3{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-style:italic;font-size:15pt;line-height:1.2;color:#8a6a22;margin:6mm 0 2.5mm;break-after:avoid}
+.sec .body ol,.sec .body ul{margin:0 0 3.6mm 5mm;color:#4f493f}
 .sec .body p:first-child{font-family:"EB Garamond",Georgia,serif;font-size:15pt;line-height:1.38;color:#1a1510}
 .sec .body a{display:inline-block;margin-top:3mm;background:#1a1510;color:#fff;text-decoration:none;padding:3.4mm 6mm;border-radius:999px;font-weight:500;font-size:10.5pt}
 .sec .body p{color:#4f493f}

@@ -7,4 +7,8 @@ order: 1
 ---
 Sports clips live on timing. The goal, the save or the post match quote is worth the most in the first hours.
 
-Pick campaigns for sports you follow closely, so you know which moment matters before everyone else does.
+**Be fast.** Have your editing set up so you can post within the hour.
+
+**Show the reaction too.** The crowd, the commentator or the bench is often what people share.
+
+**Pick sports you follow.** You will know which moment matters before everyone else does.

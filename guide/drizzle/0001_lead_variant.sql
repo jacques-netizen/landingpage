@@ -1,0 +1,1 @@
+ALTER TABLE "leads" ADD COLUMN "variant" text DEFAULT 'full' NOT NULL;

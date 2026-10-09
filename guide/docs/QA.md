@@ -12,7 +12,7 @@ real accounts or the owner.
 | Flow, qualification, answer validation | `tests/flow.test.ts` | Done |
 | Content rules: no em dashes, retired claims, unapproved figures | `tests/content.test.ts`, `npm run check:dashes` | Done |
 | CRM fields and tags, email, signed links, Cal signature, Discord has no email | `tests/server.test.ts` | Done |
-| Six guide PDFs: 4 to 6 pages, no em dashes, approved figures only, no blank pages | `npm run guides:sample` | Done |
+| Six guide PDFs: 6 to 12 pages (owner asked for a fuller guide than the plan's 4 to 6), no em dashes, approved figures only, no blank pages | `npm run guides:sample` | Done (7 to 9 pages) |
 | All three paths, plain arm, refresh mid way, gate errors | `node tests/e2e/walk.mjs <url> <clipper/creator/brand/lowbuyer> [--refresh] [--plain]` | Done (headless Chromium) |
 
 ## Devices and browsers
@@ -71,9 +71,9 @@ mid range Android phone over 4G before launch.
 |---|---|
 | Guide copy approved (see `docs/guide-samples/` and `content/guide/`) | Needs owner |
 | Consent wording and email footer | Needs owner |
-| Jake and Logan Paul figures, Wale and Mannywellz, Kojo Blak with Fantana | Held as `pending_owner` in `content/proof.json` until confirmed |
-| Clipper routing (join link, no calendar) and `WHOP_JOIN_URL` | Needs owner |
-| Plain arm: buyers have no budget answer, so they get the soft step, never the calendar | Needs owner decision |
+| Case study figures | Approved by the owner; taken from the live site case studies |
+| Clipper routing | Confirmed: join link to app.maisondelites.com, no calendar |
+| Plain arm | Confirmed: creators and brands get the calendar (budget is asked in the Cal.com form) |
 | Real films swapped in (`content/media.json`) | Needs films |
-| Re-hosting rights for the site campaign clips used in the placeholders | Needs owner |
+| Re-hosting rights for the site campaign clips used in the placeholders | Approved by the owner |
 | Search for em dashes in repo and generated PDFs | Done |

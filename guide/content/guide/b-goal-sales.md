@@ -4,4 +4,6 @@ paths: [creator, brand]
 goals: [sales]
 order: 2
 ---
-You told us you want more sales or sign-ups. Clips create the attention; your page, link or store has to catch it. Make sure the place people land on is clear and quick before the first clip goes out.
+### Your goal: more sales or sign-ups
+
+Clips create the attention; your page, link or store has to catch it. Make sure the place people land on is clear and quick on a phone before the first clip goes out, and use a link or code you can track so you can see what the clips bring in.

@@ -40,7 +40,7 @@ export function NextStep() {
     );
   }
 
-  if (f.lead?.qualified && f.config.calBookingUrl) {
+  if (f.lead?.offersCall && f.config.calBookingUrl) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20 md:px-12">
         <h2 className="font-serif text-title">{c.book.headline}</h2>

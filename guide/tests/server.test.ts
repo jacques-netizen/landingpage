@@ -17,6 +17,7 @@ const lead = (over: Partial<LeadRow> = {}): LeadRow => ({
   qualified: true,
   humanPriority: false,
   path: "creator",
+  variant: "full",
   answers: { role: "creator", asset: "music_release", platforms: ["tiktok", "x"], goal: "streams", timing: "this_month", budget: { band: "not_sure", amount: 4000 }, deciding: "no" },
   ghlContactId: null,
   ghlOpportunityId: null,
@@ -53,6 +54,16 @@ describe("delivery email", () => {
     const c = buildDeliveryEmail(lead({ path: "clipper", qualified: false, answers: { role: "clipper", asset: "music" } }));
     expect(c.text).not.toContain("cal.com");
     expect(c.text).toContain("whop.com/mde");
+  });
+});
+
+import { offersCall } from "@/lib/server/leadview";
+describe("calendar offer", () => {
+  it("goes to qualified buyers and to plain arm buyers, never to clippers", () => {
+    expect(offersCall(lead())).toBe(true);
+    expect(offersCall(lead({ qualified: false }))).toBe(false);
+    expect(offersCall(lead({ qualified: false, variant: "plain" }))).toBe(true);
+    expect(offersCall(lead({ path: "clipper", qualified: false, variant: "plain" }))).toBe(false);
   });
 });
 
