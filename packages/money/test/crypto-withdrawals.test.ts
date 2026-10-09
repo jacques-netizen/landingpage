@@ -149,7 +149,12 @@ describe('crypto withdrawals', () => {
     await expect(
       requestWithdrawal(store, { creatorId: creator, amountCents: 499, method: 'crypto', destination: WALLET }),
     ).rejects.toMatchObject({ message: 'The minimum withdrawal is $5.00.' })
-    const w = await requestWithdrawal(store, { creatorId: creator, amountCents: 500, method: 'crypto', destination: WALLET })
+    const w = await requestWithdrawal(store, {
+      creatorId: creator,
+      amountCents: 500,
+      method: 'crypto',
+      destination: WALLET,
+    })
     expect(w.status).toBe('requested')
     expect(await balanceOf(db, 'creator_available', creator)).toBe(9_500)
   })

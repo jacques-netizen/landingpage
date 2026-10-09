@@ -152,7 +152,10 @@ describe('set to pending and delete', () => {
     expect(await t.balance('creator_pending', t.creator)).toBe(0)
     expect(await t.balance('campaign_budget', t.campaignId)).toBe(budgetBefore + 2_000)
     expect((await audits(t.id)).map((a) => a.action)).toContain('submission.set_pending')
-    expect((await notes(t.creator))[0]).toMatchObject({ kind: 'submission_pending', title: 'Your post is back in review' })
+    expect((await notes(t.creator))[0]).toMatchObject({
+      kind: 'submission_pending',
+      title: 'Your post is back in review',
+    })
     // Approving again pays it from the same views, once.
     const again = await approve(db, t.staffId, t.id)
     expect(again.deltaCents).toBe(2_000)
