@@ -13,7 +13,7 @@ test('the fees page reads its numbers from settings', async ({ page }) => {
   try {
     await page.goto('/fees')
     await expect(page.getByRole('row', { name: /Withdrawal fee/ })).toContainText('None')
-    await expect(page.getByRole('row', { name: /Minimum withdrawal/ })).toContainText('$20.00')
+    await expect(page.getByRole('row', { name: /Minimum withdrawal/ })).toContainText('$5.00')
 
     for (const [key, value] of [
       ['withdrawal_fee_bps', 250],

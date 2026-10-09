@@ -143,4 +143,14 @@ describe('crypto withdrawals', () => {
       requestWithdrawal(store, { creatorId: creator, amountCents: 5_000, method: 'bank_transfer', destination: null }),
     ).rejects.toMatchObject({ code: 'payout_not_verified' })
   })
+
+  it('takes withdrawals from $5.00 under the default settings (owner request, 2026-10-08)', async () => {
+    const creator = await creatorWithBalance()
+    await expect(
+      requestWithdrawal(store, { creatorId: creator, amountCents: 499, method: 'crypto', destination: WALLET }),
+    ).rejects.toMatchObject({ message: 'The minimum withdrawal is $5.00.' })
+    const w = await requestWithdrawal(store, { creatorId: creator, amountCents: 500, method: 'crypto', destination: WALLET })
+    expect(w.status).toBe('requested')
+    expect(await balanceOf(db, 'creator_available', creator)).toBe(9_500)
+  })
 })

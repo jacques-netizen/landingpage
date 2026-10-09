@@ -396,7 +396,7 @@ export function StyleguideClient() {
                   <Field label="Search" tone="app">
                     {(p) => <Input tone="app" id={p.id} placeholder="Search campaigns, labels or platforms" />}
                   </Field>
-                  <Field label="Amount" tone="app" error="The minimum withdrawal is $20.00.">
+                  <Field label="Amount" tone="app" error="The minimum withdrawal is $5.00.">
                     {(p) => (
                       <Input
                         tone="app"

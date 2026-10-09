@@ -13,6 +13,7 @@ describe('roles', () => {
 })
 
 describe('settings defaults', () => {
+  // The minimum withdrawal is $5 (owner's testing report, 2026-10-08); the rest match 03_SYSTEMS.md section 15.
   it('match 03_SYSTEMS.md section 15 and validate', () => {
     expect(settingsSchema.parse(SETTINGS_DEFAULTS)).toEqual(SETTINGS_DEFAULTS)
     expect(SETTINGS_DEFAULTS).toMatchObject({
@@ -20,7 +21,7 @@ describe('settings defaults', () => {
       max_post_age_hours: 24,
       deleted_post_grace_hours: 48,
       review_window_days: 7,
-      withdrawal_min_cents: 2000,
+      withdrawal_min_cents: 500,
       withdrawal_fee_bps: 0,
       withdrawal_fee_min_cents: 0,
       appeal_reply_business_days: 5,

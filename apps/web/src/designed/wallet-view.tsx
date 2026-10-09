@@ -28,7 +28,7 @@ type Props = {
   fees?: WithdrawalFeeSettings
 }
 
-const NO_FEES: WithdrawalFeeSettings = { withdrawal_fee_bps: 0, withdrawal_fee_min_cents: 0, withdrawal_min_cents: 2000 }
+const NO_FEES: WithdrawalFeeSettings = { withdrawal_fee_bps: 0, withdrawal_fee_min_cents: 0, withdrawal_min_cents: 500 }
 
 const EMPTY: WalletData = {
   availableCents: 0,

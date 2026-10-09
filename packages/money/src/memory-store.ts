@@ -37,7 +37,7 @@ type State = {
 const DEFAULT_FEES: WithdrawalFeeSettings = {
   withdrawal_fee_bps: 0,
   withdrawal_fee_min_cents: 0,
-  withdrawal_min_cents: 2000,
+  withdrawal_min_cents: 500,
 }
 
 export function createMemoryStore() {

@@ -134,6 +134,13 @@
       "when": 1791465439261,
       "tag": "0018_bank_withdrawals",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791543891226,
+      "tag": "0019_five_dollar_minimum",
+      "breakpoints": true
     }
   ]
 }

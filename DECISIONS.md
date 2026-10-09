@@ -266,3 +266,7 @@ Choices made while building, each with a one line reason. Newest at the bottom o
 - Location is a plain country select: about 250 countries are easier to pick by typing, and phones show their own list. Reason: simplest option.
 - Choosing a crypto payout is three steps: select the crypto, select the network, then enter the wallet address. Coins and networks are the same as before. Reason: report item 2.
 - Admins credit any user at `/admin/credits` (admins only; finance cannot). A credit moves money from outside the platform into the creator's available balance through the money engine's manual adjustment, so it is in the ledger, audited, withdrawable like any earnings, and the creator is notified. Up to $100,000 per credit, a reason is required, and each form submission carries its own key so a double click credits once. Reason: report item 3.
+
+## Testing report 2 (Casio, 2026-10-08)
+
+- The minimum withdrawal is $5 (owner's testing report; a money rule the owner asked for). The default setting is 500 cents, and migration 0019 moves a stored value to 500 too, audited. Staff can still change it on the settings page.
