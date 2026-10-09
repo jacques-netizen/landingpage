@@ -1,6 +1,7 @@
 // Crypto withdrawals (owner request, 2026-10-08): the creator asks to withdraw to their wallet, staff
 // verify the request, send the crypto, and mark it paid with the transaction hash; or reject it, which
 // returns the full amount to the creator's available balance. All amounts are whole cents.
+import { SETTINGS_DEFAULTS } from '@mde/config'
 import { tables } from '@mde/db'
 import { eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -145,6 +146,12 @@ describe('crypto withdrawals', () => {
   })
 
   it('takes withdrawals from $5.00 under the default settings (owner request, 2026-10-08)', async () => {
+    // Other files store their own fee settings in this database: put the defaults back first.
+    for (const key of ['withdrawal_min_cents', 'withdrawal_fee_bps', 'withdrawal_fee_min_cents'] as const)
+      await db
+        .insert(tables.settings)
+        .values({ key, value: SETTINGS_DEFAULTS[key] })
+        .onConflictDoUpdate({ target: tables.settings.key, set: { value: SETTINGS_DEFAULTS[key] } })
     const creator = await creatorWithBalance()
     await expect(
       requestWithdrawal(store, { creatorId: creator, amountCents: 499, method: 'crypto', destination: WALLET }),

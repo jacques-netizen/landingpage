@@ -14,7 +14,7 @@ async function makeUser(email: string) {
 describe('settings', () => {
   it('returns the defaults when nothing is stored', async () => {
     expect(await getSettings(db)).toEqual(SETTINGS_DEFAULTS)
-    expect(await getSetting(db, 'withdrawal_min_cents')).toBe(2000)
+    expect(await getSetting(db, 'withdrawal_min_cents')).toBe(500)
   })
 
   it('seeding defaults never overwrites a stored value', async () => {
