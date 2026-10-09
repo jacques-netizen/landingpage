@@ -35,6 +35,9 @@ test('a creator sets a username, Discord name and picture, and Home greets them 
 })
 
 test('the Support page tells creators to open a Discord ticket', async ({ page }) => {
-  await page.goto('/help')
+  // The menu's Support goes to the Discord server when SUPPORT_DISCORD_URL is set, otherwise here.
+  await page.goto('/campaigns')
+  await page.getByRole('link', { name: 'Support', exact: true }).first().click()
+  await page.waitForURL('**/help')
   await expect(page.getByRole('heading', { name: 'Stuck? Open a ticket in our Discord.' })).toBeVisible()
 })

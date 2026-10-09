@@ -23,7 +23,7 @@ export function AppMenu({ active, signedIn }: { active: AppSection | null; signe
     ...(signedIn ? ([['my-campaigns', 'My campaigns', '/my-campaigns']] as Item[]) : []),
     ['wallet', 'Wallet', '/wallet'],
     ['leaderboard', 'Leaderboard', '/leaderboard'],
-    ['support', 'Support', '/help'],
+    ['support', 'Support', '/support'],
   ]
   const mine: Item[] = signedIn
     ? [
