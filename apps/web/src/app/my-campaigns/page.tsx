@@ -99,23 +99,34 @@ export default async function MyCampaignsPage({ searchParams }: { searchParams: 
                 {rows.map((c) => (
                   <tr key={c.id}>
                     <td className="border-0 border-t border-solid border-[var(--t-hair)] px-3 py-[14px]">
-                      <a
-                        href={`/campaigns/${c.id}`}
-                        className="text-[14px] font-semibold text-[var(--t-text)] no-underline hover:text-[var(--t-accent-ink)]"
-                      >
-                        {c.title}
-                      </a>
-                      <div className="mt-1 flex items-center gap-3 text-[12px] text-[var(--t-muted)]">
-                        <StatusDot tone={c.status === 'live' ? 'good' : c.status === 'closing' ? 'wait' : 'off'}>
-                          {c.status === 'live'
-                            ? 'Live'
-                            : c.status === 'closing'
-                              ? 'Closing'
-                              : c.status === 'closed'
-                                ? 'Closed'
-                                : 'Ended'}
-                        </StatusDot>
-                        <span>{formatDollars(c.rateCentsPer1000)} per 1,000 views</span>
+                      <div className="flex items-center gap-4">
+                        {/* The campaign's picture, as on its card (testing report, 2026-10-08). */}
+                        <a href={`/campaigns/${c.id}`} tabIndex={-1} aria-hidden className="flex-none">
+                          <img
+                            src={c.img ?? '/designed/camp-hero.png'}
+                            alt=""
+                            className="block h-[72px] w-[56px] rounded-[12px] border border-solid border-[var(--t-hair)] object-cover"
+                          />
+                        </a>
+                        <div className="min-w-0">
+                          <a
+                            href={`/campaigns/${c.id}`}
+                            className="text-[14px] font-semibold text-[var(--t-text)] no-underline hover:text-[var(--t-accent-ink)]"
+                          >
+                            {c.title}
+                          </a>
+                          <div className="mt-1 flex items-center gap-3 text-[12px] text-[var(--t-muted)]">
+                            <StatusDot tone={c.status === 'live' ? 'good' : c.status === 'closing' ? 'wait' : 'off'}>
+                              {c.status === 'live'
+                                ? 'Live'
+                                : c.status === 'closing'
+                                  ? 'Closing'
+                                  : c.status === 'closed'
+                                    ? 'Closed'
+                                    : 'Ended'}
+                            </StatusDot>
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td className="border-0 border-t border-solid border-[var(--t-hair)] px-3 py-[14px] text-right text-[13px] tabular-nums">
