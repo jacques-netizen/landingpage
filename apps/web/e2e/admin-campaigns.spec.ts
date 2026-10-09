@@ -157,3 +157,29 @@ test('the campaign overview shows the numbers and every approved, pending and re
   await tabs.getByRole('link', { name: /^Denied/ }).click()
   await expect(postLink(2)).toBeVisible()
 })
+
+// Testing report (2026-10-08), item 7: one row per campaign with its picture, state, posts and pages
+// split by outcome and its budget; search by title and filter by All / Active / Completed, access and
+// discovery.
+test('the campaigns overview shows every campaign at a glance, with search and filters', async ({ page }) => {
+  await signInAs(page, 'reviewer@seed.invalid')
+  await page.goto('/admin/campaigns')
+  const row = page.getByRole('row').filter({ has: page.getByRole('link', { name: /^Sample clipping/ }) })
+  await expect(row.locator('img')).toBeVisible()
+  for (const t of ['Active', 'Public', 'Visible', 'LIVE', 'posts', 'pages', '$2.00/1k', 'left'])
+    await expect(row).toContainText(t)
+  await expect(row.getByLabel(/^Posts: \d+ approved, \d+ pending, \d+ denied$/)).toBeVisible()
+
+  await page.getByLabel('Search campaigns by title').fill('sample mus')
+  await page.getByRole('button', { name: 'Search' }).click()
+  await expect(page.getByRole('link', { name: /^Sample music/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /^Sample clipping/ })).toHaveCount(0)
+
+  await page.goto('/admin/campaigns?show=completed')
+  await expect(page.getByRole('link', { name: /^Sample clipping/ })).toHaveCount(0)
+  await page.goto('/admin/campaigns?show=active&discovery=hidden')
+  await expect(page.getByRole('link', { name: /^Sample clipping/ })).toHaveCount(0)
+  await page.goto('/admin/campaigns?access=public&discovery=visible')
+  await expect(page.getByRole('link', { name: /^Sample clipping/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /^Seed awaiting funding/ })).toHaveCount(0)
+})

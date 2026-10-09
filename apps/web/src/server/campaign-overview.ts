@@ -100,34 +100,6 @@ export async function campaignOverview(campaignId: string, bucket: Bucket, q?: s
   }
 }
 
-/** Approved, pending and rejected counts and views on approved posts, for every campaign at once. */
-export async function campaignPostCounts() {
-  const rows = await db().execute<{
-    campaign_id: string
-    approved: string
-    pending: string
-    rejected: string
-    views: string
-  }>(sql`
-    select campaign_id,
-      count(*) filter (where state in (${inList(BUCKETS.approved.states)}))::bigint as approved,
-      count(*) filter (where state in (${inList(BUCKETS.pending.states)}))::bigint as pending,
-      count(*) filter (where state in (${inList(BUCKETS.rejected.states)}))::bigint as rejected,
-      coalesce(sum(latest_views - baseline_views) filter (where state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views
-    from submissions group by campaign_id`)
-  return new Map(
-    rows.map((r) => [
-      r.campaign_id,
-      {
-        approved: Number(r.approved),
-        pending: Number(r.pending),
-        rejected: Number(r.rejected),
-        views: Number(r.views),
-      },
-    ]),
-  )
-}
-
 /** Everyone who joined the campaign, newest first, with their linked accounts and their posts here. */
 export async function campaignCreators(campaignId: string, q?: string) {
   const term = q?.trim() ? `%${q.trim()}%` : null
@@ -199,4 +171,55 @@ export async function campaignPages(campaignId: string) {
     views: Number(r.views),
     earnedCents: Number(r.earned),
   }))
+}
+
+/**
+ * Posts and pages per campaign, each split into approved, pending and denied, for the campaigns overview
+ * (testing report, 2026-10-08). A page is the account a post came from, or its creator when no account
+ * was linked; it counts in every outcome it has a post in.
+ */
+export async function campaignListCounts() {
+  const rows = await db().execute<{
+    campaign_id: string
+    posts: string
+    approved: string
+    pending: string
+    denied: string
+    pages: string
+    pages_approved: string
+    pages_pending: string
+    pages_denied: string
+  }>(sql`
+    with p as (
+      select campaign_id, state, coalesce(linked_account_id, creator_id) as page from submissions
+    )
+    select campaign_id,
+      count(*)::bigint as posts,
+      count(*) filter (where state in (${inList(BUCKETS.approved.states)}))::bigint as approved,
+      count(*) filter (where state in (${inList(BUCKETS.pending.states)}))::bigint as pending,
+      count(*) filter (where state in (${inList(BUCKETS.rejected.states)}))::bigint as denied,
+      count(distinct page)::bigint as pages,
+      count(distinct page) filter (where state in (${inList(BUCKETS.approved.states)}))::bigint as pages_approved,
+      count(distinct page) filter (where state in (${inList(BUCKETS.pending.states)}))::bigint as pages_pending,
+      count(distinct page) filter (where state in (${inList(BUCKETS.rejected.states)}))::bigint as pages_denied
+    from p group by campaign_id`)
+  return new Map(
+    rows.map((r) => [
+      r.campaign_id,
+      {
+        posts: {
+          total: Number(r.posts),
+          approved: Number(r.approved),
+          pending: Number(r.pending),
+          denied: Number(r.denied),
+        },
+        pages: {
+          total: Number(r.pages),
+          approved: Number(r.pages_approved),
+          pending: Number(r.pages_pending),
+          denied: Number(r.pages_denied),
+        },
+      },
+    ]),
+  )
 }
