@@ -38,7 +38,8 @@ export type SettingKey = keyof Settings
 export const SETTINGS_DEFAULTS: Settings = {
   max_linked_accounts: 8,
   max_post_age_hours: 24,
-  view_check_intervals: { first_72h_hours: 2, until_close_hours: 12, keep_live_hours: 24 },
+  // Every 2 hours while a campaign runs, so staff see fresh stats (testing report, 2026-10-08).
+  view_check_intervals: { first_72h_hours: 2, until_close_hours: 2, keep_live_hours: 24 },
   deleted_post_grace_hours: 48,
   review_window_days: 7,
   withdrawal_min_cents: 500,

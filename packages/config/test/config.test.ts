@@ -22,6 +22,7 @@ describe('settings defaults', () => {
       deleted_post_grace_hours: 48,
       review_window_days: 7,
       withdrawal_min_cents: 500,
+      view_check_intervals: { first_72h_hours: 2, until_close_hours: 2, keep_live_hours: 24 },
       withdrawal_fee_bps: 0,
       withdrawal_fee_min_cents: 0,
       appeal_reply_business_days: 5,
