@@ -18,6 +18,9 @@ export type BrowseCard = {
   leftCents: number
   rateCents: number
   paidPercent: number
+  /** Ended campaigns show what was paid out of the budget, "$2,000.00/$2,000.00". */
+  paidCents?: number
+  budgetCents?: number
   platforms: string[]
   img: string | null
 }
@@ -40,7 +43,8 @@ type Props = {
   pastCards?: BrowseCard[]
   featured: BrowseFeatured | null
   theme: ThemeName
-  account: { label: string; href: string }
+  /** The header's Sign in button; none when signed in, where the menu has Sign out. */
+  account: { label: string; href: string } | null
   /** Signed-in creators get their own items in the shared menu. */
   signedIn?: boolean
   overrides?: Record<string, string>
@@ -95,7 +99,7 @@ export function BrowseView({
     }),
     search,
     onSearch: (e: { target: { value: string } }) => setSearch(e.target.value),
-    account: { label: account.label, go: () => router.push(account.href) },
+    account: account ? { label: account.label, go: () => router.push(account.href) } : null,
     featured: featured
       ? {
           title: featured.title,
@@ -123,8 +127,7 @@ export function BrowseView({
           cards={pastCards.map((c) => ({
             title: c.title,
             label: c.label,
-            left: formatDollars(c.leftCents),
-            rate: formatDollars(c.rateCents),
+            used: `${formatDollars(c.paidCents ?? 0)}/${formatDollars(c.budgetCents ?? 0)}`,
             pct: `${c.paidPercent}%`,
             plats: c.platforms,
             img: c.img ?? '/designed/camp-hero.png',

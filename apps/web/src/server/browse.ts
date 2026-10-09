@@ -52,6 +52,8 @@ export async function loadPastCards(): Promise<BrowseCard[]> {
       leftCents: f.leftCents,
       rateCents: c.rateCentsPer1000,
       paidPercent: f.paidPercent,
+      paidCents: f.paidCents,
+      budgetCents: f.budgetCents,
       platforms: c.platforms.map((p) => PLATFORM_LABELS[p as Platform] ?? p),
       img: c.coverImageUrl,
     }))
@@ -93,7 +95,8 @@ export async function browseChrome() {
   const [viewer, jar] = await Promise.all([getViewer(), cookies()])
   return {
     theme: readThemeCookie(jar.get(THEME_COOKIE)?.value),
-    account: viewer ? { label: 'Sign out', href: '/sign-out' } : { label: 'Sign in', href: '/sign-in?next=/campaigns' },
+    // Signed in, the menu's own Sign out is the only one (testing report, 2026-10-08).
+    account: viewer ? null : { label: 'Sign in', href: '/sign-in?next=/campaigns' },
     signedIn: !!viewer,
   }
 }

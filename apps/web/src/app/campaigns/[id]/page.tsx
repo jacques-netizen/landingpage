@@ -66,6 +66,8 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
   if (!data) notFound()
   const { campaign: c, terms } = data
   const f = shownFigures(c.status, data.figures)
+  const ended = c.status === 'closed' || c.status === 'closing'
+  const usedLabel = `${formatDollars(f.paidCents)}/${formatDollars(f.budgetCents)}`
   const theme = readThemeCookie((await cookies()).get(THEME_COOKIE)?.value)
   const template = TEMPLATES[c.type as CampaignType]
   const status = CAMPAIGN_STATUS[c.status]
@@ -162,8 +164,14 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
             <dl className="m-0">
               <Rule label="Rate">{formatDollars(c.rateCentsPer1000)} per 1,000 counted views</Rule>
               <Rule label="Budget">{formatDollars(f.budgetCents)}</Rule>
-              <Rule label="Paid to creators so far">{formatDollars(f.paidCents)}</Rule>
-              <Rule label="Left in budget">{formatDollars(f.leftCents)}</Rule>
+              {ended ? (
+                <Rule label="Paid to creators">{usedLabel}</Rule>
+              ) : (
+                <>
+                  <Rule label="Paid to creators so far">{formatDollars(f.paidCents)}</Rule>
+                  <Rule label="Left in budget">{formatDollars(f.leftCents)}</Rule>
+                </>
+              )}
               <Rule label="Most one post can earn">
                 {c.capPerPostCents === null ? 'No limit' : formatDollars(c.capPerPostCents)}
               </Rule>
@@ -277,15 +285,27 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
 
         <aside className={`${panel} sticky top-4 p-6 max-lg:static`}>
           <div className="text-[12px] font-semibold tracking-[0.06em] text-[var(--t-muted)] uppercase">
-            Left in budget
+            {ended ? 'Budget paid out' : 'Left in budget'}
           </div>
-          <div
-            className="mt-2 text-[44px] leading-none font-bold tracking-[-0.03em] tabular-nums"
-            style={{ color: 'var(--t-accent-ink)' }}
-          >
-            {formatDollars(f.leftCents)}
-          </div>
-          <div className="mt-2 text-[13px] text-[var(--t-muted)]">of {formatDollars(f.budgetCents)}</div>
+          {ended ? (
+            // Ended campaigns show what was paid out of the budget, not "$0 left" (testing report, 2026-10-08).
+            <div
+              className="mt-2 text-[28px] leading-tight font-bold tracking-[-0.02em] tabular-nums"
+              style={{ color: 'var(--t-accent-ink)' }}
+            >
+              {usedLabel}
+            </div>
+          ) : (
+            <>
+              <div
+                className="mt-2 text-[44px] leading-none font-bold tracking-[-0.03em] tabular-nums"
+                style={{ color: 'var(--t-accent-ink)' }}
+              >
+                {formatDollars(f.leftCents)}
+              </div>
+              <div className="mt-2 text-[13px] text-[var(--t-muted)]">of {formatDollars(f.budgetCents)}</div>
+            </>
+          )}
           <div
             className="mt-4 h-1 rounded-[2px] bg-[var(--t-hair2)]"
             role="img"
@@ -295,7 +315,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
           </div>
           <dl className="mt-5 mb-6 text-[13px]">
             {[
-              ['Rate', `${formatDollars(c.rateCentsPer1000)} per 1,000 views`],
+              // No rate in the budget box (testing report, 2026-10-08); it stays in the Money rules.
               ['Platforms', platforms.join(', ')],
               ['Opens', c.startAt ? date(c.startAt) : 'Now'],
               ['Closes', c.endAt ? date(c.endAt) : 'When the budget is used'],

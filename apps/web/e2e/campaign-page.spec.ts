@@ -77,3 +77,13 @@ test('unpublished and unknown campaigns are not shown to the public', async ({ p
   expect((await page.goto('/campaigns/00000000-0000-0000-0000-000000000000'))?.status()).toBe(404)
   await expect(page.getByText('This campaign is not available.')).toBeVisible()
 })
+
+test('an ended campaign shows what was paid out of the budget, not "$0 left"', async ({ page }) => {
+  const [c] = await sql`select id, budget_cents from campaigns where title = 'Seed closing campaign'`
+  await page.goto('/campaigns')
+  const shown = `$${(Number(c!.budget_cents) / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+  await expect(page.getByText('Past campaigns')).toBeVisible()
+  await page.goto(`/campaigns/${c!.id}`)
+  await expect(page.getByText('Budget paid out')).toBeVisible()
+  await expect(page.getByText(`/${shown}`).first()).toBeVisible()
+})

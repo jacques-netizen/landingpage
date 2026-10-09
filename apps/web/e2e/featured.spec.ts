@@ -60,3 +60,10 @@ test('the creator menu has Sign out at the bottom', async ({ page }) => {
   const s = (await (await page.request.get('/api/auth/session')).json()) as { user?: unknown } | null
   expect(s?.user).toBeUndefined()
 })
+
+test('signed in, the campaigns screen has no second Sign out (testing report, 2026-10-08)', async ({ page }) => {
+  await signUpNewCreator(page)
+  await page.goto('/campaigns')
+  await expect(page.getByText('Sign out', { exact: true })).toHaveCount(1)
+  await expect(page.getByText(/ \/ 1k$/).first()).toBeHidden()
+})

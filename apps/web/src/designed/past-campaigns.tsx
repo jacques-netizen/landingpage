@@ -3,7 +3,7 @@
 import { Fragment } from 'react'
 import { clickable, css } from './runtime'
 
-type Card = { title: string; label: string; left: string; rate: string; pct: string; plats: string[]; img: string; go: () => void }
+type Card = { title: string; label: string; used: string; pct: string; plats: string[]; img: string; go: () => void }
 
 // Campaigns that have ended (owner request, 2026-10-07), under the active ones. Built from the
 // campaigns screen's own heading and card, unchanged, so it looks like part of the design.
@@ -91,8 +91,8 @@ export function PastCampaigns({
                     fontVariantNumeric: 'tabular-nums',
                   })}
                 >
-                  <span>{c.left} left</span>
-                  <span style={css({ color: T.muted })}>{c.rate} / 1k</span>
+                  {/* Paid out of the budget, without the rate (testing report, 2026-10-08). */}
+                  <span>{c.used}</span>
                 </div>
               </div>
             </div>

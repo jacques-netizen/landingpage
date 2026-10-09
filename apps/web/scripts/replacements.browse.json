@@ -1,6 +1,6 @@
 {
   "wz": "\"var(--mde-app-zoom)\"",
-  "$hide": ["list:bstates"],
+  "$hide": ["list:bstates", "text:{{ c.rate }} / 1k"],
   "$text": {
     "Search campaigns, labels or platforms": "<input type=\"search\" aria-label=\"Search campaigns, labels or platforms\" placeholder=\"Search campaigns, labels or platforms\" value={v.search} onChange={v.onSearch} className=\"mde-search\" />",
     "Sign in": "{v.account.label}",
@@ -26,7 +26,8 @@
     }
   },
   "$if": {
-    "position:relative;color:#F4F1EA;height:370px": "v.featured"
+    "position:relative;color:#F4F1EA;height:370px": "v.featured",
+    "height:48px;padding:0 22px;border-radius:14px": "v.account"
   },
   "$mark": {
     "a-page": "padding:40px 24px 96px",
