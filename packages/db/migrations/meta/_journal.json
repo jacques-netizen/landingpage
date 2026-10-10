@@ -155,6 +155,13 @@
       "when": 1791544416655,
       "tag": "0021_two_hour_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791646359194,
+      "tag": "0022_legal_documents_v1",
+      "breakpoints": true
     }
   ]
 }

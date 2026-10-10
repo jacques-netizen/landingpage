@@ -43,25 +43,28 @@ test('the brand site footer links to the legal pages', async ({ page }) => {
   await page.goto('/brands')
   await page.getByRole('link', { name: 'Privacy Policy' }).click()
   await expect(page).toHaveURL(/\/legal\/privacy$/)
-  await expect(page.getByRole('note')).toContainText('Working text')
+  // Version 1 of every document is in migration 0022 (owner request, 2026-10-10).
+  await expect(page.getByText('Version 1, in force from October 10, 2026.')).toBeVisible()
+  await expect(page.getByRole('note')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'What we collect' })).toBeVisible()
 })
 
 test('legal pages show the version in force and keep earlier versions', async ({ page }) => {
-  await sql`delete from legal_documents where slug = 'campaign-rules'`
+  // On top of the real version 1 (migration 0022, in force 2026-10-10): a newer one and a future one.
+  await sql`delete from legal_documents where slug = 'campaign-rules' and version > 1`
   try {
     await sql`insert into legal_documents (slug, version, title, body_markdown, effective_at) values
-      ('campaign-rules', 1, 'Campaign Rules', 'First text.', '2026-01-10T00:00:00Z'),
-      ('campaign-rules', 2, 'Campaign Rules', 'Second text.', '2026-03-01T00:00:00Z'),
+      ('campaign-rules', 2, 'Campaign Rules', 'Second text.', '2026-10-10T01:00:00Z'),
       ('campaign-rules', 3, 'Campaign Rules', 'Future text.', '2099-01-01T00:00:00Z')`
     await page.goto('/legal/campaign-rules')
     await expect(page.getByText('Second text.')).toBeVisible()
-    await expect(page.getByText('Version 2, in force from March 1, 2026.')).toBeVisible()
+    await expect(page.getByText('Version 2, in force from October 10, 2026.')).toBeVisible()
     await expect(page.getByText('Future text.')).toHaveCount(0)
     await expect(page.getByRole('note')).toHaveCount(0)
-    await page.getByRole('link', { name: 'Version 1, from January 10, 2026' }).click()
-    await expect(page.getByText('First text.')).toBeVisible()
+    await page.getByRole('link', { name: 'Version 1, from October 10, 2026' }).click()
+    await expect(page.getByRole('heading', { name: 'Rules that apply to every campaign' })).toBeVisible()
   } finally {
-    await sql`delete from legal_documents where slug = 'campaign-rules'`
+    await sql`delete from legal_documents where slug = 'campaign-rules' and version > 1`
   }
   const res = await page.goto('/legal/not-a-page')
   expect(res?.status()).toBe(404)
