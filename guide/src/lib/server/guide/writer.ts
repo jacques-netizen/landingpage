@@ -183,7 +183,12 @@ export type WriteResult = { written: Written; model: string; usage: { input: num
 export async function writeWithAi(brief: Brief): Promise<WriteResult> {
   const c = config();
   if (!c.anthropicApiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey: c.anthropicApiKey, maxRetries: 2, timeout: 120_000 });
+  const client = new Anthropic({
+    apiKey: c.anthropicApiKey,
+    maxRetries: 2,
+    timeout: 120_000,
+    ...(c.anthropicWorkspaceId ? { defaultHeaders: { "anthropic-workspace-id": c.anthropicWorkspaceId } } : {}),
+  });
   let violations: string[] = [];
   let last: WrittenOutput | null = null;
   for (let attempt = 0; attempt < 2; attempt++) {

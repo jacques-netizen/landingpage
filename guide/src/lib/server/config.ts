@@ -54,6 +54,8 @@ export function config() {
     },
     // The AI writer. The key comes from the owner's separate Anthropic console.
     anthropicApiKey: str(e.ANTHROPIC_API_KEY),
+    // Needed when the key is a user key rather than a workspace key.
+    anthropicWorkspaceId: str(e.ANTHROPIC_WORKSPACE_ID),
     guideWriter: str(e.GUIDE_WRITER, e.ANTHROPIC_API_KEY ? "ai" : "rules") as "ai" | "rules",
     guideWriterModel: str(e.GUIDE_WRITER_MODEL, "claude-opus-5-5"),
     dashboardPassword: str(e.DASHBOARD_PASSWORD),
