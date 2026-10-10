@@ -3,7 +3,7 @@ import { getSettings, tables, writeAudit, type Db, type DbOrTx } from '@mde/db'
 import { and, eq, ne, sql } from 'drizzle-orm'
 import { bioHasCode, generateBioCode } from './bio-code'
 import type { ProviderRouter } from './router'
-import { ProviderUnavailable, type Platform } from './types'
+import { isProviderUnavailable, type Platform } from './types'
 import { isValidHandle, normalizeHandle } from './urls'
 
 const { linkedAccounts } = tables
@@ -118,7 +118,7 @@ export async function verifyBioCode(db: Db, router: ProviderRouter, creatorId: s
   try {
     profile = await router.fetchProfile('bio_code', { platform: row.platform as Platform, handle: row.handle })
   } catch (err) {
-    if (err instanceof ProviderUnavailable)
+    if (isProviderUnavailable(err))
       throw new AccountError(
         'provider_unavailable',
         'We could not reach the platform just now. Try again in a few minutes.',

@@ -4,7 +4,7 @@
 import { getSettings, notify, tables, writeAudit, type Db } from '@mde/db'
 import { accrueEarnings, createPgStore, reverseEarnings } from '@mde/money'
 import {
-  ProviderUnavailable,
+  isProviderUnavailable,
   type LinkedAccount,
   type Platform,
   type PostData,
@@ -65,7 +65,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       token: token ?? undefined,
     })
   } catch (e) {
-    if (!(e instanceof ProviderUnavailable)) throw e
+    if (!isProviderUnavailable(e)) throw e
     // 2. A row every time, whatever the result. Nothing else changes; the next slot tries again.
     await db
       .insert(viewSnapshots)
@@ -154,6 +154,8 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       // 5 and 6. The first successful check sets the baseline; counted views move only while earning.
       const baseline = previous.length === 0 ? post.views : s.baselineViews
       patch.baselineViews = baseline
+      // A post the platform could not show at submission gets its published time now.
+      if (!s.publishedAt && post.publishedAt) patch.publishedAt = post.publishedAt
       patch.latestViews = post.views
       const counted = Math.max(0, post.views - baseline)
       if (EARNING.includes(before)) patch.countedViews = counted

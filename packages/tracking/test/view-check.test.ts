@@ -171,6 +171,22 @@ describe('view checks and earnings', () => {
     expect((await t.sub()).state).toBe('earning')
   })
 
+  it('a post submitted while the platform was down gets its baseline from the first check that works', async () => {
+    state = { ...state, down: true }
+    const t = await setup()
+    state = { ...state, down: false }
+    expect(await t.sub()).toMatchObject({ baselineViews: 0, publishedAt: null })
+    // The first successful check: views at that moment are the baseline, nothing is counted.
+    t.post(3_000)
+    expect((await t.check(2)).result).toBe('checked')
+    expect(await t.sub()).toMatchObject({ baselineViews: 3_000, latestViews: 3_000, countedViews: 0 })
+    expect((await t.sub()).publishedAt).not.toBeNull()
+    // Then views count from there: 2,000 at $2.00 per 1,000.
+    t.post(5_000)
+    expect((await t.check(4)).deltaCents).toBe(400)
+    expect(await t.sub()).toMatchObject({ countedViews: 2_000, earnedCents: 400 })
+  })
+
   it('running the same check twice changes nothing', async () => {
     const t = await setup()
     t.post(5_500)

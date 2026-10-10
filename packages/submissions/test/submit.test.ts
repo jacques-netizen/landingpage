@@ -243,14 +243,37 @@ describe('submitting a post', () => {
     expect(flags).toMatchObject([{ kind: 'duplicate_media', status: 'open' }])
   })
 
-  it('stores nothing when the platform cannot be reached', async () => {
+  // Owner request (2026-10-10): clippers were turned away with "We could not reach the platform". A post
+  // is never refused for that: it is kept for a reviewer, and its stats come with the next view check.
+  it('keeps the post for review when the platform cannot be reached, with nothing counted yet', async () => {
     const c = await liveCampaign()
     const me = await creatorIn(c.id)
     state = { ...state, down: true }
-    const r = await submitPost(db, { creatorId: me.id, campaignId: c.id, postUrl: post().url }, deps())
+    // Without the post's data, the handle in the link must be the creator's own.
+    const url = `https://www.tiktok.com/@${me.account.handle}/video/${post().pid}`
+    const r = await submitPost(db, { creatorId: me.id, campaignId: c.id, postUrl: url }, deps())
     state = { ...state, down: false }
-    expect(r.outcome).toBe('not_submitted')
-    expect(r.message).toMatch(/could not reach the platform/)
+    expect(r.outcome).toBe('needs_review')
+    expect(r.checks.some((x) => x.status === 'fail')).toBe(false)
+    // What needs the post's data waits for a reviewer; what does not still runs.
+    expect(r.checks.find((x) => x.check === 6)).toMatchObject({
+      status: 'review',
+      detail: expect.stringMatching(/could not be reached/),
+    })
+    expect(r.checks.find((x) => x.check === 7)).toMatchObject({ status: 'review' })
+    expect(r.checks.find((x) => x.check === 10)).toMatchObject({ status: 'review' })
+    expect(r.checks.find((x) => x.check === 4)).toMatchObject({ status: 'pass' })
+    const [row] = await db.select().from(tables.submissions).where(eq(tables.submissions.id, r.submissionId!))
+    expect(row).toMatchObject({
+      state: 'needs_review',
+      baselineViews: 0,
+      latestViews: 0,
+      countedViews: 0,
+      publishedAt: null,
+    })
+    expect(row!.nextCheckAt).not.toBeNull()
+    const snaps = await db.select().from(tables.viewSnapshots).where(eq(tables.viewSnapshots.submissionId, row!.id))
+    expect(snaps).toMatchObject([{ views: null, source: 'unavailable' }])
   })
 
   it('approves at once for clean creators only when the setting is on', async () => {

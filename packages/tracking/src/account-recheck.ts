@@ -2,7 +2,7 @@
 // follower drop of more than half in a day (flag), account deleted.
 import { getSettings, notify, tables, type Db } from '@mde/db'
 import {
-  ProviderUnavailable,
+  isProviderUnavailable,
   normalizeHandle,
   type LinkedAccount,
   type Platform,
@@ -35,7 +35,7 @@ export async function recheckAccount(
       token: token ?? undefined,
     })
   } catch (e) {
-    if (e instanceof ProviderUnavailable) return 'unavailable'
+    if (isProviderUnavailable(e)) return 'unavailable'
     throw e
   }
 

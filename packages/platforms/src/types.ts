@@ -51,8 +51,18 @@ export class ProviderUnavailable extends Error {
   constructor(
     message: string,
     readonly provider: string,
+    /** none_configured: nothing is set up for this platform (a deployment problem, not an outage). */
+    readonly reason: 'none_configured' | 'failed' = 'failed',
   ) {
     super(message)
     this.name = 'ProviderUnavailable'
   }
+}
+
+/**
+ * Whether an error is a ProviderUnavailable, by name as well as by class: a bundler can give a package
+ * two copies of the class, and instanceof then fails between them (seen in the web app's build).
+ */
+export function isProviderUnavailable(e: unknown): e is ProviderUnavailable {
+  return e instanceof ProviderUnavailable || (e instanceof Error && e.name === 'ProviderUnavailable')
 }

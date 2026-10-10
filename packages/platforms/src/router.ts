@@ -73,7 +73,13 @@ export class ProviderRouter {
     throw new ProviderUnavailable(
       candidates.length ? `No provider could ${what} right now.` : `No provider supports ${platform} by ${method}.`,
       candidates.map((p) => p.name).join(',') || 'none',
+      candidates.length ? 'failed' : 'none_configured',
     )
+  }
+
+  /** The names of the providers that can answer for this platform and link method, in order. */
+  supporting(platform: Platform, method: LinkMethod): string[] {
+    return this.providers.filter((p) => p.supports(platform, method)).map((p) => p.name)
   }
 
   fetchProfile(method: LinkMethod, input: Parameters<ViewProvider['fetchProfile']>[0]): Promise<ProfileData | null> {

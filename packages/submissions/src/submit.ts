@@ -4,6 +4,7 @@
 import { getSettings, tables, type Db } from '@mde/db'
 import {
   parsePostUrl,
+  isProviderUnavailable,
   ProviderUnavailable,
   type LinkedAccount,
   type Platform,
@@ -22,6 +23,7 @@ import {
   checkPlatform,
   checkPostLimit,
   checkPublic,
+  postUnreachableForReview,
   checkTiming,
   type CheckResult,
   authorForReview,
@@ -103,7 +105,12 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
   ).filter((a) => !input.linkedAccountId || a.id === input.linkedAccountId)
   const onPlatform = accounts.filter((a) => a.platform === platform && a.status === 'verified')
   const oauth = onPlatform.find((a) => a.linkMethod === 'oauth')
-  let post: PostData
+  // When the platform cannot be reached (an outage, or no data provider set up), the post is kept and
+  // goes to a reviewer instead of being refused (owner request, 2026-10-10): clippers were being turned
+  // away. The checks that need the post's data wait for the reviewer; the next view check fetches the
+  // post and sets its baseline, so nothing before that is counted.
+  let post: PostData | null = null
+  let unreachable: ProviderUnavailable | null = null
   try {
     const token = oauth && deps.tokenFor ? await deps.tokenFor(oauth) : null
     post = await deps.router.fetchPost(oauth && token ? 'oauth' : 'bio_code', {
@@ -113,15 +120,22 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
       token: token ?? undefined,
     })
   } catch (e) {
-    if (e instanceof ProviderUnavailable)
-      return stop(
-        'We could not reach the platform to check this post. Nothing was submitted. Try again in a few minutes.',
-      )
-    throw e
+    if (!isProviderUnavailable(e)) throw e
+    unreachable = e
+    console.error(
+      JSON.stringify({
+        level: 'error',
+        msg: 'post kept for review: platform unreachable at submission',
+        platform,
+        reason: e.reason,
+        provider: e.provider,
+        err: e.message,
+      }),
+    )
   }
 
-  // 3.
-  let author = checkAuthor(accounts, platform, post, parsed.handle)
+  // 3. Without the post's data, the handle in the link decides.
+  let author = checkAuthor(accounts, platform, post ?? { authorPlatformUserId: null }, parsed.handle)
   if (input.requireLinkedAccount === false && author.result.status === 'fail')
     author = { result: authorForReview(), account: null }
   checks.push(author.result)
@@ -165,11 +179,11 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
       )) as [{ n: number }]
     for (const run of [
       () => checkPostLimit(rules, n),
-      () => checkPublic(post),
-      () => checkTiming(rules, post, s.max_post_age_hours, now),
+      () => (post ? checkPublic(post) : postUnreachableForReview(6, rules)),
+      () => (post ? checkTiming(rules, post, s.max_post_age_hours, now) : postUnreachableForReview(7, rules)),
       () => (account ? checkAccountRules(rules, account, now) : accountRulesForReview(rules)),
-      () => checkDuration(rules, post),
-      () => checkCaption(rules, post),
+      () => (post ? checkDuration(rules, post) : postUnreachableForReview(9, rules)),
+      () => (post ? checkCaption(rules, post) : postUnreachableForReview(10, rules)),
     ]) {
       checks.push(run())
       if (failedAt()) break
@@ -181,7 +195,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
 
   // 11. Only when everything else passed: a close match is a flag for review, not a rejection.
   let mediaHash: string | null = null
-  if (!failedAt()) {
+  if (!failedAt() && post) {
     mediaHash = post.mediaHash ?? (post.thumbnailUrl ? await mediaHashFromUrl(post.thumbnailUrl, deps.http) : null)
     const others = mediaHash
       ? (
@@ -218,11 +232,12 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     reasonNote: null,
     termsVersionId: c.currentTermsVersionId!,
     rateCentsPer1000Locked: c.rateCentsPer1000,
-    publishedAt: post.publishedAt,
+    publishedAt: post?.publishedAt ?? null,
     submittedAt: now,
-    // The views at submission are the baseline and are never counted (02_DATA_AND_MONEY.md).
-    baselineViews: post.views ?? 0,
-    latestViews: post.views ?? 0,
+    // The views at submission are the baseline and are never counted (02_DATA_AND_MONEY.md). Unknown
+    // here, the first view check that gets them sets it.
+    baselineViews: post?.views ?? 0,
+    latestViews: post?.views ?? 0,
     countedViews: 0,
     earnedCents: 0,
     mediaHash,
@@ -244,18 +259,22 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
         id = row!.id
       }
       // The check at submission is the first view check: keep the snapshot (03_SYSTEMS.md 3.3).
-      await tx.insert(viewSnapshots).values({
-        submissionId: id,
-        takenAt: now,
-        views: post.views,
-        likes: post.likes,
-        comments: post.comments,
-        shares: post.shares,
-        saves: post.saves,
-        isPublic: post.exists && post.isPublic,
-        source: post.source ?? null,
-        raw: (post.rawRef ?? null) as never,
-      })
+      await tx.insert(viewSnapshots).values(
+        post
+          ? {
+              submissionId: id,
+              takenAt: now,
+              views: post.views,
+              likes: post.likes,
+              comments: post.comments,
+              shares: post.shares,
+              saves: post.saves,
+              isPublic: post.exists && post.isPublic,
+              source: post.source ?? null,
+              raw: (post.rawRef ?? null) as never,
+            }
+          : { submissionId: id, takenAt: now, source: 'unavailable', raw: { error: unreachable!.message } as never },
+      )
       if (failure)
         await tx
           .insert(reviewDecisions)

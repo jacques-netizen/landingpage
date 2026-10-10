@@ -106,6 +106,21 @@ export function accountRulesForReview(c: CampaignRules): CheckResult {
   return pass(8, label)
 }
 
+/**
+ * 6, 7, 9 and 10 when the platform could not be reached at submission (owner request, 2026-10-10): the
+ * post is kept and a reviewer checks what the data would have shown. Rules the campaign does not set
+ * still pass. The next view check fetches the post and sets its baseline.
+ */
+export function postUnreachableForReview(check: 6 | 7 | 9 | 10, c: CampaignRules): CheckResult {
+  const detail = 'The platform could not be reached when this was submitted. A reviewer will check.'
+  if (check === 6) return review(6, 'Post and stats are public', detail)
+  if (check === 7) return review(7, 'Posted at the right time', detail)
+  if (check === 9)
+    return c.minDurationSeconds === null ? pass(9, 'Minimum duration') : review(9, 'Minimum duration', detail)
+  const tags = (c.requiredHashtags ?? []).filter((t) => t.trim().replace(/^#+/, '').length)
+  return tags.length ? review(10, 'Required hashtag present', detail) : pass(10, 'Required hashtag present')
+}
+
 /** 4. The same post is not already in this campaign. */
 export function checkNotDuplicate(alreadySubmitted: boolean): CheckResult {
   const label = 'Not already in this campaign'

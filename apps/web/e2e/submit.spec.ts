@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import postgres from 'postgres'
+import { writeMockState } from '@mde/platforms'
 import { readyCreator, scriptPost, signUpNewCreator } from './helpers'
 
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
@@ -62,4 +63,31 @@ test('with account linking off, a creator submits without linking and a reviewer
   await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
   const [s] = await sql`select state, linked_account_id from submissions where post_url = ${link}`
   expect(s).toMatchObject({ state: 'needs_review', linked_account_id: null })
+})
+
+// Owner request (2026-10-10): clippers were turned away with "We could not reach the platform". Now the
+// post is kept for a reviewer, and its stats come with the next check.
+test('a post submitted while the platform is unreachable is kept for review, never refused', async ({ page }) => {
+  await signUpNewCreator(page)
+  const [c] = await sql`select id from campaigns where title = 'Sample music'`
+  await page.goto(`/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Join campaign' }).click()
+  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
+  const link = scriptPost(`down${Date.now() % 1e6}`, 'New sound #mde')
+  writeMockState({ down: true })
+  try {
+    await page.getByLabel('Link to your post').fill(link)
+    await page.getByRole('button', { name: 'Submit post' }).click()
+    await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
+    await expect(page.getByText(/could not reach the platform/)).toHaveCount(0)
+    await expect(
+      page.getByText('The platform could not be reached when this was submitted. A reviewer will check.').first(),
+    ).toBeVisible()
+  } finally {
+    writeMockState({ down: false })
+  }
+  const [s] = await sql`select state, baseline_views, next_check_at from submissions where post_url = ${link}`
+  expect(s).toMatchObject({ state: 'needs_review' })
+  expect(Number(s!.baseline_views)).toBe(0)
+  expect(s!.next_check_at).not.toBeNull()
 })
