@@ -243,6 +243,33 @@ describe('submitting a post', () => {
     expect(flags).toMatchObject([{ kind: 'duplicate_media', status: 'open' }])
   })
 
+  it("follows a short share link from the TikTok app to the post (owner's clippers, 2026-10-10)", async () => {
+    const c = await liveCampaign()
+    const me = await creatorIn(c.id)
+    const p = post()
+    script(p.pid, { ...p.data, authorPlatformUserId: me.account.platformUserId })
+    const http = (async (u: string | URL) =>
+      String(u) === 'https://vm.tiktok.com/ZN8BSNUM/'
+        ? new Response(null, { status: 302, headers: { location: `${p.url}?_r=1` } })
+        : new Response('', { status: 200 })) as unknown as typeof fetch
+    const r = await submitPost(
+      db,
+      { creatorId: me.id, campaignId: c.id, postUrl: 'https://vm.tiktok.com/ZN8BSNUM/' },
+      { ...deps(), http },
+    )
+    expect(r.outcome).toBe('needs_review')
+    const [row] = await db.select().from(tables.submissions).where(eq(tables.submissions.id, r.submissionId!))
+    // The full link is what is stored, and the short link is still refused when it leads nowhere.
+    expect(row).toMatchObject({ postUrl: `${p.url}?_r=1`, platformPostId: p.pid })
+    const r2 = await submitPost(
+      db,
+      { creatorId: me.id, campaignId: c.id, postUrl: 'https://vm.tiktok.com/nothing/' },
+      { ...deps(), http },
+    )
+    expect(r2.outcome).toBe('not_submitted')
+    expect(r2.checks.at(-1)).toMatchObject({ check: 2, status: 'fail' })
+  })
+
   // Owner request (2026-10-10): clippers were turned away with "We could not reach the platform". A post
   // is never refused for that: it is kept for a reviewer, and its stats come with the next view check.
   it('keeps the post for review when the platform cannot be reached, with nothing counted yet', async () => {

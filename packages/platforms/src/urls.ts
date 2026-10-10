@@ -79,3 +79,53 @@ export function profileUrl(platform: Platform, handle: string) {
     x: `https://x.com/${h}`,
   }[platform]
 }
+
+// Share links from the apps (owner's clippers, 2026-10-10): the TikTok app shares vm.tiktok.com/CODE,
+// vt.tiktok.com/CODE or tiktok.com/t/CODE; Instagram shares instagram.com/share/...; the mobile site
+// uses tiktok.com/v/ID.html. Each answers with a redirect to the full post link. Only these hosts are
+// followed, so a link to anywhere else is never fetched from the server.
+const SHORT_HOSTS = new Set(['vm.tiktok.com', 'vt.tiktok.com'])
+
+export function isShortPostLink(input: string): boolean {
+  let url: URL
+  try {
+    url = new URL(input.trim())
+  } catch {
+    return false
+  }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return false
+  const h = host(url.hostname)
+  if (SHORT_HOSTS.has(h)) return true
+  const parts = url.pathname.split('/').filter(Boolean)
+  if (h === 'tiktok.com') return parts[0] === 't' || parts[0] === 'v'
+  if (h === 'instagram.com') return parts[0] === 'share'
+  return false
+}
+
+/**
+ * The full post link a short share link leads to, following up to 5 redirects between the platform's
+ * own hosts. Anything else, a loop, a dead link or a slow answer gives the input back unchanged, and
+ * parsePostUrl then says what is wrong.
+ */
+export async function resolvePostUrl(input: string, http: typeof fetch = fetch): Promise<string> {
+  let current = input.trim()
+  for (let hop = 0; hop < 5 && isShortPostLink(current); hop++) {
+    let next: string | null
+    try {
+      const res = await http(current, {
+        method: 'GET',
+        redirect: 'manual',
+        signal: AbortSignal.timeout(10_000),
+        headers: { 'user-agent': 'Mozilla/5.0 (compatible; MaisonDElites/1.0)' },
+      })
+      next = res.status >= 300 && res.status < 400 ? res.headers.get('location') : null
+    } catch {
+      return input.trim()
+    }
+    if (!next) return input.trim()
+    const resolved = new URL(next, current).toString()
+    if (resolved === current) return input.trim()
+    current = resolved
+  }
+  return current
+}

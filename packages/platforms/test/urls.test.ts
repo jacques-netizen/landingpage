@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { BIO_CODE_ALPHABET, bioHasCode, generateBioCode, isValidHandle, normalizeHandle, parsePostUrl } from '../src'
+import {
+  BIO_CODE_ALPHABET,
+  bioHasCode,
+  generateBioCode,
+  isShortPostLink,
+  isValidHandle,
+  normalizeHandle,
+  parsePostUrl,
+  resolvePostUrl,
+} from '../src'
 
 describe('post links', () => {
   it.each([
@@ -57,5 +66,52 @@ describe('bio codes', () => {
     expect(bioHasCode('MDE - 7K4Q', 'MDE-7K4Q')).toBe(true)
     expect(bioHasCode('MDE-7K4R', 'MDE-7K4Q')).toBe(false)
     expect(bioHasCode(null, 'MDE-7K4Q')).toBe(false)
+  })
+})
+
+// Share links from the apps (owner's clippers, 2026-10-10): the app only reads the full post link, so a
+// short link is followed to it first.
+describe('short share links', () => {
+  const redirects: Record<string, string> = {
+    'https://vm.tiktok.com/ZN8BSNUM/': 'https://www.tiktok.com/@ander_lyrics/video/7695181177023483158?_r=1',
+    'https://vt.tiktok.com/ZSabc/': 'https://m.tiktok.com/v/7695181177023483158.html',
+    'https://m.tiktok.com/v/7695181177023483158.html': 'https://www.tiktok.com/@ander_lyrics/video/7695181177023483158',
+    'https://www.instagram.com/share/reel/_abc123/': 'https://www.instagram.com/reel/C5abcDEF123/',
+    'https://vm.tiktok.com/loop/': 'https://vm.tiktok.com/loop/',
+  }
+  const http = (async (u: string | URL | Request, init?: RequestInit) => {
+    const key = String(u)
+    const to = redirects[key]
+    if (init?.redirect !== 'manual') throw new Error('must not follow redirects automatically')
+    return to ? new Response(null, { status: 302, headers: { location: to } }) : new Response('', { status: 200 })
+  }) as typeof fetch
+
+  it.each([
+    ['https://vm.tiktok.com/ZN8BSNUM/', 'https://www.tiktok.com/@ander_lyrics/video/7695181177023483158?_r=1'],
+    ['https://vt.tiktok.com/ZSabc/', 'https://www.tiktok.com/@ander_lyrics/video/7695181177023483158'],
+    ['https://www.instagram.com/share/reel/_abc123/', 'https://www.instagram.com/reel/C5abcDEF123/'],
+  ])('follows %s to the post', async (short, full) => {
+    expect(await resolvePostUrl(short, http)).toBe(full)
+  })
+
+  it('leaves a full post link alone without any request', async () => {
+    const full = 'https://www.tiktok.com/@maya.clips/video/7350123456789012345'
+    const noHttp = (async () => {
+      throw new Error('no request expected')
+    }) as unknown as typeof fetch
+    expect(await resolvePostUrl(full, noHttp)).toBe(full)
+  })
+
+  it('gives up on a loop or a link that goes nowhere', async () => {
+    expect(await resolvePostUrl('https://vm.tiktok.com/loop/', http)).toBe('https://vm.tiktok.com/loop/')
+    expect(await resolvePostUrl('https://vm.tiktok.com/nothing/', http)).toBe('https://vm.tiktok.com/nothing/')
+  })
+
+  it('is read as a short link only on the platforms own hosts', () => {
+    expect(isShortPostLink('https://vm.tiktok.com/ZN8BSNUM/')).toBe(true)
+    expect(isShortPostLink('https://www.tiktok.com/t/ZT8abc/')).toBe(true)
+    expect(isShortPostLink('https://www.instagram.com/share/reel/_abc/')).toBe(true)
+    expect(isShortPostLink('https://evil.example/vm.tiktok.com/ZN8/')).toBe(false)
+    expect(isShortPostLink('https://www.tiktok.com/@maya/video/7350123456789012345')).toBe(false)
   })
 })

@@ -4,6 +4,7 @@
 import { getSettings, tables, type Db } from '@mde/db'
 import {
   parsePostUrl,
+  resolvePostUrl,
   isProviderUnavailable,
   ProviderUnavailable,
   type LinkedAccount,
@@ -90,7 +91,8 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
   // 1 and 2.
   checks.push(checkOpen(rules, !!member, now))
   if (checks.at(-1)!.status === 'fail') return stop()
-  const postUrl = input.postUrl.trim()
+  // A short share link from an app is followed to the post it leads to; the full link is what is stored.
+  const postUrl = await resolvePostUrl(input.postUrl, deps.http)
   const parsed = parsePostUrl(postUrl)
   checks.push(checkPlatform(rules, parsed))
   if (!parsed || checks.at(-1)!.status === 'fail') return stop()
