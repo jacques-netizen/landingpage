@@ -4,8 +4,10 @@ import type { ReactNode } from 'react'
 import { db } from '@mde/db'
 import { unreadCount } from '@mde/notifications'
 import { requireStaff } from '@/server/guard'
+import { PLATFORM_LABELS } from '@mde/campaigns/templates'
+import { platformsWithoutProvider } from '@/server/providers'
 import { staffDashboard } from '@/server/dashboard'
-import { AdminPage } from './_components/ui'
+import { AdminPage, Notice } from './_components/ui'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,6 +28,7 @@ export default async function AdminDashboard() {
   const viewer = await requireStaff()
   const now = new Date()
   const [d, unread] = await Promise.all([staffDashboard(now), unreadCount(db(), viewer.id)])
+  const missingProviders = platformsWithoutProvider()
   return (
     <AdminPage
       title="Dashboard"
@@ -36,6 +39,13 @@ export default async function AdminDashboard() {
         </a>
       }
     >
+      {missingProviders.length ? (
+        <Notice kind="bad">
+          No data provider is set up for {missingProviders.map((p) => PLATFORM_LABELS[p] ?? p).join(', ')}. Posts there
+          are kept for review without their stats and no views are counted until one is. Set DATA_PROVIDER_API_KEY
+          {missingProviders.includes('youtube') ? ' and YOUTUBE_API_KEY' : ''} on the server.
+        </Notice>
+      ) : null}
       <Section title="Posts waiting for review">
         {d.waiting === 0 ? (
           <EmptyState body="The review queue is empty." />

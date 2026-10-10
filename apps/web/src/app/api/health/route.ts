@@ -1,6 +1,7 @@
 import { db } from '@mde/db'
 import { sql } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
+import { providerStatus } from '@/server/providers'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +20,9 @@ export async function GET(req: NextRequest) {
     : undefined
   try {
     await db().execute(sql`select 1`)
-    return NextResponse.json({ ok: true, ...(hosts ? { hosts } : {}) })
+    // Which providers answer for each platform. Empty means posts there go to review without their
+    // stats and no views are counted: set DATA_PROVIDER_API_KEY (or YOUTUBE_API_KEY).
+    return NextResponse.json({ ok: true, providers: providerStatus(), ...(hosts ? { hosts } : {}) })
   } catch {
     return NextResponse.json({ ok: false }, { status: 503 })
   }
