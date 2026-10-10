@@ -1,19 +1,34 @@
 {
   "version": 2,
   "_note": "Diagnostic voice: the person answers about themselves. No option is a pitch and nothing mentions Maison d'Élites. Typed answers are short and never ask the person to go and find something.",
-  "paths": ["clipper", "creator", "brand"],
+  "paths": [
+    "clipper",
+    "creator",
+    "brand"
+  ],
   "questions": [
     {
       "id": "role",
       "type": "single",
       "variants": [
         {
-          "paths": ["*"],
+          "paths": [
+            "*"
+          ],
           "prompt": "First, which one sounds like you?",
           "options": [
-            { "value": "clipper", "label": "I want to earn by clipping" },
-            { "value": "creator", "label": "I’m a creator or artist" },
-            { "value": "brand", "label": "I run or represent a brand, label or talent" }
+            {
+              "value": "clipper",
+              "label": "I want to earn by clipping"
+            },
+            {
+              "value": "creator",
+              "label": "I’m a creator or artist"
+            },
+            {
+              "value": "brand",
+              "label": "I run or represent a brand, label or talent"
+            }
           ]
         }
       ]
@@ -23,7 +38,10 @@
       "type": "text",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "In one line, what are you putting out?",
           "help": "For example “my next single”, “a skincare launch” or “my podcast”.",
           "placeholder": "my next single",
@@ -37,27 +55,68 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "What kind of thing is it?",
           "options": [
-            { "value": "music_release", "label": "A music release" },
-            { "value": "podcast_stream", "label": "A podcast or stream" },
-            { "value": "product_launch", "label": "A product or launch" },
-            { "value": "sports_gaming", "label": "Sports or gaming content" },
-            { "value": "personal_brand", "label": "A personal brand" },
-            { "value": "other", "label": "Something else" }
+            {
+              "value": "music_release",
+              "label": "A music release"
+            },
+            {
+              "value": "podcast_stream",
+              "label": "A podcast or stream"
+            },
+            {
+              "value": "product_launch",
+              "label": "A product or launch"
+            },
+            {
+              "value": "sports_gaming",
+              "label": "Sports or gaming content"
+            },
+            {
+              "value": "personal_brand",
+              "label": "A personal brand"
+            },
+            {
+              "value": "other",
+              "label": "Something else"
+            }
           ]
         },
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "What do you want to clip?",
           "options": [
-            { "value": "music", "label": "Music" },
-            { "value": "sports", "label": "Sports" },
-            { "value": "gaming", "label": "Gaming" },
-            { "value": "podcasts_streams", "label": "Podcasts and streams" },
-            { "value": "film_tv", "label": "Film and TV" },
-            { "value": "anything", "label": "Anything that pays" }
+            {
+              "value": "music",
+              "label": "Music"
+            },
+            {
+              "value": "sports",
+              "label": "Sports"
+            },
+            {
+              "value": "gaming",
+              "label": "Gaming"
+            },
+            {
+              "value": "podcasts_streams",
+              "label": "Podcasts and streams"
+            },
+            {
+              "value": "film_tv",
+              "label": "Film and TV"
+            },
+            {
+              "value": "anything",
+              "label": "Anything that pays"
+            }
           ]
         }
       ]
@@ -67,12 +126,24 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "What do you want it to do?",
           "options": [
-            { "value": "visibility", "label": "Get in front of as many people as possible" },
-            { "value": "conversions", "label": "Get people to take an action" },
-            { "value": "both", "label": "Both" }
+            {
+              "value": "visibility",
+              "label": "Get in front of as many people as possible"
+            },
+            {
+              "value": "conversions",
+              "label": "Get people to take an action"
+            },
+            {
+              "value": "both",
+              "label": "Both"
+            }
           ]
         }
       ]
@@ -82,39 +153,90 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "What is the action?",
           "options": [
-            { "value": "buy", "label": "Buy something" },
-            { "value": "signup", "label": "Sign up or join" },
-            { "value": "stream", "label": "Stream or listen" },
-            { "value": "follow", "label": "Follow" },
-            { "value": "book", "label": "Book or enquire" }
+            {
+              "value": "buy",
+              "label": "Buy something"
+            },
+            {
+              "value": "signup",
+              "label": "Sign up or join"
+            },
+            {
+              "value": "stream",
+              "label": "Stream or listen"
+            },
+            {
+              "value": "follow",
+              "label": "Follow"
+            },
+            {
+              "value": "book",
+              "label": "Book or enquire"
+            }
           ]
         }
       ]
     },
     {
       "id": "market",
-      "type": "text",
+      "type": "tags",
       "variants": [
         {
-          "paths": ["creator", "brand"],
-          "prompt": "Which country matters most?",
-          "help": "Tap one, or type another.",
-          "placeholder": "Country",
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Which countries matter most?",
+          "help": "Pick as many as apply, or Global. You can type a country that is not listed.",
+          "placeholder": "Add a country",
           "maxLength": 40,
           "suggestions": [
-            { "value": "United States", "label": "United States" },
-            { "value": "United Kingdom", "label": "United Kingdom" },
-            { "value": "Nigeria", "label": "Nigeria" },
-            { "value": "Ghana", "label": "Ghana" },
-            { "value": "France", "label": "France" },
-            { "value": "Belgium", "label": "Belgium" },
-            { "value": "Netherlands", "label": "Netherlands" },
-            { "value": "Germany", "label": "Germany" }
+            {
+              "value": "Global",
+              "label": "Global"
+            },
+            {
+              "value": "United States",
+              "label": "United States"
+            },
+            {
+              "value": "United Kingdom",
+              "label": "United Kingdom"
+            },
+            {
+              "value": "Nigeria",
+              "label": "Nigeria"
+            },
+            {
+              "value": "Ghana",
+              "label": "Ghana"
+            },
+            {
+              "value": "France",
+              "label": "France"
+            },
+            {
+              "value": "Belgium",
+              "label": "Belgium"
+            },
+            {
+              "value": "Netherlands",
+              "label": "Netherlands"
+            },
+            {
+              "value": "Germany",
+              "label": "Germany"
+            }
           ],
-          "options": []
+          "options": [],
+          "maxItems": 6,
+          "exclusive": "Global"
         }
       ]
     },
@@ -123,7 +245,10 @@
       "type": "text",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "Who is it for, in a few words?",
           "help": "For example “18 to 25, into afrobeats” or “parents who shop online”.",
           "placeholder": "18 to 25, into afrobeats",
@@ -137,13 +262,28 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "How much content do you have to cut from today?",
           "options": [
-            { "value": "none", "label": "Nothing filmed yet" },
-            { "value": "some", "label": "A few posts" },
-            { "value": "hours", "label": "Hours of footage" },
-            { "value": "years", "label": "Years of it" }
+            {
+              "value": "none",
+              "label": "Nothing filmed yet"
+            },
+            {
+              "value": "some",
+              "label": "A few posts"
+            },
+            {
+              "value": "hours",
+              "label": "Hours of footage"
+            },
+            {
+              "value": "years",
+              "label": "Years of it"
+            }
           ]
         }
       ]
@@ -153,14 +293,34 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
-          "prompt": "What does a good post do for you right now?",
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "How many views does a good post of yours get today?",
           "options": [
-            { "value": "under_1k", "label": "Under 1K views", "views": 500 },
-            { "value": "1k_10k", "label": "1K to 10K views", "views": 5000 },
-            { "value": "10k_100k", "label": "10K to 100K views", "views": 50000 },
-            { "value": "100k_plus", "label": "100K or more", "views": 250000 }
-          ]
+            {
+              "value": "under_1k",
+              "label": "Under 1,000 views",
+              "views": 500
+            },
+            {
+              "value": "1k_10k",
+              "label": "1,000 to 10,000 views",
+              "views": 5000
+            },
+            {
+              "value": "10k_100k",
+              "label": "10,000 to 100,000 views",
+              "views": 50000
+            },
+            {
+              "value": "100k_plus",
+              "label": "More than 100,000 views",
+              "views": 250000
+            }
+          ],
+          "help": "On your own account, a post that did well recently. A rough number is fine."
         }
       ]
     },
@@ -169,13 +329,27 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "Where are your accounts today?",
           "options": [
-            { "value": "none", "label": "No clipping accounts yet" },
-            { "value": "under_1k", "label": "Under 1K followers" },
-            { "value": "1k_10k", "label": "1K to 10K followers" },
-            { "value": "10k_plus", "label": "10K or more" }
+            {
+              "value": "none",
+              "label": "No clipping accounts yet"
+            },
+            {
+              "value": "under_1k",
+              "label": "Under 1K followers"
+            },
+            {
+              "value": "1k_10k",
+              "label": "1K to 10K followers"
+            },
+            {
+              "value": "10k_plus",
+              "label": "10K or more"
+            }
           ]
         }
       ]
@@ -185,13 +359,31 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "How many hours a week can you give it?",
           "options": [
-            { "value": "under_5", "label": "Under 5", "clipsPerWeek": 5 },
-            { "value": "5_10", "label": "5 to 10", "clipsPerWeek": 12 },
-            { "value": "10_20", "label": "10 to 20", "clipsPerWeek": 25 },
-            { "value": "20_plus", "label": "More than 20", "clipsPerWeek": 45 }
+            {
+              "value": "under_5",
+              "label": "Under 5",
+              "clipsPerWeek": 5
+            },
+            {
+              "value": "5_10",
+              "label": "5 to 10",
+              "clipsPerWeek": 12
+            },
+            {
+              "value": "10_20",
+              "label": "10 to 20",
+              "clipsPerWeek": 25
+            },
+            {
+              "value": "20_plus",
+              "label": "More than 20",
+              "clipsPerWeek": 45
+            }
           ]
         }
       ]
@@ -201,13 +393,27 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "What do you edit on?",
           "options": [
-            { "value": "phone", "label": "My phone" },
-            { "value": "capcut", "label": "CapCut or similar" },
-            { "value": "desktop", "label": "Desktop software" },
-            { "value": "nothing", "label": "Nothing yet" }
+            {
+              "value": "phone",
+              "label": "My phone"
+            },
+            {
+              "value": "capcut",
+              "label": "CapCut or similar"
+            },
+            {
+              "value": "desktop",
+              "label": "Desktop software"
+            },
+            {
+              "value": "nothing",
+              "label": "Nothing yet"
+            }
           ]
         }
       ]
@@ -217,25 +423,54 @@
       "type": "multi",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "Where should people be seeing it?",
           "help": "Pick as many as you like.",
           "options": [
-            { "value": "tiktok", "label": "TikTok" },
-            { "value": "instagram_reels", "label": "Instagram Reels" },
-            { "value": "youtube_shorts", "label": "YouTube Shorts" },
-            { "value": "x", "label": "X" }
+            {
+              "value": "tiktok",
+              "label": "TikTok"
+            },
+            {
+              "value": "instagram_reels",
+              "label": "Instagram Reels"
+            },
+            {
+              "value": "youtube_shorts",
+              "label": "YouTube Shorts"
+            },
+            {
+              "value": "x",
+              "label": "X"
+            }
           ]
         },
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "Where do you post?",
           "help": "Pick as many as you like.",
           "options": [
-            { "value": "tiktok", "label": "TikTok" },
-            { "value": "instagram_reels", "label": "Instagram Reels" },
-            { "value": "youtube_shorts", "label": "YouTube Shorts" },
-            { "value": "x", "label": "X" }
+            {
+              "value": "tiktok",
+              "label": "TikTok"
+            },
+            {
+              "value": "instagram_reels",
+              "label": "Instagram Reels"
+            },
+            {
+              "value": "youtube_shorts",
+              "label": "YouTube Shorts"
+            },
+            {
+              "value": "x",
+              "label": "X"
+            }
           ]
         }
       ]
@@ -245,13 +480,27 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "What would make this worth it?",
           "options": [
-            { "value": "side_income", "label": "Some money on the side" },
-            { "value": "full_time", "label": "A full-time income" },
-            { "value": "learn_editing", "label": "Learning to edit" },
-            { "value": "own_audience", "label": "Growing my own audience" }
+            {
+              "value": "side_income",
+              "label": "Some money on the side"
+            },
+            {
+              "value": "full_time",
+              "label": "A full-time income"
+            },
+            {
+              "value": "learn_editing",
+              "label": "Learning to edit"
+            },
+            {
+              "value": "own_audience",
+              "label": "Growing my own audience"
+            }
           ]
         }
       ]
@@ -261,22 +510,48 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "When does it need to be moving?",
           "options": [
-            { "value": "two_weeks", "label": "In the next 2 weeks" },
-            { "value": "this_month", "label": "This month" },
-            { "value": "next_quarter", "label": "Next quarter" },
-            { "value": "exploring", "label": "No date yet" }
+            {
+              "value": "two_weeks",
+              "label": "In the next 2 weeks"
+            },
+            {
+              "value": "this_month",
+              "label": "This month"
+            },
+            {
+              "value": "next_quarter",
+              "label": "Next quarter"
+            },
+            {
+              "value": "exploring",
+              "label": "No date yet"
+            }
           ]
         },
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "How much have you clipped before?",
           "options": [
-            { "value": "new", "label": "I’m new to clipping" },
-            { "value": "some", "label": "I have some experience" },
-            { "value": "paid", "label": "I already clip for pay" }
+            {
+              "value": "new",
+              "label": "I’m new to clipping"
+            },
+            {
+              "value": "some",
+              "label": "I have some experience"
+            },
+            {
+              "value": "paid",
+              "label": "I already clip for pay"
+            }
           ]
         }
       ]
@@ -286,7 +561,9 @@
       "type": "text",
       "variants": [
         {
-          "paths": ["clipper"],
+          "paths": [
+            "clipper"
+          ],
           "prompt": "One thing you already watch a lot of?",
           "help": "A show, an artist, a game, a league. Optional.",
           "placeholder": "the Premier League",
@@ -301,14 +578,37 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "What are you working with, per month?",
           "options": [
-            { "value": "under_3k", "label": "Under $3K", "min": 0 },
-            { "value": "3k_10k", "label": "$3K to $10K", "min": 3000 },
-            { "value": "10k_50k", "label": "$10K to $50K", "min": 10000 },
-            { "value": "50k_plus", "label": "$50K or more", "min": 50000 },
-            { "value": "not_sure", "label": "Not sure yet", "amountField": true }
+            {
+              "value": "under_3k",
+              "label": "Under $3K",
+              "min": 0
+            },
+            {
+              "value": "3k_10k",
+              "label": "$3K to $10K",
+              "min": 3000
+            },
+            {
+              "value": "10k_50k",
+              "label": "$10K to $50K",
+              "min": 10000
+            },
+            {
+              "value": "50k_plus",
+              "label": "$50K or more",
+              "min": 50000
+            },
+            {
+              "value": "not_sure",
+              "label": "Not sure yet",
+              "amountField": true
+            }
           ],
           "amountField": {
             "label": "Roughly how much, in dollars?",
@@ -325,11 +625,20 @@
       "type": "single",
       "variants": [
         {
-          "paths": ["creator", "brand"],
+          "paths": [
+            "creator",
+            "brand"
+          ],
           "prompt": "Are you deciding for a company, label or team?",
           "options": [
-            { "value": "yes", "label": "Yes" },
-            { "value": "no", "label": "No, it’s just me" }
+            {
+              "value": "yes",
+              "label": "Yes"
+            },
+            {
+              "value": "no",
+              "label": "No, it’s just me"
+            }
           ]
         }
       ]

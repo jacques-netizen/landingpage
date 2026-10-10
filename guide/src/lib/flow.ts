@@ -35,6 +35,22 @@ export function isAnswered(questionId: string, answers: Answers): boolean {
   return typeof v === "string" && v.length > 0;
 }
 
+/** A list of short typed values (countries). An exclusive value stands alone. */
+export function cleanTags(value: unknown, maxLength: number, maxItems: number, exclusive?: string): string[] | null {
+  const raw = Array.isArray(value) ? value : typeof value === "string" ? [value] : [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const x of raw) {
+    const t = cleanText(x, maxLength);
+    const key = t.toLowerCase();
+    if (!t || seen.has(key)) continue;
+    seen.add(key);
+    out.push(t);
+  }
+  if (exclusive && out.some((x) => x.toLowerCase() === exclusive.toLowerCase())) return [exclusive];
+  return out.length ? out.slice(0, maxItems) : null;
+}
+
 /** Short typed answers: one line, no control characters or tags. */
 export function cleanText(value: unknown, maxLength = 80): string {
   if (typeof value !== "string") return "";
@@ -102,6 +118,7 @@ export function cleanAnswer(questionId: string, path: Path | undefined, value: u
     if (!t && !v.optional) return null;
     return t || SKIPPED;
   }
+  if (q.type === "tags") return cleanTags(value, v.maxLength ?? 40, v.maxItems ?? 6, v.exclusive);
   if (questionId === "budget") {
     const b = typeof value === "string" ? { band: value } : (value as BudgetAnswer | null);
     if (!b || typeof b.band !== "string" || !allowed.has(b.band)) return null;

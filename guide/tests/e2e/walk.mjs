@@ -12,9 +12,9 @@ fs.mkdirSync(out, { recursive: true });
 
 const picks = {
   clipper: { role: 'I want to earn by clipping', asset: 'Music', accounts: 'No clipping accounts yet', hours: '5 to 10', tools: 'CapCut or similar', platforms: ['TikTok', 'YouTube Shorts'], goal: 'Some money on the side', timing: 'I’m new to clipping', firstNiche: 'afrobeats' },
-  creator: { role: 'I’m a creator or artist', project: 'my next single', asset: 'A music release', objective: 'Get in front of as many people as possible', market: 'Nigeria', audience: '18 to 25, into afrobeats', library: 'A few posts', reach: '1K to 10K views', platforms: ['TikTok', 'Instagram Reels'], timing: 'This month', budget: '$3K to $10K', deciding: 'No, it’s just me' },
-  brand: { role: 'I run or represent a brand, label or talent', project: 'a skincare launch', asset: 'A product or launch', objective: 'Get people to take an action', action: 'Buy something', market: 'Belgium', audience: 'women 25 to 40', library: 'Hours of footage', reach: '10K to 100K views', platforms: ['Instagram Reels', 'X'], timing: 'In the next 2 weeks', budget: 'Not sure yet', amount: '4000', deciding: 'Yes' },
-  lowbuyer: { role: 'I’m a creator or artist', project: 'my fitness coaching', asset: 'A personal brand', objective: 'Both', action: 'Sign up or join', market: 'Other country', audience: 'men starting the gym', library: 'Years of it', reach: 'Under 1K views', platforms: ['TikTok'], timing: 'No date yet', budget: 'Under $3K', deciding: 'No, it’s just me' },
+  creator: { role: 'I’m a creator or artist', project: 'my next single', asset: 'A music release', objective: 'Get in front of as many people as possible', market: ['Nigeria', 'Ghana'], audience: '18 to 25, into afrobeats', library: 'A few posts', reach: '1,000 to 10,000 views', platforms: ['TikTok', 'Instagram Reels'], timing: 'This month', budget: '$3K to $10K', deciding: 'No, it’s just me' },
+  brand: { role: 'I run or represent a brand, label or talent', project: 'a skincare launch', asset: 'A product or launch', objective: 'Get people to take an action', action: 'Buy something', market: 'Belgium', audience: 'women 25 to 40', library: 'Hours of footage', reach: '10,000 to 100,000 views', platforms: ['Instagram Reels', 'X'], timing: 'In the next 2 weeks', budget: 'Not sure yet', amount: '4000', deciding: 'Yes' },
+  lowbuyer: { role: 'I’m a creator or artist', project: 'my fitness coaching', asset: 'A personal brand', objective: 'Both', action: 'Sign up or join', market: 'Global', audience: 'men starting the gym', library: 'Years of it', reach: 'Under 1,000 views', platforms: ['TikTok'], timing: 'No date yet', budget: 'Under $3K', deciding: 'No, it’s just me' },
 }[path];
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--autoplay-policy=no-user-gesture-required'] });
@@ -65,7 +65,12 @@ if (plain) {
     await tapText(picks.objective);
     if (picks.action) { await shot('q-action'); await tapText(picks.action); }
     await shot('q-market');
-    await typeText('Which country matters most?', picks.market);
+    for (const c of [].concat(picks.market)) {
+      const chip = page.getByRole('button', { name: c, exact: true });
+      if (await chip.count()) await chip.first().click();
+      else { await page.getByRole('textbox', { name: 'Which countries matter most?', exact: true }).fill(c); await page.getByRole('button', { name: 'Add', exact: true }).click(); }
+    }
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await shot('q-audience');
     await typeText('Who is it for, in a few words?', picks.audience);
   } else {
@@ -156,7 +161,7 @@ if (guideHref) {
   await page.screenshot({ path: `${out}/${String(++n).padStart(2, '0')}-web-guide.png`, fullPage: true });
   const text = await page.innerText('main');
   guide.hasProject = picks.project ? text.includes(picks.project) : null;
-  guide.hasMarket = picks.market && picks.market !== 'Other country' ? text.includes(picks.market) : null;
+  guide.hasMarket = picks.market ? [].concat(picks.market).every((c) => text.includes(c === 'Global' ? 'orldwide' : c)) : null;
   guide.tiles = await page.locator('.tile').count();
   guide.sections = await page.locator('.snum').count();
 }

@@ -25,6 +25,15 @@ describe("strategy tracks", () => {
     expect(b.track?.steps.length).toBe(5);
   });
 
+  it("joins several countries and treats Global as worldwide", () => {
+    const two = briefFor(sampleLead("m", { path: "creator", answers: { role: "creator", objective: "visibility", market: ["Nigeria", "Ghana"], audience: "students" } }));
+    expect(two.market).toBe("Nigeria and Ghana");
+    expect(two.track?.promise).toContain("Nigeria and Ghana");
+    const g = briefFor(sampleLead("g", { path: "creator", answers: { role: "creator", objective: "visibility", market: ["Global"], audience: "students" } }));
+    expect(g.facts.find((f) => f.id === "market")?.answer).toBe("Worldwide");
+    expect(g.track?.promise).toContain("your markets worldwide");
+  });
+
   it("leaves no unfilled tokens", () => {
     for (const o of ["visibility", "conversions", "both"]) {
       const b = briefFor(lead(o, "buy"));

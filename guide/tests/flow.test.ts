@@ -93,6 +93,10 @@ describe("answer cleaning", () => {
     expect(cleanAnswer("project", "creator", "")).toBeNull();
     expect(cleanAnswer("project", "creator", 42)).toBeNull();
     expect(cleanAnswer("first_niche", "clipper", "")).toBe("");
-    expect(cleanAnswer("market", "creator", "Nigeria")).toBe("Nigeria");
+    expect(cleanAnswer("market", "creator", "Nigeria")).toEqual(["Nigeria"]);
+    expect(cleanAnswer("market", "creator", ["Nigeria", " ghana ", "Nigeria", ""])).toEqual(["Nigeria", "ghana"]);
+    expect(cleanAnswer("market", "creator", ["Nigeria", "global"])).toEqual(["Global"]);
+    expect(cleanAnswer("market", "creator", [])).toBeNull();
+    expect(cleanAnswer("market", "creator", ["a", "b", "c", "d", "e", "f", "g"])).toHaveLength(6);
   });
 });

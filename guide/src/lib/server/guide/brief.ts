@@ -62,6 +62,17 @@ const label = (id: string, path: Path, value: unknown): string | null => {
 
 const textAnswer = (a: Answers, id: string): string | null => text(a, id) || null;
 
+const GLOBAL = "Global";
+
+/** "Nigeria", "Nigeria and Ghana", "Nigeria, Ghana and France", or "Global". */
+export function marketLabel(value: unknown): string | null {
+  const list = Array.isArray(value) ? value.filter((x): x is string => typeof x === "string" && x.trim().length > 0).map((x) => x.trim()) : typeof value === "string" && value.trim() ? [value.trim()] : [];
+  if (!list.length) return null;
+  if (list.some((x) => x.toLowerCase() === GLOBAL.toLowerCase())) return GLOBAL;
+  if (list.length === 1) return list[0];
+  return `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}`;
+}
+
 export function briefFor(lead: LeadRow): Brief {
   const c = config();
   const a: Answers = lead.answers;
@@ -69,7 +80,8 @@ export function briefFor(lead: LeadRow): Brief {
   const side = path === "clipper" ? "clipper" : "buyer";
   const objective = side === "buyer" && (a.objective === "visibility" || a.objective === "conversions" || a.objective === "both") ? a.objective : null;
   const project = side === "buyer" ? textAnswer(a, "project") : null;
-  const market = side === "buyer" ? textAnswer(a, "market") : null;
+  const market = side === "buyer" ? marketLabel(a.market) : null;
+  const global = market === GLOBAL;
   const audience = side === "buyer" ? textAnswer(a, "audience") : null;
   const actionValue = typeof a.action === "string" ? a.action : null;
   const action = objective && objective !== "visibility" && actionValue ? (ACTION_VERBS[actionValue] ?? "take the action") : null;
@@ -90,7 +102,7 @@ export function briefFor(lead: LeadRow): Brief {
     if (answer) facts.push({ id, question: v.prompt, answer });
   }
   if (project) facts.unshift({ id: "project", question: "What they are putting out", answer: project });
-  if (market) facts.push({ id: "market", question: "Target country", answer: market });
+  if (market) facts.push({ id: "market", question: global ? "Target market" : "Target countries", answer: global ? "Worldwide" : market });
   if (audience) facts.push({ id: "audience", question: "Target audience", answer: audience });
   if (firstNiche) facts.push({ id: "first_niche", question: "Something they already watch a lot of", answer: firstNiche });
 
@@ -98,7 +110,7 @@ export function briefFor(lead: LeadRow): Brief {
   const tokens: Record<string, string> = {
     firstName: lead.firstName,
     project: project ?? "your content",
-    market: market ?? "your market",
+    market: global ? "your markets worldwide" : (market ?? "your market"),
     audience: audience ?? "your audience",
     action: action ?? "take the action",
     conversionEditors: terms.conversionEditors,

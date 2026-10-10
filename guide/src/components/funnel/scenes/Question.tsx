@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { m } from "framer-motion";
 import { copy, getQuestion, questionFor, type Step } from "@/lib/content";
-import { budgetOf, cleanText, isAnswered } from "@/lib/flow";
+import { budgetOf, cleanTags, cleanText, isAnswered } from "@/lib/flow";
 import { useFunnel } from "../context";
 import { BackButton, Pill } from "../ui";
 
@@ -18,11 +18,15 @@ export function QuestionScene({ step }: { step: Step }) {
   );
   const [amount, setAmount] = useState<string>(priorBudget?.amount ? String(priorBudget.amount) : "");
   const [text, setText] = useState<string>(typeof prior === "string" ? prior : "");
+  const [tags, setTags] = useState<string[]>(Array.isArray(prior) ? (prior as string[]) : []);
   const showAmount = Boolean(v?.amountField && v.options.find((o) => o.value === picked)?.amountField);
   if (!q || !v) return null;
 
   const headingId = `q-${q.id}`;
   const isText = q.type === "text";
+  const isTags = q.type === "tags";
+  const tagLimit = v.maxItems ?? 6;
+  const has = (list: string[], value: string) => list.some((x) => x.toLowerCase() === value.toLowerCase());
 
   const choose = (value: string) => {
     if (q.type === "multi") {
@@ -49,6 +53,25 @@ export function QuestionScene({ step }: { step: Step }) {
     const t = skip ? "" : cleanText(value, v.maxLength ?? 80);
     if (!t && !v.optional) return;
     f.answer(q.id, t);
+  };
+
+  const toggleTag = (value: string) => {
+    setTags((cur) => {
+      if (has(cur, value)) return cur.filter((x) => x.toLowerCase() !== value.toLowerCase());
+      if (v.exclusive && value.toLowerCase() === v.exclusive.toLowerCase()) return [v.exclusive];
+      const base = v.exclusive ? cur.filter((x) => x.toLowerCase() !== v.exclusive!.toLowerCase()) : cur;
+      return base.length >= tagLimit ? base : [...base, value];
+    });
+  };
+  const addTypedTag = () => {
+    const t = cleanText(text, v.maxLength ?? 40);
+    if (!t) return;
+    if (!has(tags, t)) toggleTag(t);
+    setText("");
+  };
+  const submitTags = () => {
+    const cleaned = cleanTags(text.trim() ? [...tags, text] : tags, v.maxLength ?? 40, tagLimit, v.exclusive);
+    if (cleaned) f.answer(q.id, cleaned);
   };
 
   const textIn = (i: number) =>
@@ -122,7 +145,59 @@ export function QuestionScene({ step }: { step: Step }) {
           </m.div>
         )}
 
-        {!isText && (
+        {isTags && (
+          <m.div {...textIn(2)} className="mt-8">
+            <ul className="mb-6 flex flex-wrap gap-2" role="group" aria-label={v.prompt}>
+              {[...(v.suggestions ?? []), ...tags.filter((t) => !(v.suggestions ?? []).some((s) => s.value.toLowerCase() === t.toLowerCase())).map((t) => ({ value: t, label: t }))].map((s) => {
+                const on = has(tags, s.value);
+                return (
+                  <li key={s.value}>
+                    <button
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => toggleTag(s.value)}
+                      className={`h-11 rounded-pill border px-4 text-[15px] font-medium transition-colors ${on ? "border-ink bg-ink text-cream" : "border-line-strong bg-white/50 text-ink hover:border-ink-soft"}`}
+                    >
+                      {s.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <label htmlFor={`${q.id}-text`} className="sr-only">
+              {v.prompt}
+            </label>
+            <div className="flex items-end gap-3 border-b border-ink pb-2 focus-within:shadow-[0_1px_0_0_var(--color-ink)]">
+              <input
+                id={`${q.id}-text`}
+                name={q.id}
+                autoComplete="off"
+                autoCapitalize="words"
+                enterKeyHint="done"
+                maxLength={v.maxLength ?? 40}
+                placeholder={v.placeholder}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter") return;
+                  e.preventDefault();
+                  addTypedTag();
+                }}
+                className="w-full bg-transparent font-serif text-[1.6rem] leading-tight outline-none placeholder:text-muted-light focus-visible:outline-none"
+              />
+              <button type="button" onClick={addTypedTag} disabled={!cleanText(text, v.maxLength ?? 40)} className="h-9 shrink-0 px-2 text-[15px] font-medium text-muted underline-offset-4 hover:text-ink hover:underline disabled:opacity-40">
+                {copy.common.add}
+              </button>
+            </div>
+            <div className="mt-6 flex items-center gap-4">
+              <Pill disabled={tags.length === 0 && !cleanText(text, v.maxLength ?? 40)} onClick={submitTags}>
+                {copy.common.continue} <span aria-hidden="true">&rarr;</span>
+              </Pill>
+            </div>
+          </m.div>
+        )}
+
+        {!isText && !isTags && (
           <ul className="mt-8 border-t border-line" role={q.type === "multi" ? "group" : "radiogroup"} aria-labelledby={headingId}>
             {v.options.map((o, i) => {
               const on = q.type === "multi" ? multi.includes(o.value) : picked === o.value;

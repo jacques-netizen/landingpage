@@ -35,7 +35,7 @@ describe("content", () => {
         for (const p of PATHS.filter((x) => !s.paths || s.paths.includes(x))) {
           const v = questionFor(s.question!, p);
           expect(v, `${s.id} ${p}`).toBeTruthy();
-          if (getQuestion(s.question!)?.type !== "text") expect(v?.options.length, `${s.id} ${p}`).toBeGreaterThan(0);
+          if (!["text", "tags"].includes(getQuestion(s.question!)?.type ?? "")) expect(v?.options.length, `${s.id} ${p}`).toBeGreaterThan(0);
         }
       }
     }

@@ -24,8 +24,11 @@ export type QuestionVariant = {
   maxLength?: number;
   optional?: boolean;
   suggestions?: { value: string; label: string }[];
+  /** Tags questions: the most items, and a value that stands alone (picking it clears the rest). */
+  maxItems?: number;
+  exclusive?: string;
 };
-export type Question = { id: string; type: "single" | "multi" | "text"; variants: QuestionVariant[] };
+export type Question = { id: string; type: "single" | "multi" | "text" | "tags"; variants: QuestionVariant[] };
 
 export type Step = {
   id: string;
