@@ -166,12 +166,12 @@ goes out.
 1. Use the separate Anthropic console account kept for this funnel, not a
    personal account. In that console create an API key named `guide-funnel`.
 2. In the same console set a monthly spend limit for the workspace. A guide
-   costs roughly $0.10 on Opus 5.5 (about half on Sonnet 5.5), so a limit of
+   costs roughly $0.10 on Sonnet 5.5 (about $0.40 on Opus 5.5), so a limit of
    $50 a month covers about 500 guides.
 3. In Vercel, add `ANTHROPIC_API_KEY=<the key>` to the project's environment
    variables (Production and Preview). Never paste the key anywhere else.
-4. Optional: `GUIDE_WRITER_MODEL` (default `claude-opus-5-5`; set
-   `claude-sonnet-5-5` to halve the cost) and `GUIDE_WRITER=rules` to switch
+4. Optional: `GUIDE_WRITER_MODEL` (default `claude-sonnet-5-5`; set
+   `claude-opus-5-5` for the stronger writer at about four times the cost) and `GUIDE_WRITER=rules` to switch
    the AI off without removing the key.
 5. Check it: submit the funnel once, open the guide link, and read the
    `writer` field on the result page's network response to `/api/session`

@@ -57,7 +57,7 @@ export function config() {
     // Needed when the key is a user key rather than a workspace key.
     anthropicWorkspaceId: str(e.ANTHROPIC_WORKSPACE_ID),
     guideWriter: str(e.GUIDE_WRITER, e.ANTHROPIC_API_KEY ? "ai" : "rules") as "ai" | "rules",
-    guideWriterModel: str(e.GUIDE_WRITER_MODEL, "claude-opus-5-5"),
+    guideWriterModel: str(e.GUIDE_WRITER_MODEL, "claude-sonnet-5-5"),
     dashboardPassword: str(e.DASHBOARD_PASSWORD),
     cronSecret: str(e.CRON_SECRET),
   };
