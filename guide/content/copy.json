@@ -9,6 +9,7 @@
   "common": {
     "back": "Back",
     "continue": "Continue",
+    "skip": "Skip",
     "play": "Play",
     "pause": "Pause",
     "replay": "Watch again",
@@ -21,10 +22,10 @@
     "placeholderBadge": "Placeholder film"
   },
   "coldOpen": {
-    "greetingNamed": "{name}, you asked for the guide.",
-    "greeting": "You asked for the guide.",
-    "headline": "This one is built around you.",
-    "body": "A short film with a few questions in it. Answer them and we build your guide from what you tell us.",
+    "greetingNamed": "{name}, thank you.",
+    "greeting": "Thank you.",
+    "headline": "A few questions, then your own guide.",
+    "body": "I’ll ask you a few questions, so we can send you a personalised guide: your market, your audience, your numbers, and what to do first.",
     "start": "Start",
     "soundNote": "Sound on works best."
   },
@@ -34,8 +35,8 @@
       "lead": "Why short clips move attention, and why we do it."
     },
     "chapter2": {
-      "title": "The proof",
-      "lead": "Real clips from real campaigns."
+      "title": "What it looks like",
+      "lead": "Real campaigns, real numbers."
     },
     "plain": {
       "title": "What clipping is",
@@ -99,15 +100,15 @@
       "stepLabel": "Step {n} of {total}"
     },
     "proofAfter": {
-      "line": "{views}. Campaigns for brands like these.",
+      "line": "What the numbers look like for people in your position.",
       "logosLabel": "Campaigns delivered for"
     }
   },
   "gate": {
-    "headline": "Your guide is ready to build.",
-    "body": "Tell us where to send it. We build it from your answers and email it to you in a few minutes.",
-    "plainHeadline": "Get your guide.",
-    "plainBody": "Tell us who you are and where to send it. We email it to you in a few minutes.",
+    "headline": "Where should your guide go?",
+    "body": "It is written from your answers: your market, your audience and your numbers. It takes about a minute to write, and it lands in your inbox.",
+    "plainHeadline": "Where should your guide go?",
+    "plainBody": "Tell us who you are and where to send it.",
     "fields": {
       "role": {
         "label": "Which one sounds like you?",
@@ -136,8 +137,8 @@
       "text": "Send me my guide and follow-up emails from Maison d’Élites, and allow analytics and ad measurement on this page. I can unsubscribe at any time.",
       "linkLead": "Read our"
     },
-    "submit": "Build my guide",
-    "submitting": "Building",
+    "submit": "Write my guide",
+    "submitting": "Writing",
     "errors": {
       "firstName": "Please add your first name.",
       "email": "Please check your email address.",
@@ -152,11 +153,12 @@
   "building": {
     "lines": [
       "Reading your answers",
-      "Picking the proof that fits",
-      "Laying out your guide",
-      "Sending it to your inbox"
+      "Mapping your market and your audience",
+      "Running your numbers",
+      "Writing your guide"
     ],
-    "srStatus": "Building your guide"
+    "srStatus": "Writing your guide",
+    "longNote": "This one takes a little longer. Your guide is being written for you."
   },
   "result": {
     "emailSent": "We sent your guide to {email}.",
@@ -164,7 +166,7 @@
     "spamNote": "Not there in a few minutes? Check spam or promotions.",
     "guideTitle": "Your guide",
     "guideOpen": "Open your guide",
-    "guidePending": "Your guide is still being built. The link will work in a minute, and it is on its way to your inbox.",
+    "guidePending": "Your guide is being written now. It takes about a minute. This page updates when it is ready, and the email follows.",
     "cta": {
       "book": {
         "headline": "Pick a time to talk it through.",
@@ -185,7 +187,9 @@
         "body": "Live campaigns, briefs and rates are all inside.",
         "button": "Join the network"
       }
-    }
+    },
+    "guideWriting": "Writing your guide",
+    "guideReady": "Your guide is ready."
   },
   "errors": {
     "generic": "Something went wrong. Please refresh the page."

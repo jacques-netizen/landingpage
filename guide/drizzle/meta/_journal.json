@@ -15,6 +15,13 @@
       "when": 1791506505581,
       "tag": "0001_lead_variant",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791639432616,
+      "tag": "0002_white_true_believers",
+      "breakpoints": true
     }
   ]
 }

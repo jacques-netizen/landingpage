@@ -13,14 +13,37 @@ export function pathOf(answers: Answers): Path | undefined {
 /** Steps for a variant, filtered to the chosen path. Before Q1 every step shows. */
 export function stepsFor(variant: Variant, answers: Answers): Step[] {
   const path = pathOf(answers);
-  return flow[variant].filter((s) => !s.paths || !path || s.paths.includes(path));
+  return flow[variant].filter((s) => {
+    if (s.paths && path && !s.paths.includes(path)) return false;
+    // A conditional step shows until its condition is answered the other way.
+    if (s.when) {
+      const v = answers[s.when.question];
+      if (typeof v === "string" && !s.when.in.includes(v)) return false;
+    }
+    return true;
+  });
 }
+
+/** Text answers that were skipped are stored as "" so the flow moves on. */
+const SKIPPED = "";
 
 export function isAnswered(questionId: string, answers: Answers): boolean {
   const v = answers[questionId];
   if (Array.isArray(v)) return v.length > 0;
   if (v && typeof v === "object") return typeof (v as { band?: unknown }).band === "string";
+  if (getQuestion(questionId)?.type === "text") return typeof v === "string";
   return typeof v === "string" && v.length > 0;
+}
+
+/** Short typed answers: one line, no control characters or tags. */
+export function cleanText(value: unknown, maxLength = 80): string {
+  if (typeof value !== "string") return "";
+  return value
+    .normalize("NFKC")
+    .replace(/[\u0000-\u001f<>]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
 }
 
 /**
@@ -74,6 +97,11 @@ export function cleanAnswer(questionId: string, path: Path | undefined, value: u
   const v = questionFor(questionId, path);
   if (!q || !v) return null;
   const allowed = new Set(v.options.map((o) => o.value));
+  if (q.type === "text") {
+    const t = cleanText(value, v.maxLength ?? 80);
+    if (!t && !v.optional) return null;
+    return t || SKIPPED;
+  }
   if (questionId === "budget") {
     const b = typeof value === "string" ? { band: value } : (value as BudgetAnswer | null);
     if (!b || typeof b.band !== "string" || !allowed.has(b.band)) return null;

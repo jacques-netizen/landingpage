@@ -65,6 +65,9 @@ export const guides = pgTable("guides", {
   emailedAt: timestamp("emailed_at", { withTimezone: true }),
   contentManifestVersion: text("content_manifest_version"),
   error: text("error"),
+  // The written guide (AI or rules) as JSON. The web page and the PDF render from this.
+  guideJson: jsonb("guide_json").$type<Record<string, unknown>>(),
+  writerModel: text("writer_model"),
 });
 
 export const events = pgTable(

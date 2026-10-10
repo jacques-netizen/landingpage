@@ -155,20 +155,52 @@ mode). Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (and `TURNSTILE_SITE_KEY`) and
 No code changes. `VIDEO_PROVIDER` is informational; each item names its own
 provider, so files and Mux can be mixed while filming is in progress.
 
-## 12. Rollback
+## 12. AI guide writer (Anthropic)
+
+The guide each person gets is written for them by Claude from their answers,
+the numbers model and the approved proof. Without a key the app uses the
+rules writer (fixed content blocks plus the same numbers and strategy track),
+which is also the fallback whenever the AI call fails, so the email always
+goes out.
+
+1. Use the separate Anthropic console account kept for this funnel, not a
+   personal account. In that console create an API key named `guide-funnel`.
+2. In the same console set a monthly spend limit for the workspace. A guide
+   costs roughly $0.10 on Opus 5.5 (about half on Sonnet 5.5), so a limit of
+   $50 a month covers about 500 guides.
+3. In Vercel, add `ANTHROPIC_API_KEY=<the key>` to the project's environment
+   variables (Production and Preview). Never paste the key anywhere else.
+4. Optional: `GUIDE_WRITER_MODEL` (default `claude-opus-5-5`; set
+   `claude-sonnet-5-5` to halve the cost) and `GUIDE_WRITER=rules` to switch
+   the AI off without removing the key.
+5. Check it: submit the funnel once, open the guide link, and read the
+   `writer` field on the result page's network response to `/api/session`
+   (or the `guides.writer_model` column). The Vercel function log shows
+   `guide written for lead ... by <model> in <ms>` per guide.
+
+Every draft is checked before it is stored: no em dashes, only figures from
+the numbers model and the approved proof, every section present, no "we".
+A draft that fails is sent back once with the violation named; a second
+failure falls back to the rules writer and logs the reason.
+
+To test the writer locally with a key: put `ANTHROPIC_API_KEY` in
+`.env.local` and run `npm run guides:sample -- .data/samples --live`, which
+writes three guides and saves their JSON, HTML and PDF for review.
+
+## 13. Rollback
 
 Set `FUNNEL_ENABLED=false` and `OLD_GUIDE_URL=<link to the old PDF>`, then
 redeploy (or change the variables and redeploy). Every visit to the root
 redirects to the old PDF. Guide links already sent keep working.
 
-## 13. Experiments
+## 14. Experiments
 
 `VARIANT_SPLIT` is the share of new visitors on the full experience (the rest
 get the plain control). `PROGRESS_SPLIT` is the share with the progress
 line. Force an arm for testing with `?_v=full`, `?_v=plain`,
 `?_p=front_loaded` or `?_p=none` on a fresh browser.
 
-## 14. Dashboard
+## 15. Dashboard
 
 `/dashboard` with `DASHBOARD_PASSWORD`. Compare the gate submit rate and the
 bookings per qualified lead between arms, not only completion.

@@ -9,7 +9,7 @@ import matter from "gray-matter";
 import { marked } from "marked";
 import outline from "../../../../content/guide/outline.json";
 import platformsJson from "../../../../content/guide/platforms.json";
-import { fill, proofForAsset, resultText, type Path, type ProofItem } from "@/lib/content";
+import { fill, proofForAsset, resultText, textAnswer, type Path, type ProofItem } from "@/lib/content";
 import type { Answers } from "@/lib/flow";
 
 type Filter = {
@@ -55,6 +55,19 @@ export type GuideInput = {
   joinUrl: string;
 };
 
+/**
+ * Buyers answer `objective` (and `action`), clippers answer `goal`. The rule
+ * based blocks and platform weights are keyed by goal, so map one to the other.
+ */
+export function effectiveGoal(answers: Answers): string | undefined {
+  if (typeof answers.goal === "string") return answers.goal;
+  const objective = answers.objective;
+  if (objective === "visibility") return "views";
+  if (objective === "conversions") return answers.action === "stream" ? "streams" : "sales";
+  if (objective === "both") return "awareness";
+  return undefined;
+}
+
 const has = (list: string[] | undefined, v: unknown) =>
   !list || (Array.isArray(v) ? v.some((x) => list.includes(String(x))) : list.includes(String(v)));
 
@@ -63,7 +76,7 @@ function applies(b: Block, g: GuideInput): boolean {
   return (
     has(b.paths, g.path) &&
     has(b.assets, a.asset) &&
-    has(b.goals, a.goal) &&
+    has(b.goals, effectiveGoal(a)) &&
     has(b.timings, a.timing) &&
     has(b.platforms, a.platforms) &&
     has(b.deciding, a.deciding) &&
@@ -77,7 +90,7 @@ export type PlatformLine = { key: string; name: string; text: string };
 export function platformOrder(answers: Answers, side: "buyer" | "clipper"): PlatformLine[] {
   const picked = Array.isArray(answers.platforms) ? (answers.platforms as string[]) : [];
   const list = picked.length ? picked : platformsJson.order;
-  const weights = (platformsJson.weights as Record<string, Record<string, number>>)[String(answers.goal)] ?? {};
+  const weights = (platformsJson.weights as Record<string, Record<string, number>>)[String(effectiveGoal(answers))] ?? {};
   const base = platformsJson.order;
   const info = platformsJson.platforms as Record<string, { name: string; buyer: string; clipper: string }>;
   return [...list]
@@ -140,7 +153,7 @@ export function assembleGuide(g: GuideInput): Guide {
     sections.push(section);
   }
 
-  const result = resultText(g.path, asset);
+  const result = resultText(g.path, asset, textAnswer(g.answers, "project"));
   return {
     title: result.headline,
     intro: result.body,

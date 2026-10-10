@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { m } from "framer-motion";
 import { copy, getQuestion, questionFor, type Step } from "@/lib/content";
-import { budgetOf, isAnswered } from "@/lib/flow";
+import { budgetOf, cleanText, isAnswered } from "@/lib/flow";
 import { useFunnel } from "../context";
 import { BackButton, Pill } from "../ui";
 
@@ -17,10 +17,12 @@ export function QuestionScene({ step }: { step: Step }) {
     typeof prior === "string" ? prior : priorBudget ? priorBudget.band : null,
   );
   const [amount, setAmount] = useState<string>(priorBudget?.amount ? String(priorBudget.amount) : "");
+  const [text, setText] = useState<string>(typeof prior === "string" ? prior : "");
   const showAmount = Boolean(v?.amountField && v.options.find((o) => o.value === picked)?.amountField);
   if (!q || !v) return null;
 
   const headingId = `q-${q.id}`;
+  const isText = q.type === "text";
 
   const choose = (value: string) => {
     if (q.type === "multi") {
@@ -41,6 +43,12 @@ export function QuestionScene({ step }: { step: Step }) {
   const submitAmount = (skip: boolean) => {
     const n = Number(amount.replace(/[^\d.]/g, ""));
     f.answer("budget", { band: picked, amount: !skip && Number.isFinite(n) && n > 0 ? Math.round(n) : null });
+  };
+
+  const submitText = (value: string, skip = false) => {
+    const t = skip ? "" : cleanText(value, v.maxLength ?? 80);
+    if (!t && !v.optional) return;
+    f.answer(q.id, t);
   };
 
   const textIn = (i: number) =>
@@ -65,30 +73,81 @@ export function QuestionScene({ step }: { step: Step }) {
             {v.help}
           </m.p>
         )}
-        <ul className="mt-8 border-t border-line" role={q.type === "multi" ? "group" : "radiogroup"} aria-labelledby={headingId}>
-          {v.options.map((o, i) => {
-            const on = q.type === "multi" ? multi.includes(o.value) : picked === o.value;
-            return (
-              <m.li key={o.value} {...textIn(i + 2)} className="border-b border-line">
-                <button
-                  type="button"
-                  role={q.type === "multi" ? "checkbox" : "radio"}
-                  aria-checked={on}
-                  onClick={() => choose(o.value)}
-                  className={`group flex min-h-[64px] w-full items-center justify-between gap-4 px-1 py-4 text-left transition-colors duration-200 ${on ? "text-ink" : "text-ink-soft hover:text-ink"}`}
-                >
-                  <span className={`font-serif text-[1.55rem] leading-tight md:text-[1.9rem] ${on ? "italic" : ""}`}>{o.label}</span>
-                  <span
-                    aria-hidden="true"
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 ${on ? "border-ink bg-ink text-cream" : "border-line-strong text-transparent group-hover:border-ink-soft"}`}
-                  >
-                    <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.2 3L11 1.5" stroke="currentColor" strokeWidth="1.8" /></svg>
-                  </span>
+
+        {isText && (
+          <m.div {...textIn(2)} className="mt-8">
+            {v.suggestions && v.suggestions.length > 0 && (
+              <ul className="mb-6 flex flex-wrap gap-2" aria-label={v.prompt}>
+                {v.suggestions.map((s) => (
+                  <li key={s.value}>
+                    <button
+                      type="button"
+                      onClick={() => submitText(s.value)}
+                      className={`h-11 rounded-pill border px-4 text-[15px] font-medium transition-colors ${text === s.value ? "border-ink bg-ink text-cream" : "border-line-strong bg-white/50 text-ink hover:border-ink-soft"}`}
+                    >
+                      {s.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <label htmlFor={`${q.id}-text`} className="sr-only">
+              {v.prompt}
+            </label>
+            <div className="border-b border-ink pb-2 focus-within:shadow-[0_1px_0_0_var(--color-ink)]">
+              <input
+                id={`${q.id}-text`}
+                name={q.id}
+                autoComplete="off"
+                autoCapitalize="sentences"
+                enterKeyHint="next"
+                maxLength={v.maxLength ?? 80}
+                placeholder={v.placeholder}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && submitText(text)}
+                className="w-full bg-transparent font-serif text-[1.8rem] leading-tight outline-none placeholder:text-muted-light focus-visible:outline-none"
+              />
+            </div>
+            <div className="mt-6 flex items-center gap-4">
+              <Pill disabled={!cleanText(text, v.maxLength ?? 80)} onClick={() => submitText(text)}>
+                {copy.common.continue} <span aria-hidden="true">&rarr;</span>
+              </Pill>
+              {v.optional && (
+                <button type="button" onClick={() => submitText("", true)} className="h-11 px-2 text-[15px] font-medium text-muted underline-offset-4 hover:text-ink hover:underline">
+                  {copy.common.skip}
                 </button>
-              </m.li>
-            );
-          })}
-        </ul>
+              )}
+            </div>
+          </m.div>
+        )}
+
+        {!isText && (
+          <ul className="mt-8 border-t border-line" role={q.type === "multi" ? "group" : "radiogroup"} aria-labelledby={headingId}>
+            {v.options.map((o, i) => {
+              const on = q.type === "multi" ? multi.includes(o.value) : picked === o.value;
+              return (
+                <m.li key={o.value} {...textIn(i + 2)} className="border-b border-line">
+                  <button
+                    type="button"
+                    role={q.type === "multi" ? "checkbox" : "radio"}
+                    aria-checked={on}
+                    onClick={() => choose(o.value)}
+                    className={`group flex min-h-[64px] w-full items-center justify-between gap-4 px-1 py-4 text-left transition-colors duration-200 ${on ? "text-ink" : "text-ink-soft hover:text-ink"}`}
+                  >
+                    <span className={`font-serif text-[1.55rem] leading-tight md:text-[1.9rem] ${on ? "italic" : ""}`}>{o.label}</span>
+                    <span
+                      aria-hidden="true"
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all duration-200 ${on ? "border-ink bg-ink text-cream" : "border-line-strong text-transparent group-hover:border-ink-soft"}`}
+                    >
+                      <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.2 3L11 1.5" stroke="currentColor" strokeWidth="1.8" /></svg>
+                    </span>
+                  </button>
+                </m.li>
+              );
+            })}
+          </ul>
+        )}
 
         {showAmount && v.amountField && (
           <m.div {...textIn(0)} className="mt-8">

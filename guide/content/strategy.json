@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "_note": "The strategy tracks the guide teaches, in the owner's words. The AI writer uses these as the spine of the plan and may not add a track. Edit the term for conversion trained editors under terms.",
+  "terms": {
+    "conversionEditors": "Funnel Clippers",
+    "conversionSkill": "funnel clipping",
+    "_alternatives": [
+      "Conversion Clippers",
+      "Action Editors",
+      "Clip-to-Convert editors"
+    ]
+  },
+  "monthly": {
+    "principle": "Clipping is a monthly service, not a one-off push. A single campaign is possible, but the longer it runs the more it compounds: clips keep getting found, the pages that post them grow, and the editors learn what works for this audience. Month two costs less per result than month one, and month three less than month two.",
+    "oneOff": "A one-off campaign works for a date that cannot move, like a release week or a launch. Even then, the clips keep working after the budget is spent.",
+    "compounding": [
+      "Clips do not expire. A post from month one is still picking up views in month three.",
+      "Pages that post regularly get shown to more people over time, so the same number of clips reaches further.",
+      "Each month shows which hooks, moments and formats work for this audience. The next month starts from that, not from zero."
+    ]
+  },
+  "tracks": {
+    "visibility": {
+      "name": "Maximum visibility",
+      "promise": "As many people in {market} who match {audience} seeing {project} as often as possible, from as many pages as possible.",
+      "steps": [
+        {
+          "title": "Find the pages that already serve your audience",
+          "body": "In {market}, there are pages that already post for {audience} every day: fan pages, meme pages, niche news pages, clip accounts. Those pages are the distribution. The job is to find as many of them as possible, in your market, with real people watching. A good page posts often, gets comments from people in your country, and already covers content like yours."
+        },
+        {
+          "title": "Get them to repost your content",
+          "body": "When your content is strong, the simplest ask is a repost: your clip, your audio, your caption, on their page. A campaign pays them per 1,000 counted views, so they have a reason to post it and to keep posting it."
+        },
+        {
+          "title": "Let them make their own ideas from it",
+          "body": "When the content is not there yet, or not high quality enough on its own, the pages make their own creative ideas from your content or your audio: reactions, edits, trends, their own take. This is often what travels furthest, because each page knows what its own audience stops for."
+        },
+        {
+          "title": "Keep the supply going every week",
+          "body": "Visibility is a volume game. A brief, new moments to cut each week, a rate per 1,000 views and a review step, and the pages keep posting. Week one is the test; weeks two to four are where the numbers climb."
+        },
+        {
+          "title": "Count what counts",
+          "body": "Judge it on counted views, the number of different pages posting, and how often someone in your audience would have seen it this week. Everything else follows from those three."
+        }
+      ]
+    },
+    "conversions": {
+      "name": "Conversions",
+      "promise": "People in {market} who match {audience} taking one action: {action}.",
+      "steps": [
+        {
+          "title": "A small team of {conversionEditors}",
+          "body": "Reach alone does not make people act. This track uses a smaller set of highly trained editors who understand {conversionSkill}: how to build a clip that makes someone want to {action}, not only watch. The first three seconds earn attention; the rest of the clip points it at the action."
+        },
+        {
+          "title": "Profiles built as a funnel",
+          "body": "The pages these editors post from are built for the action, not only for views: the bio says what to do, the pinned posts explain why, the link goes to one place, and every clip ends with the same next step. Attention that lands on the profile has somewhere to go."
+        },
+        {
+          "title": "Own the pages",
+          "body": "Own the accounts, or have them run for you with full access. That is how every view, profile visit, click and {action} can be tracked back to the clip that caused it. What is not tracked cannot be improved."
+        },
+        {
+          "title": "Improve month by month",
+          "body": "Each month, the clips and profiles that converted best are the starting point for the next. Hooks, offers, captions and the landing page all get tuned from the numbers, so the cost per {action} drops over time."
+        },
+        {
+          "title": "Count what counts",
+          "body": "Judge it on the action itself: how many people did {action}, what each one cost, and which clips they came from. Views matter only as the top of that funnel."
+        }
+      ]
+    },
+    "both": {
+      "name": "Visibility and conversions together",
+      "promise": "Many pages in {market} putting {project} in front of {audience} every week, feeding a smaller set of profiles built to make people {action}.",
+      "steps": [
+        {
+          "title": "Two layers, one campaign",
+          "body": "The visibility layer is wide: as many pages as possible in {market} reposting your content and making their own ideas from it. The conversion layer is narrow: a small team of {conversionEditors} posting from profiles built as a funnel, pointing at {action}. The wide layer makes people recognise {project}; the narrow layer gives them somewhere to act on it."
+        },
+        {
+          "title": "Month one: build both at once",
+          "body": "Start the visibility layer first, because it needs volume and time. Set up the conversion profiles in the same weeks so that when recognition builds, the funnel is already there to catch it."
+        },
+        {
+          "title": "Own the conversion pages, rent the reach",
+          "body": "The pages that drive {action} are yours, so everything is tracked. The pages that drive reach are paid per 1,000 counted views, so the cost follows the result."
+        },
+        {
+          "title": "Read two sets of numbers",
+          "body": "For the wide layer: counted views, pages posting, how often your audience sees it. For the narrow layer: profile visits, clicks and {action}, and which clips caused them. The two should move together; when they do not, the brief changes."
+        },
+        {
+          "title": "Let it compound",
+          "body": "By month two the reach pages know your content, the conversion editors know your audience, and the clips from month one are still working. This is where the cost per result starts to fall."
+        }
+      ]
+    }
+  },
+  "clipperNote": {
+    "visibilityCampaigns": "Visibility campaigns want volume and reach: many clips, strong hooks, posted often, on pages that fit the audience. Pay is per 1,000 counted views.",
+    "conversionCampaigns": "Conversion campaigns want fewer, sharper clips that make someone do one thing, posted from profiles set up for it. They ask more of the editor and the brief is stricter."
+  },
+  "prepare": {
+    "buyer": [
+      "The content itself: the full track, the episode, the product film, the raw footage. Clippers cut from what they are given, so the more there is, the more angles they can find.",
+      "A one page brief: what the content is, who it is for, what must not be cut, and the one line you want people to remember.",
+      "The links: where a viewer should go (the song, the store, the sign up page) so every clip points at the same place.",
+      "A rate per 1,000 counted views and a monthly budget, so the campaign can start the week the content is ready.",
+      "Someone who can approve clips within a day. Speed of approval sets the pace of the whole first month."
+    ],
+    "clipper": [
+      "One account per platform you post on, with a clean name, a short bio and a profile picture that fits the niche.",
+      "An editor you can use fast, even if it is only your phone. Speed matters more than polish in month one.",
+      "A folder of hooks that worked on other people's clips in your niche. Copy the shape, not the content.",
+      "A simple log: which clip, which account, when, and the views after one day and after seven."
+    ]
+  },
+  "clipperFirstMonth": {
+    "promise": "Four weeks from the first account to the first paid clips.",
+    "steps": [
+      {
+        "title": "Week one: set up and study",
+        "body": "Make the accounts, join one live campaign, read its brief twice, and watch what the top clips in that niche have in common: the first second, the caption, the length."
+      },
+      {
+        "title": "Week two: volume",
+        "body": "Post every day. Many short clips beat one perfect one, because the feed tells you fast which hooks work. Keep the log."
+      },
+      {
+        "title": "Week three: double down",
+        "body": "Take the three clips that did best, make five versions of each, and post those. This is where most new clippers see their first clip pass ten thousand views."
+      },
+      {
+        "title": "Week four: add a second campaign",
+        "body": "With one campaign running smoothly, add a second in the same niche or a nearby one. Two briefs, same accounts, more counted views."
+      }
+    ]
+  }
+}

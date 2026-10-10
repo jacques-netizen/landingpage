@@ -11,7 +11,7 @@ import { newMetaEventId, scoreLead } from "@/lib/server/leads";
 import { findSession, leadForSession, loadAnswers, saveAnswer, sessionState } from "@/lib/server/sessions";
 import { verifyTurnstile } from "@/lib/server/turnstile";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const Body = z.object({
   token: z.string().min(16).max(64),

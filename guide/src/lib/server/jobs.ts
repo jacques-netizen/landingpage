@@ -6,7 +6,7 @@ import "server-only";
 import { and, eq, inArray, lte, or, isNull, lt, sql } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 
-export const JOB_KINDS = ["pdf", "crm", "email", "capi", "discord", "manychat"] as const;
+export const JOB_KINDS = ["write", "pdf", "crm", "email", "capi", "discord", "manychat"] as const;
 export const BOOKING_JOB_KINDS = ["booking_crm", "booking_capi", "booking_discord"] as const;
 export type JobKind = (typeof JOB_KINDS)[number] | (typeof BOOKING_JOB_KINDS)[number];
 
@@ -17,6 +17,7 @@ const MAX_ATTEMPTS = 6;
 const backoffSec = (attempt: number) => Math.min(3600, 30 * 2 ** attempt);
 
 const handlers: Partial<Record<JobKind, () => Promise<JobHandler>>> = {
+  write: async () => (await import("./jobs/write")).runWrite,
   pdf: async () => (await import("./jobs/pdf")).runPdf,
   crm: async () => (await import("./jobs/crm")).runCrm,
   email: async () => (await import("./jobs/email")).runEmail,
@@ -87,14 +88,26 @@ async function runOne(job: typeof schema.jobs.$inferSelect) {
   }
 }
 
-/** Runs every due job for one lead. Jobs run side by side; each is independent. */
+/**
+ * Runs a batch of due jobs. The guide is written first, then the jobs that
+ * need it (PDF, email) and the rest run side by side.
+ */
+async function runBatch(due: (typeof schema.jobs.$inferSelect)[]) {
+  const writes = due.filter((j) => j.kind === "write");
+  await Promise.all(writes.map(runOne));
+  // The PDF and the email call ensureGuide themselves, so a lead whose write
+  // job died still gets a guide (from the rules writer) and the email goes out.
+  await Promise.all(due.filter((j) => j.kind !== "write").map(runOne));
+}
+
+/** Runs every due job for one lead. */
 export async function runJobsForLead(leadId: string) {
   const db = await getDb();
   const due = await db
     .select()
     .from(schema.jobs)
     .where(and(eq(schema.jobs.leadId, leadId), inArray(schema.jobs.status, ["pending", "failed"]), lte(schema.jobs.runAfter, sql`now()`)));
-  await Promise.all(due.map(runOne));
+  await runBatch(due);
 }
 
 /** Cron sweep: due jobs across all leads, plus runs that were cut off. */
@@ -110,6 +123,6 @@ export async function sweepJobs(limit = 25) {
       ),
     )
     .limit(limit);
-  await Promise.all(due.map(runOne));
+  await runBatch(due);
   return due.length;
 }

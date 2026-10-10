@@ -16,7 +16,8 @@ export type LeadView = {
   offersCall: boolean;
   humanPriority: boolean;
   answers: Answers;
-  guideSections?: string[];
+  guideReady?: boolean;
+  guide?: { headline: string; sub: string; tiles: { value: string; label: string }[]; sections: string[] } | null;
 };
 
 export type GateInput = {

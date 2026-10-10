@@ -6,7 +6,7 @@ import type { Answers } from "@/lib/flow";
 import type { ProgressMode, Variant } from "@/lib/content";
 import { config } from "./config";
 import { maskEmail, randomToken, signToken } from "./tokens";
-import { guideFor } from "./guide";
+import { guideIfReady } from "./guide";
 import { offersCall } from "./leadview";
 
 export type SessionRow = typeof schema.sessions.$inferSelect;
@@ -83,6 +83,7 @@ export const guideToken = (leadId: string) => signToken(leadId, "guide");
 /** What the browser gets back for a session. No raw personal data. */
 export async function sessionState(s: SessionRow) {
   const [answers, lead] = await Promise.all([loadAnswers(s.id), leadForSession(s.id)]);
+  const doc = lead ? await guideIfReady(lead.id) : null;
   return {
     token: s.token,
     variant: s.variant as Variant,
@@ -104,7 +105,9 @@ export async function sessionState(s: SessionRow) {
           offersCall: offersCall(lead),
           humanPriority: lead.humanPriority,
           answers: lead.answers,
-          guideSections: guideFor(lead).sections.map((x) => x.title),
+          guideReady: Boolean(doc),
+          // A preview of the written guide for the result scene. Null until the write job has run.
+          guide: doc ? { headline: doc.hero.headline, sub: doc.hero.sub, tiles: doc.hero.tiles, sections: doc.sections.map((x) => x.title) } : null,
         }
       : null,
   };

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "_note": "Result page text, chosen by path then asset. Plain sentences, no labels.",
+  "_note": "Result page text, chosen by path then asset. When the person typed what they are putting out, the headline names it (projectHeadline).",
   "buyer": {
     "music_release": {
       "headline": "Your plan for a music release",
@@ -62,5 +62,6 @@
       "headline": "Your plan for getting started in clipping",
       "body": "Your guide covers how pay works, how to set up, what makes a clip travel, and how to pick campaigns that fit you."
     }
-  }
+  },
+  "projectHeadline": "Your plan for {project}"
 }

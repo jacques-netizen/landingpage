@@ -33,7 +33,9 @@ describe("content", () => {
     for (const steps of Object.values(flow)) {
       for (const s of steps.filter((x) => x.question)) {
         for (const p of PATHS.filter((x) => !s.paths || s.paths.includes(x))) {
-          expect(questionFor(s.question!, p)?.options.length, `${s.id} ${p}`).toBeGreaterThan(0);
+          const v = questionFor(s.question!, p);
+          expect(v, `${s.id} ${p}`).toBeTruthy();
+          if (getQuestion(s.question!)?.type !== "text") expect(v?.options.length, `${s.id} ${p}`).toBeGreaterThan(0);
         }
       }
     }

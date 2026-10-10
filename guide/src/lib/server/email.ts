@@ -4,7 +4,7 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import emailCopy from "../../../content/email.json";
-import { fill, resultText, type Path } from "@/lib/content";
+import { fill, resultText, textAnswer, type Path } from "@/lib/content";
 import { pathOf } from "@/lib/flow";
 import { config } from "./config";
 import { dataDir } from "./datadir";
@@ -30,7 +30,7 @@ export function buildDeliveryEmail(lead: LeadRow) {
   const e = emailCopy;
   const p = (pathOf(lead.answers) ?? lead.path) as Path;
   const asset = typeof lead.answers.asset === "string" ? lead.answers.asset : undefined;
-  const headline = resultText(p, asset).headline;
+  const headline = resultText(p, asset, textAnswer(lead.answers, "project")).headline;
   const guide = guideUrl(lead.id);
   const unsub = unsubscribeUrl(lead.email);
 

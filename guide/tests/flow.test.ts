@@ -6,31 +6,46 @@ const questionCount = (answers: Record<string, unknown>) =>
   stepsFor("full", answers).filter((s) => s.scene === "question").length;
 
 describe("flow", () => {
-  it("asks clippers 5 questions and creators and brands 7", () => {
-    expect(questionCount({ role: "clipper" })).toBe(5);
-    expect(questionCount({ role: "creator" })).toBe(7);
-    expect(questionCount({ role: "brand" })).toBe(7);
+  it("asks clippers 9 questions and creators and brands 12, or 13 when an action is needed", () => {
+    expect(questionCount({ role: "clipper" })).toBe(9);
+    // Until the objective is answered the action step stays in the plan.
+    expect(questionCount({ role: "creator" })).toBe(13);
+    expect(questionCount({ role: "creator", objective: "visibility" })).toBe(12);
+    expect(questionCount({ role: "brand", objective: "conversions" })).toBe(13);
+    expect(questionCount({ role: "brand", objective: "both" })).toBe(13);
   });
 
   it("orders scenes as the spec says", () => {
-    expect(stepsFor("full", { role: "creator" }).map((s) => s.id)).toEqual([
-      "cold_open", "q_role", "chapter1", "q_asset", "q_platforms", "chapter2",
-      "q_goal", "q_timing", "q_budget", "q_deciding", "chapter3", "gate", "building", "result",
+    expect(stepsFor("full", { role: "creator", objective: "visibility" }).map((s) => s.id)).toEqual([
+      "cold_open", "q_role", "chapter1", "q_project", "q_asset", "q_objective", "q_market", "q_audience", "chapter2",
+      "q_library", "q_reach", "q_platforms", "q_timing", "q_budget", "q_deciding", "chapter3", "gate", "building", "result",
+    ]);
+    expect(stepsFor("full", { role: "clipper" }).map((s) => s.id)).toEqual([
+      "cold_open", "q_role", "chapter1", "q_asset", "q_accounts", "chapter2", "q_hours", "q_tools", "q_platforms",
+      "q_goal", "q_timing", "q_first_niche", "chapter3", "gate", "building", "result",
     ]);
     expect(stepsFor("plain", {}).map((s) => s.scene)).toEqual(["film", "gate", "building", "result"]);
   });
 
+  it("asks for the action only when the objective needs one", () => {
+    const ids = (a: Record<string, unknown>) => stepsFor("full", a).map((s) => s.id);
+    expect(ids({ role: "brand", objective: "conversions" })).toContain("q_action");
+    expect(ids({ role: "brand", objective: "both" })).toContain("q_action");
+    expect(ids({ role: "brand", objective: "visibility" })).not.toContain("q_action");
+  });
+
   it("resumes at the saved scene but never past an unanswered question", () => {
-    expect(resumeStep("full", { role: "brand", asset: "music_release" }, "q_platforms", false)).toBe("q_platforms");
-    expect(resumeStep("full", { role: "brand" }, "chapter2", false)).toBe("q_asset");
+    expect(resumeStep("full", { role: "brand", project: "a launch", asset: "music_release" }, "q_objective", false)).toBe("q_objective");
+    expect(resumeStep("full", { role: "brand" }, "chapter2", false)).toBe("q_project");
     expect(resumeStep("full", {}, null, false)).toBe("cold_open");
     expect(resumeStep("full", { role: "clipper" }, "result", false)).toBe("q_asset");
     expect(resumeStep("full", { role: "clipper" }, "q_role", true)).toBe("result");
   });
 
-  it("caps resume before building when there is no lead", () => {
-    const all = { role: "clipper", asset: "music", platforms: ["tiktok"], goal: "side_income", timing: "new" };
-    expect(resumeStep("full", all, "building", false)).toBe("gate");
+  it("treats a skipped optional typed answer as answered", () => {
+    const all = { role: "clipper", asset: "music", accounts: "none", hours: "5_10", tools: "phone", platforms: ["tiktok"], goal: "side_income", timing: "new" };
+    expect(resumeStep("full", all, "building", false)).toBe("q_first_niche");
+    expect(resumeStep("full", { ...all, first_niche: "" }, "building", false)).toBe("gate");
   });
 
   it("is front loaded", () => {
@@ -70,5 +85,14 @@ describe("answer cleaning", () => {
     expect(cleanAnswer("platforms", "creator", ["tiktok", "myspace", "tiktok"])).toEqual(["tiktok"]);
     expect(cleanAnswer("budget", "brand", { band: "not_sure", amount: 4200.4 })).toEqual({ band: "not_sure", amount: 4200 });
     expect(cleanAnswer("budget", "brand", { band: "3k_10k", amount: 99 })).toEqual({ band: "3k_10k", amount: null });
+  });
+
+  it("cleans typed answers and keeps them short", () => {
+    expect(cleanAnswer("project", "creator", "  my next <b>single</b>\u0007  ")).toBe("my next b single /b");
+    expect(cleanAnswer("project", "creator", "x".repeat(200))).toHaveLength(80);
+    expect(cleanAnswer("project", "creator", "")).toBeNull();
+    expect(cleanAnswer("project", "creator", 42)).toBeNull();
+    expect(cleanAnswer("first_niche", "clipper", "")).toBe("");
+    expect(cleanAnswer("market", "creator", "Nigeria")).toBe("Nigeria");
   });
 });

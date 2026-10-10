@@ -52,6 +52,10 @@ export function config() {
       secretAccessKey: str(e.STORAGE_SECRET_ACCESS_KEY),
       region: str(e.STORAGE_REGION, "auto"),
     },
+    // The AI writer. The key comes from the owner's separate Anthropic console.
+    anthropicApiKey: str(e.ANTHROPIC_API_KEY),
+    guideWriter: str(e.GUIDE_WRITER, e.ANTHROPIC_API_KEY ? "ai" : "rules") as "ai" | "rules",
+    guideWriterModel: str(e.GUIDE_WRITER_MODEL, "claude-opus-5-5"),
     dashboardPassword: str(e.DASHBOARD_PASSWORD),
     cronSecret: str(e.CRON_SECRET),
   };

@@ -10,6 +10,8 @@ import { Logo } from "../ui";
 
 const MIN_MS = 3000;
 const TARGET_MS = 4800;
+// The guide is written in the background; the result scene waits for it.
+// This scene only needs the lead to exist.
 const MAX_MS = 8000;
 
 export function BuildingScene() {

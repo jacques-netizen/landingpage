@@ -77,7 +77,18 @@
     "download": "Download the PDF",
     "contents": "In this guide",
     "page": "Page",
-    "downloadShort": "PDF"
+    "downloadShort": "PDF",
+    "summary": "Where you are",
+    "facts": "Your answers",
+    "strategy": "The track",
+    "platforms": "In order",
+    "proofBand": "Across campaigns",
+    "watch": "Watch",
+    "scroll": "Scroll",
+    "openGuide": "Open your guide",
+    "objectiveLabel": "Objective",
+    "guideFor": "Guide for",
+    "fourSteps": "steps in every campaign: brief, clips, review, counted views paid per 1,000"
   },
   "coverImages": {
     "music_release": "concert-s.webp",
@@ -92,5 +103,49 @@
     "podcasts_streams": "story-4-s.webp",
     "film_tv": "story-1-s.webp",
     "anything": "story-1-s.webp"
+  },
+  "sectionTitles": {
+    "what_it_does": "What clipping does for {project}",
+    "your_strategy": "Your strategy",
+    "playbook": "What to cut from",
+    "where_to_post": "Where it should be seen",
+    "how_it_runs": "How a campaign runs",
+    "numbers": "Your numbers",
+    "first_month": "Your first month",
+    "what_to_prepare": "What to have ready",
+    "mistakes": "What goes wrong",
+    "proof": "What it has done for others",
+    "next_step": "Your next step",
+    "how_it_pays": "How clipping pays",
+    "set_up": "Setting up",
+    "a_day": "A day of clipping",
+    "what_travels": "What travels",
+    "rules": "The rules",
+    "your_niche": "Your niche"
+  },
+  "hero": {
+    "kicker": "Your personal guide",
+    "buyerHeadline": "Your plan for {project}",
+    "clipperHeadline": "Your clipping plan",
+    "sub": "Built from your answers. Read it once, then start with the first month.",
+    "cardTitle": "Your guide"
+  },
+  "numbersLabels": {
+    "budgetSlider": "Monthly budget",
+    "viewsMid": "counted views a month at the mid rate,",
+    "viewsLow": "at the low rate,",
+    "viewsHigh": "at the high rate,",
+    "perDay": "views a day at the mid rate",
+    "timesPost": "your current good post, every month",
+    "viewsMonth": "views a month at the mid rate",
+    "monthThree": "views in month three, earlier months still counting",
+    "monthsLabel": "Three months running",
+    "month": "Month",
+    "buyerNote": "The three rates are the effective CPMs of three approved campaigns, not a quote. Month two and three add the views that month one's clips keep collecting. Nothing here is a promise: it is what those campaigns did at those rates.",
+    "clipsSlider": "Clips a week",
+    "perClip": "for one clip at",
+    "views": "views",
+    "monthIf": "a month if the average clip reaches",
+    "clipperNote": "The rate is the one two approved campaigns paid. The month figures assume every clip in the month reaches that average and passes review. Most clips do less and a few do far more, which is why volume matters."
   }
 }
