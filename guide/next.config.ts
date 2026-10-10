@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
   // Migrations and guide content are read from disk at runtime.
   // The PDF renderer also embeds fonts and brand images read at runtime.
   outputFileTracingIncludes: {
-    "/api/**": ["./drizzle/**", "./content/**", "./assets/fonts/**", "./public/brand/**"],
+    "/api/**": ["./drizzle/**", "./content/**", "./assets/fonts/**", "./public/brand/**", "./node_modules/@sparticuz/chromium/bin/**"],
     "/g/**": ["./drizzle/**", "./content/**"],
     "/u/**": ["./drizzle/**"],
     "/dashboard": ["./drizzle/**"],

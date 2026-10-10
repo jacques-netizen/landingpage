@@ -196,7 +196,8 @@ redirects to the old PDF. Guide links already sent keep working.
 ## 14. Experiments
 
 `VARIANT_SPLIT` is the share of new visitors on the full experience (the rest
-get the plain control). `PROGRESS_SPLIT` is the share with the progress
+get the plain control: film and form only, so their guide has no answers to
+work from). The default is 1 since the guide is written from the answers. `PROGRESS_SPLIT` is the share with the progress
 line. Force an arm for testing with `?_v=full`, `?_v=plain`,
 `?_p=front_loaded` or `?_p=none` on a fresh browser.
 

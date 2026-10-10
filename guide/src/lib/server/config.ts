@@ -12,12 +12,16 @@ const share = (v: string | undefined, d: number) => Math.min(1, Math.max(0, num(
 export function config() {
   const e = process.env;
   return {
-    siteUrl: str(e.SITE_URL, "http://localhost:3000").replace(/\/$/, ""),
+    // SITE_URL wins; on Vercel the project's production domain is the fallback,
+    // so guide and unsubscribe links in emails are right without any config.
+    siteUrl: str(e.SITE_URL, vercelUrl(e) || "http://localhost:3000").replace(/\/$/, ""),
     appSecret: str(e.APP_SECRET, "dev-only-secret-change-me"),
     isProd: e.NODE_ENV === "production",
     qualifyMin: num(e.BUDGET_QUALIFY_MIN, 3000),
     priorityMin: num(e.BUDGET_PRIORITY_MIN, 10000),
-    variantSplit: share(e.VARIANT_SPLIT, 0.5),
+    // The guide is written from the answers, so everyone gets the questions
+    // unless an experiment share is set. The plain arm stays reachable with ?_v=plain.
+    variantSplit: share(e.VARIANT_SPLIT, 1),
     progressSplit: share(e.PROGRESS_SPLIT, 0.5),
     funnelEnabled: str(e.FUNNEL_ENABLED, "true") !== "false",
     oldGuideUrl: str(e.OLD_GUIDE_URL),
@@ -62,6 +66,11 @@ export function config() {
     cronSecret: str(e.CRON_SECRET),
   };
 }
+
+const vercelUrl = (e: NodeJS.ProcessEnv) => {
+  const host = str(e.VERCEL_PROJECT_PRODUCTION_URL) || (e.VERCEL_ENV !== "production" ? str(e.VERCEL_URL) : "");
+  return host ? `https://${host}` : "";
+};
 
 export type Config = ReturnType<typeof config>;
 

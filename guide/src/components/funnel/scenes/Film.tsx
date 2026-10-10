@@ -100,6 +100,14 @@ export function FilmScene({ step }: { step: Step }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src?.src]);
 
+  // A film that has not started after a few seconds (background tab, slow
+  // network, autoplay refused) opens the way on; the film still plays if it can.
+  useEffect(() => {
+    if (phase === "playing" || phase === "ended" || unlockedNext) return;
+    const t = window.setTimeout(() => setUnlockedNext(true), phase === "starting" ? 8000 : 4000);
+    return () => window.clearTimeout(t);
+  }, [phase, unlockedNext]);
+
   const togglePlay = () => {
     const v = film();
     if (phase === "blocked" || v.paused) {
