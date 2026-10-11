@@ -27,24 +27,27 @@
       "placeholder": false
     },
     "result_clipper": {
-      "provider": "file",
-      "id": "/media/films/result_clipper.mp4",
-      "poster": "/media/films/result_clipper.jpg",
+      "provider": "mux",
+      "id": "994l5pha1Vycm02ivwpWK3800ObqmlmhCLy02ejhytH02JU",
+      "poster": null,
       "captions": null,
+      "fit": "contain",
       "placeholder": false
     },
     "result_creator": {
-      "provider": "file",
-      "id": "/media/films/result_creator.mp4",
-      "poster": "/media/films/result_creator.jpg",
+      "provider": "mux",
+      "id": "994l5pha1Vycm02ivwpWK3800ObqmlmhCLy02ejhytH02JU",
+      "poster": null,
       "captions": null,
+      "fit": "contain",
       "placeholder": false
     },
     "result_brand": {
-      "provider": "file",
-      "id": "/media/films/result_brand.mp4",
-      "poster": "/media/films/result_brand.jpg",
+      "provider": "mux",
+      "id": "994l5pha1Vycm02ivwpWK3800ObqmlmhCLy02ejhytH02JU",
+      "poster": null,
       "captions": null,
+      "fit": "contain",
       "placeholder": false
     }
   },

@@ -146,14 +146,17 @@ mode). Set `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (and `TURNSTILE_SITE_KEY`) and
 
 ## 11. Video (Mux)
 
-1. Upload each film to Mux with captions (`.vtt`) and copy the playback id.
+1. Upload each film to Mux (playback policy Public) and copy the **Playback
+   ID**, not the Asset ID.
 2. In `content/media.json`, for that logical id set `"provider": "mux"`,
    `"id": "<playback id>"`, `"poster": null` (Mux thumbnail) or a custom
-   image, `"captions": "/media/<file>.vtt"` (put the vtt in `public/media/`),
-   and `"placeholder": false`.
+   image, `"captions": "/media/<file>.vtt"` (put the vtt in `public/media/`)
+   or `null`, `"fit": "contain"` for a landscape film (letterboxed) or
+   `"cover"` for a vertical one, and `"placeholder": false`.
 
-No code changes. `VIDEO_PROVIDER` is informational; each item names its own
-provider, so files and Mux can be mixed while filming is in progress.
+No code changes. Files and Mux can be mixed: the cold open is a local file,
+chapter 1, chapter 2 and the three result films stream from Mux. The three
+result slots currently share one testimonial film.
 
 ## 12. AI guide writer (Anthropic)
 

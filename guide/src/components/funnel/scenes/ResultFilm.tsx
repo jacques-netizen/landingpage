@@ -69,7 +69,8 @@ export function ResultFilm({ src }: { src: VideoSource }) {
   };
 
   return (
-    <div className="relative mx-auto aspect-[9/16] max-h-[78dvh] w-full max-w-[min(100%,calc(78dvh*9/16))] overflow-hidden bg-ink-black md:rounded-[28px]">
+    // A vertical film stands in a phone shaped frame; a landscape one gets a wide frame.
+    <div className={`relative mx-auto overflow-hidden bg-ink-black md:rounded-[28px] ${src.fit === "contain" ? "aspect-video w-full max-w-3xl" : "aspect-[9/16] max-h-[78dvh] w-full max-w-[min(100%,calc(78dvh*9/16))]"}`}>
       <div ref={holder} className="absolute inset-0" onClick={toggle} />
       {state === "failed" && src.poster && (
         // eslint-disable-next-line @next/next/no-img-element
