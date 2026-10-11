@@ -99,6 +99,7 @@ export async function upsertContact(input: {
   firstName: string;
   companyName?: string | null;
   igHandle?: string | null;
+  phone?: string | null;
   fields: Partial<Record<GhlField, string>>;
   tags: string[];
 }): Promise<string> {
@@ -111,6 +112,7 @@ export async function upsertContact(input: {
     email: input.email,
     firstName: input.firstName,
     ...(input.companyName ? { companyName: input.companyName } : {}),
+    ...(input.phone ? { phone: input.phone } : {}),
     source: "guide funnel",
     customFields,
   });

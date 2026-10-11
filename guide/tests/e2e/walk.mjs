@@ -132,6 +132,7 @@ if (plain) await page.getByLabel('Which one sounds like you?').selectOption({ la
 await page.getByLabel('First name', { exact: true }).fill('Test');
 await page.getByLabel('Email', { exact: true }).fill(`test+${path}${Date.now()}@example.com`);
 await page.getByLabel(/Instagram handle/).fill('@test.handle');
+if (await page.getByLabel(/WhatsApp number/).count()) await page.getByLabel(/WhatsApp number/).fill('+32 470 12 34 56');
 if (await page.getByLabel('Company, label or team name').count()) await page.getByLabel('Company, label or team name').fill('Test Label');
 await page.getByRole('checkbox').check();
 await page.getByRole('button', { name: /Write my guide|Build my guide/ }).click();

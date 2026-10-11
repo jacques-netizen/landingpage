@@ -24,6 +24,7 @@ export type GateInput = {
   firstName: string;
   email: string;
   igHandle: string;
+  phone: string;
   company: string;
   role?: string;
   consent: boolean;

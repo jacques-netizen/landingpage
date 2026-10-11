@@ -131,6 +131,13 @@
       "company": {
         "label": "Company, label or team name",
         "autocomplete": "organization"
+      },
+      "phone": {
+        "label": "WhatsApp number",
+        "hintOptional": "Optional, if you want the guide there too",
+        "hintRequired": "So we can reach you about your plan",
+        "placeholder": "+32 470 12 34 56",
+        "purpose": "Used only to send your guide and to talk about your plan. Never shared."
       }
     },
     "consent": {
@@ -145,6 +152,7 @@
       "email": "Please check your email address.",
       "role": "Please choose one.",
       "company": "Please add the company, label or team name.",
+      "phone": "Please check the number, with the country code.",
       "consent": "Please tick the box so we can send your guide.",
       "bot": "We could not check that you are human. Please try again.",
       "network": "Something went wrong on our side. Please try again.",

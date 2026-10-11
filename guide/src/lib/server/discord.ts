@@ -31,6 +31,7 @@ export function discordMessage(kind: AlertKind, lead: LeadRow) {
     { name: "Budget band", value: budgetBand(lead.answers) || "n/a", inline: true },
     ...(lead.company ? [{ name: "Company", value: lead.company, inline: true }] : []),
     { name: "Instagram", value: lead.igHandle ? `@${lead.igHandle}` : "n/a", inline: true },
+    ...(lead.phone ? [{ name: "WhatsApp", value: lead.phone, inline: true }] : []),
     { name: "First name", value: lead.firstName, inline: true },
     { name: "GHL contact", value: lead.ghlContactId ? contactUrl(lead.ghlContactId) : "not synced yet", inline: false },
   ];

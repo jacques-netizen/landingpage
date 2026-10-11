@@ -146,3 +146,19 @@ export function frontLoaded(x: number): number {
   const c = Math.min(1, Math.max(0, x));
   return 1 - Math.pow(1 - c, 2.2);
 }
+
+/** Which phone field the gate shows: required for buyers at the qualify threshold, optional for other buyers, none for clippers. */
+export function phoneMode(answers: Answers, t: Thresholds): "required" | "optional" | "none" {
+  const path = pathOf(answers);
+  if (path !== "creator" && path !== "brand") return "none";
+  return qualify(answers, t).qualified ? "required" : "optional";
+}
+
+/** A phone number as digits with an optional leading plus, or "" when it is not usable. */
+export function cleanPhone(value: unknown): string {
+  if (typeof value !== "string") return "";
+  const plus = value.trim().startsWith("+") || value.trim().startsWith("00");
+  const digits = value.replace(/\D/g, "").replace(/^00/, "");
+  if (digits.length < 7 || digits.length > 15) return "";
+  return (plus ? "+" : "") + digits;
+}

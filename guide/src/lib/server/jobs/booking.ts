@@ -17,7 +17,7 @@ export async function runBookingCrm(leadId: string): Promise<JobOutcome> {
   const db = await getDb();
   const contactId =
     lead.ghlContactId ??
-    (await upsertContact({ email: lead.email, firstName: lead.firstName, companyName: lead.company, fields: crmFields(lead, session.source), tags: crmTags(lead) }));
+    (await upsertContact({ email: lead.email, firstName: lead.firstName, companyName: lead.company, phone: lead.phone, fields: crmFields(lead, session.source), tags: crmTags(lead) }));
   const sales = await resolveStage(c.ghlPipelineSales, "sales_booked");
   const dm = await resolveStage(c.ghlPipelineDmSetting, "dm_setting_new");
   let oppId = lead.ghlOpportunityId;

@@ -4,9 +4,10 @@ import { after } from "next/server";
 import { z } from "zod";
 import { getDb, schema } from "@/db";
 import { copy } from "@/lib/content";
-import { cleanAnswer, isAnswered, pathOf, type Answers } from "@/lib/flow";
+import { cleanAnswer, cleanPhone, isAnswered, pathOf, phoneMode, type Answers } from "@/lib/flow";
 import { bad, clientIp, json, rateLimit, readJson, tooMany } from "@/lib/server/http";
 import { enqueue, JOB_KINDS, runJobsForLead } from "@/lib/server/jobs";
+import { config } from "@/lib/server/config";
 import { newMetaEventId, scoreLead } from "@/lib/server/leads";
 import { findSession, leadForSession, loadAnswers, saveAnswer, sessionState } from "@/lib/server/sessions";
 import { verifyTurnstile } from "@/lib/server/turnstile";
@@ -18,6 +19,7 @@ const Body = z.object({
   firstName: z.string().trim().min(1).max(60),
   email: z.string().trim().toLowerCase().max(200).email(),
   igHandle: z.string().trim().max(40).optional().default(""),
+  phone: z.string().trim().max(32).optional().default(""),
   company: z.string().trim().max(120).optional().default(""),
   role: z.string().max(20).optional(),
   consent: z.literal(true),
@@ -27,7 +29,7 @@ const Body = z.object({
   fbc: z.string().max(400).optional(),
 });
 
-const fieldFor: Record<string, string> = { firstName: "firstName", email: "email", consent: "consent", company: "company", role: "role" };
+const fieldFor: Record<string, string> = { firstName: "firstName", email: "email", consent: "consent", company: "company", role: "role", phone: "phone" };
 
 const cleanHandle = (h: string) => h.replace(/^@+/, "").replace(/[^A-Za-z0-9._]/g, "").slice(0, 30) || null;
 const cleanText = (s: string) => s.normalize("NFKC").replace(/[\u0000-\u001f<>]/g, "").trim();
@@ -81,6 +83,11 @@ export async function POST(req: Request) {
   if (answers.deciding === "yes" && !company) return json({ error: "company", field: "company" }, 400);
 
   const score = scoreLead(answers);
+  const c = config();
+  const mode = phoneMode(answers, { qualifyMin: c.qualifyMin, priorityMin: c.priorityMin });
+  const phone = mode === "none" ? "" : cleanPhone(b.phone);
+  if (mode === "required" && !phone) return json({ error: "phone", field: "phone" }, 400);
+  if (mode === "optional" && b.phone && !phone) return json({ error: "phone", field: "phone" }, 400);
   const db = await getDb();
   const inserted = await db
     .insert(schema.leads)
@@ -89,6 +96,7 @@ export async function POST(req: Request) {
       firstName: cleanText(b.firstName).slice(0, 60),
       email: b.email,
       igHandle: cleanHandle(b.igHandle),
+      phone: phone || null,
       company: answers.deciding === "yes" ? company.slice(0, 120) : null,
       consentTextVersion: copy.gate.consent.version,
       consentAt: new Date(),

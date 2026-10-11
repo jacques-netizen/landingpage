@@ -11,6 +11,7 @@ const lead = (over: Partial<LeadRow> = {}): LeadRow => ({
   firstName: "Sam",
   email: "sam@example.com",
   igHandle: null,
+  phone: null,
   company: null,
   consentTextVersion: "v",
   consentAt: new Date(),

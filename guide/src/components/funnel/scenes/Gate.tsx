@@ -2,12 +2,13 @@
 import { useRef, useState, type FormEvent } from "react";
 import { m } from "framer-motion";
 import { copy, questionFor, type Step } from "@/lib/content";
+import { cleanPhone, phoneMode } from "@/lib/flow";
 import { track } from "@/lib/client/api";
 import { useFunnel } from "../context";
 import { Turnstile } from "../Turnstile";
 import { BackButton, Pill } from "../ui";
 
-type Field = "firstName" | "email" | "igHandle" | "company" | "role" | "consent";
+type Field = "firstName" | "email" | "igHandle" | "phone" | "company" | "role" | "consent";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function GateScene({ step }: { step: Step }) {
@@ -15,7 +16,7 @@ export function GateScene({ step }: { step: Step }) {
   const g = copy.gate;
   const roleSelect = Boolean(step.roleSelect);
   const roleOptions = questionFor("role", undefined)?.options ?? [];
-  const [values, setValues] = useState({ firstName: f.firstName ?? "", email: "", igHandle: "", company: "", role: (f.answers.role as string) || "" });
+  const [values, setValues] = useState({ firstName: f.firstName ?? "", email: "", igHandle: "", phone: "", company: "", role: (f.answers.role as string) || "" });
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<Field | "form", string>>>({});
   const [busy, setBusy] = useState(false);
@@ -23,6 +24,8 @@ export function GateScene({ step }: { step: Step }) {
   const [resetKey, setResetKey] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const needsCompany = f.answers.deciding === "yes";
+  // The plain arm picks the role here, so the phone field follows the select.
+  const phone = phoneMode(roleSelect ? { ...f.answers, role: values.role } : f.answers, { qualifyMin: f.config.qualifyMin, priorityMin: f.config.priorityMin });
 
   const set = (k: keyof typeof values) => (e: { target: { value: string } }) => setValues((v) => ({ ...v, [k]: e.target.value }));
 
@@ -32,6 +35,8 @@ export function GateScene({ step }: { step: Step }) {
     if (!values.firstName.trim()) e.firstName = g.errors.firstName;
     if (!EMAIL.test(values.email.trim())) e.email = g.errors.email;
     if (needsCompany && !values.company.trim()) e.company = g.errors.company;
+    if (phone === "required" && !cleanPhone(values.phone)) e.phone = g.errors.phone;
+    if (phone === "optional" && values.phone.trim() && !cleanPhone(values.phone)) e.phone = g.errors.phone;
     if (!consent) e.consent = g.errors.consent;
     return e;
   };
@@ -61,6 +66,7 @@ export function GateScene({ step }: { step: Step }) {
       firstName: values.firstName.trim(),
       email: values.email.trim(),
       igHandle: values.igHandle.trim(),
+      phone: phone === "none" ? "" : cleanPhone(values.phone),
       company: needsCompany ? values.company.trim() : "",
       role: roleSelect ? values.role : undefined,
       consent,
@@ -146,6 +152,18 @@ export function GateScene({ step }: { step: Step }) {
             <input id="igHandle" name="igHandle" autoComplete="off" autoCapitalize="none" spellCheck={false} placeholder={g.fields.igHandle.placeholder}
               value={values.igHandle} onChange={set("igHandle")} maxLength={40} className={input} />
           </div>
+          {phone !== "none" && (
+            <div>
+              <label htmlFor="phone" className={label}>
+                {g.fields.phone.label}{" "}
+                <span className="font-normal text-muted">({phone === "required" ? g.fields.phone.hintRequired : g.fields.phone.hintOptional})</span>
+              </label>
+              <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder={g.fields.phone.placeholder} value={values.phone} onChange={set("phone")} maxLength={24}
+                aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "phone-error" : "phone-purpose"} className={input} />
+              <p id="phone-purpose" className="mt-2 text-[13px] text-muted">{g.fields.phone.purpose}</p>
+              {err("phone")}
+            </div>
+          )}
           {needsCompany && (
             <div>
               <label htmlFor="company" className={label}>{g.fields.company.label}</label>

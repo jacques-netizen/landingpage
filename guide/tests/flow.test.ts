@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanAnswer, qualify, resumeStep, stepsFor, frontLoaded } from "@/lib/flow";
+import { cleanAnswer, cleanPhone, phoneMode, qualify, resumeStep, stepsFor, frontLoaded } from "@/lib/flow";
 
 const t = { qualifyMin: 3000, priorityMin: 10000 };
 const questionCount = (answers: Record<string, unknown>) =>
@@ -98,5 +98,24 @@ describe("answer cleaning", () => {
     expect(cleanAnswer("market", "creator", ["Nigeria", "global"])).toEqual(["Global"]);
     expect(cleanAnswer("market", "creator", [])).toBeNull();
     expect(cleanAnswer("market", "creator", ["a", "b", "c", "d", "e", "f", "g"])).toHaveLength(6);
+  });
+});
+
+describe("phone at the gate", () => {
+  it("is required for qualified buyers, optional for other buyers, never for clippers", () => {
+    expect(phoneMode({ role: "creator", budget: { band: "3k_10k" } }, t)).toBe("required");
+    expect(phoneMode({ role: "brand", budget: { band: "not_sure", amount: 5000 } }, t)).toBe("required");
+    expect(phoneMode({ role: "creator", budget: { band: "under_3k" } }, t)).toBe("optional");
+    expect(phoneMode({ role: "creator" }, t)).toBe("optional");
+    expect(phoneMode({ role: "clipper" }, t)).toBe("none");
+    expect(phoneMode({}, t)).toBe("none");
+  });
+  it("keeps digits and the country code, rejects junk", () => {
+    expect(cleanPhone("+32 470 12 34 56")).toBe("+32470123456");
+    expect(cleanPhone("0032 (0)470-12.34.56")).toBe("+320470123456");
+    expect(cleanPhone("0470123456")).toBe("0470123456");
+    expect(cleanPhone("12345")).toBe("");
+    expect(cleanPhone("call me")).toBe("");
+    expect(cleanPhone(42)).toBe("");
   });
 });

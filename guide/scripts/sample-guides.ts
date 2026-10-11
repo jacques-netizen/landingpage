@@ -34,6 +34,7 @@ export function sampleLead(name: string, over: Partial<LeadRow>): LeadRow {
     firstName: "Sam",
     email: "sam@example.com",
     igHandle: null,
+    phone: null,
     company: null,
     consentTextVersion: "v",
     consentAt: new Date("2026-10-08"),

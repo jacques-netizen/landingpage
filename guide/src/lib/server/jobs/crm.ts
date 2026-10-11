@@ -22,6 +22,7 @@ export async function runCrm(leadId: string): Promise<JobOutcome> {
     email: lead.email,
     firstName: lead.firstName,
     companyName: lead.company,
+    phone: lead.phone,
     igHandle: lead.igHandle,
     fields: crmFields(lead, session.source),
     tags: crmTags(lead),
