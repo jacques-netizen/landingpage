@@ -47,7 +47,7 @@ node tests/e2e/walk.mjs http://localhost:3000 creator /tmp/walk --refresh   # ph
 | `DESIGN_TOKENS.md` | Colors, type, shape and motion captured from maisondelites.com |
 | `docs/reference/` | Screenshots and computed styles of the live site |
 | `public/brand/` | Logo, imagery and client logos re-hosted from the site |
-| `public/media/placeholder/` | Clearly marked placeholder films (built by `scripts/make-placeholders.sh`) |
+| `public/media/films/` | The six films, cut from the campaign clips (built by `scripts/make-films.sh`, with `MUSIC=` for the track under them) |
 | `content/` | Every question, branch, line of copy, result, proof item and media id |
 | `content/guide/` | Guide blocks (markdown with front matter) and the outline |
 | `src/components/funnel/` | The scene machine and scenes |

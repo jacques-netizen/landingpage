@@ -4,46 +4,46 @@
   "items": {
     "cold_open": {
       "provider": "file",
-      "id": "/media/placeholder/cold_open.mp4",
-      "poster": "/media/placeholder/cold_open.jpg",
+      "id": "/media/films/cold_open.mp4",
+      "poster": "/media/films/cold_open.jpg",
       "captions": null,
       "loop": true,
-      "placeholder": true
+      "placeholder": false
     },
     "chapter1": {
       "provider": "file",
-      "id": "/media/placeholder/chapter1.mp4",
-      "poster": "/media/placeholder/chapter1.jpg",
-      "captions": "/media/placeholder/chapter1.vtt",
-      "placeholder": true
+      "id": "/media/films/chapter1.mp4",
+      "poster": "/media/films/chapter1.jpg",
+      "captions": null,
+      "placeholder": false
     },
     "chapter2": {
       "provider": "file",
-      "id": "/media/placeholder/chapter2.mp4",
-      "poster": "/media/placeholder/chapter2.jpg",
-      "captions": "/media/placeholder/chapter2.vtt",
-      "placeholder": true
+      "id": "/media/films/chapter2.mp4",
+      "poster": "/media/films/chapter2.jpg",
+      "captions": null,
+      "placeholder": false
     },
     "result_clipper": {
       "provider": "file",
-      "id": "/media/placeholder/result_clipper.mp4",
-      "poster": "/media/placeholder/result_clipper.jpg",
-      "captions": "/media/placeholder/result_clipper.vtt",
-      "placeholder": true
+      "id": "/media/films/result_clipper.mp4",
+      "poster": "/media/films/result_clipper.jpg",
+      "captions": null,
+      "placeholder": false
     },
     "result_creator": {
       "provider": "file",
-      "id": "/media/placeholder/result_creator.mp4",
-      "poster": "/media/placeholder/result_creator.jpg",
-      "captions": "/media/placeholder/result_creator.vtt",
-      "placeholder": true
+      "id": "/media/films/result_creator.mp4",
+      "poster": "/media/films/result_creator.jpg",
+      "captions": null,
+      "placeholder": false
     },
     "result_brand": {
       "provider": "file",
-      "id": "/media/placeholder/result_brand.mp4",
-      "poster": "/media/placeholder/result_brand.jpg",
-      "captions": "/media/placeholder/result_brand.vtt",
-      "placeholder": true
+      "id": "/media/films/result_brand.mp4",
+      "poster": "/media/films/result_brand.jpg",
+      "captions": null,
+      "placeholder": false
     }
   }
 }
