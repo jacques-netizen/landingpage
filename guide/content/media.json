@@ -19,10 +19,11 @@
       "placeholder": false
     },
     "chapter2": {
-      "provider": "file",
-      "id": "/media/films/chapter2.mp4",
-      "poster": "/media/films/chapter2.jpg",
+      "provider": "mux",
+      "id": "hlhPb6Ruy01Fi02d6rgzfUByHAdqxl4Z00e6KOsPmnPSIM",
+      "poster": null,
       "captions": null,
+      "fit": "contain",
       "placeholder": false
     },
     "result_clipper": {
@@ -48,7 +49,7 @@
     }
   },
   "music": {
-    "src": "/media/music/maja.mp3",
+    "src": "/media/music/vertigo.mp3",
     "volume": 0.12,
     "_note": "Faint music under the questions, steps, gate and building scenes. Never under a film. Volume 0 to 1."
   }
