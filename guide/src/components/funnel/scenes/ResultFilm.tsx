@@ -30,7 +30,10 @@ export function ResultFilm({ src }: { src: VideoSource }) {
     const onEnd = () => { if (!seen.has(100)) { seen.add(100); track("video_progress", { media: src.id, pct: 100 }); } setState("paused"); };
     const onPlay = () => { setState(v.muted ? "muted" : "playing"); track("video_play", { media: src.id, muted: v.muted }); };
     const onPause = () => { if (!v.ended) { setState("paused"); track("video_pause", { media: src.id, at: Math.round(v.currentTime) }); } };
-    const onError = () => setState("failed");
+    const onError = () => {
+      setState("failed");
+      track("video_error", { media: src.id, code: v.error?.code ?? 0, src: v.currentSrc.slice(-60), ua: navigator.userAgent.slice(0, 80) });
+    };
     v.addEventListener("error", onError);
     v.addEventListener("timeupdate", onTime);
     v.addEventListener("ended", onEnd);

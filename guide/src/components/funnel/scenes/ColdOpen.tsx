@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { copy, fill, type Step } from "@/lib/content";
 import { stepsFor } from "@/lib/flow";
+import { track } from "@/lib/client/api";
 import { unlockAmbient } from "@/lib/video/ambient";
 import { unlock } from "@/lib/video/player";
 import { videoSource } from "@/lib/video/source";
@@ -34,6 +35,8 @@ export function ColdOpen({ step }: { step: Step }) {
     v.defaultMuted = true;
     const tryPlay = () => v.play().catch(() => {});
     const onPlaying = () => setMoving(true);
+    const onError = () => track("video_error", { media: "cold_open", code: v.error?.code ?? 0, ua: navigator.userAgent.slice(0, 80) });
+    v.addEventListener("error", onError);
     tryPlay();
     v.addEventListener("playing", onPlaying);
     v.addEventListener("loadeddata", tryPlay);
@@ -42,6 +45,7 @@ export function ColdOpen({ step }: { step: Step }) {
     document.addEventListener("touchstart", tryPlay, touch);
     document.addEventListener("pointerdown", tryPlay, touch);
     return () => {
+      v.removeEventListener("error", onError);
       v.removeEventListener("playing", onPlaying);
       v.removeEventListener("loadeddata", tryPlay);
       document.removeEventListener("visibilitychange", tryPlay);

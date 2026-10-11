@@ -4,6 +4,7 @@ export const EVENT_NAMES = [
   "video_play",
   "video_progress",
   "video_pause",
+  "video_error",
   "question_answered",
   "back_pressed",
   "gate_view",

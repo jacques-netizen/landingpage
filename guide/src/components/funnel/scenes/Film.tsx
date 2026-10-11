@@ -73,7 +73,13 @@ export function FilmScene({ step }: { step: Step }) {
     const onError = () => {
       setPhase("failed");
       setUnlockedNext(true);
+      track("video_error", { media: src.id, code: v.error?.code ?? 0, src: v.currentSrc.slice(-60), ua: navigator.userAgent.slice(0, 80) });
     };
+    const onHlsError = (e: Event) => {
+      const d = (e as CustomEvent<{ type: string; details: string; fatal: boolean }>).detail;
+      if (d.fatal) track("video_error", { media: src.id, code: -1, detail: `${d.type}:${d.details}`, ua: navigator.userAgent.slice(0, 80) });
+    };
+    v.addEventListener("hlserror", onHlsError);
     v.addEventListener("error", onError);
     if (v.error) onError();
     v.addEventListener("timeupdate", onTime);
@@ -92,6 +98,7 @@ export function FilmScene({ step }: { step: Step }) {
 
     return () => {
       v.removeEventListener("error", onError);
+      v.removeEventListener("hlserror", onHlsError);
       v.removeEventListener("timeupdate", onTime);
       v.removeEventListener("ended", onEnded);
       v.removeEventListener("play", onPlay);

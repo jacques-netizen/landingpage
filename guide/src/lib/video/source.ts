@@ -11,6 +11,8 @@ export type VideoSource = {
   loop: boolean;
   placeholder: boolean;
   fit: "cover" | "contain";
+  /** A plain MP4 to fall back to when HLS fails (Mux static rendition, needs MP4 support on the asset). */
+  fallback: string | null;
 };
 
 function fromItem(id: string, item: MediaItem): VideoSource {
@@ -24,6 +26,7 @@ function fromItem(id: string, item: MediaItem): VideoSource {
       loop: Boolean(item.loop),
       placeholder: Boolean(item.placeholder),
       fit: item.fit ?? "cover",
+      fallback: `https://stream.mux.com/${item.id}/capped-1080p.mp4`,
     };
   }
   return {
@@ -35,6 +38,7 @@ function fromItem(id: string, item: MediaItem): VideoSource {
     loop: Boolean(item.loop),
     placeholder: Boolean(item.placeholder),
     fit: item.fit ?? "cover",
+    fallback: null,
   };
 }
 
