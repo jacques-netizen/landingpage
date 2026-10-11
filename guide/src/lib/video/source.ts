@@ -26,7 +26,7 @@ function fromItem(id: string, item: MediaItem): VideoSource {
       loop: Boolean(item.loop),
       placeholder: Boolean(item.placeholder),
       fit: item.fit ?? "cover",
-      fallback: `https://stream.mux.com/${item.id}/capped-1080p.mp4`,
+      fallback: `https://stream.mux.com/${item.id}/highest.mp4`,
     };
   }
   return {
