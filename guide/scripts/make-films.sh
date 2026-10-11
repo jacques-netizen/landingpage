@@ -3,13 +3,15 @@
 # maisondelites.com: vertical, clean, no watermark. With MUSIC set to an audio
 # file, the track is laid under every film (faded in and out, trimmed to the
 # film). Without it the films are silent.
-# Usage: MUSIC=/path/track.mp3 scripts/make-films.sh <dir with source mp4s>
+# Usage: MUSIC=/path/track.mp3 [MUSIC_LUFS=-27] scripts/make-films.sh <dir with source mp4s>
 set -euo pipefail
 SRC="${1:?source dir}"
 OUT="$(cd "$(dirname "$0")/.." && pwd)/public/media/films"
 mkdir -p "$OUT"
 W=720; H=1280
 MUSIC="${MUSIC:-}"
+# How loud the track sits. -27 LUFS is faint, under the picture; -18 is a full music bed.
+MUSIC_LUFS="${MUSIC_LUFS:--27}"
 
 # Cut one vertical segment from a clip, scaled and cropped to 9:16.
 seg() { # in start dur out
@@ -35,10 +37,10 @@ film() { # out inputs...
   if [ -n "$MUSIC" ]; then
     local dur
     dur="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$silent")"
-    # Music under the film: level to about -18 LUFS, fade in 1s, fade out 2s, cut at the film's end.
+    # Music under the film: levelled, fade in 1s, fade out 2s, cut at the film's end.
     ffmpeg -v error -y -i "$silent" -stream_loop -1 -i "$MUSIC" -shortest \
-      -filter_complex "[1:a]loudnorm=I=-18:TP=-1.5:LRA=11,afade=t=in:st=0:d=1,afade=t=out:st=$(echo "$dur - 2" | bc):d=2[a]" \
-      -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 128k -t "$dur" -movflags +faststart "$out"
+      -filter_complex "[1:a]loudnorm=I=$MUSIC_LUFS:TP=-1.5:LRA=11,afade=t=in:st=0:d=1,afade=t=out:st=$(echo "$dur - 2" | bc):d=2[a]" \
+      -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 96k -t "$dur" -movflags +faststart "$out"
   else
     cp "$silent" "$out"
   fi

@@ -37,6 +37,8 @@ export type Step = {
   media?: string;
   chapter?: string;
   unlockAt?: number;
+  /** Seconds of the film that must play before the way on appears. */
+  unlockAfter?: number;
   paths?: string[];
   roleSelect?: boolean;
   /** Show only when an earlier answer is one of these values. */

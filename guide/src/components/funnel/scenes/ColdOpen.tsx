@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { copy, fill, type Step } from "@/lib/content";
 import { stepsFor } from "@/lib/flow";
 import { unlock } from "@/lib/video/player";
@@ -15,11 +15,28 @@ export function ColdOpen({ step }: { step: Step }) {
   // paint for bandwidth; the poster shows until then.
   const [loopSrc, setLoopSrc] = useState<string | undefined>(undefined);
   const bgSrc = bg?.src;
+  const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (!bgSrc) return;
     const t = window.setTimeout(() => setLoopSrc(bgSrc), 300);
     return () => window.clearTimeout(t);
   }, [bgSrc]);
+  // React does not write the muted attribute to the DOM, and browsers only
+  // autoplay a video that is muted, so mute and start it by hand.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || !loopSrc) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    v.addEventListener("loadeddata", tryPlay);
+    document.addEventListener("visibilitychange", tryPlay);
+    return () => {
+      v.removeEventListener("loadeddata", tryPlay);
+      document.removeEventListener("visibilitychange", tryPlay);
+    };
+  }, [loopSrc]);
 
   const start = () => {
     // Inside the tap: bless the shared film element so the next film can play with sound.
@@ -36,6 +53,7 @@ export function ColdOpen({ step }: { step: Step }) {
     <section className="relative flex h-full flex-col bg-ink-black text-cream">
       {bg && (
         <video
+          ref={videoRef}
           className="absolute inset-0 h-full w-full object-cover opacity-70"
           src={loopSrc}
           poster={bg.poster ?? undefined}
@@ -43,7 +61,7 @@ export function ColdOpen({ step }: { step: Step }) {
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
           aria-hidden="true"
         />
       )}

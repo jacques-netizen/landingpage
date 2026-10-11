@@ -25,9 +25,9 @@
   "coldOpen": {
     "greetingNamed": "{name}, thank you.",
     "greeting": "Thank you.",
-    "headline": "A few questions, then your own guide.",
-    "body": "I’ll ask you a few questions, so we can send you a personalised guide: your market, your audience, your numbers, and what to do first.",
-    "start": "Start",
+    "headline": "Your own growth guide, in two minutes.",
+    "body": "Answer a few quick questions and get a guide built around your audience, your numbers, and the first move that will actually grow your page.",
+    "start": "Build my guide",
     "soundNote": "Sound on works best."
   },
   "chapters": {

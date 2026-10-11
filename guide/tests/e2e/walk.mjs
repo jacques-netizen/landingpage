@@ -48,9 +48,9 @@ await page.goto(base + '/' + q, { waitUntil: 'domcontentloaded' });
 if (plain) {
   await finishFilm('plain-film');
 } else {
-  await page.getByRole('button', { name: /Start/ }).waitFor();
+  await page.getByRole('button', { name: /Build my guide|Start/ }).waitFor();
   await shot('cold-open');
-  await page.getByRole('button', { name: /Start/ }).click();
+  await page.getByRole('button', { name: /Build my guide|Start/ }).click();
   await shot('q-role');
   await tapText(picks.role);
   await finishFilm('chapter1');

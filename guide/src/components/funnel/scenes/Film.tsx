@@ -1,7 +1,7 @@
 "use client";
 // A founder or proof film. Plays in the shared film element with sound when
 // the Start tap allowed it, otherwise muted with a tap for sound. No skip; the
-// way on unlocks at the step's unlockAt share (85%) or at the end.
+// way on unlocks after the step's unlockAfter seconds (or its unlockAt share), or at the end.
 import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { copy, proof, type Step } from "@/lib/content";
@@ -24,7 +24,8 @@ export function FilmScene({ step }: { step: Step }) {
   const [unlockedNext, setUnlockedNext] = useState(false);
   const [share, setShare] = useState(0);
   const chapter = step.chapter ? (copy.chapters as unknown as Record<string, { title?: string } | undefined>)[step.chapter] : undefined;
-  const unlockAt = step.unlockAt ?? 0.85;
+  const unlockAt = step.unlockAt ?? (step.unlockAfter ? 1 : 0.85);
+  const unlockAfter = step.unlockAfter ?? 0;
   const isProof = step.chapter === "chapter2";
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export function FilmScene({ step }: { step: Step }) {
       if (!v.duration) return;
       const s = v.currentTime / v.duration;
       setShare(s);
-      if (s >= unlockAt) setUnlockedNext(true);
+      if (s >= unlockAt || (unlockAfter > 0 && v.currentTime >= unlockAfter)) setUnlockedNext(true);
       for (const q of [25, 50, 75]) {
         if (s * 100 >= q && !quartiles.has(q)) {
           quartiles.add(q);
