@@ -60,6 +60,24 @@ export function load(src: VideoSource) {
       }
       const h = new Hls({ capLevelToPlayerSize: true, startLevel: -1, maxBufferLength: 20 });
       let mediaRecoveries = 0;
+      const toFallback = () => {
+        const at = v.currentTime;
+        h.destroy();
+        if (hls === h) hls = null;
+        if (src.fallback) {
+          v.dispatchEvent(new CustomEvent("hlserror", { detail: { type: "fallback", details: "switched to mp4", fatal: false } }));
+          v.src = src.fallback;
+          v.load();
+          v.currentTime = at;
+          v.play().catch(() => {});
+        } else v.dispatchEvent(new Event("error"));
+      };
+      // A stream that shows no frame within ten seconds on a connected phone is
+      // not going to: some Android browsers fail HLS silently. Use the MP4.
+      const silent = window.setTimeout(() => {
+        if (current === src.src && hls === h && v.readyState < 2 && navigator.onLine) toFallback();
+      }, 10_000);
+      v.addEventListener("loadeddata", () => window.clearTimeout(silent), { once: true });
       h.on(Hls.Events.ERROR, (_e, data) => {
         v.dispatchEvent(new CustomEvent("hlserror", { detail: { type: data.type, details: data.details, fatal: data.fatal } }));
         if (!data.fatal) return;
@@ -73,15 +91,8 @@ export function load(src: VideoSource) {
           return;
         }
         // HLS is not going to work on this device: switch to the plain MP4 when there is one.
-        const at = v.currentTime;
-        h.destroy();
-        hls = null;
-        if (src.fallback) {
-          v.src = src.fallback;
-          v.load();
-          v.currentTime = at;
-          v.play().catch(() => {});
-        } else v.dispatchEvent(new Event("error"));
+        window.clearTimeout(silent);
+        toFallback();
       });
       h.loadSource(src.src);
       h.attachMedia(v);
