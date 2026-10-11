@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "_note": "Logical media ids. To swap a placeholder for the real film, change provider and id (for mux, id is the playback id), update poster and captions, and set placeholder to false. Nothing else changes.",
+  "_note": "Logical media ids. To swap a placeholder for the real film, change provider and id (for mux, id is the playback id), update poster and captions, and set placeholder to false. Nothing else changes. `music` is the track played faintly under the question scenes.",
   "items": {
     "cold_open": {
       "provider": "file",
@@ -45,5 +45,10 @@
       "captions": null,
       "placeholder": false
     }
+  },
+  "music": {
+    "src": "/media/music/maja.mp3",
+    "volume": 0.12,
+    "_note": "Faint music under the questions, steps, gate and building scenes. Never under a film. Volume 0 to 1."
   }
 }

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { m } from "framer-motion";
 import { copy, proof, type Step } from "@/lib/content";
 import { track } from "@/lib/client/api";
+import { unlockAmbient } from "@/lib/video/ambient";
 import { film, load } from "@/lib/video/player";
 import { videoSource } from "@/lib/video/source";
 import { Captions } from "../Captions";
@@ -217,7 +218,14 @@ export function FilmScene({ step }: { step: Step }) {
           )}
           {unlockedNext && (
             <m.div initial={{ opacity: 0, y: f.reduced ? 0 : 8 }} animate={{ opacity: 1, y: 0 }}>
-              <Pill tone="light" onClick={f.next}>
+              <Pill
+                tone="light"
+                onClick={() => {
+                  // A tap here also allows the music, for anyone who skipped the cold open.
+                  unlockAmbient();
+                  f.next();
+                }}
+              >
                 {copy.common.continue} <span aria-hidden="true">&rarr;</span>
               </Pill>
             </m.div>

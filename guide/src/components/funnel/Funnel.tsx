@@ -11,6 +11,7 @@ import { postJson, setApiToken, track } from "@/lib/client/api";
 import { safeStorage } from "@/lib/client/storage";
 import { loadPixel, pixelEvent } from "@/lib/client/pixel";
 import { preload } from "@/lib/video/player";
+import { setAmbientScene } from "@/lib/video/ambient";
 import { videoSource } from "@/lib/video/source";
 import type { PublicConfig } from "@/lib/server/config";
 import { Ctx, type FunnelCtx, type GateInput, type GateResult, type LeadView } from "./context";
@@ -135,6 +136,7 @@ export function Funnel({ config, initial }: { config: PublicConfig; initial: Fun
   // One scene_view per scene shown. The server keeps it as last_scene.
   useEffect(() => {
     if (!step) return;
+    setAmbientScene(step.scene);
     track("scene_view", { scene: step.id, variant, path: path ?? "none" });
     if (step.scene === "gate") track("gate_view", { variant, path: path ?? "none" });
     // Warm up the next film while this scene is on screen, but only once the

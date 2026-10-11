@@ -77,6 +77,7 @@ export type Objective = "visibility" | "conversions" | "both";
 export type Copy = typeof copyJson;
 export const results = resultsJson;
 export const media = mediaJson.items as Record<string, MediaItem>;
+export const music = (mediaJson as { music?: { src: string; volume: number } }).music ?? null;
 const proofItems = proofJson.items as Record<string, ProofItem>;
 const proofByAsset = proofJson.byAsset as Record<string, string[]>;
 

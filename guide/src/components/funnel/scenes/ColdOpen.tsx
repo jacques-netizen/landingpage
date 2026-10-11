@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { copy, fill, type Step } from "@/lib/content";
 import { stepsFor } from "@/lib/flow";
+import { unlockAmbient } from "@/lib/video/ambient";
 import { unlock } from "@/lib/video/player";
 import { videoSource } from "@/lib/video/source";
 import { useFunnel } from "../context";
@@ -42,6 +43,7 @@ export function ColdOpen({ step }: { step: Step }) {
     // Inside the tap: bless the shared film element so the next film can play with sound.
     const firstFilm = stepsFor(f.variant, f.answers).find((s) => s.scene === "film" && s.media);
     unlock(firstFilm?.media ? videoSource(firstFilm.media) : null);
+    unlockAmbient();
     f.next();
   };
 
