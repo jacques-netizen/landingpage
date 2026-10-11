@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "_note": "Logical media ids. To swap a placeholder for the real film, change provider and id (for mux, id is the playback id), update poster and captions, and set placeholder to false. Nothing else changes. `music` is the track played faintly under the question scenes.",
+  "_note": "Logical media ids. To swap a placeholder for the real film, change provider and id (for mux, id is the playback id), update poster and captions, and set placeholder to false. Nothing else changes. `music` is the track played faintly under the question scenes. `fit` is cover (fills the phone screen, crops a landscape film) or contain (shows the whole frame, letterboxed).",
   "items": {
     "cold_open": {
       "provider": "file",
@@ -11,10 +11,11 @@
       "placeholder": false
     },
     "chapter1": {
-      "provider": "file",
-      "id": "/media/films/chapter1.mp4",
-      "poster": "/media/films/chapter1.jpg",
+      "provider": "mux",
+      "id": "bTB6aw4Rh7DtcElKbwP4Ch6nkse6WEBdEfdztrpnDhk",
+      "poster": null,
       "captions": null,
+      "fit": "contain",
       "placeholder": false
     },
     "chapter2": {

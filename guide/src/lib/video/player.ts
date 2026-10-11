@@ -48,6 +48,7 @@ export function load(src: VideoSource) {
   hls = null;
   v.poster = src.poster ?? "";
   v.loop = src.loop;
+  v.style.objectFit = src.fit;
   if (src.kind === "hls" && !nativeHls()) {
     void import("hls.js").then(({ default: Hls }) => {
       if (current !== src.src) return;

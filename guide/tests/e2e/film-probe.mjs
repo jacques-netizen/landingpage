@@ -1,0 +1,16 @@
+import { chromium } from 'playwright-core';
+const base = process.argv[2] || 'http://localhost:3200';
+const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--autoplay-policy=no-user-gesture-required', '--ignore-certificate-errors'], proxy: process.env.HTTPS_PROXY ? { server: process.env.HTTPS_PROXY, bypass: '<-loopback>,localhost,127.0.0.1' } : undefined });
+const page = await (await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })).newPage();
+const errs = []; page.on('console', m => { if (m.type() === 'error') errs.push(m.text().slice(0, 160)); });
+await page.goto(base + '/?_v=full', { waitUntil: 'domcontentloaded' });
+await page.getByRole('button', { name: /Build my guide|Start/ }).click();
+await page.getByRole('radio', { name: 'I want to earn by clipping', exact: true }).click();
+const state = async () => page.evaluate(() => { const v = [...document.querySelectorAll('video')].pop(); return v ? { paused: v.paused, t: +v.currentTime.toFixed(1), dur: v.duration, ready: v.readyState, err: v.error && v.error.code, fit: v.style.objectFit } : null; });
+await page.waitForTimeout(4000); console.log('4s', JSON.stringify(await state()));
+await page.waitForTimeout(6000); console.log('10s', JSON.stringify(await state()));
+console.log('mux reachable from page', JSON.stringify(await page.evaluate(async () => { try { const r = await fetch('https://stream.mux.com/bTB6aw4Rh7DtcElKbwP4Ch6nkse6WEBdEfdztrpnDhk.m3u8'); return { status: r.status, len: (await r.text()).length }; } catch (e) { return { error: String(e) }; } })));
+await page.waitForTimeout(5000);
+console.log('continue visible at 15s', await page.getByRole('button', { name: /Continue/ }).isVisible().catch(() => false));
+console.log('errors', JSON.stringify(errs));
+await browser.close();

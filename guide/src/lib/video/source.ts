@@ -10,6 +10,7 @@ export type VideoSource = {
   captions: string | null;
   loop: boolean;
   placeholder: boolean;
+  fit: "cover" | "contain";
 };
 
 function fromItem(id: string, item: MediaItem): VideoSource {
@@ -22,6 +23,7 @@ function fromItem(id: string, item: MediaItem): VideoSource {
       captions: item.captions,
       loop: Boolean(item.loop),
       placeholder: Boolean(item.placeholder),
+      fit: item.fit ?? "cover",
     };
   }
   return {
@@ -32,6 +34,7 @@ function fromItem(id: string, item: MediaItem): VideoSource {
     captions: item.captions,
     loop: Boolean(item.loop),
     placeholder: Boolean(item.placeholder),
+    fit: item.fit ?? "cover",
   };
 }
 

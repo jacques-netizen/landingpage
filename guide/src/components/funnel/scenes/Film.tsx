@@ -104,11 +104,13 @@ export function FilmScene({ step }: { step: Step }) {
 
   // A film that has not started after a few seconds (background tab, slow
   // network, autoplay refused) opens the way on; the film still plays if it can.
+  const started = share > 0;
   useEffect(() => {
-    if (phase === "playing" || phase === "ended" || unlockedNext) return;
-    const t = window.setTimeout(() => setUnlockedNext(true), phase === "starting" ? 8000 : 4000);
+    if (phase === "ended" || unlockedNext || started) return;
+    // "playing" with no frames yet means the stream is still buffering: give it longer, then open the way on.
+    const t = window.setTimeout(() => setUnlockedNext(true), phase === "playing" ? 10000 : phase === "starting" ? 8000 : 4000);
     return () => window.clearTimeout(t);
-  }, [phase, unlockedNext]);
+  }, [phase, unlockedNext, started]);
 
   const togglePlay = () => {
     const v = film();
@@ -143,10 +145,11 @@ export function FilmScene({ step }: { step: Step }) {
 
   return (
     <section className="relative h-full w-full bg-ink-black text-cream" aria-label={chapter?.title}>
-      <div ref={holder} className="absolute inset-0 md:mx-auto md:max-w-[min(100%,calc(100dvh*9/16))]" onClick={togglePlay} />
+      {/* A vertical film sits in a phone shaped column on desktop; a landscape film uses the full width, letterboxed. */}
+      <div ref={holder} className={`absolute inset-0 ${src?.fit === "contain" ? "" : "md:mx-auto md:max-w-[min(100%,calc(100dvh*9/16))]"}`} onClick={togglePlay} />
       {src?.poster && (phase === "starting" || phase === "failed") && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src.poster} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full object-cover md:mx-auto md:max-w-[min(100%,calc(100dvh*9/16))]" />
+        <img src={src.poster} alt="" aria-hidden="true" className={`pointer-events-none absolute inset-0 h-full w-full ${src.fit === "contain" ? "object-contain" : "object-cover md:mx-auto md:max-w-[min(100%,calc(100dvh*9/16))]"}`} />
       )}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/80" aria-hidden="true" />
       <Captions src={src?.captions ?? null} video={video} />

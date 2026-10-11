@@ -52,6 +52,8 @@ export type MediaItem = {
   captions: string | null;
   loop?: boolean;
   placeholder?: boolean;
+  /** cover fills the screen and crops; contain shows the whole frame (landscape films). */
+  fit?: "cover" | "contain";
 };
 
 export type ProofItem = {

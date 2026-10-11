@@ -39,7 +39,7 @@ const finishFilm = async (name) => {
   await page.waitForTimeout(1500);
   await shot(name);
   await page.evaluate(() => { const v = [...document.querySelectorAll('video')].pop(); if (v && v.duration) v.currentTime = v.duration - 0.3; });
-  await page.getByRole('button', { name: /Continue/ }).click({ timeout: 15000 });
+  await page.getByRole('button', { name: /Continue/ }).click({ timeout: 40000 });
 };
 
 const q = plain ? '?_v=plain&_p=none' : `?fn=Jacques&src=ig-distribution&mc=123456&_v=full&_p=front_loaded`;
