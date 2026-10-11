@@ -27,6 +27,13 @@ seg "$SRC/ssstik.io_kojo.blak_1791327285057.mp4" 3 5 "$TMP/c.mp4"
 seg "$SRC/mannywellz-video.mp4" 4 5 "$TMP/d.mp4"
 seg "$SRC/ssstik.io_paulamericanclips_1791327535130.mp4" 5 5 "$TMP/e.mp4"
 seg "$SRC/walmart-campaign-compressed.mp4" 30 5 "$TMP/f.mp4"
+# The cold open loops behind the first screen, so it uses the liveliest moments.
+seg "$SRC/mannywellz-video.mp4" 12 4 "$TMP/g.mp4"
+seg "$SRC/wale-main.mp4" 12 4 "$TMP/h.mp4"
+seg "$SRC/ssstik.io_paulamericanclips_1791327535130.mp4" 13 4 "$TMP/i.mp4"
+seg "$SRC/ssstik.io_kojo.blak_1791327285057.mp4" 9 4 "$TMP/j.mp4"
+seg "$SRC/wale-video.mp4" 53 4 "$TMP/k.mp4"
+seg "$SRC/walmart-campaign-compressed.mp4" 48 4 "$TMP/l.mp4"
 
 film() { # out inputs...
   local out="$1"; shift
@@ -47,7 +54,7 @@ film() { # out inputs...
   ffmpeg -v error -y -ss 0.5 -i "$out" -frames:v 1 -q:v 4 "${out%.mp4}.jpg"
 }
 
-film "$OUT/cold_open.mp4" "$TMP/a.mp4" "$TMP/b.mp4" "$TMP/c.mp4" "$TMP/d.mp4"
+film "$OUT/cold_open.mp4" "$TMP/g.mp4" "$TMP/h.mp4" "$TMP/i.mp4" "$TMP/j.mp4" "$TMP/k.mp4" "$TMP/l.mp4"
 film "$OUT/chapter1.mp4" "$TMP/b.mp4" "$TMP/a.mp4" "$TMP/e.mp4" "$TMP/f.mp4"
 film "$OUT/chapter2.mp4" "$TMP/a.mp4" "$TMP/c.mp4" "$TMP/d.mp4"
 film "$OUT/result_clipper.mp4" "$TMP/e.mp4" "$TMP/c.mp4"

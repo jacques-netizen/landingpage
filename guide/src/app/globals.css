@@ -98,3 +98,11 @@ html[data-resuming] body { background: var(--color-ink-black); }
   .mde-rise { animation-name: none; }
 }
 .guide-prose h3 { font-family: var(--font-serif); font-style: italic; font-size: 1.4rem; line-height: 1.2; color: var(--color-gold-deep); margin: 1.6em 0 0.5em; }
+
+/* The cold open poster drifts until the video is playing, so the first screen is never still. */
+@keyframes mde-drift {
+  from { transform: scale(1.06) translateY(0); }
+  to { transform: scale(1.14) translateY(-2.5%); }
+}
+.mde-drift { animation: mde-drift 14s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .mde-drift { animation: none; } }

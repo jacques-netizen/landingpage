@@ -23,19 +23,30 @@ export function ColdOpen({ step }: { step: Step }) {
     return () => window.clearTimeout(t);
   }, [bgSrc]);
   // React does not write the muted attribute to the DOM, and browsers only
-  // autoplay a video that is muted, so mute and start it by hand.
+  // autoplay a video that is muted, so mute and start it by hand. Phones in
+  // low power mode refuse autoplay altogether: the first touch anywhere
+  // starts it, and until then the poster drifts so the screen is never still.
+  const [moving, setMoving] = useState(false);
   useEffect(() => {
     const v = videoRef.current;
     if (!v || !loopSrc) return;
     v.muted = true;
     v.defaultMuted = true;
     const tryPlay = () => v.play().catch(() => {});
+    const onPlaying = () => setMoving(true);
     tryPlay();
+    v.addEventListener("playing", onPlaying);
     v.addEventListener("loadeddata", tryPlay);
     document.addEventListener("visibilitychange", tryPlay);
+    const touch: AddEventListenerOptions = { passive: true };
+    document.addEventListener("touchstart", tryPlay, touch);
+    document.addEventListener("pointerdown", tryPlay, touch);
     return () => {
+      v.removeEventListener("playing", onPlaying);
       v.removeEventListener("loadeddata", tryPlay);
       document.removeEventListener("visibilitychange", tryPlay);
+      document.removeEventListener("touchstart", tryPlay);
+      document.removeEventListener("pointerdown", tryPlay);
     };
   }, [loopSrc]);
 
@@ -56,7 +67,7 @@ export function ColdOpen({ step }: { step: Step }) {
       {bg && (
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className={`absolute inset-0 h-full w-full object-cover opacity-70 ${moving ? "" : "mde-drift"}`}
           src={loopSrc}
           poster={bg.poster ?? undefined}
           autoPlay
