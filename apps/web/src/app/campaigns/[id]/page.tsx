@@ -16,6 +16,7 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { AppFrame } from '@/components/app-frame'
+import { LINK_CLASS, LinkedText } from '@/components/linked-text'
 import { LocalDateTime } from '@/components/local-time'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
 import { getViewer, hasAccess } from '@/server/viewer'
@@ -134,7 +135,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
           </h1>
           {c.briefMarkdown ? (
             <p className="mt-4 mb-0 max-w-[640px] text-[15px] leading-[1.6] whitespace-pre-line text-[var(--t-muted)]">
-              {c.briefMarkdown}
+              <LinkedText text={c.briefMarkdown} />
             </p>
           ) : null}
 
@@ -146,12 +147,7 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
                     key={a.url}
                     className="border-0 border-b border-solid border-[var(--t-hair)] py-[13px] text-[14px]"
                   >
-                    <a
-                      href={a.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-semibold text-[var(--t-text)] hover:text-[var(--t-accent-ink)]"
-                    >
+                    <a href={a.url} target="_blank" rel="noreferrer" className={LINK_CLASS}>
                       {a.label}
                     </a>
                   </li>
@@ -227,7 +223,9 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
                         'No'
                       )
                     ) : field.kind === 'url' ? (
-                      <a href={String(tf[field.key])}>Open</a>
+                      <a href={String(tf[field.key])} target="_blank" rel="noreferrer" className={LINK_CLASS}>
+                        Open
+                      </a>
                     ) : (
                       String(tf[field.key])
                     )}
@@ -252,7 +250,9 @@ export default async function CampaignPage({ params }: { params: Promise<{ id: s
 
           {terms ? (
             <Section title="Campaign rules">
-              <p className="m-0 text-[15px] leading-[1.6] whitespace-pre-line">{terms.bodyMarkdown}</p>
+              <p className="m-0 text-[15px] leading-[1.6] whitespace-pre-line">
+                <LinkedText text={terms.bodyMarkdown} />
+              </p>
               <p className="mt-4 mb-0 text-[13px] text-[var(--t-muted)]">
                 Rules in force since {date(terms.effectiveAt)}. Each post is paid under the rules in force when it was
                 submitted.
