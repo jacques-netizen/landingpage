@@ -133,11 +133,9 @@
         "autocomplete": "organization"
       },
       "phone": {
-        "label": "WhatsApp number",
-        "hintOptional": "Optional, if you want the guide there too",
-        "hintRequired": "So we can reach you about your plan",
+        "label": "Mobile number",
         "placeholder": "+32 470 12 34 56",
-        "purpose": "Used only to send your guide and to talk about your plan. Never shared."
+        "purpose": "Used only for your guide. Never shared."
       }
     },
     "consent": {

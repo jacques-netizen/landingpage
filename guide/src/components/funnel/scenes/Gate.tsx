@@ -25,7 +25,7 @@ export function GateScene({ step }: { step: Step }) {
   const formRef = useRef<HTMLFormElement>(null);
   const needsCompany = f.answers.deciding === "yes";
   // The plain arm picks the role here, so the phone field follows the select.
-  const phone = phoneMode(roleSelect ? { ...f.answers, role: values.role } : f.answers, { qualifyMin: f.config.qualifyMin, priorityMin: f.config.priorityMin });
+  const phone = phoneMode(roleSelect ? { ...f.answers, role: values.role } : f.answers);
 
   const set = (k: keyof typeof values) => (e: { target: { value: string } }) => setValues((v) => ({ ...v, [k]: e.target.value }));
 
@@ -36,7 +36,6 @@ export function GateScene({ step }: { step: Step }) {
     if (!EMAIL.test(values.email.trim())) e.email = g.errors.email;
     if (needsCompany && !values.company.trim()) e.company = g.errors.company;
     if (phone === "required" && !cleanPhone(values.phone)) e.phone = g.errors.phone;
-    if (phone === "optional" && values.phone.trim() && !cleanPhone(values.phone)) e.phone = g.errors.phone;
     if (!consent) e.consent = g.errors.consent;
     return e;
   };
@@ -154,10 +153,7 @@ export function GateScene({ step }: { step: Step }) {
           </div>
           {phone !== "none" && (
             <div>
-              <label htmlFor="phone" className={label}>
-                {g.fields.phone.label}{" "}
-                <span className="font-normal text-muted">({phone === "required" ? g.fields.phone.hintRequired : g.fields.phone.hintOptional})</span>
-              </label>
+              <label htmlFor="phone" className={label}>{g.fields.phone.label}</label>
               <input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder={g.fields.phone.placeholder} value={values.phone} onChange={set("phone")} maxLength={24}
                 aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "phone-error" : "phone-purpose"} className={input} />
               <p id="phone-purpose" className="mt-2 text-[13px] text-muted">{g.fields.phone.purpose}</p>

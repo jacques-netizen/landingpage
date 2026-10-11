@@ -7,7 +7,6 @@ import { copy } from "@/lib/content";
 import { cleanAnswer, cleanPhone, isAnswered, pathOf, phoneMode, type Answers } from "@/lib/flow";
 import { bad, clientIp, json, rateLimit, readJson, tooMany } from "@/lib/server/http";
 import { enqueue, JOB_KINDS, runJobsForLead } from "@/lib/server/jobs";
-import { config } from "@/lib/server/config";
 import { newMetaEventId, scoreLead } from "@/lib/server/leads";
 import { findSession, leadForSession, loadAnswers, saveAnswer, sessionState } from "@/lib/server/sessions";
 import { verifyTurnstile } from "@/lib/server/turnstile";
@@ -83,11 +82,9 @@ export async function POST(req: Request) {
   if (answers.deciding === "yes" && !company) return json({ error: "company", field: "company" }, 400);
 
   const score = scoreLead(answers);
-  const c = config();
-  const mode = phoneMode(answers, { qualifyMin: c.qualifyMin, priorityMin: c.priorityMin });
+  const mode = phoneMode(answers);
   const phone = mode === "none" ? "" : cleanPhone(b.phone);
   if (mode === "required" && !phone) return json({ error: "phone", field: "phone" }, 400);
-  if (mode === "optional" && b.phone && !phone) return json({ error: "phone", field: "phone" }, 400);
   const db = await getDb();
   const inserted = await db
     .insert(schema.leads)

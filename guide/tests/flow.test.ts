@@ -102,13 +102,12 @@ describe("answer cleaning", () => {
 });
 
 describe("phone at the gate", () => {
-  it("is required for qualified buyers, optional for other buyers, never for clippers", () => {
-    expect(phoneMode({ role: "creator", budget: { band: "3k_10k" } }, t)).toBe("required");
-    expect(phoneMode({ role: "brand", budget: { band: "not_sure", amount: 5000 } }, t)).toBe("required");
-    expect(phoneMode({ role: "creator", budget: { band: "under_3k" } }, t)).toBe("optional");
-    expect(phoneMode({ role: "creator" }, t)).toBe("optional");
-    expect(phoneMode({ role: "clipper" }, t)).toBe("none");
-    expect(phoneMode({}, t)).toBe("none");
+  it("is required for creators and brands, never for clippers", () => {
+    expect(phoneMode({ role: "creator", budget: { band: "3k_10k" } })).toBe("required");
+    expect(phoneMode({ role: "brand", budget: { band: "under_3k" } })).toBe("required");
+    expect(phoneMode({ role: "creator" })).toBe("required");
+    expect(phoneMode({ role: "clipper" })).toBe("none");
+    expect(phoneMode({})).toBe("none");
   });
   it("keeps digits and the country code, rejects junk", () => {
     expect(cleanPhone("+32 470 12 34 56")).toBe("+32470123456");

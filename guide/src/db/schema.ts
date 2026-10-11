@@ -33,7 +33,7 @@ export const leads = pgTable(
     firstName: text("first_name").notNull(),
     email: text("email").notNull(),
     igHandle: text("ig_handle"),
-    // Digits with a leading plus. Required from buyers at the qualify threshold, optional below it, never asked of clippers.
+    // Digits with a leading plus. Required from creators and brands, never asked of clippers.
     phone: text("phone"),
     company: text("company"),
     consentTextVersion: text("consent_text_version").notNull(),

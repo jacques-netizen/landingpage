@@ -147,11 +147,10 @@ export function frontLoaded(x: number): number {
   return 1 - Math.pow(1 - c, 2.2);
 }
 
-/** Which phone field the gate shows: required for buyers at the qualify threshold, optional for other buyers, none for clippers. */
-export function phoneMode(answers: Answers, t: Thresholds): "required" | "optional" | "none" {
+/** Which phone field the gate shows: required for creators and brands, none for clippers. */
+export function phoneMode(answers: Answers): "required" | "none" {
   const path = pathOf(answers);
-  if (path !== "creator" && path !== "brand") return "none";
-  return qualify(answers, t).qualified ? "required" : "optional";
+  return path === "creator" || path === "brand" ? "required" : "none";
 }
 
 /** A phone number as digits with an optional leading plus, or "" when it is not usable. */
