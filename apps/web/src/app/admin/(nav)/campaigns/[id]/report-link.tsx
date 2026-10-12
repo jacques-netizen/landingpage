@@ -11,6 +11,8 @@ export function ReportLink({ campaignId, hasLinks }: { campaignId: string; hasLi
   const [confirm, setConfirm] = useState(false)
   const [busy, start] = useTransition()
   const url = result?.ok ? result.url : undefined
+  // A link made just now can be revoked at once, before the page data is refreshed.
+  const linksExist = hasLinks || !!url
 
   const create = () =>
     start(async () => {
@@ -35,14 +37,14 @@ export function ReportLink({ campaignId, hasLinks }: { campaignId: string; hasLi
           <h2 className="m-0 font-app text-[15px] font-semibold">Client report</h2>
           <p className="mt-1 mb-0 text-[12px] text-muted">
             A read-only page of this campaign's performance, open to anyone with the link. No login.
-            {hasLinks ? ' Links have been created for this campaign.' : ''}
+            {linksExist ? ' Links have been created for this campaign.' : ''}
           </p>
         </div>
         <div className="flex gap-2">
           <Button size="sm" onClick={create} loading={busy}>
             Create report link
           </Button>
-          {hasLinks ? (
+          {linksExist ? (
             <Button size="sm" variant="destructive" onClick={() => setConfirm(true)} disabled={busy}>
               Revoke report links
             </Button>

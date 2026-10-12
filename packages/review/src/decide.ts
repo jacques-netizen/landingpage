@@ -9,7 +9,17 @@ import { and, eq } from 'drizzle-orm'
 import { ReviewError } from './errors'
 import { issueWarning } from './warnings'
 
-const { submissions, campaigns, reviewDecisions, fraudFlags, reasonCodes, viewSnapshots, appeals, warnings } = tables
+const {
+  submissions,
+  campaigns,
+  reviewDecisions,
+  fraudFlags,
+  reasonCodes,
+  viewSnapshots,
+  viewSnapshotDays,
+  appeals,
+  warnings,
+} = tables
 
 const APPROVABLE = ['needs_review', 'needs_info', 'flagged']
 const REVERSIBLE = ['rejected', 'rejected_auto', 'removed']
@@ -314,6 +324,7 @@ export async function deleteSubmission(db: Db, staffId: string, id: string) {
     const s = await load(tx, id, true)
     if (s.state === 'paid_out')
       throw new ReviewError('paid_out', 'This post was already paid out, so it stays on the books.')
+    await tx.delete(viewSnapshotDays).where(eq(viewSnapshotDays.submissionId, id))
     await tx.delete(viewSnapshots).where(eq(viewSnapshots.submissionId, id))
     await tx.delete(reviewDecisions).where(eq(reviewDecisions.submissionId, id))
     await tx.delete(fraudFlags).where(eq(fraudFlags.submissionId, id))

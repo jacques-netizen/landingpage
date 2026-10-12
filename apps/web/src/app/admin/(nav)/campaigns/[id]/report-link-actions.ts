@@ -11,6 +11,7 @@ export type ReportLinkResult = { ok: true; url?: string; message: string } | { o
 export async function createReportLinkAction(campaignId: string): Promise<ReportLinkResult> {
   const viewer = await requireStaff('money', `/admin/campaigns/${campaignId}`)
   const url = await issueReportLink(campaignId, viewer.id)
+  revalidatePath(`/admin/campaigns/${campaignId}`)
   return { ok: true, url, message: 'Report link created and copied. Anyone with it can read the report.' }
 }
 
