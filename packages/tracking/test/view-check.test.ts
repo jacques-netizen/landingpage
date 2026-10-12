@@ -290,7 +290,8 @@ describe('view checks and earnings', () => {
     const now = new Date(Date.now() + 3 * HOUR)
     const totals = await runDueViewChecks(db, { router, now })
     expect(totals.checked).toBeGreaterThanOrEqual(1)
-    expect((await t.sub()).nextCheckAt!.getTime()).toBe(now.getTime() + 2 * HOUR)
+    // Hourly while the campaign runs (client report brief, 2026-10-12).
+    expect((await t.sub()).nextCheckAt!.getTime()).toBe(now.getTime() + 1 * HOUR)
   })
 
   it('a follower drop on the account flags its posts and pauses the ones earning', async () => {

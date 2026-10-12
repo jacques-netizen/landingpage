@@ -1,7 +1,7 @@
 // The view check job (03_SYSTEMS.md 3.3 and 3.4). Safe to run twice: a check first claims the post by
 // moving its next check time forward in one update, so a second run of the same slot finds nothing
 // due. Earnings are recomputed from total counted views by the money engine, never added up.
-import { getSettings, notify, tables, writeAudit, type Db } from '@mde/db'
+import { getSettings, notify, recordSnapshot, tables, writeAudit, type Db } from '@mde/db'
 import { accrueEarnings, createPgStore, reverseEarnings } from '@mde/money'
 import {
   isProviderUnavailable,
@@ -67,9 +67,13 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
   } catch (e) {
     if (!isProviderUnavailable(e)) throw e
     // 2. A row every time, whatever the result. Nothing else changes; the next slot tries again.
-    await db
-      .insert(viewSnapshots)
-      .values({ submissionId: s.id, takenAt: now, source: 'unavailable', raw: { error: e.message } })
+    await recordSnapshot(db, {
+      submissionId: s.id,
+      takenAt: now,
+      views: null,
+      source: 'unavailable',
+      raw: { error: e.message },
+    })
     await db
       .update(submissions)
       .set({ nextCheckAt: schedule(s.state) })
@@ -108,7 +112,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
   const before = s.state
   const outcome = await db.transaction(async (tx) => {
     // 2. Keep the snapshot.
-    await tx.insert(viewSnapshots).values({
+    await recordSnapshot(tx, {
       submissionId: s.id,
       takenAt: now,
       views: post.views,
@@ -118,7 +122,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       saves: post.saves,
       isPublic: visible,
       source: post.source ?? null,
-      raw: (post.rawRef ?? null) as never,
+      raw: post.rawRef ?? null,
     })
 
     // A flag of a kind already open on this post is not raised twice.

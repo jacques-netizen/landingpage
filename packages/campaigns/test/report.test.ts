@@ -1,6 +1,6 @@
 // The client's campaign report (client report brief, 2026-10-12): every figure from SQL, checked
 // against a hand-built campaign with three posts and three days of snapshots.
-import { createDb, tables } from '@mde/db'
+import { createDb, recordSnapshot, tables } from '@mde/db'
 import { accrueEarnings, createPgStore } from '@mde/money'
 import { eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -112,7 +112,7 @@ async function reportCampaign() {
       })
       .returning()
     for (const [takenAt, views] of snapshots)
-      await db.insert(tables.viewSnapshots).values({
+      await recordSnapshot(db, {
         submissionId: s!.id,
         takenAt,
         views,

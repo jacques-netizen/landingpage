@@ -97,7 +97,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // The range in whole UTC days: from the first post (or the campaign's start) to today unless given.
   const [first] = await db.execute<{ first: Date | null; last_snapshot: Date | null }>(sql`
     select min(s.submitted_at) as first,
-      (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = ${campaignId}) as last_snapshot
+      (select max(v.taken_at) from view_snapshot_days v join submissions x on x.id = v.submission_id where x.campaign_id = ${campaignId}) as last_snapshot
     from submissions s where s.campaign_id = ${campaignId}`)
   const today = new Date()
   const fromDay = day(q.from ?? first?.first ?? c.startAt ?? c.createdAt)
@@ -106,7 +106,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const toTs = `${toDay}T23:59:59.999Z`
 
   const inRange = sql`s.campaign_id = ${campaignId} and s.submitted_at >= ${fromTs}::timestamptz and s.submitted_at <= ${toTs}::timestamptz`
-  // Each post with its latest readable snapshot.
+  // Each post with its latest figures (the newest day row).
   const latest = sql`
     select s.id, s.platform, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
       a.handle, u.username,
@@ -116,8 +116,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     left join linked_accounts a on a.id = s.linked_account_id
     left join users u on u.id = s.creator_id
     left join lateral (
-      select views, likes, comments, shares from view_snapshots v
-      where v.submission_id = s.id and v.views is not null order by v.taken_at desc limit 1
+      select views, likes, comments, shares from view_snapshot_days v
+      where v.submission_id = s.id order by v.day desc limit 1
     ) v on true`
 
   type ClipRow = {
@@ -163,15 +163,12 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     db.execute<ClipRow>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
       select * from l order by views desc, submitted_at desc limit 10`),
-    // Cumulative views by day: the latest snapshot per post per day, carried forward, summed.
+    // Cumulative views by day: each post's latest figure per day (view_snapshot_days), carried forward, summed.
     db.execute<{ day: string; views: string; clips: string }>(sql`
       with daily as (
-        select distinct on (v.submission_id, (v.taken_at at time zone 'UTC')::date)
-          v.submission_id, (v.taken_at at time zone 'UTC')::date as day, v.views
-        from view_snapshots v join submissions s on s.id = v.submission_id
-        where ${inRange} and s.state in (${list(counted)}) and v.views is not null
-          and v.taken_at <= ${toTs}::timestamptz
-        order by v.submission_id, (v.taken_at at time zone 'UTC')::date, v.taken_at desc
+        select v.submission_id, v.day, v.views
+        from view_snapshot_days v join submissions s on s.id = v.submission_id
+        where ${inRange} and s.state in (${list(counted)}) and v.day <= ${toDay}::date
       ), deltas as (
         select day, views - lag(views, 1, 0::bigint) over (partition by submission_id order by day) as delta from daily
       ), per_day as (

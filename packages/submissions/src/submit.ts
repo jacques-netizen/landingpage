@@ -1,7 +1,7 @@
 // Submitting a post: run the automatic checks in order, stop at the first failure, and store the
 // outcome (03_SYSTEMS.md section 4). Checks 1, 2 and 4 failing store nothing (there is no post to
 // keep, or it is already in the campaign); every other outcome is kept so it can be appealed.
-import { getSettings, tables, type Db } from '@mde/db'
+import { getSettings, recordSnapshot, tables, type Db } from '@mde/db'
 import {
   parsePostUrl,
   resolvePostUrl,
@@ -33,7 +33,7 @@ import {
 import { mediaHashFromUrl } from './media-hash'
 import { nextCheckAt } from './schedule'
 
-const { campaigns, submissions, linkedAccounts, campaignMembers, viewSnapshots, reviewDecisions, fraudFlags } = tables
+const { campaigns, submissions, linkedAccounts, campaignMembers, reviewDecisions, fraudFlags } = tables
 
 export type SubmitOutcome = 'needs_review' | 'approved' | 'flagged' | 'rejected_auto' | 'not_submitted'
 export type SubmitResult = {
@@ -261,7 +261,8 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
         id = row!.id
       }
       // The check at submission is the first view check: keep the snapshot (03_SYSTEMS.md 3.3).
-      await tx.insert(viewSnapshots).values(
+      await recordSnapshot(
+        tx,
         post
           ? {
               submissionId: id,
@@ -273,9 +274,15 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
               saves: post.saves,
               isPublic: post.exists && post.isPublic,
               source: post.source ?? null,
-              raw: (post.rawRef ?? null) as never,
+              raw: post.rawRef ?? null,
             }
-          : { submissionId: id, takenAt: now, source: 'unavailable', raw: { error: unreachable!.message } as never },
+          : {
+              submissionId: id,
+              takenAt: now,
+              views: null,
+              source: 'unavailable',
+              raw: { error: unreachable!.message },
+            },
       )
       if (failure)
         await tx

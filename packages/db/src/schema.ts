@@ -19,6 +19,7 @@ import {
   uniqueIndex,
   uuid,
   type AnyPgColumn,
+  date,
 } from 'drizzle-orm/pg-core'
 
 const citext = customType<{ data: string }>({ dataType: () => 'citext' })
@@ -426,6 +427,24 @@ export const viewSnapshots = pgTable(
     ...timestamps,
   },
   (t) => [index('view_snapshots_submission_taken').on(t.submissionId, t.takenAt.desc())],
+)
+
+// The latest snapshot per post per UTC day (client report brief, 2026-10-12): the report's day-by-day
+// series and per-post latest figures read this instead of every snapshot. Written with each snapshot.
+export const viewSnapshotDays = pgTable(
+  'view_snapshot_days',
+  {
+    submissionId: uuid('submission_id')
+      .notNull()
+      .references(() => submissions.id),
+    day: date('day').notNull(),
+    takenAt: tz('taken_at').notNull(),
+    views: bigint('views', { mode: 'number' }).notNull(),
+    likes: bigint('likes', { mode: 'number' }),
+    comments: bigint('comments', { mode: 'number' }),
+    shares: bigint('shares', { mode: 'number' }),
+  },
+  (t) => [primaryKey({ columns: [t.submissionId, t.day] })],
 )
 
 export const REVIEW_OUTCOMES = ['approve', 'reject', 'request_info', 'reverse', 'remove', 'set_pending'] as const

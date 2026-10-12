@@ -71,6 +71,7 @@ test('a client opens the report from a share link, sees new posts without reload
     values (${c!.id}, ${u!.id}, 'instagram', ${`https://www.instagram.com/reel/${tag}/`}, ${tag}, 'approved', ${c!.terms},
       ${c!.rate}, now(), now() - interval '1 hour', 123456, 123456) returning id`
   await sql`insert into view_snapshots (submission_id, taken_at, views, likes, comments, shares) values (${s!.id}, now(), 123456, 10, 2, 1)`
+  await sql`insert into view_snapshot_days (submission_id, day, taken_at, views, likes, comments, shares) values (${s!.id}, (now() at time zone 'UTC')::date, now(), 123456, 10, 2, 1)`
   await clearReportCache()
   const after = (await (await report.request.get(`/api/r/${link.split('/r/')[1]}/report`)).json()) as {
     totals: { views: number }
