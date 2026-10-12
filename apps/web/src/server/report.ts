@@ -1,5 +1,11 @@
 import 'server-only'
-import { campaignReport, type CampaignReport, type ReportQuery, type ReportStatus } from '@mde/campaigns'
+import {
+  campaignReport,
+  type CampaignReport,
+  type ReportQuery,
+  type ReportSort,
+  type ReportStatus,
+} from '@mde/campaigns'
 import { env } from '@mde/config'
 import { db, tables, writeAudit } from '@mde/db'
 import { eq } from 'drizzle-orm'
@@ -32,13 +38,16 @@ export async function campaignForReportToken(token: string): Promise<{ id: strin
 
 const PLATFORMS = ['tiktok', 'instagram', 'youtube', 'x']
 const STATUSES: ReportStatus[] = ['approved', 'pending', 'rejected']
+const SORTS: ReportSort[] = ['views', 'newest', 'spend']
 const dayOf = (v: string | null) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(`${v}T00:00:00Z`) : null)
 
 /** The page's query string as a report query; anything unknown is ignored. */
 export function parseReportQuery(sp: URLSearchParams): ReportQuery {
   const status = sp.get('status')
   const platform = sp.get('platform')
+  const sort = sp.get('sort')
   return {
+    sort: sort && SORTS.includes(sort as ReportSort) ? (sort as ReportSort) : 'views',
     from: dayOf(sp.get('from')),
     to: dayOf(sp.get('to')),
     mode: sp.get('mode') === 'paid' ? 'paid' : 'all',
@@ -57,6 +66,7 @@ export function reportCacheKey(token: string, q: ReportQuery) {
     String(q.page),
     q.platform ?? '',
     q.status ?? '',
+    q.sort ?? 'views',
   ]
   return `report:${token}:${parts.join('|')}`
 }

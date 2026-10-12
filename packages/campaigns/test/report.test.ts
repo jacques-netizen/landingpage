@@ -170,7 +170,11 @@ describe('campaign report', () => {
       ['@maya.clips', 1_500, 'pending'],
     ])
     expect(r.submissions.total).toBe(3)
-    expect(r.submissions.rows.map((x) => x.status)).toEqual(['rejected', 'approved', 'approved'])
+    // Most views first by default; newest when asked.
+    expect(r.submissions.rows.map((x) => x.status)).toEqual(['approved', 'approved', 'rejected'])
+    expect(r.counts).toEqual({ submitted: 3, approved: 2, pending: 0, rejected: 1 })
+    const newest = (await campaignReport(db, id, { mode: 'all', page: 1, sort: 'newest' }))!
+    expect(newest.submissions.rows.map((x) => x.status)).toEqual(['rejected', 'approved', 'approved'])
     expect(r.lastUpdated).not.toBeNull()
   })
 

@@ -1,6 +1,6 @@
 'use client'
 
-import type { CampaignReport, ReportClip, ReportMode, ReportStatus } from '@mde/campaigns'
+import type { CampaignReport, ReportClip, ReportMode, ReportSort, ReportStatus } from '@mde/campaigns'
 import { formatDollars } from '@mde/money/dollars'
 import { BarChart, LineChart } from '@mde/ui'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,6 +17,7 @@ type Filters = {
   page: number
   platform: string
   status: '' | ReportStatus
+  sort: ReportSort
 }
 
 /** 544K, 1.2M; whole numbers below 1,000. */
@@ -48,6 +49,7 @@ function queryString(f: Filters) {
   if (f.page > 1) p.set('page', String(f.page))
   if (f.platform) p.set('platform', f.platform)
   if (f.status) p.set('status', f.status)
+  if (f.sort !== 'views') p.set('sort', f.sort)
   return p.toString()
 }
 
@@ -63,6 +65,10 @@ export function ReportView({
   const [filters, setFilters] = useState<Filters>(initialFilters)
   const [report, setReport] = useState<CampaignReport>(initial)
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
+  // Pages fetched so far for the submissions grid; "Show all" appends the next one.
+  const [extra, setExtra] = useState<ReportClip[]>([])
+  const shownClips = [...report.submissions.rows, ...extra]
+  const showMore = () => setFilters((f) => ({ ...f, page: f.page + 1 }))
   const latest = useRef(queryString(initialFilters))
 
   const load = useCallback(
@@ -76,7 +82,14 @@ export function ReportView({
         const data = (await res.json()) as CampaignReport
         // A slower answer to an older query never overwrites a newer one.
         if (latest.current === qs) {
-          setReport(data)
+          if (f.page > 1) {
+            // A further page of the same list: keep the earlier cards and add these.
+            setExtra((x) => [...x, ...data.submissions.rows])
+            setReport((old) => ({ ...data, submissions: { ...data.submissions, rows: old.submissions.rows } }))
+          } else {
+            setExtra([])
+            setReport(data)
+          }
           setState('idle')
         }
       } catch {
@@ -99,7 +112,7 @@ export function ReportView({
     let timer: ReturnType<typeof setInterval> | undefined
     const start = () => {
       stop()
-      timer = setInterval(() => void load(filters), REFRESH_MS)
+      timer = setInterval(() => void load({ ...filters, page: 1 }), REFRESH_MS)
     }
     const stop = () => {
       if (timer) clearInterval(timer)
@@ -107,11 +120,11 @@ export function ReportView({
     }
     const onVisibility = () => {
       if (document.visibilityState === 'visible') {
-        void load(filters)
+        void load({ ...filters, page: 1 })
         start()
       } else stop()
     }
-    const onFocus = () => void load(filters)
+    const onFocus = () => void load({ ...filters, page: 1 })
     if (document.visibilityState === 'visible') start()
     document.addEventListener('visibilitychange', onVisibility)
     window.addEventListener('focus', onFocus)
@@ -133,7 +146,6 @@ export function ReportView({
   )
   const viewsTotal = r.platforms.reduce((s, p) => s + p.views, 0)
   const clipsTotal = r.platforms.reduce((s, p) => s + p.clips, 0)
-  const pages = Math.max(1, Math.ceil(r.submissions.total / r.submissions.pageSize))
   const platformsSeen = [
     ...new Set([...r.platforms.map((p) => p.platform), ...r.submissions.rows.map((c) => c.platform)]),
   ]
@@ -383,40 +395,39 @@ export function ReportView({
         </p>
       </section>
 
-      {/* 8. Clips */}
-      <section className={`${card} mt-4`} aria-label="Top clips">
-        <h2 className={h2}>Top clips</h2>
-        {r.topClips.length === 0 ? (
-          <p className="m-0 text-[14px] text-muted">No approved clips in this range yet.</p>
-        ) : (
-          <ol className="m-0 list-none p-0">
-            {r.topClips.map((c, i) => (
-              <li
-                key={c.id}
-                className="flex items-center gap-4 border-0 border-b border-solid border-line py-3 text-[14px] max-sm:flex-wrap"
+      {/* 8. Submissions: a card per clip with the clip itself, its figures and the clipper. */}
+      <section className={`${card} mt-4`} aria-label="Submissions">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className={`${h2} mb-1`}>Submissions</h2>
+            <p className="m-0 text-[14px] text-muted">
+              <span className="font-medium text-ink">{full(r.counts.submitted)}</span> submitted ·{' '}
+              <span className="font-medium text-ink">{full(r.counts.approved)}</span> approved ·{' '}
+              <span className="font-medium text-ink">{full(r.counts.pending)}</span> pending review
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="flex items-center gap-2 text-[13px] text-muted">
+              Sort
+              <select
+                value={filters.sort}
+                onChange={(e) => set({ sort: e.target.value as Filters['sort'] })}
+                className="h-9 rounded-pill border border-solid border-line bg-white px-3 font-sans text-[13px] font-medium text-ink"
               >
-                <span className="w-5 text-muted tabular-nums">{i + 1}</span>
-                <PlatformIcon platform={c.platform} />
-                <span className="min-w-[120px] flex-1 font-medium">{c.handle}</span>
-                <span className="text-muted tabular-nums" title="Views">
-                  {compact(c.views)} views
-                </span>
-                <span className="text-muted tabular-nums" title="Likes, comments and shares">
-                  {compact(c.likes)} / {compact(c.comments)} / {compact(c.shares)}
-                </span>
-                <span className="text-muted">{c.postedAt ? dateFmt.format(new Date(c.postedAt)) : ''}</span>
-                <a href={c.url} target="_blank" rel="noreferrer" className="font-medium text-ink">
-                  Open
-                </a>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
-
-      <section className={`${card} mt-4`} aria-label="All submissions">
-        <h2 className={h2}>All submissions</h2>
-        <div className="mb-4 flex flex-wrap gap-2">
+                <option value="views">Most views</option>
+                <option value="newest">Newest</option>
+                <option value="spend">Most spend</option>
+              </select>
+            </label>
+            <a
+              href={`/api/r/${token}/report.csv${queryString({ ...filters, page: 1 }) ? `?${queryString({ ...filters, page: 1 })}` : ''}`}
+              className="text-[13px] font-medium text-ink"
+            >
+              Export CSV
+            </a>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
           <button type="button" onClick={() => set({ platform: '' })} className={chip(filters.platform === '')}>
             All platforms
           </button>
@@ -439,71 +450,24 @@ export function ReportView({
             </button>
           ))}
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[13px]">
-            <caption className="sr-only">All submissions</caption>
-            <thead>
-              <tr className="text-left text-[12px] text-muted">
-                {[
-                  'Date',
-                  'Platform',
-                  'Clipper',
-                  'Link',
-                  'Status',
-                  'Views',
-                  'Likes',
-                  'Comments',
-                  'Shares',
-                  'Payout',
-                ].map((h, i) => (
-                  <th
-                    key={h}
-                    className={`border-0 border-b border-solid border-line py-2 pr-3 font-medium whitespace-nowrap ${i >= 5 ? 'text-right' : ''}`}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {r.submissions.rows.map((c) => (
-                <Row key={c.id} c={c} />
-              ))}
-              {r.submissions.rows.length === 0 ? (
-                <tr>
-                  <td colSpan={10} className="py-6 text-center text-muted">
-                    No submissions match.
-                  </td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-4 flex items-center justify-between text-[13px] text-muted">
+        {shownClips.length === 0 ? (
+          <p className="mt-6 mb-0 text-[14px] text-muted">No submissions match.</p>
+        ) : (
+          <ul className="mt-5 grid list-none grid-cols-3 gap-4 p-0 max-lg:grid-cols-2 max-sm:grid-cols-1">
+            {shownClips.map((c) => (
+              <ClipCard key={c.id} c={c} />
+            ))}
+          </ul>
+        )}
+        <div className="mt-5 flex items-center justify-between text-[13px] text-muted">
           <span>
-            {full(r.submissions.total)} {r.submissions.total === 1 ? 'submission' : 'submissions'}
+            Showing {full(shownClips.length)} of {full(r.submissions.total)}
           </span>
-          <span className="flex items-center gap-3">
-            <button
-              type="button"
-              disabled={filters.page <= 1}
-              onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
-              className={chip(false)}
-            >
-              Previous
+          {shownClips.length < r.submissions.total ? (
+            <button type="button" disabled={state === 'loading'} onClick={() => showMore()} className={chip(false)}>
+              Show all
             </button>
-            <span className="tabular-nums">
-              Page {r.submissions.page} of {pages}
-            </span>
-            <button
-              type="button"
-              disabled={filters.page >= pages}
-              onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
-              className={chip(false)}
-            >
-              Next
-            </button>
-          </span>
+          ) : null}
         </div>
       </section>
 
@@ -518,31 +482,101 @@ export function ReportView({
 
 const STATUS_LABEL: Record<ReportStatus, string> = { approved: 'Approved', pending: 'Pending', rejected: 'Rejected' }
 
-function Row({ c }: { c: ReportClip }) {
-  const cell = 'border-0 border-b border-solid border-line py-[10px] pr-3 whitespace-nowrap'
+/** One clip: the video (or its picture, or the platform's own player for YouTube), its figures, the clipper. */
+function ClipCard({ c }: { c: ReportClip }) {
+  const [playing, setPlaying] = useState(false)
+  const youtube = c.platform === 'youtube'
+  const canPlay = youtube || !!c.video
   return (
-    <tr>
-      <td className={`${cell} text-muted`}>{dateFmt.format(new Date(c.submittedAt))}</td>
-      <td className={cell}>
-        <span className="inline-flex items-center gap-2">
+    <li className="flex overflow-hidden rounded-card border border-solid border-line bg-white">
+      <div className="relative aspect-[9/16] w-[46%] flex-none bg-ink">
+        {playing && youtube ? (
+          <iframe
+            title={`${c.handle} on YouTube`}
+            src={`https://www.youtube.com/embed/${c.platformPostId}?autoplay=1&playsinline=1`}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            className="absolute inset-0 h-full w-full border-0"
+          />
+        ) : playing && c.video ? (
+          <video
+            src={c.video}
+            poster={c.thumbnail ?? undefined}
+            controls
+            autoPlay
+            playsInline
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        ) : (
+          <>
+            {c.thumbnail ? (
+              <img src={c.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            ) : null}
+            {canPlay ? (
+              <button
+                type="button"
+                onClick={() => setPlaying(true)}
+                aria-label={`Play ${c.handle}'s clip`}
+                className="absolute inset-0 flex cursor-pointer items-center justify-center border-0 bg-transparent"
+              >
+                <span className="flex size-12 items-center justify-center rounded-full bg-[rgba(255,255,255,0.85)] text-ink">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </button>
+            ) : (
+              <a
+                href={c.url}
+                target="_blank"
+                rel="noreferrer"
+                className="absolute inset-0 flex items-center justify-center text-[12px] text-cream no-underline"
+              >
+                Open on {PLATFORM_NAMES[c.platform] ?? c.platform}
+              </a>
+            )}
+          </>
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col text-[13px]">
+        <dl className="m-0 flex-1">
+          {(
+            [
+              ['Views', full(c.views)],
+              ['Comments', full(c.comments)],
+              ['Likes', full(c.likes)],
+              ['Spend', formatDollars(c.payoutCents)],
+            ] as const
+          ).map(([k, v]) => (
+            <div
+              key={k}
+              className="flex items-center justify-between gap-2 border-0 border-b border-solid border-line px-4 py-3"
+            >
+              <dt className="text-muted">{k}</dt>
+              <dd className="m-0 font-mono tabular-nums">{v}</dd>
+            </div>
+          ))}
+          <div className="flex items-center justify-between gap-2 px-4 py-3">
+            <dt className="text-muted">Status</dt>
+            <dd className="m-0">{STATUS_LABEL[c.status]}</dd>
+          </div>
+        </dl>
+        <div className="flex items-center gap-2 border-0 border-t border-solid border-line px-4 py-3 text-[12px]">
+          <span className="min-w-0 flex-1 truncate font-medium" title={c.handle}>
+            {c.handle}
+          </span>
           <PlatformIcon platform={c.platform} size={14} />
-          {PLATFORM_NAMES[c.platform] ?? c.platform}
-        </span>
-      </td>
-      <td className={`${cell} font-medium`}>{c.handle}</td>
-      <td className={cell}>
-        <a href={c.url} target="_blank" rel="noreferrer" className="text-ink">
-          Open
-        </a>
-      </td>
-      <td className={cell}>{STATUS_LABEL[c.status]}</td>
-      <td className={`${cell} text-right tabular-nums`}>{full(c.views)}</td>
-      <td className={`${cell} text-right tabular-nums`}>{full(c.likes)}</td>
-      <td className={`${cell} text-right tabular-nums`}>{full(c.comments)}</td>
-      <td className={`${cell} text-right tabular-nums`}>{full(c.shares)}</td>
-      <td className={`${cell} text-right tabular-nums`}>
-        {c.payout === 'none' ? '' : `${formatDollars(c.payoutCents)} ${c.payout === 'paid' ? 'paid' : 'pending'}`}
-      </td>
-    </tr>
+          <a
+            href={c.url}
+            target="_blank"
+            rel="noreferrer"
+            className="text-ink"
+            aria-label={`Open on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
+          >
+            {PLATFORM_NAMES[c.platform] ?? c.platform} ↗
+          </a>
+        </div>
+      </div>
+    </li>
   )
 }

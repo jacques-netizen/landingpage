@@ -399,6 +399,11 @@ export const submissions = pgTable(
     nextCheckAt: tz('next_check_at'),
     // First check that could not see the post, for the grace period in 03_SYSTEMS.md 3.4.
     missingSince: tz('missing_since'),
+    // The post's picture and video file as the platform last gave them (client report, 2026-10-12).
+    // Platform file links expire, so each check refreshes them.
+    thumbnailUrl: text('thumbnail_url'),
+    videoUrl: text('video_url'),
+    mediaUpdatedAt: tz('media_updated_at'),
     ...timestamps,
   },
   (t) => [

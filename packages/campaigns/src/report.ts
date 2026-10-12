@@ -7,6 +7,7 @@ import { eq, sql } from 'drizzle-orm'
 /** Which posts count: every approved post, or only those whose payout has been paid out. */
 export type ReportMode = 'all' | 'paid'
 export type ReportStatus = 'approved' | 'pending' | 'rejected'
+export type ReportSort = 'views' | 'newest' | 'spend'
 
 export type ReportQuery = {
   /** Submitted on or after this UTC day. Unset: from the campaign's first post. */
@@ -18,13 +19,19 @@ export type ReportQuery = {
   page: number
   platform?: string | null
   status?: ReportStatus | null
+  /** Order of the submissions list: most views (default), newest, or most spend. */
+  sort?: ReportSort | null
 }
 
 export type ReportClip = {
   id: string
   platform: string
+  platformPostId: string
   handle: string
   url: string
+  /** The post's picture and video file as the platform last gave them; null when it gave none. */
+  thumbnail: string | null
+  video: string | null
   postedAt: string | null
   submittedAt: string
   status: ReportStatus
@@ -60,6 +67,8 @@ export type CampaignReport = {
   platforms: { platform: string; views: number; clips: number; spentCents: number; ecpmCents: number | null }[]
   spendByDay: { day: string; spendCents: number; clips: number }[]
   topClips: ReportClip[]
+  /** Every post in range, whatever its state: "N submitted, N approved, N pending review". */
+  counts: { submitted: number; approved: number; pending: number; rejected: number }
   submissions: { rows: ReportClip[]; total: number; page: number; pageSize: number }
   lastUpdated: string | null
 }
@@ -108,8 +117,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const inRange = sql`s.campaign_id = ${campaignId} and s.submitted_at >= ${fromTs}::timestamptz and s.submitted_at <= ${toTs}::timestamptz`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
-    select s.id, s.platform, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
-      a.handle, u.username,
+    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
+      s.thumbnail_url, s.video_url, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
@@ -123,7 +132,10 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   type ClipRow = {
     id: string
     platform: string
+    platform_post_id: string
     post_url: string
+    thumbnail_url: string | null
+    video_url: string | null
     published_at: Date | null
     submitted_at: Date
     state: string
@@ -138,6 +150,9 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const toClip = (r: ClipRow): ReportClip => ({
     id: r.id,
     platform: r.platform,
+    platformPostId: r.platform_post_id,
+    thumbnail: r.thumbnail_url,
+    video: r.video_url,
     handle: handleFor({ handle: r.handle, url: r.post_url, username: r.username }),
     url: r.post_url,
     postedAt: r.published_at ? new Date(r.published_at).toISOString() : null,
@@ -151,7 +166,13 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     payout: r.state === 'paid_out' ? 'paid' : APPROVED.includes(r.state) && n(r.earned_cents) > 0 ? 'pending' : 'none',
   })
 
-  const [totals, byPlatform, top, series, spend, budget, pageRows, pageCount] = await Promise.all([
+  const order =
+    q.sort === 'newest'
+      ? sql`submitted_at desc`
+      : q.sort === 'spend'
+        ? sql`earned_cents desc, views desc, submitted_at desc`
+        : sql`views desc, submitted_at desc`
+  const [totals, byPlatform, top, series, spend, budget, pageRows, pageCount, counts] = await Promise.all([
     db.execute<{ views: string; likes: string; comments: string; shares: string; clips: string }>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
       select coalesce(sum(views), 0) as views, coalesce(sum(likes), 0) as likes, coalesce(sum(comments), 0) as comments,
@@ -211,11 +232,17 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       with l as (${latest} where ${inRange}
         ${q.platform ? sql`and s.platform = ${q.platform}` : sql``}
         ${q.status ? sql`and s.state in (${list(q.status === 'approved' ? APPROVED : q.status === 'pending' ? PENDING : REJECTED)})` : sql``})
-      select * from l order by submitted_at desc limit ${PAGE_SIZE} offset ${(Math.max(1, q.page) - 1) * PAGE_SIZE}`),
+      select * from l order by ${order} limit ${PAGE_SIZE} offset ${(Math.max(1, q.page) - 1) * PAGE_SIZE}`),
     db.execute<{ total: string }>(sql`
       select count(*) as total from submissions s where ${inRange}
         ${q.platform ? sql`and s.platform = ${q.platform}` : sql``}
         ${q.status ? sql`and s.state in (${list(q.status === 'approved' ? APPROVED : q.status === 'pending' ? PENDING : REJECTED)})` : sql``}`),
+    db.execute<{ submitted: string; approved: string; pending: string; rejected: string }>(sql`
+      select count(*) as submitted,
+        count(*) filter (where s.state in (${list(APPROVED)})) as approved,
+        count(*) filter (where s.state in (${list(PENDING)})) as pending,
+        count(*) filter (where s.state in (${list(REJECTED)})) as rejected
+      from submissions s where ${inRange}`),
   ])
 
   const t = totals[0]!
@@ -254,6 +281,12 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     })),
     spendByDay: spend.map((r) => ({ day: r.day, spendCents: n(r.spend), clips: n(r.clips) })),
     topClips: top.map(toClip),
+    counts: {
+      submitted: n(counts[0]?.submitted),
+      approved: n(counts[0]?.approved),
+      pending: n(counts[0]?.pending),
+      rejected: n(counts[0]?.rejected),
+    },
     submissions: {
       rows: pageRows.map(toClip),
       total: n(pageCount[0]?.total),
@@ -262,4 +295,16 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     },
     lastUpdated: first?.last_snapshot ? new Date(first.last_snapshot).toISOString() : null,
   }
+}
+
+/** Every submission in range, for the CSV download: the list's rows in the list's order, up to 5,000. */
+export async function campaignReportRows(db: DbOrTx, campaignId: string, q: ReportQuery): Promise<ReportClip[]> {
+  const all: ReportClip[] = []
+  for (let page = 1; page <= 100; page++) {
+    const r = await campaignReport(db, campaignId, { ...q, page })
+    if (!r) break
+    all.push(...r.submissions.rows)
+    if (r.submissions.rows.length < PAGE_SIZE) break
+  }
+  return all
 }

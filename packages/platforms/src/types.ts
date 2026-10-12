@@ -26,6 +26,8 @@ export type PostData = {
   authorPlatformUserId: string | null
   /** A thumbnail or frame link the duplicate media check can hash, where the platform gives one. */
   thumbnailUrl?: string | null
+  /** A direct link to the video file, where the platform gives one; often short-lived, refreshed each check. */
+  videoUrl?: string | null
   /** A perceptual hash the provider computed itself, where it can (the mock scripts this). */
   mediaHash?: string | null
   rawRef: unknown

@@ -243,6 +243,9 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     countedViews: 0,
     earnedCents: 0,
     mediaHash,
+    thumbnailUrl: post?.thumbnailUrl ?? null,
+    videoUrl: post?.videoUrl ?? null,
+    mediaUpdatedAt: post ? now : null,
     checkResults: checks,
     creatorNote: input.note?.trim() || null,
     // The check at submission is the first one; the next follows the interval table.

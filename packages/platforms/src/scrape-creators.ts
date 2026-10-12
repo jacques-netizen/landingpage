@@ -42,6 +42,14 @@ const date = (v: unknown): Date | null => {
   return null
 }
 
+/** The highest bitrate mp4 among X's video variants. */
+function bestVariant(v: unknown): string | null {
+  if (!Array.isArray(v)) return null
+  const mp4 = (v as Json[]).filter((x) => x.content_type === 'video/mp4' && typeof x.url === 'string')
+  mp4.sort((a, b) => Number(b.bitrate ?? 0) - Number(a.bitrate ?? 0))
+  return (mp4[0]?.url as string | undefined) ?? null
+}
+
 const GONE: PostData = {
   exists: false,
   isPublic: false,
@@ -163,6 +171,9 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         caption: str(pick(v, 'desc')),
         authorPlatformUserId: str(pick(v, 'author.uid', 'author.id')),
         thumbnailUrl: str(pick(v, 'video.cover.url_list.0', 'video.origin_cover.url_list.0')),
+        videoUrl: str(
+          pick(v, 'video.play_addr.url_list.0', 'video.download_addr.url_list.0', 'video.play_addr_h264.url_list.0'),
+        ),
         rawRef: { platform: 'tiktok', id: str(pick(v, 'aweme_id')) },
       }
     }
@@ -186,6 +197,7 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         caption: str(pick(m, 'edge_media_to_caption.edges.0.node.text')),
         authorPlatformUserId: str(pick(m, 'owner.id')),
         thumbnailUrl: str(pick(m, 'thumbnail_src', 'display_url')),
+        videoUrl: str(pick(m, 'video_url')),
         rawRef: { platform: 'instagram', id: str(pick(m, 'shortcode')) },
       }
     }
@@ -213,6 +225,7 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         thumbnailUrl: str(
           pick(t, 'legacy.extended_entities.media.0.media_url_https', 'legacy.entities.media.0.media_url_https'),
         ),
+        videoUrl: bestVariant(pick(t, 'legacy.extended_entities.media.0.video_info.variants')),
         rawRef: { platform: 'x', id: str(pick(t, 'rest_id', 'legacy.id_str')) },
       }
     }

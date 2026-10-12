@@ -49,6 +49,7 @@ export default async function ReportPage({ params, searchParams }: Params) {
           page: query.page,
           platform: query.platform ?? '',
           status: query.status ?? '',
+          sort: query.sort ?? 'views',
         }}
       />
     </main>

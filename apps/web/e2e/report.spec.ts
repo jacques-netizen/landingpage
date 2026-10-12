@@ -52,8 +52,8 @@ test('a client opens the report from a share link, sees new posts without reload
     'Views by platform',
     'CPM by platform',
     'Spend',
-    'Top clips',
-    'All submissions',
+    'Submissions',
+    'Export CSV',
   ])
     await expect(report.getByText(label, { exact: true }).first()).toBeVisible()
   await expect(report.getByText(/Last updated/)).toBeVisible()
@@ -82,6 +82,10 @@ test('a client opens the report from a share link, sees new posts without reload
   // The page refetches when the tab comes back into focus (and every 2 minutes on its own).
   await report.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(report.getByText(`@${tag}`).first()).toBeVisible()
+  // The CSV download carries the same rows.
+  const csv = await report.request.get(`/api/r/${link.split('/r/')[1]}/report.csv`)
+  expect(csv.headers()['content-type']).toContain('text/csv')
+  expect(await csv.text()).toContain(`@${tag}`)
 
   // Revoke: the old link is dead at once.
   await page.getByRole('button', { name: 'Revoke report links' }).click()

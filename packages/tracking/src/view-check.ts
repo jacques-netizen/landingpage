@@ -161,6 +161,12 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       // A post the platform could not show at submission gets its published time now.
       if (!s.publishedAt && post.publishedAt) patch.publishedAt = post.publishedAt
       patch.latestViews = post.views
+      // The platform's picture and video links expire, so keep the newest ones.
+      if (post.thumbnailUrl || post.videoUrl) {
+        patch.thumbnailUrl = post.thumbnailUrl ?? s.thumbnailUrl
+        patch.videoUrl = post.videoUrl ?? s.videoUrl
+        patch.mediaUpdatedAt = now
+      }
       const counted = Math.max(0, post.views - baseline)
       if (EARNING.includes(before)) patch.countedViews = counted
       // After close, only corrections down (02_DATA_AND_MONEY.md 5.3).
