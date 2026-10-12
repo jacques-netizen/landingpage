@@ -162,6 +162,20 @@
       "when": 1791646359194,
       "tag": "0022_legal_documents_v1",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1791802817634,
+      "tag": "0023_hourly_checks",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791803002347,
+      "tag": "0024_campaign_report_secret",
+      "breakpoints": true
     }
   ]
 }
