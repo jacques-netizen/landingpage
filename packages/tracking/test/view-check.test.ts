@@ -14,7 +14,7 @@ import { MockProvider, ProviderRouter, type MockState } from '@mde/platforms'
 import { submitPost } from '@mde/submissions'
 import { and, eq, sql as dsql } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { recheckAccount, runDueViewChecks, runReleases, runViewCheck, type CheckOutcome } from '../src'
+import { recheckAccount, runDueViewChecks, runReleases, runViewCheck, staleCampaigns, type CheckOutcome } from '../src'
 
 const { db, sql } = createDb(process.env.DATABASE_URL!, { max: 4, onnotice: () => {} })
 afterAll(() => sql.end())
@@ -185,6 +185,18 @@ describe('view checks and earnings', () => {
     t.post(5_000)
     expect((await t.check(4)).deltaCents).toBe(400)
     expect(await t.sub()).toMatchObject({ countedViews: 2_000, earnedCents: 400 })
+  })
+
+  it('names a live campaign whose posts have had no snapshot for over 3 hours (owner request, 2026-10-12)', async () => {
+    const t = await setup()
+    // Just submitted: its snapshot is fresh, so nothing is stale yet.
+    expect((await staleCampaigns(db, new Date())).map((c) => c.id)).not.toContain(t.c.id)
+    // Four hours on with no check: stale. A check that works clears it.
+    const later = new Date(Date.now() + 4 * HOUR)
+    expect((await staleCampaigns(db, later)).map((c) => c.id)).toContain(t.c.id)
+    t.post(2_000)
+    await t.check(4)
+    expect((await staleCampaigns(db, later)).map((c) => c.id)).not.toContain(t.c.id)
   })
 
   it('running the same check twice changes nothing', async () => {

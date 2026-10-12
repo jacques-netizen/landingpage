@@ -50,7 +50,6 @@ test('a client opens the report from a share link, sees new posts without reload
     'Shares',
     'Budget',
     'Views by platform',
-    'CPM by platform',
     'Spend',
     'Submissions',
     'Export CSV',

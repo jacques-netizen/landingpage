@@ -11,7 +11,7 @@ import {
   type ProviderRouter,
 } from '@mde/platforms'
 import { nextCheckAt } from '@mde/submissions'
-import { and, asc, desc, eq, isNotNull, lte } from 'drizzle-orm'
+import { and, asc, desc, eq, isNotNull, lte, sql } from 'drizzle-orm'
 import { engagementBelowFloor, viewJump } from './fraud'
 
 const { submissions, campaigns, linkedAccounts, viewSnapshots, fraudFlags, reviewDecisions, warnings } = tables
@@ -258,4 +258,28 @@ export async function runDueViewChecks(
   }
   await Promise.all(Array.from({ length: Math.min(concurrency, due.length) }, worker))
   return totals
+}
+
+/**
+ * Live campaigns whose posts have not had a snapshot in a while (owner request, 2026-10-12): every
+ * tracked post should be checked hourly, so a campaign with tracked posts and no snapshot for more than
+ * `staleHours` means the checks have stopped. Logged as an error by the worker so it shows in Railway.
+ */
+export async function staleCampaigns(db: Db, now = new Date(), staleHours = 3) {
+  const cutoff = new Date(now.getTime() - staleHours * 3_600_000)
+  const rows = await db.execute<{ id: string; title: string; last: Date | null; tracked: string }>(sql`
+    select c.id, c.title,
+      (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = c.id) as last,
+      count(s.id) as tracked
+    from campaigns c
+    join submissions s on s.campaign_id = c.id and s.next_check_at is not null and s.submitted_at <= ${cutoff.toISOString()}::timestamptz
+    where c.status in ('live', 'closing') and c.deleted_at is null
+    group by c.id
+    having coalesce(max((select max(v.taken_at) from view_snapshots v where v.submission_id = s.id)), 'epoch'::timestamptz) < ${cutoff.toISOString()}::timestamptz`)
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    lastSnapshotAt: r.last ? new Date(r.last).toISOString() : null,
+    trackedPosts: Number(r.tracked),
+  }))
 }

@@ -2,6 +2,7 @@ import { db } from '@mde/db'
 import { sql } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
 import { providerStatus } from '@/server/providers'
+import { workerStatus } from '@/server/worker-status'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +23,13 @@ export async function GET(req: NextRequest) {
     await db().execute(sql`select 1`)
     // Which providers answer for each platform. Empty means posts there go to review without their
     // stats and no views are counted: set DATA_PROVIDER_API_KEY (or YOUTUBE_API_KEY).
-    return NextResponse.json({ ok: true, providers: providerStatus(), ...(hosts ? { hosts } : {}) })
+    // The worker's heartbeat and any live campaign without a snapshot for over 3 hours.
+    return NextResponse.json({
+      ok: true,
+      providers: providerStatus(),
+      worker: await workerStatus(),
+      ...(hosts ? { hosts } : {}),
+    })
   } catch {
     return NextResponse.json({ ok: false }, { status: 503 })
   }

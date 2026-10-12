@@ -6,6 +6,7 @@ import { unreadCount } from '@mde/notifications'
 import { requireStaff } from '@/server/guard'
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
 import { platformsWithoutProvider } from '@/server/providers'
+import { workerStatus } from '@/server/worker-status'
 import { staffDashboard } from '@/server/dashboard'
 import { AdminPage, Notice } from './_components/ui'
 
@@ -29,6 +30,7 @@ export default async function AdminDashboard() {
   const now = new Date()
   const [d, unread] = await Promise.all([staffDashboard(now), unreadCount(db(), viewer.id)])
   const missingProviders = platformsWithoutProvider()
+  const worker = await workerStatus()
   return (
     <AdminPage
       title="Dashboard"
@@ -39,6 +41,19 @@ export default async function AdminDashboard() {
         </a>
       }
     >
+      {worker.minutesAgo === null || worker.minutesAgo > 10 ? (
+        <Notice kind="bad">
+          The worker has not reported{worker.lastSeen ? ` for ${worker.minutesAgo} minutes` : ' since it was deployed'}.
+          View checks, releases and emails run on the worker service in Railway: check that it is running and has the
+          same settings as the web service.
+        </Notice>
+      ) : null}
+      {worker.stale.length ? (
+        <Notice kind="bad">
+          No view snapshot for over 3 hours on {worker.stale.map((c) => c.title).join(', ')}. Open the campaign and use
+          Refresh stats now, then check the worker.
+        </Notice>
+      ) : null}
       {missingProviders.length ? (
         <Notice kind="bad">
           No data provider is set up for {missingProviders.map((p) => PLATFORM_LABELS[p] ?? p).join(', ')}. Posts there

@@ -9,12 +9,14 @@ import { EmptyState, StatusBadge } from '@mde/ui'
 import { asc, eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { clientHolding } from '@/server/admin-queries'
+import { campaignReport } from '@mde/campaigns'
 import { BUCKETS, campaignCreators, campaignOverview, campaignPages, type Bucket } from '@/server/campaign-overview'
 import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
 import { Notice } from '../../_components/ui'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { PostActions } from './post-actions'
+import { RefreshButton } from './refresh-button'
 import { ReportLink } from './report-link'
 import { CampaignBuilder } from '../builder'
 import { CampaignActions } from '../campaign-actions'
@@ -73,6 +75,9 @@ export default async function CampaignAdminPage({
           .orderBy(asc(tables.reasonCodes.label))
       : []
   const canDelete = hasAccess(viewer, 'admin')
+  // Platforms with their eCPM: staff only, moved off the client report (owner request, 2026-10-12).
+  const byPlatform =
+    tab === 'overview' ? ((await campaignReport(d, id, { mode: 'all', page: 1 }))?.platforms ?? []) : []
   const now = Date.now()
   // How long ago a post's stats were fetched, e.g. "13m ago".
   const ago = (t: Date | null) => {
@@ -260,6 +265,49 @@ export default async function CampaignAdminPage({
                 </div>
               ))}
             </dl>
+            <Card
+              title="CPM by platform"
+              note="CPM is the campaign rate per 1,000 views. eCPM is what was spent on a platform divided by its views, times 1,000. Staff only; the client report does not show it."
+            >
+              <div className="flex items-start justify-between gap-4">
+                <table className="w-full border-collapse text-[13px]">
+                  <thead className="bg-field">
+                    <tr>
+                      <Th>Platform</Th>
+                      <Th right>Views</Th>
+                      <Th right>Posts</Th>
+                      <Th right>Spend</Th>
+                      <Th right>CPM</Th>
+                      <Th right>eCPM</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {byPlatform.map((p) => (
+                      <tr key={p.platform} className="border-0 border-t border-solid border-line">
+                        <td className="px-3 py-2">
+                          <PlatformTag platform={p.platform} />
+                        </td>
+                        <td className="px-3 py-2 text-right tabular-nums">{n(p.views)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{n(p.clips)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatDollars(p.spentCents)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatDollars(c.rateCentsPer1000)}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">
+                          {p.ecpmCents === null ? 'No views yet' : formatDollars(p.ecpmCents)}
+                        </td>
+                      </tr>
+                    ))}
+                    {byPlatform.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-3 py-3 text-muted">
+                          No approved posts yet.
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+                <RefreshButton campaignId={c.id} />
+              </div>
+            </Card>
 
             <Card title="Description">
               {c.briefMarkdown ? (

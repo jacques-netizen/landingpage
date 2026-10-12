@@ -32,6 +32,8 @@ export type ReportClip = {
   /** The post's picture and video file as the platform last gave them; null when it gave none. */
   thumbnail: string | null
   video: string | null
+  /** Views since submission, the ones that earn; the campaign's minimum is on the report. */
+  countedViews: number
   postedAt: string | null
   submittedAt: string
   status: ReportStatus
@@ -51,6 +53,8 @@ export type CampaignReport = {
     status: 'Live' | 'Ended' | 'Not started'
     thumbnail: string | null
     rateCentsPer1000: number
+    /** Counted views a post needs before it earns; 0 when there is no minimum. */
+    minViewsToEarn: number
   }
   range: { from: string; to: string }
   totals: { views: number; likes: number; comments: number; shares: number; clips: number }
@@ -118,7 +122,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // Each post with its latest figures (the newest day row).
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
-      s.thumbnail_url, s.video_url, a.handle, u.username,
+      s.thumbnail_url, s.video_url, s.counted_views, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
@@ -136,6 +140,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     post_url: string
     thumbnail_url: string | null
     video_url: string | null
+    counted_views: string
     published_at: Date | null
     submitted_at: Date
     state: string
@@ -153,6 +158,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     platformPostId: r.platform_post_id,
     thumbnail: r.thumbnail_url,
     video: r.video_url,
+    countedViews: n(r.counted_views),
     handle: handleFor({ handle: r.handle, url: r.post_url, username: r.username }),
     url: r.post_url,
     postedAt: r.published_at ? new Date(r.published_at).toISOString() : null,
@@ -260,6 +266,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
           : 'Not started',
       thumbnail: c.coverImageUrl,
       rateCentsPer1000: c.rateCentsPer1000,
+      minViewsToEarn: c.minViewsToEarn,
     },
     range: { from: fromDay, to: toDay },
     totals: { views: n(t.views), likes: n(t.likes), comments: n(t.comments), shares: n(t.shares), clips: n(t.clips) },

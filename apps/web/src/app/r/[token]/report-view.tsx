@@ -283,12 +283,15 @@ export function ReportView({
       {/* 4. Budget */}
       <section className={`${card} mt-4`} aria-label="Budget">
         <h2 className={h2}>Budget</h2>
-        <div className="flex items-baseline justify-between gap-4 text-[14px]">
+        <p className="m-0 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[14px]">
           <span className="font-medium tabular-nums">
             {formatDollars(b.spentCents)} / {formatDollars(b.budgetCents)}
           </span>
+          <span aria-hidden className="text-muted">
+            ·
+          </span>
           <span className="text-muted tabular-nums">{used}% used</span>
-        </div>
+        </p>
         <div className="mt-2 h-2 rounded-[4px] bg-field" role="img" aria-label={`${used}% of the budget used`}>
           <div className="h-full rounded-[4px] bg-ink" style={{ width: `${used}%` }} />
         </div>
@@ -340,42 +343,6 @@ export function ReportView({
             </ul>
           </div>
         ))}
-      </section>
-
-      {/* 6. CPM by platform */}
-      <section className={`${card} mt-4`} aria-label="CPM by platform">
-        <h2 className={h2}>CPM by platform</h2>
-        <table className="w-full border-collapse text-[14px]">
-          <thead>
-            <tr className="text-left text-[12px] text-muted">
-              <th className="border-0 border-b border-solid border-line py-2 font-medium">Platform</th>
-              <th className="border-0 border-b border-solid border-line py-2 text-right font-medium">CPM</th>
-              <th className="border-0 border-b border-solid border-line py-2 text-right font-medium">eCPM</th>
-            </tr>
-          </thead>
-          <tbody>
-            {r.platforms.map((p) => (
-              <tr key={p.platform}>
-                <td className="border-0 border-b border-solid border-line py-[10px]">
-                  <span className="inline-flex items-center gap-2">
-                    <PlatformIcon platform={p.platform} />
-                    {PLATFORM_NAMES[p.platform] ?? p.platform}
-                  </span>
-                </td>
-                <td className="border-0 border-b border-solid border-line py-[10px] text-right tabular-nums">
-                  {formatDollars(r.campaign.rateCentsPer1000)}
-                </td>
-                <td className="border-0 border-b border-solid border-line py-[10px] text-right tabular-nums">
-                  {p.ecpmCents === null ? 'No views yet' : formatDollars(p.ecpmCents)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p className="mt-3 mb-0 text-[12px] text-muted-2">
-          CPM is the campaign rate per 1,000 views. eCPM is what was spent on a platform divided by its views, times
-          1,000.
-        </p>
       </section>
 
       {/* 7. Spend */}
@@ -455,7 +422,7 @@ export function ReportView({
         ) : (
           <ul className="mt-5 grid list-none grid-cols-3 gap-4 p-0 max-lg:grid-cols-2 max-sm:grid-cols-1">
             {shownClips.map((c) => (
-              <ClipCard key={c.id} c={c} />
+              <ClipCard key={c.id} c={c} minViews={r.campaign.minViewsToEarn} />
             ))}
           </ul>
         )}
@@ -483,60 +450,46 @@ export function ReportView({
 const STATUS_LABEL: Record<ReportStatus, string> = { approved: 'Approved', pending: 'Pending', rejected: 'Rejected' }
 
 /** One clip: the video (or its picture, or the platform's own player for YouTube), its figures, the clipper. */
-function ClipCard({ c }: { c: ReportClip }) {
-  const [playing, setPlaying] = useState(false)
-  const youtube = c.platform === 'youtube'
-  const canPlay = youtube || !!c.video
+/** The platform's own player for the post, which is how the clip is shown wherever it is embedded. */
+function embedUrl(c: ReportClip) {
+  switch (c.platform) {
+    case 'tiktok':
+      return `https://www.tiktok.com/embed/v2/${c.platformPostId}`
+    case 'instagram':
+      return `https://www.instagram.com/p/${c.platformPostId}/embed/`
+    case 'youtube':
+      return `https://www.youtube.com/embed/${c.platformPostId}?playsinline=1`
+    case 'x':
+      return `https://platform.twitter.com/embed/Tweet.html?id=${c.platformPostId}&theme=light&dnt=true`
+    default:
+      return c.url
+  }
+}
+
+/** The payout, or the short reason there is none yet. */
+function spendLabel(c: ReportClip, minViews: number) {
+  if (c.payoutCents > 0) return formatDollars(c.payoutCents)
+  if (c.status === 'rejected') return 'Not paid'
+  if (c.status === 'pending') return 'In review'
+  if (minViews > 0 && c.countedViews < minViews) return `Below ${compact(minViews)} min`
+  if (c.countedViews === 0) return 'No views since submitted'
+  return formatDollars(0)
+}
+
+function ClipCard({ c, minViews }: { c: ReportClip; minViews: number }) {
   return (
     <li className="flex overflow-hidden rounded-card border border-solid border-line bg-white">
       <div className="relative aspect-[9/16] w-[46%] flex-none bg-ink">
-        {playing && youtube ? (
-          <iframe
-            title={`${c.handle} on YouTube`}
-            src={`https://www.youtube.com/embed/${c.platformPostId}?autoplay=1&playsinline=1`}
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-            className="absolute inset-0 h-full w-full border-0"
-          />
-        ) : playing && c.video ? (
-          <video
-            src={c.video}
-            poster={c.thumbnail ?? undefined}
-            controls
-            autoPlay
-            playsInline
-            className="absolute inset-0 h-full w-full object-contain"
-          />
-        ) : (
-          <>
-            {c.thumbnail ? (
-              <img src={c.thumbnail} alt="" className="absolute inset-0 h-full w-full object-cover" />
-            ) : null}
-            {canPlay ? (
-              <button
-                type="button"
-                onClick={() => setPlaying(true)}
-                aria-label={`Play ${c.handle}'s clip`}
-                className="absolute inset-0 flex cursor-pointer items-center justify-center border-0 bg-transparent"
-              >
-                <span className="flex size-12 items-center justify-center rounded-full bg-[rgba(255,255,255,0.85)] text-ink">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
-              </button>
-            ) : (
-              <a
-                href={c.url}
-                target="_blank"
-                rel="noreferrer"
-                className="absolute inset-0 flex items-center justify-center text-[12px] text-cream no-underline"
-              >
-                Open on {PLATFORM_NAMES[c.platform] ?? c.platform}
-              </a>
-            )}
-          </>
-        )}
+        <iframe
+          title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
+          src={embedUrl(c)}
+          loading="lazy"
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+          referrerPolicy="strict-origin-when-cross-origin"
+          className="absolute inset-0 h-full w-full border-0"
+          style={c.thumbnail ? { background: `#1A1510 url(${JSON.stringify(c.thumbnail)}) center / cover` } : undefined}
+        />
       </div>
       <div className="flex min-w-0 flex-1 flex-col text-[13px]">
         <dl className="m-0 flex-1">
@@ -545,7 +498,7 @@ function ClipCard({ c }: { c: ReportClip }) {
               ['Views', full(c.views)],
               ['Comments', full(c.comments)],
               ['Likes', full(c.likes)],
-              ['Spend', formatDollars(c.payoutCents)],
+              ['Spend', spendLabel(c, minViews)],
             ] as const
           ).map(([k, v]) => (
             <div

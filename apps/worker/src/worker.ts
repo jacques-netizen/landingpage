@@ -1,4 +1,5 @@
 import { Queue, Worker, type ConnectionOptions } from 'bullmq'
+import IORedis, { type RedisOptions } from 'ioredis'
 import type { Db } from '@mde/db'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
 import { SCHEDULED_JOBS, type ScheduledJob } from './jobs'
@@ -31,6 +32,9 @@ export async function startWorker({
   log = defaultLog,
 }: Options) {
   const queue = new Queue(QUEUE_NAME, { connection, prefix })
+  // The heartbeat's own connection: the queue's is bullmq's to manage.
+  const heartbeat = new IORedis({ ...(connection as RedisOptions), maxRetriesPerRequest: 1, lazyConnect: true })
+  heartbeat.on('error', (e) => log({ level: 'warn', msg: 'worker heartbeat connection', err: String(e) }))
   for (const [name, job] of Object.entries(jobs)) {
     await queue.upsertJobScheduler(
       name,
@@ -55,6 +59,14 @@ export async function startWorker({
       const started = Date.now()
       const result = await job.run({ db, now: new Date(), router, tokenFor })
       log({ level: 'info', msg: 'job done', job: j.name, ms: Date.now() - started, ...result })
+      // A heartbeat the web app's health check and staff dashboard read (owner request, 2026-10-12).
+      try {
+        const at = new Date().toISOString()
+        await heartbeat.set(`${prefix ?? 'mde'}:worker:last_seen`, at)
+        await heartbeat.set(`${prefix ?? 'mde'}:worker:job:${j.name}`, JSON.stringify({ at, ...result }))
+      } catch (e) {
+        log({ level: 'warn', msg: 'worker heartbeat failed', err: String(e) })
+      }
       return result
     },
     // One scheduled job at a time per worker keeps database load predictable.
@@ -70,6 +82,7 @@ export async function startWorker({
     async close() {
       await worker.close()
       await queue.close()
+      heartbeat.disconnect()
     },
   }
 }

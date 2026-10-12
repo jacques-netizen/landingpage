@@ -183,3 +183,25 @@ test('the campaigns overview shows every campaign at a glance, with search and f
   await expect(page.getByRole('link', { name: /^Sample clipping/ })).toBeVisible()
   await expect(page.getByRole('link', { name: /^Seed awaiting funding/ })).toHaveCount(0)
 })
+
+// Owner request (2026-10-12): staff can refresh every post's stats at once, whatever the worker is doing,
+// and the health check names live campaigns that have gone over 3 hours without a snapshot.
+test('staff refresh a campaign’s stats now, which clears the stale snapshot warning', async ({ page }) => {
+  const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
+    max: 1,
+    onnotice: () => {},
+  })
+  const [c] = await sql`select id from campaigns where title = 'Sample clipping'`
+  // Make every snapshot old, so the campaign counts as stale.
+  await sql`update view_snapshots v set taken_at = taken_at - interval '2 days' from submissions s where s.id = v.submission_id and s.campaign_id = ${c!.id}`
+  const before = (await (await page.request.get('/api/health')).json()) as { worker: { stale: { id: string }[] } }
+  expect(before.worker.stale.map((x) => x.id)).toContain(c!.id)
+
+  await signInAs(page, 'admin@seed.invalid')
+  await page.goto(`/admin/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Refresh stats now' }).click()
+  await expect(page.getByText(/posts refreshed/)).toBeVisible({ timeout: 60_000 })
+  const after = (await (await page.request.get('/api/health')).json()) as { worker: { stale: { id: string }[] } }
+  expect(after.worker.stale.map((x) => x.id)).not.toContain(c!.id)
+  await sql.end()
+})

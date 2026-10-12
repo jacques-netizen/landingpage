@@ -6,7 +6,7 @@ import { ledgerCheck } from '@mde/money'
 import { deliverPendingEmails, notifyAppealDeadlines } from '@mde/notifications'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
 import { expireStrikes } from '@mde/review'
-import { runAccountRechecks, runDueViewChecks, runReleases } from '@mde/tracking'
+import { runAccountRechecks, runDueViewChecks, runReleases, staleCampaigns } from '@mde/tracking'
 
 export type JobContext = {
   db: Db
@@ -30,6 +30,17 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
   'view-checks': {
     every: MINUTE,
     run: ({ db, now, router, tokenFor }) => runDueViewChecks(db, { router, tokenFor, now }),
+  },
+  // A live campaign with tracked posts and no snapshot for over 3 hours means the checks have stopped:
+  // an error in the logs, so it is seen in Railway (owner request, 2026-10-12).
+  'snapshot-watch': {
+    every: 15 * MINUTE,
+    run: async ({ db, now }) => {
+      const stale = await staleCampaigns(db, now)
+      if (stale.length)
+        console.error(JSON.stringify({ level: 'error', msg: 'no view snapshots for over 3 hours', campaigns: stale }))
+      return { stale: stale.length, campaigns: stale.map((c) => c.title) }
+    },
   },
   // Each verified account once a day; running hourly spreads the work and catches up after downtime.
   'account-recheck': {
