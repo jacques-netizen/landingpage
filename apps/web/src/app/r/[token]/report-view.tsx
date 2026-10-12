@@ -3,6 +3,7 @@
 import type { CampaignReport, ReportClip, ReportMode, ReportSort, ReportStatus } from '@mde/campaigns'
 import { formatDollars } from '@mde/money/dollars'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { PLATFORM_NAMES, PlatformIcon } from './platform-icon'
 
 // The client's report, built from the owner's "Client Report" mockup (2026-10-12): a sticky section nav
@@ -395,6 +396,8 @@ export function ReportView({
     Submitted: 'M4 5h16v14H4zM4 9h16M9 5v14',
   }
 
+  const [player, setPlayer] = useState<ReportClip | null>(null)
+
   return (
     <div
       className="grid min-h-screen grid-cols-[260px_minmax(0,1fr)] max-lg:grid-cols-1"
@@ -668,7 +671,7 @@ export function ReportView({
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 18 }}>
               {shown.map((c) => (
-                <SubmissionCard key={c.id} c={c} minViews={r.campaign.minViewsToEarn} />
+                <SubmissionCard key={c.id} c={c} minViews={r.campaign.minViewsToEarn} onPlay={setPlayer} />
               ))}
             </div>
           )}
@@ -1122,25 +1125,15 @@ export function ReportView({
                       {PLATFORM_NAMES[c.platform] ?? c.platform}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 16, minWidth: 0 }}>
-                      <a
-                        href={c.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label="Open the post"
-                        style={{
-                          width: 50,
-                          height: 88,
-                          borderRadius: 6,
-                          overflow: 'hidden',
-                          flex: 'none',
-                          background: C.ink,
-                          display: 'block',
-                        }}
+                      <button
+                        type="button"
+                        onClick={() => setPlayer(c)}
+                        aria-label={`Play ${c.handle}'s clip`}
+                        className={`${smooth} cursor-pointer border-0 bg-transparent p-0 hover:scale-[1.03]`}
+                        style={{ width: 60, height: 107, flex: 'none', display: 'block' }}
                       >
-                        {c.thumbnail ? (
-                          <img src={c.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : null}
-                      </a>
+                        <ClipFrame c={c} radius={8} playSize={28} />
+                      </button>
                       <a
                         href={c.url}
                         target="_blank"
@@ -1424,6 +1417,7 @@ export function ReportView({
           )
         })}
       </div>
+      {player ? <PlayerOverlay c={player} onClose={() => setPlayer(null)} /> : null}
     </div>
   )
 }
@@ -1439,14 +1433,14 @@ function spendLabel(c: ReportClip, minViews: number) {
 }
 
 /** The platform's own player for the post, the way the clip is shown wherever it is embedded. */
-function embedUrl(c: ReportClip) {
+function embedUrl(c: ReportClip, play: boolean) {
   switch (c.platform) {
     case 'tiktok':
       return `https://www.tiktok.com/embed/v2/${c.platformPostId}`
     case 'instagram':
       return `https://www.instagram.com/p/${c.platformPostId}/embed/`
     case 'youtube':
-      return `https://www.youtube.com/embed/${c.platformPostId}?playsinline=1&autoplay=1`
+      return `https://www.youtube.com/embed/${c.platformPostId}?playsinline=1${play ? '&autoplay=1' : ''}`
     case 'x':
       return `https://platform.twitter.com/embed/Tweet.html?id=${c.platformPostId}&theme=light&dnt=true`
     default:
@@ -1454,10 +1448,211 @@ function embedUrl(c: ReportClip) {
   }
 }
 
-/** A submission card: the clip on the left (its picture, then the platform's player on play), its figures on the right. */
-function SubmissionCard({ c, minViews }: { c: ReportClip; minViews: number }) {
-  // Without a picture the player loads at once, so nothing is ever blank.
-  const [playing, setPlaying] = useState(!c.thumbnail)
+/** The platform's player at the size it is designed for; everything else scales it from here. */
+const PLAYER_W = 325
+const PLAYER_H = 578
+
+/**
+ * The clip in a 9:16 frame: its picture filling the frame with a play button, or, when the platform
+ * gave no picture, the platform's own player scaled down to fit the frame, so nothing is ever blank.
+ */
+function ClipFrame({ c, radius = 10, playSize = 52 }: { c: ReportClip; radius?: number; playSize?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(0)
+  useEffect(() => {
+    if (c.thumbnail || !ref.current) return
+    const el = ref.current
+    const fit = () => setScale(el.clientWidth / PLAYER_W)
+    fit()
+    const ro = new ResizeObserver(fit)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [c.thumbnail])
+  return (
+    <div
+      ref={ref}
+      className="group"
+      style={{
+        position: 'relative',
+        width: '100%',
+        aspectRatio: '9 / 16',
+        borderRadius: radius,
+        overflow: 'hidden',
+        background: C.ink,
+      }}
+    >
+      {c.thumbnail ? (
+        <img
+          src={c.thumbnail}
+          alt=""
+          className={`${smooth} group-hover:scale-[1.03]`}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      ) : scale > 0 ? (
+        <iframe
+          title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
+          src={embedUrl(c, false)}
+          loading="lazy"
+          tabIndex={-1}
+          aria-hidden
+          referrerPolicy="strict-origin-when-cross-origin"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: PLAYER_W,
+            height: PLAYER_H,
+            border: 0,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            pointerEvents: 'none',
+            background: C.ink,
+          }}
+        />
+      ) : null}
+      <span
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(180deg, rgba(26,21,16,0) 55%, rgba(26,21,16,0.45) 100%)',
+        }}
+      >
+        <span
+          className={`${smooth} group-hover:scale-110`}
+          style={{
+            width: playSize,
+            height: playSize,
+            borderRadius: '50%',
+            background: 'rgba(26,21,16,0.55)',
+            border: '1px solid rgba(255,255,255,0.35)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg width={playSize * 0.36} height={playSize * 0.36} viewBox="0 0 24 24" fill="#fff" aria-hidden>
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+      </span>
+    </div>
+  )
+}
+
+/** The platform's player at full size over the page, with the clipper, the platform link and a close button. */
+function PlayerOverlay({ c, onClose }: { c: ReportClip; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [onClose])
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal
+      aria-label={`${c.handle}'s clip`}
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 100,
+        animation: 'reportFadeIn .2s ease-out',
+        background: 'rgba(26,21,16,0.78)',
+        backdropFilter: 'blur(4px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
+      }}
+    >
+      <style>{`@keyframes reportFadeIn{from{opacity:0}to{opacity:1}}@keyframes reportRiseIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}`}</style>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: 'min(92vw, 380px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+          animation: 'reportRiseIn .25s ease-out',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, fontSize: 15 }}>
+            <span style={{ width: 28, height: 28, borderRadius: '50%', background: avatar(c.handle), flex: 'none' }} />
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 600 }}>
+              {c.handle}
+            </span>
+            <span style={{ color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <PlatformIcon platform={c.platform} size={14} />
+              {PLATFORM_NAMES[c.platform] ?? c.platform}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className={`${smooth} cursor-pointer hover:bg-[rgba(255,255,255,0.18)]`}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              border: '1px solid rgba(255,255,255,0.3)',
+              background: 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              fontSize: 18,
+              lineHeight: 1,
+              flex: 'none',
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <div
+          style={{
+            width: '100%',
+            height: 'min(78vh, 720px)',
+            borderRadius: 16,
+            overflow: 'hidden',
+            background: C.ink,
+            boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
+          }}
+        >
+          <iframe
+            key={c.id}
+            title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
+            src={embedUrl(c, true)}
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+            style={{ width: '100%', height: '100%', border: 0, display: 'block', background: C.ink }}
+          />
+        </div>
+        <a
+          href={c.url}
+          target="_blank"
+          rel="noreferrer"
+          className={`${smooth} no-underline hover:text-[#fff]`}
+          style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, textAlign: 'center' }}
+        >
+          Open on {PLATFORM_NAMES[c.platform] ?? c.platform} ↗
+        </a>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+/** A submission card: the clip in its frame on the left, its figures on the right. Play opens the player. */
+function SubmissionCard({ c, minViews, onPlay }: { c: ReportClip; minViews: number; onPlay: (c: ReportClip) => void }) {
   const rows = [
     ['Views', full(c.views)],
     ['Comments', full(c.comments)],
@@ -1470,73 +1665,19 @@ function SubmissionCard({ c, minViews }: { c: ReportClip; minViews: number }) {
       style={{
         ...card,
         display: 'grid',
-        gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)',
+        gridTemplateColumns: '176px minmax(0,1fr)',
         overflow: 'hidden',
-        minHeight: 440,
       }}
     >
-      <div style={{ position: 'relative', background: C.ink }}>
-        {playing ? (
-          <iframe
-            title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
-            src={embedUrl(c)}
-            loading="lazy"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
-          />
-        ) : (
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            aria-label={`Play ${c.handle}'s clip`}
-            className="group cursor-pointer border-0 bg-transparent p-0"
-            style={{ position: 'absolute', inset: 0 }}
-          >
-            <img
-              src={c.thumbnail!}
-              alt=""
-              className={`${smooth} group-hover:opacity-100`}
-              style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                opacity: 0.9,
-              }}
-            />
-            <span
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <span
-                className={`${smooth} group-hover:scale-105`}
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: '50%',
-                  background: 'rgba(26,21,16,0.6)',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden>
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </span>
-          </button>
-        )}
-      </div>
+      <button
+        type="button"
+        onClick={() => onPlay(c)}
+        aria-label={`Play ${c.handle}'s clip`}
+        className="cursor-pointer border-0 bg-transparent p-0"
+        style={{ display: 'block', margin: 10, marginRight: 0 }}
+      >
+        <ClipFrame c={c} />
+      </button>
       <div style={{ display: 'flex', flexDirection: 'column', padding: '4px 16px 14px', minWidth: 0 }}>
         {rows.map(([l, v]) => (
           <div
@@ -1570,8 +1711,8 @@ function SubmissionCard({ c, minViews }: { c: ReportClip; minViews: number }) {
             gap: 8,
           }}
         >
-          <span style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
-            <span style={{ width: 16, height: 16, borderRadius: '50%', background: avatar(c.handle), flex: 'none' }} />
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+            <span style={{ width: 22, height: 22, borderRadius: '50%', background: avatar(c.handle), flex: 'none' }} />
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.handle}</span>
           </span>
           <a
