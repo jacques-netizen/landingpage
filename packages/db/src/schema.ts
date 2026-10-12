@@ -307,6 +307,8 @@ export const campaigns = pgTable(
     templateFields: jsonb('template_fields').$type<Record<string, string | number | boolean>>().notNull().default({}),
     // Rules text being edited before it is saved as a terms version.
     termsDraftMarkdown: text('terms_draft_markdown'),
+    // Signs the client's report links (client report brief, 2026-10-12). Rotating it revokes every link.
+    reportSecret: text('report_secret'),
     ...timestamps,
   },
   () => [

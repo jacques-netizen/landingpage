@@ -4,7 +4,7 @@ import Redis from 'ioredis'
 
 const g = globalThis as unknown as { __mdeRedis?: Redis }
 
-function redis() {
+export function redis() {
   // Commands queue while the first connection opens, so the first request after start is limited too.
   if (!g.__mdeRedis) g.__mdeRedis = new Redis(env().REDIS_URL, { maxRetriesPerRequest: 1, connectTimeout: 2000 })
   return g.__mdeRedis

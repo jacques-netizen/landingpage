@@ -15,6 +15,7 @@ import { hasAccess } from '@/server/viewer'
 import { Notice } from '../../_components/ui'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { PostActions } from './post-actions'
+import { ReportLink } from './report-link'
 import { CampaignBuilder } from '../builder'
 import { CampaignActions } from '../campaign-actions'
 import { valuesFrom } from '../values'
@@ -212,6 +213,7 @@ export default async function CampaignAdminPage({
           />
         </section>
       ) : null}
+      {canMoney ? <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} /> : null}
 
       <nav aria-label="Campaign" className="mt-5 grid grid-cols-5 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
         {(

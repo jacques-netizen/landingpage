@@ -90,3 +90,121 @@ export function LineChart({
     </figure>
   )
 }
+
+// Bars in the same style as the line: ink bars on hairlines, a table behind a toggle. Values can go
+// below zero (a day's money returned), drawn down from the zero line.
+export function BarChart({
+  points,
+  title,
+  summary,
+  format = (n) => n.toLocaleString('en-US'),
+  columns,
+}: {
+  points: (Point & { extra?: string })[]
+  title: string
+  summary: string
+  format?: (n: number) => string
+  /** Table headings: the label, the value, and the optional extra column. */
+  columns?: [string, string, string?]
+}) {
+  const [asTable, setAsTable] = useState(false)
+  const id = useId()
+  const max = Math.max(1, ...points.map((p) => Math.abs(p.value)))
+  const hasNegative = points.some((p) => p.value < 0)
+  const w = 1000
+  const h = 200
+  const zero = hasNegative ? h / 2 : h - 10
+  const scale = (hasNegative ? h / 2 - 10 : h - 20) / max
+  const slot = points.length ? w / points.length : w
+  const bar = Math.max(2, Math.min(24, slot * 0.6))
+  const [a, b, c] = columns ?? ['Date', 'Value', undefined]
+  return (
+    <figure className="m-0 font-sans" aria-describedby={`${id}-sum`}>
+      <div className="flex items-center justify-between gap-4">
+        <figcaption className="text-[12px] text-muted-2">{title}</figcaption>
+        <div
+          role="group"
+          aria-label="Show as"
+          className="flex gap-[2px] rounded-pill border border-solid border-line p-[2px]"
+        >
+          {(['Chart', 'Table'] as const).map((k) => {
+            const on = (k === 'Table') === asTable
+            return (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setAsTable(k === 'Table')}
+                className={cn(
+                  bare,
+                  focusRing,
+                  'cursor-pointer rounded-pill px-3 py-[3px] text-[12px]',
+                  on ? 'bg-ink text-cream' : 'text-muted-2',
+                )}
+              >
+                {k}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+      <p id={`${id}-sum`} className="sr-only">
+        {summary}
+      </p>
+      {asTable ? (
+        <table className="mt-3 w-full border-collapse text-[13px]">
+          <thead>
+            <tr className="text-left text-[12px] text-muted-2">
+              <th className="border-0 border-b border-solid border-line py-2 font-medium">{a}</th>
+              <th className="border-0 border-b border-solid border-line py-2 text-right font-medium">{b}</th>
+              {c ? (
+                <th className="border-0 border-b border-solid border-line py-2 text-right font-medium">{c}</th>
+              ) : null}
+            </tr>
+          </thead>
+          <tbody>
+            {points.map((p) => (
+              <tr key={p.label}>
+                <td className="border-0 border-b border-solid border-line py-2">{p.label}</td>
+                <td className="border-0 border-b border-solid border-line py-2 text-right tabular-nums">
+                  {format(p.value)}
+                </td>
+                {c ? (
+                  <td className="border-0 border-b border-solid border-line py-2 text-right tabular-nums">{p.extra}</td>
+                ) : null}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="relative mt-3 h-[200px] border-0 border-y border-solid border-line">
+          <svg width="100%" height={h} viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden>
+            <line
+              x1={0}
+              x2={w}
+              y1={zero}
+              y2={zero}
+              stroke="#1A1510"
+              strokeWidth={1}
+              vectorEffect="non-scaling-stroke"
+            />
+            {points.map((p, i) => {
+              const height = Math.abs(p.value) * scale
+              const x = i * slot + (slot - bar) / 2
+              return (
+                <rect
+                  key={p.label}
+                  x={x}
+                  y={p.value >= 0 ? zero - height : zero}
+                  width={bar}
+                  height={height}
+                  fill={p.value >= 0 ? '#1A1510' : '#B26A00'}
+                />
+              )
+            })}
+          </svg>
+        </div>
+      )}
+    </figure>
+  )
+}
