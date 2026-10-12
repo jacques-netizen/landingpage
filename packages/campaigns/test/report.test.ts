@@ -170,6 +170,15 @@ describe('campaign report', () => {
       ['@maya.clips', 1_500, 'pending'],
     ])
     expect(r.submissions.total).toBe(3)
+    expect(r.accounts.map((a) => [a.posts, a.spentCents, a.share])).toEqual([
+      [1, 400, 57.1],
+      [1, 300, 42.9],
+    ])
+    expect(r.clipsByPlatformDay.map((x) => [x.platform, x.clips])).toEqual([
+      ['tiktok', 1],
+      ['instagram', 1],
+      ['tiktok', 1],
+    ])
     // Most views first by default; newest when asked.
     expect(r.submissions.rows.map((x) => x.status)).toEqual(['approved', 'approved', 'rejected'])
     expect(r.counts).toEqual({ submitted: 3, approved: 2, pending: 0, rejected: 1 })

@@ -48,14 +48,15 @@ test('a client opens the report from a share link, sees new posts without reload
     'Likes',
     'Comments',
     'Shares',
-    'Budget',
-    'Views by platform',
-    'Spend',
-    'Submissions',
+    'Campaign Budget',
+    'SUBMISSIONS',
+    'PLATFORM STATS',
+    'SPEND',
+    'CLIPS',
     'Export CSV',
   ])
     await expect(report.getByText(label, { exact: true }).first()).toBeVisible()
-  await expect(report.getByText(/Last updated/)).toBeVisible()
+  await expect(report.getByText(/Updated /)).toBeVisible()
   const before = (await (await report.request.get(`/api/r/${link.split('/r/')[1]}/report`)).json()) as {
     totals: { views: number }
   }

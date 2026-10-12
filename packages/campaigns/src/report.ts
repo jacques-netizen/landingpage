@@ -70,6 +70,10 @@ export type CampaignReport = {
   }
   platforms: { platform: string; views: number; clips: number; spentCents: number; ecpmCents: number | null }[]
   spendByDay: { day: string; spendCents: number; clips: number }[]
+  /** Clippers by what their approved posts earned, most first; share is of the campaign's spend in range. */
+  accounts: { handle: string; posts: number; spentCents: number; share: number }[]
+  /** Posts submitted per day per platform, for the stacked bars. */
+  clipsByPlatformDay: { day: string; platform: string; clips: number }[]
   topClips: ReportClip[]
   /** Every post in range, whatever its state: "N submitted, N approved, N pending review". */
   counts: { submitted: number; approved: number; pending: number; rejected: number }
@@ -178,20 +182,21 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       : q.sort === 'spend'
         ? sql`earned_cents desc, views desc, submitted_at desc`
         : sql`views desc, submitted_at desc`
-  const [totals, byPlatform, top, series, spend, budget, pageRows, pageCount, counts] = await Promise.all([
-    db.execute<{ views: string; likes: string; comments: string; shares: string; clips: string }>(sql`
+  const [totals, byPlatform, top, series, spend, budget, pageRows, pageCount, counts, accounts, perPlatformDay] =
+    await Promise.all([
+      db.execute<{ views: string; likes: string; comments: string; shares: string; clips: string }>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
       select coalesce(sum(views), 0) as views, coalesce(sum(likes), 0) as likes, coalesce(sum(comments), 0) as comments,
         coalesce(sum(shares), 0) as shares, count(*) as clips from l`),
-    db.execute<{ platform: string; views: string; clips: string; spent: string }>(sql`
+      db.execute<{ platform: string; views: string; clips: string; spent: string }>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
       select platform, coalesce(sum(views), 0) as views, count(*) as clips, coalesce(sum(earned_cents), 0) as spent
       from l group by platform order by views desc`),
-    db.execute<ClipRow>(sql`
+      db.execute<ClipRow>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
       select * from l order by views desc, submitted_at desc limit 10`),
-    // Cumulative views by day: each post's latest figure per day (view_snapshot_days), carried forward, summed.
-    db.execute<{ day: string; views: string; clips: string }>(sql`
+      // Cumulative views by day: each post's latest figure per day (view_snapshot_days), carried forward, summed.
+      db.execute<{ day: string; views: string; clips: string }>(sql`
       with daily as (
         select v.submission_id, v.day, v.views
         from view_snapshot_days v join submissions s on s.id = v.submission_id
@@ -211,8 +216,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
         coalesce(submitted.clips, 0) as clips
       from days left join per_day on per_day.day = days.day left join submitted on submitted.day = days.day
       order by days.day`),
-    // Spend by day from the ledger: money reserved for posts counts when reserved; returns when returned.
-    db.execute<{ day: string; spend: string; clips: string }>(sql`
+      // Spend by day from the ledger: money reserved for posts counts when reserved; returns when returned.
+      db.execute<{ day: string; spend: string; clips: string }>(sql`
       with moves as (
         select (t.created_at at time zone 'UTC')::date as day, -sum(e.amount_cents) as spend
         from ledger_transactions t
@@ -227,29 +232,43 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       )
       select to_char(coalesce(m.day, su.day), 'YYYY-MM-DD') as day, coalesce(m.spend, 0) as spend, coalesce(su.clips, 0) as clips
       from moves m full outer join submitted su on su.day = m.day order by 1`),
-    // The budget block is always the whole campaign.
-    db.execute<{ spent: string; paid: string; hold: string; views: string }>(sql`
+      // The budget block is always the whole campaign.
+      db.execute<{ spent: string; paid: string; hold: string; views: string }>(sql`
       with l as (${latest} where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)}))
       select coalesce(sum(earned_cents), 0) as spent,
         coalesce(sum(earned_cents) filter (where state = 'paid_out'), 0) as paid,
         coalesce(sum(earned_cents) filter (where state <> 'paid_out'), 0) as hold,
         coalesce(sum(views), 0) as views from l`),
-    db.execute<ClipRow>(sql`
+      db.execute<ClipRow>(sql`
       with l as (${latest} where ${inRange}
         ${q.platform ? sql`and s.platform = ${q.platform}` : sql``}
         ${q.status ? sql`and s.state in (${list(q.status === 'approved' ? APPROVED : q.status === 'pending' ? PENDING : REJECTED)})` : sql``})
       select * from l order by ${order} limit ${PAGE_SIZE} offset ${(Math.max(1, q.page) - 1) * PAGE_SIZE}`),
-    db.execute<{ total: string }>(sql`
+      db.execute<{ total: string }>(sql`
       select count(*) as total from submissions s where ${inRange}
         ${q.platform ? sql`and s.platform = ${q.platform}` : sql``}
         ${q.status ? sql`and s.state in (${list(q.status === 'approved' ? APPROVED : q.status === 'pending' ? PENDING : REJECTED)})` : sql``}`),
-    db.execute<{ submitted: string; approved: string; pending: string; rejected: string }>(sql`
+      db.execute<{ submitted: string; approved: string; pending: string; rejected: string }>(sql`
       select count(*) as submitted,
         count(*) filter (where s.state in (${list(APPROVED)})) as approved,
         count(*) filter (where s.state in (${list(PENDING)})) as pending,
         count(*) filter (where s.state in (${list(REJECTED)})) as rejected
       from submissions s where ${inRange}`),
-  ])
+      db.execute<{
+        handle: string | null
+        post_url: string
+        username: string | null
+        posts: string
+        spent: string
+      }>(sql`
+      with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
+      select max(handle) as handle, max(post_url) as post_url, max(username) as username,
+        count(*) as posts, coalesce(sum(earned_cents), 0) as spent
+      from l group by creator_id order by spent desc, posts desc limit 10`),
+      db.execute<{ day: string; platform: string; clips: string }>(sql`
+      select to_char((s.submitted_at at time zone 'UTC')::date, 'YYYY-MM-DD') as day, s.platform, count(*) as clips
+      from submissions s where ${inRange} group by 1, 2 order by 1`),
+    ])
 
   const t = totals[0]!
   const b = budget[0]!
@@ -287,6 +306,16 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       ecpmCents: ecpm(n(r.spent), n(r.views)),
     })),
     spendByDay: spend.map((r) => ({ day: r.day, spendCents: n(r.spend), clips: n(r.clips) })),
+    accounts: (() => {
+      const total = accounts.reduce((sum, a) => sum + n(a.spent), 0)
+      return accounts.map((a) => ({
+        handle: handleFor({ handle: a.handle, url: a.post_url, username: a.username }),
+        posts: n(a.posts),
+        spentCents: n(a.spent),
+        share: total > 0 ? Math.round((n(a.spent) / total) * 1000) / 10 : 0,
+      }))
+    })(),
+    clipsByPlatformDay: perPlatformDay.map((r) => ({ day: r.day, platform: r.platform, clips: n(r.clips) })),
     topClips: top.map(toClip),
     counts: {
       submitted: n(counts[0]?.submitted),
