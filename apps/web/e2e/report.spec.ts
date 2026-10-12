@@ -75,13 +75,22 @@ test('a client opens the report from a share link, sees new posts without reload
   await clearReportCache()
   const after = (await (await report.request.get(`/api/r/${link.split('/r/')[1]}/report`)).json()) as {
     totals: { views: number }
-    submissions: { rows: { handle: string }[] }
+    submissions: { rows: { id: string; handle: string; thumbnail: string | null }[] }
   }
   expect(after.totals.views - before.totals.views).toBe(123456)
   expect(after.submissions.rows[0]!.handle).toBe(`@${tag}`)
   // The page refetches when the tab comes back into focus (and every 2 minutes on its own).
   await report.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(report.getByText(`@${tag}`).first()).toBeVisible()
+  // A clip's picture and video come through the app, never straight from the platform's expiring links.
+  const pictured = after.submissions.rows.find((x) => x.thumbnail)
+  expect(pictured).toBeTruthy()
+  const media = await report.request.get(`/api/r/${link.split('/r/')[1]}/media/${pictured!.id}?kind=image`)
+  expect(media.status()).toBe(200)
+  expect(media.headers()['content-type']).toContain('image/')
+  expect((await report.request.get(`/api/r/${link.split('/r/')[1]}/media/${pictured!.id}?kind=video`)).status()).toBe(
+    404,
+  )
   // The CSV download carries the same rows.
   const csv = await report.request.get(`/api/r/${link.split('/r/')[1]}/report.csv`)
   expect(csv.headers()['content-type']).toContain('text/csv')

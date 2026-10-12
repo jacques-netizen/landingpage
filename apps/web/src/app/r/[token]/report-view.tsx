@@ -671,7 +671,13 @@ export function ReportView({
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 18 }}>
               {shown.map((c) => (
-                <SubmissionCard key={c.id} c={c} minViews={r.campaign.minViewsToEarn} onPlay={setPlayer} />
+                <SubmissionCard
+                  key={c.id}
+                  c={c}
+                  token={token}
+                  minViews={r.campaign.minViewsToEarn}
+                  onPlay={setPlayer}
+                />
               ))}
             </div>
           )}
@@ -1125,15 +1131,9 @@ export function ReportView({
                       {PLATFORM_NAMES[c.platform] ?? c.platform}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 16, minWidth: 0 }}>
-                      <button
-                        type="button"
-                        onClick={() => setPlayer(c)}
-                        aria-label={`Play ${c.handle}'s clip`}
-                        className={`${smooth} cursor-pointer border-0 bg-transparent p-0 hover:scale-[1.03]`}
-                        style={{ width: 60, height: 107, flex: 'none', display: 'block' }}
-                      >
-                        <ClipFrame c={c} radius={8} playSize={28} />
-                      </button>
+                      <div className={`${smooth} hover:scale-[1.03]`} style={{ width: 60, flex: 'none' }}>
+                        <ClipFrame c={c} token={token} radius={8} playSize={28} inline={false} onOpen={setPlayer} />
+                      </div>
                       <a
                         href={c.url}
                         target="_blank"
@@ -1417,7 +1417,7 @@ export function ReportView({
           )
         })}
       </div>
-      {player ? <PlayerOverlay c={player} onClose={() => setPlayer(null)} /> : null}
+      {player ? <PlayerOverlay c={player} token={token} onClose={() => setPlayer(null)} /> : null}
     </div>
   )
 }
@@ -1448,30 +1448,78 @@ function embedUrl(c: ReportClip, play: boolean) {
   }
 }
 
-/** The platform's player at the size it is designed for; everything else scales it from here. */
+/** The platform's player at the size it is designed for; the frame scales it from here when it must. */
 const PLAYER_W = 325
 const PLAYER_H = 578
 
+/** The clip's file or picture, streamed through the app so the platforms' expiring links never break the page. */
+const mediaSrc = (token: string, c: ReportClip, kind: 'video' | 'image') => `/api/r/${token}/media/${c.id}?kind=${kind}`
+
+/** Only one clip plays at a time. */
+function pauseOthers(except: HTMLVideoElement | null) {
+  for (const v of Array.from(document.querySelectorAll('video'))) if (v !== except && !v.paused) v.pause()
+}
+
 /**
- * The clip in a 9:16 frame: its picture filling the frame with a play button, or, when the platform
- * gave no picture, the platform's own player scaled down to fit the frame, so nothing is ever blank.
+ * The clip in a 9:16 frame, the video itself with its picture as the poster. A click plays it in place,
+ * with sound; another click pauses. A post with no video file shows its picture and opens the platform's
+ * player; one with neither shows that player scaled into the frame, so nothing is ever blank.
  */
-function ClipFrame({ c, radius = 10, playSize = 52 }: { c: ReportClip; radius?: number; playSize?: number }) {
+function ClipFrame({
+  c,
+  token,
+  radius = 10,
+  playSize = 52,
+  inline = true,
+  onOpen,
+}: {
+  c: ReportClip
+  token: string
+  radius?: number
+  playSize?: number
+  inline?: boolean
+  onOpen?: (c: ReportClip) => void
+}) {
   const ref = useRef<HTMLDivElement>(null)
+  const video = useRef<HTMLVideoElement>(null)
   const [scale, setScale] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [broken, setBroken] = useState(false)
+  const hasVideo = !!c.video && !broken
+  const scaled = !hasVideo && !c.thumbnail
   useEffect(() => {
-    if (c.thumbnail || !ref.current) return
+    if (!scaled || !ref.current) return
     const el = ref.current
     const fit = () => setScale(el.clientWidth / PLAYER_W)
     fit()
     const ro = new ResizeObserver(fit)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [c.thumbnail])
+  }, [scaled])
+  const activate = () => {
+    if (hasVideo && inline) {
+      const v = video.current
+      if (!v) return
+      if (v.paused) {
+        pauseOthers(v)
+        v.play().catch(() => setBroken(true))
+      } else v.pause()
+    } else onOpen?.(c)
+  }
   return (
     <div
       ref={ref}
-      className="group"
+      role="button"
+      tabIndex={0}
+      aria-label={playing ? `Pause ${c.handle}'s clip` : `Play ${c.handle}'s clip`}
+      onClick={activate}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          activate()
+        }
+      }}
+      className="group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#C9A85C]"
       style={{
         position: 'relative',
         width: '100%',
@@ -1481,9 +1529,22 @@ function ClipFrame({ c, radius = 10, playSize = 52 }: { c: ReportClip; radius?: 
         background: C.ink,
       }}
     >
-      {c.thumbnail ? (
+      {hasVideo ? (
+        <video
+          ref={video}
+          src={mediaSrc(token, c, 'video')}
+          poster={c.thumbnail ? mediaSrc(token, c, 'image') : undefined}
+          playsInline
+          loop
+          preload="metadata"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onError={() => setBroken(true)}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      ) : c.thumbnail ? (
         <img
-          src={c.thumbnail}
+          src={mediaSrc(token, c, 'image')}
           alt=""
           className={`${smooth} group-hover:scale-[1.03]`}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
@@ -1511,12 +1572,14 @@ function ClipFrame({ c, radius = 10, playSize = 52 }: { c: ReportClip; radius?: 
         />
       ) : null}
       <span
+        className={smooth}
         style={{
           position: 'absolute',
           inset: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          opacity: playing ? 0 : 1,
           background: 'linear-gradient(180deg, rgba(26,21,16,0) 55%, rgba(26,21,16,0.45) 100%)',
         }}
       >
@@ -1543,18 +1606,21 @@ function ClipFrame({ c, radius = 10, playSize = 52 }: { c: ReportClip; radius?: 
   )
 }
 
-/** The platform's player at full size over the page, with the clipper, the platform link and a close button. */
-function PlayerOverlay({ c, onClose }: { c: ReportClip; onClose: () => void }) {
+/** The clip full size over the page: the video itself, or the platform's player when there is no file. */
+function PlayerOverlay({ c, token, onClose }: { c: ReportClip; token: string; onClose: () => void }) {
+  const [broken, setBroken] = useState(false)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    pauseOthers(null)
     return () => {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = prev
     }
   }, [onClose])
+  const hasVideo = !!c.video && !broken
   return createPortal(
     <div
       role="dialog"
@@ -1565,13 +1631,13 @@ function PlayerOverlay({ c, onClose }: { c: ReportClip; onClose: () => void }) {
         position: 'fixed',
         inset: 0,
         zIndex: 100,
-        animation: 'reportFadeIn .2s ease-out',
         background: 'rgba(26,21,16,0.78)',
         backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 16,
+        animation: 'reportFadeIn .2s ease-out',
       }}
     >
       <style>{`@keyframes reportFadeIn{from{opacity:0}to{opacity:1}}@keyframes reportRiseIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}`}</style>
@@ -1619,22 +1685,38 @@ function PlayerOverlay({ c, onClose }: { c: ReportClip; onClose: () => void }) {
         <div
           style={{
             width: '100%',
-            height: 'min(78vh, 720px)',
+            height: hasVideo ? 'auto' : 'min(78vh, 720px)',
+            aspectRatio: hasVideo ? '9 / 16' : undefined,
+            maxHeight: '78vh',
             borderRadius: 16,
             overflow: 'hidden',
             background: C.ink,
             boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
           }}
         >
-          <iframe
-            key={c.id}
-            title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
-            src={embedUrl(c, true)}
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
-            style={{ width: '100%', height: '100%', border: 0, display: 'block', background: C.ink }}
-          />
+          {hasVideo ? (
+            <video
+              key={c.id}
+              src={mediaSrc(token, c, 'video')}
+              poster={c.thumbnail ? mediaSrc(token, c, 'image') : undefined}
+              controls
+              autoPlay
+              playsInline
+              loop
+              onError={() => setBroken(true)}
+              style={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain', background: C.ink }}
+            />
+          ) : (
+            <iframe
+              key={c.id}
+              title={`${c.handle} on ${PLATFORM_NAMES[c.platform] ?? c.platform}`}
+              src={embedUrl(c, true)}
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              style={{ width: '100%', height: '100%', border: 0, display: 'block', background: C.ink }}
+            />
+          )}
         </div>
         <a
           href={c.url}
@@ -1652,7 +1734,17 @@ function PlayerOverlay({ c, onClose }: { c: ReportClip; onClose: () => void }) {
 }
 
 /** A submission card: the clip in its frame on the left, its figures on the right. Play opens the player. */
-function SubmissionCard({ c, minViews, onPlay }: { c: ReportClip; minViews: number; onPlay: (c: ReportClip) => void }) {
+function SubmissionCard({
+  c,
+  token,
+  minViews,
+  onPlay,
+}: {
+  c: ReportClip
+  token: string
+  minViews: number
+  onPlay: (c: ReportClip) => void
+}) {
   const rows = [
     ['Views', full(c.views)],
     ['Comments', full(c.comments)],
@@ -1669,15 +1761,9 @@ function SubmissionCard({ c, minViews, onPlay }: { c: ReportClip; minViews: numb
         overflow: 'hidden',
       }}
     >
-      <button
-        type="button"
-        onClick={() => onPlay(c)}
-        aria-label={`Play ${c.handle}'s clip`}
-        className="cursor-pointer border-0 bg-transparent p-0"
-        style={{ display: 'block', margin: 10, marginRight: 0 }}
-      >
-        <ClipFrame c={c} />
-      </button>
+      <div style={{ margin: 10, marginRight: 0 }}>
+        <ClipFrame c={c} token={token} onOpen={onPlay} />
+      </div>
       <div style={{ display: 'flex', flexDirection: 'column', padding: '4px 16px 14px', minWidth: 0 }}>
         {rows.map(([l, v]) => (
           <div
