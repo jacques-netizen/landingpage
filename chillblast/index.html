@@ -672,7 +672,7 @@
   <div class="wrap">
     <span class="snum rv">08 &middot; Model the budget</span>
     <h2 class="statement rv d1">Set the view budget.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Views are priced at <b>&pound;2 per thousand verified views</b> under both models. Under Model B, page build and setup and monthly page management sit on top as fixed costs.</p>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Views are priced at <b>$2 per thousand verified views</b> under both models. Under Model B, page build and setup and monthly page management sit on top as fixed costs.</p>
     <div class="model rv d2">
       <div class="mtop">
         <div class="seg" id="calcSeg" role="tablist">
@@ -680,12 +680,12 @@
           <button data-m="b" role="tab" aria-selected="false">Model B</button>
         </div>
       </div>
-      <div class="ctrl-head"><span class="cl">View budget</span><span class="cv" id="budgetVal">&pound;10,000</span></div>
-      <input type="range" id="budget" min="2500" max="50000" step="500" value="10000" aria-label="View budget in pounds">
-      <div class="range-ends"><span>&pound;2,500</span><span>&pound;50,000</span></div>
+      <div class="ctrl-head"><span class="cl">View budget</span><span class="cv" id="budgetVal">USD 10,000</span></div>
+      <input type="range" id="budget" min="2500" max="50000" step="500" value="10000" aria-label="View budget in dollars">
+      <div class="range-ends"><span>USD 2,500</span><span>USD 50,000</span></div>
       <div class="out">
         <div class="o lead"><div class="ov" id="oViews">5M</div><div class="ol">Verified views</div></div>
-        <div class="o"><div class="ov">&pound;2.00</div><div class="ol">Cost per thousand views</div></div>
+        <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per thousand views</div></div>
         <div class="o"><div class="ov" id="oWhere">Network pages</div><div class="ol">Where the views land</div></div>
       </div>
       <div class="stays" id="stays"></div>
@@ -942,7 +942,7 @@
   [...csTabs.children].forEach((b,i)=>b.addEventListener('click',()=>setCS(i)));
   setCS(0);
 
-  /* ---------- 08 calculator: £2 per thousand verified views ---------- */
+  /* ---------- 08 calculator: $2 per thousand verified views ---------- */
   const CPM=2;
   const bS=document.getElementById('budget');
   let model='a';
@@ -950,7 +950,7 @@
   const STAYS={a:['Views','Clicks','Orders'],b:['Views','Clicks','Orders','Pages','Followers','Funnels','Email list']};
   function calc(){
     const b=+bS.value, views=b/CPM*1000;
-    document.getElementById('budgetVal').textContent='£'+b.toLocaleString('en-GB');
+    document.getElementById('budgetVal').textContent='USD '+b.toLocaleString('en-US');
     document.getElementById('oViews').textContent=m(views);
     bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
   }
