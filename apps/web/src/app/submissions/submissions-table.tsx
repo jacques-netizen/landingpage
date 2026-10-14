@@ -389,12 +389,14 @@ function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => vo
   const [error, setError] = useState<string | null>(null)
   const p = d.proof
   const live = p?.status === 'requested' && new Date(p.expiresAt).getTime() > Date.now()
+  // Picture posts only: a video or reel never shows this.
+  if (!p && !d.canProveViews) return null
   return (
     <div className="mt-4 border-0 border-t border-solid border-[var(--t-hair)] pt-4">
       <p className="m-0 text-[13px] font-semibold">Update views yourself</p>
       <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">
-        For picture posts, or when the count above is behind: record your analytics screen and we set the views from it.
-        Views only go up, once a day per post.
+        This is a picture post, so the platform does not give us its views. Record your analytics screen and we set the
+        views from it. Views only go up, once a day per post.
       </p>
       {p && p.status !== 'requested' ? (
         <div className="mt-3 rounded-[12px] bg-[var(--t-glass)] p-3 text-[13px]">

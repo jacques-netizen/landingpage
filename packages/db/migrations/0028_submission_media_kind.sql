@@ -1,0 +1,1 @@
+ALTER TABLE "submissions" ADD COLUMN "media_kind" text;

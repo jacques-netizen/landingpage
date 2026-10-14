@@ -128,6 +128,7 @@ export class YouTubeApiProvider implements ViewProvider {
       saves: null,
       publishedAt: s.publishedAt ? new Date(s.publishedAt) : null,
       durationSeconds: parseIsoDuration(v.contentDetails?.duration),
+      mediaKind: 'video',
       // Title and description are what viewers see. Tags are hidden keywords, not hashtags.
       caption: [s.title, s.description].filter(Boolean).join('\n') || null,
       authorPlatformUserId: s.channelId ?? null,

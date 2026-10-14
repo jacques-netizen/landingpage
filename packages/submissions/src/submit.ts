@@ -245,6 +245,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     mediaHash,
     thumbnailUrl: post?.thumbnailUrl ?? null,
     videoUrl: post?.videoUrl ?? null,
+    mediaKind: post?.mediaKind ?? null,
     mediaUpdatedAt: post ? now : null,
     checkResults: checks,
     creatorNote: input.note?.trim() || null,

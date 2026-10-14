@@ -24,12 +24,18 @@ test('a creator proves views with a recording and staff set the views from it', 
   await expect(page.getByText(/^Submitted\.$/)).toBeVisible()
   const [s] = await sql`select id, baseline_views as baseline from submissions
     where creator_id = (select creator_id from linked_accounts where handle = ${handle}) order by submitted_at desc limit 1`
-  // A reviewer approved it; the platform has given no views since.
-  await sql`update submissions set state = 'approved' where id = ${s!.id}`
-
+  // A reviewer approved it. As a video, it never offers a proof: its views come from the hourly check.
+  await sql`update submissions set state = 'approved', media_kind = 'video' where id = ${s!.id}`
   await page.goto('/submissions')
   await page.getByRole('button', { name: 'Sample music' }).click()
   const drawer = page.getByRole('dialog')
+  await expect(drawer.getByText(/Last updated/)).toBeVisible()
+  await expect(drawer.getByText('Update views yourself')).toHaveCount(0)
+  await page.keyboard.press('Escape')
+  // As a picture post, it does.
+  await sql`update submissions set media_kind = 'image' where id = ${s!.id}`
+  await page.reload()
+  await page.getByRole('button', { name: 'Sample music' }).click()
   await drawer.getByRole('button', { name: 'Update views with a recording' }).click()
   await expect(drawer.getByText('Your code. Show it in the recording.')).toBeVisible()
   const code = (await drawer.getByText(/^MDE-[A-Z0-9]{4}$/).textContent())!.trim()

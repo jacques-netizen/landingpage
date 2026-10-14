@@ -167,6 +167,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
         patch.videoUrl = post.videoUrl ?? s.videoUrl
         patch.mediaUpdatedAt = now
       }
+      if (post.mediaKind) patch.mediaKind = post.mediaKind
       const counted = Math.max(0, post.views - baseline)
       if (EARNING.includes(before)) patch.countedViews = counted
       // After close, only corrections down (02_DATA_AND_MONEY.md 5.3).

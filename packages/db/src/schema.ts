@@ -404,6 +404,9 @@ export const submissions = pgTable(
     thumbnailUrl: text('thumbnail_url'),
     videoUrl: text('video_url'),
     mediaUpdatedAt: tz('media_updated_at'),
+    // 'video' or 'image' as the platform describes the post; null until a check could tell. Only picture
+    // posts may update their views with a proof (owner rule, 2026-10-14).
+    mediaKind: text('media_kind'),
     ...timestamps,
   },
   (t) => [

@@ -15,6 +15,19 @@ const { submissions, campaigns, viewProofs, files, users, linkedAccounts } = tab
 export const PROOF_CODE_HOURS = 24
 /** Posts whose views a proof may set: anything still in the campaign. */
 export const PROVABLE_STATES = ['needs_review', 'needs_info', 'flagged', 'approved', 'earning']
+
+/**
+ * Only picture posts may update their views with a proof (owner rule, 2026-10-14): photos and carousels,
+ * whose views the platforms do not give. Reels, TikTok videos, YouTube videos and video tweets never can;
+ * their views come from the hourly check. A post the platform described as a picture qualifies; so does a
+ * TikTok photo post by its address when the platform has not answered yet. Anything else does not.
+ */
+export function canProveViews(s: { state: string; platform: string; postUrl: string; mediaKind: string | null }) {
+  if (!PROVABLE_STATES.includes(s.state)) return false
+  if (s.mediaKind === 'video' || s.platform === 'youtube') return false
+  if (s.mediaKind === 'image') return true
+  return s.platform === 'tiktok' && /tiktok\.com\/[^?#]*\/photo\//i.test(s.postUrl)
+}
 const EARNING = ['approved', 'earning']
 // No look-alike characters, like the bio code (03_SYSTEMS.md 2.3).
 const ALPHABET = '34679ACDEFGHJKMNPQRTUVWXY'
@@ -69,6 +82,11 @@ export async function requestViewProof(db: Db, i: { submissionId: string; creato
   const { s, status } = await ownPost(db, i.submissionId, i.creatorId)
   if (!PROVABLE_STATES.includes(s.state))
     throw new ReviewError('wrong_state', 'Views can only be updated on a post that is still in the campaign.')
+  if (!canProveViews(s))
+    throw new ReviewError(
+      'wrong_state',
+      'Only picture posts can update their views with a proof. Views on videos and reels come from the hourly check.',
+    )
   if (!['live', 'closing'].includes(status))
     throw new ReviewError('campaign_closed', 'This campaign is no longer running.')
   const last = await latestViewProof(db, i.submissionId)

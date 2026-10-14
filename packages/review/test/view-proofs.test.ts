@@ -1,7 +1,15 @@
 import { tables } from '@mde/db'
 import { desc, eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
-import { approve, decideViewProof, latestViewProof, listViewProofs, requestViewProof, submitViewProof } from '../src'
+import {
+  approve,
+  canProveViews,
+  decideViewProof,
+  latestViewProof,
+  listViewProofs,
+  requestViewProof,
+  submitViewProof,
+} from '../src'
 import { db, postInReview, sql, user } from './fixtures'
 
 afterAll(() => sql.end())
@@ -22,9 +30,13 @@ async function file(uploadedBy: string, name: string, contentType: string) {
   return f!.id
 }
 
-/** A creator with an approved post (500 views at submission), a code, and the two files. */
+const picture = (id: string) =>
+  db.update(tables.submissions).set({ mediaKind: 'image' }).where(eq(tables.submissions.id, id))
+
+/** A creator with an approved picture post (500 views at submission), a code, and the two files. */
 async function approvedWithProof() {
   const t = await postInReview()
+  await picture(t.id)
   await approve(db, t.staffId, t.id)
   const now = new Date(t.t0.getTime() + HOUR)
   const proof = await requestViewProof(db, { submissionId: t.id, creatorId: t.creator, now })
@@ -34,8 +46,31 @@ async function approvedWithProof() {
 }
 
 describe('view proofs', () => {
+  it('only picture posts can prove views; videos, reels and YouTube never can', async () => {
+    const t = await postInReview()
+    const now = new Date(t.t0.getTime() + HOUR)
+    // The mock describes the post as a video (it has a duration): no proof.
+    await expect(requestViewProof(db, { submissionId: t.id, creatorId: t.creator, now })).rejects.toThrow(
+      /only picture posts/i,
+    )
+    const base = {
+      state: 'approved',
+      platform: 'instagram',
+      postUrl: 'https://www.instagram.com/p/abc/',
+      mediaKind: null,
+    }
+    expect(canProveViews({ ...base, mediaKind: 'image' })).toBe(true)
+    expect(canProveViews({ ...base, mediaKind: 'video' })).toBe(false)
+    expect(canProveViews({ ...base, postUrl: 'https://www.instagram.com/reel/abc/' })).toBe(false)
+    expect(canProveViews({ ...base, platform: 'youtube', mediaKind: 'image' })).toBe(false)
+    expect(canProveViews({ ...base, platform: 'tiktok', postUrl: 'https://www.tiktok.com/@a/photo/123' })).toBe(true)
+    expect(canProveViews({ ...base, platform: 'tiktok', postUrl: 'https://www.tiktok.com/@a/video/123' })).toBe(false)
+    expect(canProveViews({ ...base, state: 'rejected', mediaKind: 'image' })).toBe(false)
+  })
+
   it('the code is one time, expires after 24 hours, and only the post owner can ask for it', async () => {
     const t = await postInReview()
+    await picture(t.id)
     const now = new Date(t.t0.getTime() + HOUR)
     const p = await requestViewProof(db, { submissionId: t.id, creatorId: t.creator, now })
     expect(p.code).toMatch(/^MDE-[34679ACDEFGHJKMNPQRTUVWXY]{4}$/)
@@ -166,7 +201,9 @@ describe('view proofs', () => {
       recordingFileId: t.recording,
       note: null,
     })
-    await expect(decideViewProof(db, t.staffId, t.proof.id, { outcome: 'reject', note: '' })).rejects.toThrow(/why|note/i)
+    await expect(decideViewProof(db, t.staffId, t.proof.id, { outcome: 'reject', note: '' })).rejects.toThrow(
+      /why|note/i,
+    )
     await decideViewProof(db, t.staffId, t.proof.id, { outcome: 'reject', note: 'The recording has a cut at 0:12.' })
     const s = await t.sub()
     expect(s.latestViews).toBe(500)

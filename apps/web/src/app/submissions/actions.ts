@@ -8,7 +8,7 @@ import {
   openAppeal,
   PROOF_CODE_HOURS,
   PROOF_RULES,
-  PROVABLE_STATES,
+  canProveViews,
   requestViewProof,
   ReviewError,
   submitViewProof,
@@ -120,7 +120,7 @@ export async function submissionDetailAction(id: string): Promise<SubmissionDeta
     canAppeal: !s.appeal && APPEALABLE.includes(s.state),
     proof: proof ? proofSummary(proof) : null,
     canProveViews:
-      PROVABLE_STATES.includes(s.state) &&
+      canProveViews(s) &&
       !openProof &&
       !(
         proof?.status === 'approved' &&

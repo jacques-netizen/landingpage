@@ -174,6 +174,8 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         videoUrl: str(
           pick(v, 'video.play_addr.url_list.0', 'video.download_addr.url_list.0', 'video.play_addr_h264.url_list.0'),
         ),
+        // A TikTok photo post carries image_post_info (and no playable video).
+        mediaKind: pick(v, 'image_post_info') ? 'image' : durationMs !== null ? 'video' : null,
         rawRef: { platform: 'tiktok', id: str(pick(v, 'aweme_id')) },
       }
     }
@@ -198,6 +200,7 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         authorPlatformUserId: str(pick(m, 'owner.id')),
         thumbnailUrl: str(pick(m, 'thumbnail_src', 'display_url')),
         videoUrl: str(pick(m, 'video_url')),
+        mediaKind: instagramKind(m),
         rawRef: { platform: 'instagram', id: str(pick(m, 'shortcode')) },
       }
     }
@@ -226,9 +229,30 @@ export class ScrapeCreatorsProvider implements ViewProvider {
           pick(t, 'legacy.extended_entities.media.0.media_url_https', 'legacy.entities.media.0.media_url_https'),
         ),
         videoUrl: bestVariant(pick(t, 'legacy.extended_entities.media.0.video_info.variants')),
+        mediaKind: xKind(pick(t, 'legacy.extended_entities.media', 'legacy.entities.media')),
         rawRef: { platform: 'x', id: str(pick(t, 'rest_id', 'legacy.id_str')) },
       }
     }
     return { ...GONE }
   }
+}
+
+/** Instagram: a reel or video post, else a photo or carousel. Null when the answer says nothing. */
+function instagramKind(m: Json): 'video' | 'image' | null {
+  const isVideo = pick(m, 'is_video')
+  if (typeof isVideo === 'boolean') return isVideo ? 'video' : 'image'
+  const type = pick(m, '__typename', 'product_type', 'media_type')
+  if (type === 'GraphVideo' || type === 'clips' || type === 'igtv' || type === 2) return 'video'
+  if (type === 'GraphImage' || type === 'GraphSidecar' || type === 'feed' || type === 1 || type === 8) return 'image'
+  return null
+}
+
+/** X: a tweet with only photos is a picture post; one with a video or GIF is a video. */
+function xKind(media: unknown): 'video' | 'image' | null {
+  if (!Array.isArray(media) || media.length === 0) return null
+  const types = media.map((x) =>
+    typeof x === 'object' && x && 'type' in x ? String((x as { type: unknown }).type) : '',
+  )
+  if (types.some((t) => t === 'video' || t === 'animated_gif')) return 'video'
+  return types.every((t) => t === 'photo') ? 'image' : null
 }

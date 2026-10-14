@@ -28,6 +28,8 @@ export type PostData = {
   thumbnailUrl?: string | null
   /** A direct link to the video file, where the platform gives one; often short-lived, refreshed each check. */
   videoUrl?: string | null
+  /** What the post is: a video (reel, TikTok, YouTube video) or a picture post (photo or carousel). Null when unknown. */
+  mediaKind?: 'video' | 'image' | null
   /** A perceptual hash the provider computed itself, where it can (the mock scripts this). */
   mediaHash?: string | null
   rawRef: unknown
