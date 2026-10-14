@@ -48,6 +48,14 @@ export default async function AdminDashboard() {
           same settings as the web service.
         </Notice>
       ) : null}
+      {worker.tracking
+        .filter((c) => c.checksUnavailable24h > 0 && c.checksWithViews24h === 0)
+        .map((c) => (
+          <Notice key={c.id} kind="bad">
+            The data provider refused every view check on {c.title} in the last 24 hours ({c.checksUnavailable24h}{' '}
+            checks). Its last answer: {c.lastProviderError ?? 'no detail'}. No views are counted until this is fixed.
+          </Notice>
+        ))}
       {worker.stale.length ? (
         <Notice kind="bad">
           No view snapshot for over 3 hours on {worker.stale.map((c) => c.title).join(', ')}. Open the campaign and use
