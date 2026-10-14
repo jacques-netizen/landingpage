@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Chillblast &middot; Two Models &middot; Maison d'&Eacute;lites</title>
+<title>Chillblast &times; Maison d'&Eacute;lites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -401,6 +401,251 @@
     .flow-fill,.bar-fill{transition:none}
     html{scroll-behavior:auto}
   }
+
+  /* ============ v2 additions ============ */
+  .chips-row{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:2rem}
+  .pchip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.7rem 1.05rem;border:1px solid var(--gold);color:var(--gold-soft);background:var(--panel-2);transition:.3s}
+  .pchip:hover{background:var(--gold);color:var(--bg)}
+
+  /* CPM range bars */
+  .rng{margin-top:2.6rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.4rem,3vw,2.2rem)}
+  .alt .rng{background:var(--bg)}
+  .rng-k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light);margin-bottom:1.4rem}
+  .rng-row{display:grid;grid-template-columns:150px 1fr;gap:1.2rem;align-items:center;margin-top:1.3rem}
+  .rng-row:first-of-type{margin-top:0}
+  .rng-row .rn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem}
+  .rng-row .rn small{display:block;font-weight:600;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.2rem}
+  .rng-track{position:relative;height:38px;background:var(--panel-3)}
+  .rng-fill{position:absolute;top:0;bottom:0;left:var(--l);width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+  .rng-fill.dim{background:linear-gradient(90deg,#5b4c33,#7a6646)}
+  .rng-fill span{position:absolute;left:calc(100% + 0.6rem);top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;color:var(--gold-soft);opacity:0;transition:opacity .5s .9s}
+  .rng-fill.dim span{left:auto;right:0.7rem;color:var(--text)}
+  .rng.go .rng-fill{width:var(--w)}
+  .rng.go .rng-fill span{opacity:1}
+  .rng-axis{display:flex;justify-content:space-between;margin:0.7rem 0 0 calc(150px + 1.2rem);font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;color:var(--dim)}
+
+  /* who is doing it */
+  .who{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .wc{position:relative;background:var(--bg);border:1px solid var(--hair-soft);padding:1.6rem 1.4rem;overflow:hidden;transition:.4s}
+  .wc:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .wc:hover{transform:translateY(-6px);border-color:var(--hair)}
+  .wc:hover:before{width:100%}
+  .wc .wk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light)}
+  .wc h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;margin-top:0.5rem;line-height:1.25}
+  .wc .wv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.2rem,4.6vw,3.2rem);line-height:0.95;letter-spacing:-0.035em;color:var(--gold-soft);margin-top:1rem}
+  .wc .wl{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.4rem}
+  .wc p{font-size:0.97rem;color:var(--mute);margin-top:0.9rem;line-height:1.55}
+  .wc .names{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1rem}
+  .wc .names span{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.82rem;padding:0.45rem 0.7rem;border:1px solid var(--hair);color:var(--text)}
+
+  /* billboard vs clipping */
+  .bb{margin-top:1rem;background:linear-gradient(160deg,var(--panel-3),var(--bg) 70%);border:1px solid var(--hair);padding:clamp(1.5rem,3.4vw,2.4rem)}
+  .bb-top{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .bb-top h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.2rem,2.4vw,1.6rem);letter-spacing:-0.015em;line-height:1.15}
+  .bb-top .bk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.5rem}
+  .bb .seg{margin-top:0}
+  .bb-rows{margin-top:1.8rem}
+  .bb-row{display:grid;grid-template-columns:150px 1fr;gap:1.2rem;align-items:center;margin-top:1.1rem}
+  .bb-row .bn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem}
+  .bb-row .bn small{display:block;font-weight:600;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.2rem}
+  .bb-track{position:relative;height:46px;background:var(--panel-3)}
+  .bb-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+  .bb-fill.dim{background:#7a6646}
+  .bb-val{position:absolute;top:50%;transform:translateY(-50%);font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;white-space:nowrap;transition:left 1.2s cubic-bezier(.2,.7,.2,1)}
+  .bb-val.vin{right:0.9rem;color:var(--bg)}
+  .bb-val.vout{left:calc(var(--x) + 0.7rem);color:var(--text)}
+  .bb-mult{display:flex;align-items:baseline;gap:0.8rem;margin-top:1.6rem;flex-wrap:wrap}
+  .bb-mult b{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.4rem,6vw,3.8rem);letter-spacing:-0.04em;color:var(--gold-soft);line-height:1}
+  .bb-mult span{font-family:'Archivo',sans-serif;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+
+  /* who we are */
+  .we{display:grid;grid-template-columns:1.1fr 0.9fr;gap:clamp(1.8rem,4vw,3.4rem);align-items:start;margin-top:2.2rem}
+  .duties{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft)}
+  .duty{background:var(--panel);padding:1.2rem 1.1rem}
+  .duty .dn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.16em;color:var(--gold-light)}
+  .duty h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem;margin-top:0.45rem;line-height:1.3}
+  .netbox{margin-top:1rem;background:var(--panel-2);border:1px solid var(--hair);padding:1.4rem 1.3rem;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center}
+  .netbox .nv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.4rem,5vw,3.4rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .netbox p{font-size:0.98rem;color:var(--mute);line-height:1.5}
+  .netbox p b{color:var(--text);font-weight:500}
+
+  /* creator to clips */
+  .multiply{display:grid;grid-template-columns:auto auto 1fr;gap:1.4rem;align-items:center;margin-top:2.4rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.4rem,3vw,2rem)}
+  .alt .multiply{background:var(--bg)}
+  .mx-src{width:92px;aspect-ratio:9/16;border-radius:10px;background:linear-gradient(160deg,var(--gold),#6d5530);display:flex;align-items:flex-end;padding:0.5rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--bg);box-shadow:0 18px 30px -16px rgba(0,0,0,.9)}
+  .mx-arrow{font-family:'Archivo',sans-serif;font-size:1.6rem;color:var(--gold-light)}
+  .mx-grid{display:grid;grid-template-columns:repeat(30,1fr);gap:4px}
+  .mx-grid i{display:block;aspect-ratio:9/16;border-radius:2px;background:var(--panel-3);transition:background .4s}
+  .mx-grid i.on{background:var(--gold)}
+  .mx-cap{grid-column:1/-1;font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .mx-cap b{color:var(--gold-soft)}
+
+  /* vetting stepper */
+  .vet{display:grid;grid-template-columns:0.9fr 1.1fr;gap:1rem;margin-top:2.4rem}
+  .vet-list{display:flex;flex-direction:column;gap:0.5rem}
+  .vstep{display:grid;grid-template-columns:38px 1fr;gap:0.9rem;align-items:center;background:var(--panel);border:1px solid var(--hair-soft);padding:0.85rem 1rem;cursor:pointer;text-align:left;transition:.3s}
+  .vstep:hover{border-color:var(--hair)}
+  .vstep .vn{width:38px;height:38px;border-radius:50%;border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.78rem;color:var(--mute);transition:.3s}
+  .vstep .vt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;color:var(--mute);transition:.3s}
+  .vstep.on{border-color:var(--gold);background:var(--panel-2)}
+  .vstep.on .vn{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+  .vstep.on .vt{color:var(--text)}
+  .vstep.done .vn{border-color:var(--gold);color:var(--gold-soft)}
+  .vet-panel{background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border:1px solid var(--hair);border-left:3px solid var(--gold);padding:clamp(1.5rem,3vw,2.4rem);display:flex;flex-direction:column;justify-content:center;min-height:260px}
+  .vet-panel .vk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .vet-panel h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.4rem,2.8vw,2rem);letter-spacing:-0.02em;margin-top:0.6rem;line-height:1.1}
+  .vet-panel p{font-size:1.06rem;color:var(--text);opacity:.88;margin-top:1rem;line-height:1.65;max-width:52ch}
+  .vet-panel .anim{animation:fadeup .45s ease}
+
+  /* brand rules */
+  .rules{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1.2rem}
+  .rule{display:grid;grid-template-columns:30px 1fr;gap:0.9rem;align-items:center;background:var(--panel);border:1px solid var(--hair-soft);padding:0.95rem 1.1rem;font-size:1rem;color:var(--text);line-height:1.45}
+  .rule .ck{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center}
+  .rule .ck svg{width:15px;height:15px;stroke:var(--gold-soft);fill:none;stroke-width:2.4;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .5s ease}
+  .rule.tick .ck{background:rgba(184,148,79,.18)}
+  .rule.tick .ck svg{stroke-dashoffset:0}
+
+  /* lanes */
+  .lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:2.4rem}
+  .lane{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.3rem 1.1rem 1.2rem;text-align:left;cursor:pointer;transition:.35s;overflow:hidden}
+  .lane:hover{border-color:var(--hair);background:var(--panel-2)}
+  .lane.on{border-color:var(--gold);background:var(--panel-2)}
+  .lane.on:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gold)}
+  .lane .ln{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.2rem;line-height:0.85;color:var(--panel-3);transition:color .35s}
+  .lane.on .ln{color:var(--gold)}
+  .lane .lt{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;margin-top:0.8rem}
+  .lane-panel{margin-top:1rem;background:var(--panel-2);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.4rem 1.6rem;min-height:96px}
+  .lane-panel p{font-size:1.06rem;color:var(--text);line-height:1.6;animation:fadeup .45s ease}
+  .lane-panel .lk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.5rem}
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .fact{background:var(--panel);padding:1.2rem 1.2rem}
+  .fact .fk2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
+  .fact p{font-size:0.98rem;color:var(--mute);margin-top:0.45rem;line-height:1.5}
+  .fact p b{color:var(--text);font-weight:500}
+
+  /* timeline */
+  .tl-rail{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:1.4rem}
+  .tl-rail:before{content:"";position:absolute;left:0;right:0;top:19px;height:2px;background:var(--panel-3)}
+  .tl-fill{position:absolute;left:0;top:19px;height:2px;background:var(--gold);width:33.3%;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .tl-step{position:relative;background:none;border:0;cursor:pointer;text-align:left;padding:0 1rem 0 0;color:inherit}
+  .tl-step .node{width:40px;height:40px;border-radius:50%;background:var(--bg);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--mute);transition:.3s;position:relative;z-index:2}
+  .tl-step.on .node,.tl-step.done .node{border-color:var(--gold);color:var(--gold-soft)}
+  .tl-step.on .node{background:var(--gold);color:var(--bg)}
+  .tl-step .when{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:1rem;transition:.3s}
+  .tl-step.on .when{color:var(--gold-light)}
+  .tl-step .what{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;margin-top:0.3rem;color:var(--text)}
+  .tl-panel{margin-top:1.6rem;background:var(--panel);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:clamp(1.3rem,3vw,1.8rem);min-height:96px}
+  .tl-panel p{font-size:1.04rem;color:var(--text);line-height:1.65;max-width:70ch;animation:fadeup .45s ease}
+
+  /* channel */
+  .chan{display:grid;grid-template-columns:0.9fr 1.1fr;gap:1rem;margin-top:2.4rem;align-items:stretch}
+  .chan-card{background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border:1px solid var(--hair);padding:clamp(1.4rem,3vw,2rem)}
+  .chan-card .ck2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .plats{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1.1rem}
+  .plat{background:var(--bg);border:1px solid var(--gold);padding:0.9rem 1rem;display:flex;align-items:center;gap:0.7rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.92rem}
+  .plat svg{width:20px;height:20px;fill:var(--gold-soft);flex-shrink:0}
+  .chan-nums{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .cn{background:var(--bg);padding:1rem 0.9rem}
+  .cn .cv2{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.4vw,2.3rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.025em}
+  .cn .cl2{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.45rem;line-height:1.35}
+  .pipe{background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.4rem,3vw,2rem)}
+  .alt .pipe{background:var(--bg)}
+  .pipe .ck2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .pipe-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;margin-top:1.2rem}
+  .pst{background:var(--panel-2);border:1px solid var(--hair-soft);padding:0.85rem 0.5rem;text-align:center;cursor:pointer;transition:.3s;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.82rem;color:var(--mute)}
+  .pst i{display:block;font-style:normal;font-size:0.58rem;letter-spacing:0.12em;color:var(--dim);margin-bottom:0.3rem;transition:.3s}
+  .pst.on{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+  .pst.on i{color:rgba(21,18,13,.65)}
+  .pst.done{border-color:var(--gold);color:var(--gold-soft)}
+  .pipe-bar{height:3px;background:var(--panel-3);margin-top:0.8rem;overflow:hidden}
+  .pipe-bar b{display:block;height:100%;width:20%;background:var(--gold);transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .pipe-text{margin-top:1.2rem;font-size:1.05rem;color:var(--text);line-height:1.6;min-height:3.4em;animation:fadeup .4s ease}
+  .chan-notes{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+
+  /* content sources */
+  .sources{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .src{background:var(--panel);border:1px solid var(--hair-soft);padding:1.6rem 1.4rem;transition:.35s}
+  .src:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .src .ic{width:44px;height:44px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem}
+  .src .ic svg{width:21px;height:21px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .src h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .src p{font-size:0.96rem;color:var(--mute);margin-top:0.55rem;line-height:1.58}
+  .owned-note{margin-top:1rem;font-size:1.02rem;color:var(--text);background:var(--panel-2);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.1rem 1.4rem}
+
+  /* dashboard metrics */
+  .dash{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1.2rem}
+  .dm{background:var(--bg);padding:1.3rem 1.1rem;transition:background .3s}
+  .dm:hover{background:var(--panel-2)}
+  .dm svg{width:24px;height:24px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .dm h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.92rem;margin-top:0.8rem;line-height:1.3}
+  .dash-cta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:1.2rem}
+  .dash-cta span{font-size:1rem;color:var(--mute)}
+
+  /* pricing */
+  .price{margin-top:2.4rem;border:1px solid var(--hair-soft)}
+  .pr{display:grid;grid-template-columns:0.8fr 1.6fr 0.8fr;border-top:1px solid var(--hair-soft);transition:background .3s}
+  .pr:first-child{border-top:0}
+  .pr:hover{background:var(--panel-2)}
+  .pr > div{padding:1.2rem 1.2rem}
+  .pr .pn2{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem}
+  .pr .pi{font-size:0.98rem;color:var(--mute);line-height:1.5}
+  .pr .pp2{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;color:var(--gold-soft);text-align:right}
+  .pr .pp2 small{display:block;font-weight:600;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.25rem}
+  .pr.feat{background:var(--panel-2)}
+  .pr.feat .pn2:after{content:"Core plan";display:inline-block;margin-left:0.6rem;vertical-align:middle;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.25rem 0.5rem;background:var(--gold);color:var(--bg)}
+  .pr.head > div{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);padding-top:0.9rem;padding-bottom:0.9rem}
+  .pr.head{background:var(--panel)}
+  .pr.head:hover{background:var(--panel)}
+  .pr.head .pp2{color:var(--mute)}
+  .terms{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .term{background:var(--panel);padding:1.2rem 1.1rem}
+  .term .tv2{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em}
+  .term .tl2{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem;line-height:1.4}
+  .tier-now{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;margin-top:1rem}
+  .tier-now .tn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.45rem 0.8rem;background:var(--gold);color:var(--bg)}
+  .tier-now span{font-size:1rem;color:var(--text)}
+  .tiers-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:0.9rem}
+  .tiers-strip div{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);border-top:3px solid var(--panel-3);padding-top:0.5rem;transition:.3s}
+  .tiers-strip div.on{color:var(--gold-soft);border-color:var(--gold)}
+  .next{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.4rem}
+  .nx{border-top:2px solid var(--gold);padding-top:1rem}
+  .nx .nn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.16em;color:var(--gold-light)}
+  .nx p{font-size:1rem;color:var(--text);margin-top:0.4rem;line-height:1.5}
+  .contact{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:2rem}
+
+  @media(max-width:1020px){
+    .who{grid-template-columns:1fr 1fr}
+    .we,.vet,.chan{grid-template-columns:1fr}
+    .lanes{grid-template-columns:1fr 1fr}
+    .dash{grid-template-columns:1fr 1fr 1fr}
+    .next{grid-template-columns:1fr 1fr}
+    .mx-grid{grid-template-columns:repeat(15,1fr)}
+    .mx-grid i:nth-child(n+61){display:none}
+  }
+  @media(max-width:700px){
+    .who,.rules,.sources,.facts,.terms,.chan-notes{grid-template-columns:1fr}
+    .rng-row,.bb-row{grid-template-columns:1fr;gap:0.5rem}
+    .rng-axis{margin-left:0}
+    .duties{grid-template-columns:1fr}
+    .multiply{grid-template-columns:auto auto 1fr;gap:0.9rem}
+    .mx-src{width:64px}
+    .mx-grid{grid-template-columns:repeat(10,1fr);gap:3px}
+    .mx-grid i:nth-child(n+41){display:none}
+    .pipe-steps{grid-template-columns:repeat(5,1fr);gap:3px}
+    .pst{font-size:0.62rem;padding:0.7rem 0.15rem}
+    .dash{grid-template-columns:1fr 1fr}
+    .pr{grid-template-columns:1fr}
+    .pr > div{padding:0.35rem 1.1rem}
+    .pr > div:first-child{padding-top:1.1rem}
+    .pr > div:last-child{padding-bottom:1.1rem}
+    .pr .pp2{text-align:left}
+    .pr.head{display:none}
+    .next{grid-template-columns:1fr}
+    .netbox{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rng-fill,.bb-fill,.bb-val{transition:none}
+  }
 </style>
 </head>
 <body>
@@ -408,31 +653,34 @@
 <div id="progress"></div>
 <nav id="dots" aria-label="Sections">
   <a href="#s0"><span>Cover</span></a>
-  <a href="#s1"><span>Two models</span></a>
-  <a href="#s2"><span>Model A</span></a>
-  <a href="#s3"><span>Model B</span></a>
-  <a href="#s4"><span>What B pays for</span></a>
-  <a href="#s5"><span>Side by side</span></a>
-  <a href="#s6"><span>Live campaign</span></a>
-  <a href="#s7"><span>Results</span></a>
-  <a href="#s8"><span>Model the budget</span></a>
+  <a href="#s1"><span>Why now</span></a>
+  <a href="#s2"><span>Who is doing this</span></a>
+  <a href="#s3"><span>Who we are</span></a>
+  <a href="#s4"><span>Live campaign</span></a>
+  <a href="#s5"><span>Two models</span></a>
+  <a href="#s6"><span>Model A</span></a>
+  <a href="#s7"><span>Vetting and rules</span></a>
+  <a href="#s8"><span>The campaign</span></a>
+  <a href="#s9"><span>Model B</span></a>
+  <a href="#s10"><span>How a channel works</span></a>
+  <a href="#s11"><span>Content to sales</span></a>
+  <a href="#s12"><span>Investment</span></a>
 </nav>
 
 <!-- ============ HERO ============ -->
 <header class="hero" id="s0">
   <div class="hero-top">
-    <a class="mark" href="https://hello.maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a>
+    <a class="mark" href="https://hello.maisondelites.com" target="_blank" rel="noopener">Chillblast <b>&times;</b> Maison <b>d'&Eacute;lites</b></a>
     <div class="label" style="color:var(--mute)">Proposal &middot; Private &amp; Confidential</div>
   </div>
   <div class="hero-body">
     <div class="hero-mid">
-      <span class="label rv">Short-form distribution &middot; TikTok, Reels and Shorts</span>
-      <h1 class="rv d1">Chillblast<span>Two models</span></h1>
-      <p class="hero-sub rv d2">Two ways to run it: reach, or reach plus ownership. Start with either, or run A first and move to B once the test has shown what works.</p>
+      <span class="label rv">TikTok &middot; Instagram Reels &middot; YouTube Shorts</span>
+      <h1 class="rv d1">Chillblast<span>Two ways to own short&#8209;form</span></h1>
+      <p class="hero-sub rv d2">Reach the market now, or build the distribution Chillblast keeps.</p>
       <div class="hero-chips rv d3">
         <span class="hchip"><b>Model A</b> &middot; Reach</span>
-        <span class="hchip"><b>Model B</b> &middot; Reach plus ownership</span>
-        <span class="hchip">Paid per <b>verified view</b></span>
+        <span class="hchip"><b>Model B</b> &middot; Owned distribution</span>
       </div>
     </div>
     <div class="hero-media rv d2">
@@ -445,7 +693,7 @@
         </div>
       </div>
       <div class="hm-badge b1"><span><b>300M+</b> views delivered</span></div>
-      <div class="hm-badge b2"><span><b>40K+</b> page network</span></div>
+      <div class="hm-badge b2"><span><b>3,000</b> vetted pages</span></div>
     </div>
   </div>
   <div class="hero-bot">
@@ -454,209 +702,81 @@
   </div>
 </header>
 
-<!-- ============ 01 TWO MODELS ============ -->
+<!-- ============ 01 WHY NOW ============ -->
 <section class="section" id="s1">
   <div class="wrap">
-    <span class="snum rv">01 &middot; Two models</span>
-    <h2 class="statement rv d1">Reach, or reach plus ownership.</h2>
-    <div class="duo rv d2">
-      <a class="mcard" href="#s2">
-        <div class="ml">A</div>
-        <div class="mk">Model A</div>
-        <h4>Reach</h4>
-        <p>Our pages and creators post. Chillblast pays per verified view. Views, clicks and orders land on Chillblast.</p>
-        <span class="go">Model A &darr;</span>
-      </a>
-      <a class="mcard" href="#s3">
-        <div class="ml">B</div>
-        <div class="mk">Model B</div>
-        <h4>Reach plus ownership</h4>
-        <p>We build and run pages that Chillblast owns. The same network posts to them, and every view builds a follower Chillblast keeps.</p>
-        <span class="go">Model B &darr;</span>
-      </a>
+    <span class="snum rv">01 &middot; Why this, why now</span>
+    <h2 class="statement rv d1">Chillblast is moving from PC builder to premium lifestyle brand.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.6rem">These are products people want to be seen with. A brand like that is built on how often people see it, in what company, and from whom.</p>
+    <div class="chips-row rv d2">
+      <span class="pchip">Aston Martin collection</span><span class="pchip">The Lab</span><span class="pchip">Cryo range</span><span class="pchip">Sim racing rigs</span>
     </div>
-    <div class="path rv d3">
-      <span class="pk">Three ways in</span>
-      <div class="pp"><span>Model A</span><em>or</em><span>Model B</span><em>or</em><span>A</span><i>&rarr;</i><span>B</span><em>after the test</em></div>
+    <p class="body-lg rv d3" style="margin-top:2.2rem">Attention for Chillblast's buyers now lives on TikTok, Instagram Reels and YouTube Shorts. The brands winning there have moved past the single official account. <b>They either pay hundreds of independent pages to post about them, or run their own networks of pages that post every day.</b> Both are bought on performance, and both cost a fraction of paid social.</p>
+    <div class="rng rv d3" id="rng">
+      <div class="rng-k">Cost per 1,000 views</div>
+      <div class="rng-row"><div class="rn">Clipping<small>Per verified view</small></div><div class="rng-track"><div class="rng-fill" style="--l:1.11%;--w:4.44%"><span>$1 to $5</span></div></div></div>
+      <div class="rng-row"><div class="rn">Paid social<small>Traditional</small></div><div class="rng-track"><div class="rng-fill dim" style="--l:22.2%;--w:66.7%"><span>$20 to $80</span></div></div></div>
+      <div class="rng-axis"><span>$0</span><span>$30</span><span>$60</span><span>$90</span></div>
     </div>
+    <p class="body-lg rv" style="margin-top:1.6rem">That gap is why brands are moving budget, and why <b>the UK PC category is still open for whoever moves first.</b></p>
   </div>
 </section>
 
-<!-- ============ 02 MODEL A ============ -->
+<!-- ============ 02 WHO IS DOING THIS ============ -->
 <section class="section alt" id="s2">
   <div class="wrap">
-    <span class="snum rv">02 &middot; Model A &middot; Reach</span>
-    <h2 class="statement rv d1">Our network posts. Chillblast pays per verified view.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.6rem">Maison d'&Eacute;lites pages and creators post Chillblast content across TikTok, Instagram Reels and YouTube Shorts. Every view is verified before it is paid, and every post carries a tracking link and a promo code so the clicks and orders land on Chillblast.</p>
-    <div class="flow rv d2" id="flowA">
-      <div class="flow-fill" id="flowFillA"></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10.5 9.5v5l4-2.5z"/></svg></div><div class="ft">Posted</div><div class="fd">Our pages and creators post the clips</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div><div class="ft">Verified</div><div class="fd">Chillblast pays only for verified views</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div><div class="ft">Tracked</div><div class="fd">Tracking link and promo code on every post</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 11h11l2-7.5H6.4"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg></div><div class="ft">Ordered</div><div class="fd">Clicks and orders land on Chillblast</div></div>
+    <span class="snum rv">02 &middot; Who is already doing this</span>
+    <h2 class="statement rv d1">Software firms, streamers, studios and labels have proven the channel.</h2>
+    <div class="who rv d2">
+      <div class="wc"><div class="wk">AI software &middot; backed by Andreessen Horowitz</div><h4>Cluely</h4><div class="wv"><span class="cu" data-target="700">700</span></div><div class="wl">Clippers on pure per-view pay</div><p>Then raised $15 million from Andreessen Horowitz, largely on the back of that distribution.</p></div>
+      <div class="wc"><div class="wk">Prediction markets</div><h4>Polymarket</h4><div class="wv"><span class="cu" data-target="1.38" data-dec="2">1.38</span>B</div><div class="wl">Views reported</div><p>$70,000 into a per-view campaign at 50 cents per 1,000 views, across roughly 9,000 clippers.</p></div>
+      <div class="wc"><div class="wk">ElevenLabs &middot; Justin Bieber &middot; Neon &middot; MrBeast</div><h4>One clipping platform</h4><div class="wv">$<span class="cu" data-target="40">40</span>K+</div><div class="wl">Paid out every day</div><p>Across nearly a million videos a month, with ElevenLabs, Polymarket and Justin Bieber among its clients. Neon paid clippers $300,000 in a single year.</p></div>
+      <div class="wc"><div class="wk">Netflix &middot; Amazon Prime</div><h4>Streaming studios</h4><div class="wv">$<span class="cu" data-target="7.7" data-dec="1">7.7</span>M</div><div class="wl">Revenue in a year</div><p>Booked by one clipping company whose biggest clients include Netflix and Amazon Prime.</p></div>
+      <div class="wc" style="grid-column:span 2"><div class="wk">Owned page networks</div><h4>Dedicated accounts, posted to daily, built to grow audiences the brand keeps</h4><div class="names"><span>Red Bull</span><span>LEGO</span><span>FaZe Clan</span><span>SHEIN</span><span>WD-40</span></div></div>
     </div>
-    <div class="ends rv d3">
-      <div class="end"><div class="ek">Model A is right for</div><p><b>Proving the channel and driving a launch.</b> It shows which angles, formats and audiences move, at a cost tied to views delivered.</p></div>
-      <div class="end fade"><div class="ek">Where it stops</div><p>The pages belong to the network. When the campaign ends, the attention ends with it.</p></div>
+
+    <div class="bb rv d2" id="bb">
+      <div class="bb-top">
+        <div><div class="bk">The comparison leadership should see</div><h4>The same $5,000, two ways.</h4></div>
+        <div class="seg" id="bbSeg" role="tablist"><button class="on" data-m="imp" role="tab" aria-selected="true">Impressions</button><button data-m="clk" role="tab" aria-selected="false">Clicks</button></div>
+      </div>
+      <div class="bb-rows">
+        <div class="bb-row"><div class="bn">Billboard<small>$5,000</small></div><div class="bb-track"><div class="bb-fill dim" id="bbA"></div><div class="bb-val vout" id="bbAv"></div></div></div>
+        <div class="bb-row"><div class="bn">Clipping<small>$5,000</small></div><div class="bb-track"><div class="bb-fill" id="bbB"></div><div class="bb-val vin" id="bbBv"></div></div></div>
+      </div>
+      <div class="bb-mult"><b id="bbX">2,667&times;</b><span id="bbXl">the impressions for the same spend</span></div>
     </div>
+    <p class="body-lg rv" style="margin-top:1.8rem">A premium hardware brand whose product looks good on camera, and whose buyers live inside gaming and creator culture, <b>is a better fit than most of the names above.</b></p>
   </div>
 </section>
 
-<!-- ============ 03 MODEL B ============ -->
+<!-- ============ 03 WHO WE ARE ============ -->
 <section class="section" id="s3">
   <div class="wrap">
-    <span class="snum rv">03 &middot; Model B &middot; Reach plus ownership</span>
-    <h2 class="statement rv d1">Chillblast owns the pages.</h2>
-    <div class="bsplit">
+    <span class="snum rv">03 &middot; Who we are</span>
+    <h2 class="statement rv d1">A creator marketing and distribution agency.</h2>
+    <div class="we">
       <div class="rv d1">
-        <p class="body-lg">We build and run Chillblast-owned pages on TikTok, Instagram and YouTube Shorts. The main brand account stays polished, and the owned pages carry the volume.</p>
-        <p class="body-lg">The same clipper network posts to the owned pages, paid per verified view, and the network pages keep posting too. <b>Every view builds a follower Chillblast keeps.</b></p>
-        <div class="rentbuy">
-          <div class="rb"><div class="rk">Under Model A</div><div class="rv2">Rents</div><p>Distribution, for as long as the campaign runs.</p></div>
-          <div class="rb on"><div class="rk">Under Model B</div><div class="rv2">Buys</div><p>An audience it can post to for free, for years.</p></div>
+        <p class="body-lg">Maison d'&Eacute;lites runs short-form campaigns end to end.</p>
+        <div class="duties" style="margin-top:1.4rem">
+          <div class="duty"><div class="dn">01</div><h5>We choose the pages</h5></div>
+          <div class="duty"><div class="dn">02</div><h5>We brief and manage the creators</h5></div>
+          <div class="duty"><div class="dn">03</div><h5>We check every post</h5></div>
+          <div class="duty"><div class="dn">04</div><h5>We report every view and click</h5></div>
         </div>
       </div>
       <div class="rv d2">
-        <div class="amap">
-          <div class="amain"><div class="ak">Chillblast main account</div><div class="ah">Stays polished</div><p>The brand channel carries on as it is.</p></div>
-          <div class="aline"></div>
-          <div class="aown">
-            <div class="ao"><b>Setup</b><span>TikTok &middot; IG &middot; Shorts</span></div>
-            <div class="ao"><b>Build</b><span>TikTok &middot; IG &middot; Shorts</span></div>
-            <div class="ao"><b>Sim racing</b><span>TikTok &middot; IG &middot; Shorts</span></div>
-            <div class="ao"><b>Creator-life</b><span>TikTok &middot; IG &middot; Shorts</span></div>
-          </div>
-          <div class="akey"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></svg><span>Owned by Chillblast. <b>Chillblast holds the logins.</b></span></div>
+        <div class="netbox"><div class="nv"><span class="cu" data-target="3000">3,000</span></div><p><b>Vetted clippers and pages</b> across TikTok, Instagram Reels, YouTube Shorts and X, including a UK and EU segment.</p></div>
+        <div class="sumrow" style="grid-template-columns:1fr 1fr;margin-top:1rem">
+          <div class="sr"><div class="sv"><span class="cu" data-target="300">300</span>M+</div><div class="sl">Total views delivered</div></div>
+          <div class="sr"><div class="sv">$<span class="cu" data-target="1.30" data-dec="2">1.30</span></div><div class="sl">Average cost per 1,000 views</div></div>
         </div>
-        <p class="body-lg" style="font-size:1rem;margin-top:1.2rem">Most hardware brands run one main account plus paid media. Model B adds a set of pages built around what people search and scroll for.</p>
       </div>
     </div>
 
-    <h3 class="sub rv">The owned pages and where each one leads</h3>
-    <div class="ptabs rv d1" role="tablist">
-      <button class="ptab on" data-p="0" role="tab" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="11" rx="1.5"/><path d="M8 20h8M12 15v5"/></svg><div class="pn">Setup pages</div><div class="ph">Desks, battlestations, peripherals</div></button>
-      <button class="ptab" data-p="1" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="1.5"/><circle cx="12" cy="9" r="3"/><path d="M9 16h6M9 18.5h6"/></svg><div class="pn">Build pages</div><div class="ph">Builds, components, the build process</div></button>
-      <button class="ptab" data-p="2" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v6.5M3.6 14.5l6.1-1.6M20.4 14.5l-6.1-1.6"/></svg><div class="pn">Sim racing pages</div><div class="ph">Rigs, wheels, racing footage</div></button>
-      <button class="ptab" data-p="3" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="13" height="12" rx="1.5"/><path d="M15.5 10l6-3.5v11l-6-3.5"/></svg><div class="pn">Creator-life pages</div><div class="ph">Editing, streaming, production</div></button>
-    </div>
-    <div class="funnel rv d2">
-      <div class="fun-head">
-        <div><div class="fk" id="funK">Setup pages &middot; funnel</div><div class="fh" id="funH">Into the &ldquo;help me choose&rdquo; flow and the finance offer</div></div>
-      </div>
-      <div class="fsteps" id="fsteps"></div>
-      <div class="fun-foot">
-        <span><b>Promo codes</b> and tracking links on every page</span>
-        <span><b>Follow-up email sequences</b> written by us</span>
-        <span><b>Leads and orders</b> in the live report</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 04 PAYS FOR ============ -->
-<section class="section alt" id="s4">
-  <div class="wrap">
-    <span class="snum rv">04 &middot; What Model B pays for</span>
-    <h2 class="statement rv d1">Three parts. Two fixed, one that only costs when views happen.</h2>
-    <div class="parts rv d2">
-      <div class="part">
-        <div class="pt"><div class="pnum">01</div><span class="tag">Fixed &middot; one-off</span></div>
-        <h4>Page build and setup</h4>
-        <div class="when">Once, at the start</div>
-        <ul><li>Accounts and branding</li><li>Bios and links</li><li>The funnel and lead capture</li><li>Email sequences</li><li>Tracking</li></ul>
-      </div>
-      <div class="part">
-        <div class="pt"><div class="pnum">02</div><span class="tag var">Per verified view</span></div>
-        <h4>Clipper payouts on the owned pages</h4>
-        <div class="when">Only when views happen</div>
-        <ul><li>Paid per verified view</li><li>Same rate logic as Model A</li><li>No views, no payout</li></ul>
-      </div>
-      <div class="part">
-        <div class="pt"><div class="pnum">03</div><span class="tag">Fixed &middot; monthly</span></div>
-        <h4>Page management</h4>
-        <div class="when">Every month</div>
-        <ul><li>Scheduling</li><li>Clip review</li><li>Community replies</li><li>Funnel optimisation</li><li>Reporting</li></ul>
-      </div>
-    </div>
-    <div class="handover rv d3">
-      <div class="hi"><svg viewBox="0 0 24 24"><rect x="4" y="10.5" width="16" height="10.5" rx="1.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg></div>
-      <div>
-        <h5>The pages are Chillblast's from day one.</h5>
-        <p>If the engagement ends, Chillblast keeps everything that was built.</p>
-        <div class="keeps"><span>Pages</span><span>Followers</span><span>Funnels</span><span>Email list</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 05 SIDE BY SIDE ============ -->
-<section class="section" id="s5">
-  <div class="wrap">
-    <span class="snum rv">05 &middot; Side by side</span>
-    <h2 class="statement rv d1">Choosing between them.</h2>
-    <div class="seg rv d2" id="cmpSeg" role="tablist">
-      <button class="on" data-m="a" role="tab" aria-selected="true">Model A</button>
-      <button data-m="b" role="tab" aria-selected="false">Model B</button>
-    </div>
-    <div class="cmp rv d2" id="cmp" data-on="a">
-      <div class="cmp-row head"><div class="rk"></div><div class="ca">Model A &middot; Reach</div><div class="cb">Model B &middot; Ownership</div></div>
-      <div class="cmp-row"><div class="rk">Who owns the pages</div><div class="ca">The network</div><div class="cb">Chillblast</div></div>
-      <div class="cmp-row"><div class="rk">Chillblast pays for</div><div class="ca">Verified views</div><div class="cb">Verified views, plus setup and management</div></div>
-      <div class="cmp-row"><div class="rk">What it leaves behind</div><div class="ca">Views, clicks, orders</div><div class="cb">Views, clicks and orders, plus pages, followers and an email list</div></div>
-      <div class="cmp-row"><div class="rk">Conversion</div><div class="ca">Tracking link and promo code</div><div class="cb">Full funnel, lead capture, email follow-up</div></div>
-      <div class="cmp-row"><div class="rk">Best for</div><div class="ca">Proving the channel, launches</div><div class="cb">Building a distribution asset</div></div>
-      <div class="cmp-row"><div class="rk">Start point</div><div class="ca">Test tier</div><div class="cb">Test tier plus page setup, or move in after the test</div></div>
-    </div>
-    <div class="rec rv d3">Our recommendation: <b>start on Model A</b>, then move to <b>Model B</b> once the test shows which angles and audiences work.</div>
-  </div>
-</section>
-
-<!-- ============ 06 LIVE CAMPAIGN ============ -->
-<section class="section alt" id="s6">
-  <div class="wrap">
-    <span class="snum rv">06 &middot; Live campaign data</span>
-    <h2 class="statement rv d1" id="liveH">2.8M views from a $2,000 spend.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.4rem">This is a Maison d'&Eacute;lites campaign for the artist Itzdanielmichael, pulled straight from its live dashboard. It is the same verified-view model as Model A: creators post, every clip is reviewed, and only accepted views are paid.</p>
-    <div class="live-top rv d2">
-      <a class="banner" href="https://campaigns.maisondelites.com/itzdanielmichael" target="_blank" rel="noopener">
-        <img src="img/live-banner.jpg" alt="Maison d'Elites x Itzdanielmichael campaign banner" loading="lazy">
-        <span class="livepill"><i></i><span id="liveStamp">Live dashboard</span></span>
-      </a>
-      <div class="lstats">
-        <div class="ls lead"><div class="lv"><span class="cu" id="lvViews" data-target="2803134">2,803,134</span></div><div class="ll">Verified views</div></div>
-        <div class="ls"><div class="lv">$<span class="cu" id="lvCpm" data-target="0.71" data-dec="2">0.71</span></div><div class="ll">Effective cost per thousand</div></div>
-        <div class="ls"><div class="lv">$<span class="cu" id="lvSpend" data-target="2000">2,000</span></div><div class="ll">Spent</div></div>
-        <div class="ls"><div class="lv"><span class="cu" id="lvClips" data-target="46">46</span></div><div class="ll">Clips live</div></div>
-        <div class="ls"><div class="lv"><span class="cu" id="lvCreators" data-target="13">13</span></div><div class="ll">Creators</div></div>
-      </div>
-    </div>
-    <div class="live-mid rv d3" id="liveMid">
-      <div class="lbox"><div class="lk">Top creators by views</div><div id="lvCreatorBars"></div></div>
-      <div class="lbox"><div class="lk">Views by platform</div><div id="lvPlatBars"></div></div>
-    </div>
-
-    <h3 class="sub rv">The top clips from the campaign</h3>
-    <div class="clip-rail" id="clipRail"></div>
-    <div class="live-cta rv">
-      <a class="btn solid" href="https://campaigns.maisondelites.com/itzdanielmichael" target="_blank" rel="noopener">Open the live dashboard <span>&#8599;</span></a>
-      <span class="stamp" id="liveStamp2"></span>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 07 RESULTS ============ -->
-<section class="section" id="s7">
-  <div class="wrap">
-    <span class="snum rv">07 &middot; Results</span>
-    <h2 class="statement rv d1">What the network has delivered.</h2>
-    <div class="sumrow rv d2">
-      <div class="sr"><div class="sv"><span class="cu" data-target="300">300</span>M+</div><div class="sl">Total views</div></div>
-      <div class="sr"><div class="sv"><span class="cu" data-target="40">40</span>K+</div><div class="sl">Pages in the network</div></div>
-      <div class="sr"><div class="sv"><span class="cu" data-target="94">94</span>%+</div><div class="sl">Reach from non-followers</div></div>
-      <div class="sr"><div class="sv">$<span class="cu" data-target="1.30" data-dec="2">1.30</span></div><div class="sl">Average cost per thousand</div></div>
-    </div>
-    <div class="cs-tabs rv d2" id="csTabs" role="tablist"></div>
-    <div class="cs-panel rv d3" id="csPanel"></div>
+    <h3 class="sub rv">Proof</h3>
+    <div class="cs-tabs rv d1" id="csTabs" role="tablist"></div>
+    <div class="cs-panel rv d2" id="csPanel"></div>
     <div class="site-cta rv">
       <div><h5>Maison d'&Eacute;lites</h5><p>The full case studies, the talent network and how distribution works.</p></div>
       <div class="btns">
@@ -667,29 +787,283 @@
   </div>
 </section>
 
-<!-- ============ 08 MODEL THE BUDGET ============ -->
+<!-- ============ 04 LIVE CAMPAIGN ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Live campaign data</span>
+    <h2 class="statement rv d1" id="liveH">2.8M views from a $2,000 spend.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.4rem">A Maison d'&Eacute;lites campaign for the artist Itzdanielmichael, pulled straight from its live dashboard. The same model as Model A: creators post, every clip is reviewed, and only accepted views are paid. This is the dashboard Chillblast would see.</p>
+    <div class="live-top rv d2">
+      <a class="banner" href="https://campaigns.maisondelites.com/itzdanielmichael" target="_blank" rel="noopener">
+        <img src="img/live-banner.jpg" alt="Maison d'Elites x Itzdanielmichael campaign banner" loading="lazy">
+        <span class="livepill"><i></i><span id="liveStamp">Live dashboard</span></span>
+      </a>
+      <div class="lstats">
+        <div class="ls lead"><div class="lv"><span class="cu" id="lvViews" data-target="2803134">2,803,134</span></div><div class="ll">Verified views</div></div>
+        <div class="ls"><div class="lv">$<span class="cu" id="lvCpm" data-target="0.71" data-dec="2">0.71</span></div><div class="ll">Effective cost per 1,000</div></div>
+        <div class="ls"><div class="lv">$<span class="cu" id="lvSpend" data-target="2000">2,000</span></div><div class="ll">Spent</div></div>
+        <div class="ls"><div class="lv"><span class="cu" id="lvClips" data-target="46">46</span></div><div class="ll">Clips live</div></div>
+        <div class="ls"><div class="lv"><span class="cu" id="lvCreators" data-target="13">13</span></div><div class="ll">Creators</div></div>
+      </div>
+    </div>
+    <div class="live-mid rv d3" id="liveMid">
+      <div class="lbox"><div class="lk">Top creators by views</div><div id="lvCreatorBars"></div></div>
+      <div class="lbox"><div class="lk">Views by platform</div><div id="lvPlatBars"></div></div>
+    </div>
+    <h3 class="sub rv">The top clips from the campaign</h3>
+    <div class="clip-rail" id="clipRail"></div>
+    <div class="live-cta rv">
+      <a class="btn solid" href="https://campaigns.maisondelites.com/itzdanielmichael" target="_blank" rel="noopener">Open the live dashboard <span>&#8599;</span></a>
+      <span class="stamp" id="liveStamp2"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 TWO MODELS ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; Two models</span>
+    <h2 class="statement rv d1">Reach the market now, or build the asset underneath it.</h2>
+    <div class="seg rv d2" id="cmpSeg" role="tablist">
+      <button class="on" data-m="a" role="tab" aria-selected="true">Model A</button>
+      <button data-m="b" role="tab" aria-selected="false">Model B</button>
+    </div>
+    <div class="cmp rv d2" id="cmp" data-on="a">
+      <div class="cmp-row head"><div class="rk"></div><div class="ca">Model A &middot; Reach</div><div class="cb">Model B &middot; Owned distribution</div></div>
+      <div class="cmp-row"><div class="rk">What it is</div><div class="ca">Our vetted pages and creators post about Chillblast</div><div class="cb">We build and run a network of Chillblast-owned pages</div></div>
+      <div class="cmp-row"><div class="rk">Who owns the audience</div><div class="ca">The network</div><div class="cb">Chillblast</div></div>
+      <div class="cmp-row"><div class="rk">How it is paid</div><div class="ca">Per verified view</div><div class="cb">Monthly, per channel</div></div>
+      <div class="cmp-row"><div class="rk">What it leaves behind</div><div class="ca">Views, clicks, orders</div><div class="cb">Views, clicks, orders, plus accounts, followers and an email list</div></div>
+      <div class="cmp-row"><div class="rk">Best for</div><div class="ca">Proving the channel, launches, fast reach</div><div class="cb">A permanent sales channel Chillblast keeps</div></div>
+      <div class="cmp-row"><div class="rk">Commitment</div><div class="ca">One campaign</div><div class="cb">Three months minimum</div></div>
+    </div>
+    <div class="rec rv d3">Chillblast can start with either, or run both: <b>Model A</b> for fast reach on a launch, <b>Model B</b> building the asset underneath it.</div>
+  </div>
+</section>
+
+<!-- ============ 06 MODEL A ============ -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Model A &middot; Reach</span>
+    <h2 class="statement rv d1">Chillblast pays only for views verified as real.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.6rem">Maison d'&Eacute;lites selects pages from its network and brings in a small group of named creators. They post short videos centred on Chillblast products on their own accounts. <b>A clip nobody watches costs nothing.</b></p>
+    <div class="ends rv d2">
+      <div class="end"><div class="ek">A curated campaign</div><p>Most clipping campaigns let anyone join. That suits a streamer and does not suit a premium brand. <b>We choose every page, Chillblast sees the list, and every clip is reviewed before it is paid.</b></p></div>
+      <div class="end"><div class="ek">Centred on the brand</div><p>The PC, the build, the setup, the unboxing, the Aston Martin finish, the cooling loop. <b>The product is the subject of every clip.</b></p></div>
+    </div>
+    <div class="multiply rv d3" id="mx">
+      <div class="mx-src">Creator video</div>
+      <div class="mx-arrow">&rarr;</div>
+      <div class="mx-grid" id="mxGrid"></div>
+      <div class="mx-cap">Influencers sit alongside the pages. <b>One creator video becomes hundreds of clips</b> across the network.</div>
+    </div>
+    <p class="body-lg rv" style="margin-top:1.6rem">A small group of gaming, music and lifestyle creators make content featuring Chillblast. That content becomes source material for the page network.</p>
+  </div>
+</section>
+
+<!-- ============ 07 VETTING AND RULES ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; How we vet the pages</span>
+    <h2 class="statement rv d1">How a page gets in, and how it stays in.</h2>
+    <div class="vet rv d2">
+      <div class="vet-list" id="vetList"></div>
+      <div class="vet-panel"><div class="anim" id="vetBody"></div></div>
+    </div>
+
+    <h3 class="sub rv">Brand rules, signed by every page</h3>
+    <div class="rules" id="rules">
+      <div class="rule rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The product is the subject of the clip.</div>
+      <div class="rule rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Chillblast named correctly, with the required tag and handle on every post.</div>
+      <div class="rule rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>No political, adult, gambling or controversial content on the page during the campaign.</div>
+      <div class="rule rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>No competitor hardware as the hero of a clip.</div>
+      <div class="rule rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>No invented claims, fake discounts or made-up specs.</div>
+      <div class="rule rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>No AI-generated product footage.</div>
+      <div class="rule rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Clear paid-content disclosure on every post, in line with UK advertising rules.</div>
+      <div class="rule rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Any clip taken down within 24 hours of Chillblast's request.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 THE CAMPAIGN ============ -->
 <section class="section alt" id="s8">
   <div class="wrap">
-    <span class="snum rv">08 &middot; Model the budget</span>
-    <h2 class="statement rv d1">Set the view budget.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Views are priced at <b>$2 per thousand verified views</b> under both models. Under Model B, page build and setup and monthly page management sit on top as fixed costs.</p>
-    <div class="model rv d2">
-      <div class="mtop">
-        <div class="seg" id="calcSeg" role="tablist">
-          <button class="on" data-m="a" role="tab" aria-selected="true">Model A</button>
-          <button data-m="b" role="tab" aria-selected="false">Model B</button>
+    <span class="snum rv">08 &middot; What the campaign looks like</span>
+    <h2 class="statement rv d1">Four content lanes, all centred on the product.</h2>
+    <div class="lanes rv d2" role="tablist">
+      <button class="lane on" data-l="0" role="tab" aria-selected="true"><div class="ln">01</div><div class="lt">The dream setup</div></button>
+      <button class="lane" data-l="1" role="tab" aria-selected="false"><div class="ln">02</div><div class="lt">The build</div></button>
+      <button class="lane" data-l="2" role="tab" aria-selected="false"><div class="ln">03</div><div class="lt">The creator</div></button>
+      <button class="lane" data-l="3" role="tab" aria-selected="false"><div class="ln">04</div><div class="lt">The race</div></button>
+    </div>
+    <div class="lane-panel rv d2"><div class="lk" id="laneK"></div><p id="laneP"></p></div>
+    <div class="facts rv d3">
+      <div class="fact"><div class="fk2">Platforms</div><p><b>TikTok, Instagram Reels, YouTube Shorts</b>, plus X for the enthusiast lane.</p></div>
+      <div class="fact"><div class="fk2">Geography</div><p><b>UK first</b>, with EU pages admitted from the start.</p></div>
+      <div class="fact"><div class="fk2">Tracking</div><p>A Chillblast tracking link and promo code on every page, so <b>clicks and orders are reported next to views</b>.</p></div>
+    </div>
+
+    <h3 class="sub rv">Timeline</h3>
+    <div class="tl-rail rv d1">
+      <div class="tl-fill" id="tlFill"></div>
+      <button class="tl-step on" data-i="0"><div class="node">1</div><div class="when">Week 1</div><div class="what">Set up</div></button>
+      <button class="tl-step" data-i="1"><div class="node">2</div><div class="when">Weeks 2 to 3</div><div class="what">First pages live</div></button>
+      <button class="tl-step" data-i="2"><div class="node">3</div><div class="when">Week 4 onward</div><div class="what">Push what wins</div></button>
+    </div>
+    <div class="tl-panel rv d2"><p id="tlText"></p></div>
+  </div>
+</section>
+
+<!-- ============ 09 MODEL B ============ -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; Model B &middot; Owned distribution</span>
+    <h2 class="statement rv d1">A network of short-form pages Chillblast owns.</h2>
+    <div class="bsplit">
+      <div class="rv d1">
+        <p class="body-lg">Maison d'&Eacute;lites builds and runs the network. A dedicated team edits and posts to it every day. <b>Chillblast owns every account, every follower and every post from day one</b>, and keeps them if the engagement ever ends.</p>
+        <p class="body-lg">The pages sit alongside the official Chillblast account. The main account stays polished. The network is built to grow fast and convert.</p>
+        <p class="body-lg">Each page is openly run by Chillblast, with no disguised fan pages. <b>That keeps Chillblast inside UK advertising and consumer rules, and protects the brand.</b></p>
+      </div>
+      <div class="rv d2">
+        <div class="amap">
+          <div class="amain"><div class="ak">Official Chillblast account</div><div class="ah">Stays polished</div><p>The brand channel carries on as it is.</p></div>
+          <div class="aline"></div>
+          <div class="aown">
+            <div class="ao"><b>Setup pages</b><span>Owned by Chillblast</span></div>
+            <div class="ao"><b>Build pages</b><span>Owned by Chillblast</span></div>
+            <div class="ao"><b>Sim racing pages</b><span>Owned by Chillblast</span></div>
+            <div class="ao"><b>Creator pages</b><span>Owned by Chillblast</span></div>
+          </div>
+          <div class="akey"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></svg><span>Openly run by Chillblast. <b>Chillblast keeps it all.</b></span></div>
+        </div>
+        <div class="keeps" style="margin-top:1rem"><span>Accounts</span><span>Followers</span><span>Posts</span><span>Email list</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 HOW A CHANNEL WORKS ============ -->
+<section class="section alt" id="s10">
+  <div class="wrap">
+    <span class="snum rv">10 &middot; How a channel works</span>
+    <h2 class="statement rv d1">One channel is four accounts and 30 videos a month.</h2>
+    <div class="chan rv d2">
+      <div class="chan-card">
+        <div class="ck2">One channel</div>
+        <div class="plats">
+          <div class="plat"><svg viewBox="0 0 24 24"><path d="M16.6 3c.3 2.2 1.9 3.9 4.1 4.1v3.1c-1.5 0-2.9-.4-4.1-1.2v6.1A6 6 0 1 1 10.6 9v3.2a2.9 2.9 0 1 0 2.9 2.9V3z"/></svg>TikTok</div>
+          <div class="plat"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 2.5c-2.6 0-2.9 0-3.9.1-3.5.2-5.3 2-5.5 5.5-.1 1-.1 1.3-.1 3.9s0 2.9.1 3.9c.2 3.5 2 5.3 5.5 5.5 1 .1 1.3.1 3.9.1s2.9 0 3.9-.1c3.5-.2 5.3-2 5.5-5.5.1-1 .1-1.3.1-3.9s0-2.9-.1-3.9c-.2-3.5-2-5.3-5.5-5.5-1-.1-1.3-.1-3.9-.1z"/></svg>Instagram</div>
+          <div class="plat"><svg viewBox="0 0 24 24"><path d="M22 8.2a3 3 0 0 0-2.1-2.1C18 5.6 12 5.6 12 5.6s-6 0-7.9.5A3 3 0 0 0 2 8.2 31 31 0 0 0 1.6 12a31 31 0 0 0 .4 3.8 3 3 0 0 0 2.1 2.1c1.9.5 7.9.5 7.9.5s6 0 7.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .4-3.8 31 31 0 0 0-.4-3.8zM10 15V9l5.2 3z"/></svg>YouTube</div>
+          <div class="plat"><svg viewBox="0 0 24 24"><path d="M13.5 21.5v-8.2h2.8l.4-3.2h-3.2V8c0-.9.3-1.6 1.6-1.6h1.7V3.6a23 23 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8v8.2z"/></svg>Facebook</div>
+        </div>
+        <div class="chan-nums">
+          <div class="cn"><div class="cv2"><span class="cu" data-target="30">30</span></div><div class="cl2">Videos a month per channel</div></div>
+          <div class="cn"><div class="cv2"><span class="cu" data-target="100">100</span>%</div><div class="cl2">Of posts checked by a manager</div></div>
         </div>
       </div>
-      <div class="ctrl-head"><span class="cl">View budget</span><span class="cv" id="budgetVal">USD 10,000</span></div>
-      <input type="range" id="budget" min="2500" max="50000" step="500" value="10000" aria-label="View budget in dollars">
-      <div class="range-ends"><span>USD 2,500</span><span>USD 50,000</span></div>
-      <div class="out">
-        <div class="o lead"><div class="ov" id="oViews">5M</div><div class="ol">Verified views</div></div>
-        <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per thousand views</div></div>
-        <div class="o"><div class="ov" id="oWhere">Network pages</div><div class="ol">Where the views land</div></div>
+      <div class="pipe" id="pipe">
+        <div class="ck2">Every post runs through five steps</div>
+        <div class="pipe-steps" id="pipeSteps"></div>
+        <div class="pipe-bar"><b id="pipeBar"></b></div>
+        <p class="pipe-text" id="pipeText"></p>
       </div>
-      <div class="stays" id="stays"></div>
     </div>
+    <div class="chan-notes rv d3">
+      <div class="end"><div class="ek">Built for the UK</div><p>Every account runs on its own dedicated phone set up in the UK, so <b>views land where Chillblast sells</b>. No bots, no emulators. EU accounts can be added market by market.</p></div>
+      <div class="end"><div class="ek">Testing built in</div><p>Every post tests a hook, a format and a call to action. <b>What wins gets rolled out across every account in the network.</b></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 CONTENT TO SALES ============ -->
+<section class="section" id="s11">
+  <div class="wrap">
+    <span class="snum rv">11 &middot; Where the content comes from</span>
+    <h2 class="statement rv d1">Chillblast does not need to film every day.</h2>
+    <div class="sources rv d2">
+      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M10 9.5v5l4-2.5z"/></svg></div><h5>What Chillblast already has</h5><p>Product and launch footage, The Lab and Aston Martin assets, workshop and testing footage, and existing reviews Chillblast has rights to.</p></div>
+      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5"/></svg></div><h5>Creator content made for the pages</h5><p>Gaming, music and sim racing creators film setup tours, build days and sessions on Chillblast PCs, made for the network. Briefs, approvals and usage rights handled by us.</p></div>
+      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 16l2-9 4 5 3-7 3 11"/></svg></div><h5>Studio production</h5><p>Scripts, ideas and shoots planned with Chillblast's team, so every month starts with a clear plan.</p></div>
+    </div>
+    <div class="owned-note rv d3">Everything posted is content Chillblast owns or has licensed. Nothing is reposted from other people's accounts.</div>
+
+    <h3 class="sub rv">From views to sales</h3>
+    <div class="ptabs rv d1" role="tablist">
+      <button class="ptab on" data-p="0" role="tab" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="11" rx="1.5"/><path d="M8 20h8M12 15v5"/></svg><div class="pn">Setup pages</div><div class="ph">Desks, battlestations, peripherals</div></button>
+      <button class="ptab" data-p="1" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="1.5"/><circle cx="12" cy="9" r="3"/><path d="M9 16h6M9 18.5h6"/></svg><div class="pn">Build pages</div><div class="ph">Builds, components, the workshop</div></button>
+      <button class="ptab" data-p="2" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v6.5M3.6 14.5l6.1-1.6M20.4 14.5l-6.1-1.6"/></svg><div class="pn">Sim racing pages</div><div class="ph">Rigs, wheels, racing footage</div></button>
+      <button class="ptab" data-p="3" role="tab" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="13" height="12" rx="1.5"/><path d="M15.5 10l6-3.5v11l-6-3.5"/></svg><div class="pn">Creator pages</div><div class="ph">Editing, streaming, production</div></button>
+    </div>
+    <div class="funnel rv d2">
+      <div class="fun-head">
+        <div><div class="fk" id="funK"></div><div class="fh" id="funH"></div></div>
+      </div>
+      <div class="fsteps" id="fsteps"></div>
+      <div class="fun-foot">
+        <span>A viewer who doesn't buy today becomes <b>a lead Chillblast can follow up</b></span>
+        <span>Every link and promo code <b>tracked to the account and the post</b></span>
+      </div>
+    </div>
+
+    <h3 class="sub rv">What Chillblast sees, live</h3>
+    <div class="dash rv d1">
+      <div class="dm"><svg viewBox="0 0 24 24"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg><h5>Views per account, per platform and per day</h5></div>
+      <div class="dm"><svg viewBox="0 0 24 24"><path d="M9 3v10.5l3-2 2.2 5 2-1-2.2-5H18z"/></svg><h5>Link clicks and click-through rate per account and per post</h5></div>
+      <div class="dm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><h5>Clicks by country and by source</h5></div>
+      <div class="dm"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 4.5a3.4 3.4 0 0 1 0 6.8M21.5 20c0-2.8-1.6-4.9-4-5.7"/></svg><h5>Audience age, gender and location per platform</h5></div>
+      <div class="dm"><svg viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 11h11l2-7.5H6.4"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg><h5>Leads captured and orders against each code</h5></div>
+    </div>
+    <div class="dash-cta rv d2">
+      <a class="btn" href="https://campaigns.maisondelites.com/itzdanielmichael" target="_blank" rel="noopener">See a live dashboard <span>&#8599;</span></a>
+      <span>Updated in real time.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 INVESTMENT ============ -->
+<section class="section alt" id="s12">
+  <div class="wrap">
+    <span class="snum rv">12 &middot; Investment</span>
+    <h2 class="statement rv d1">Model B, owned distribution.</h2>
+    <div class="price rv d2">
+      <div class="pr head"><div>Service</div><div>What's included</div><div class="pp2">Price</div></div>
+      <div class="pr feat"><div class="pn2">One channel</div><div class="pi">4 Chillblast-owned accounts, 30 videos a month, every post manager-checked, UK devices, dashboard</div><div class="pp2">$3,900<small>a month</small></div></div>
+      <div class="pr"><div class="pn2">Four channels</div><div class="pi">16 Chillblast-owned accounts, 120 videos a month, winners rolled out across all 16</div><div class="pp2">Quoted on a call</div></div>
+      <div class="pr"><div class="pn2">Custom</div><div class="pi">Any number of channels, EU markets and languages</div><div class="pp2">Scoped on a call</div></div>
+      <div class="pr"><div class="pn2">Studio</div><div class="pi">Ideas, scripts, thumbnails, long-form editing, short-form for the main Chillblast account</div><div class="pp2">Quoted per project</div></div>
+      <div class="pr"><div class="pn2">Creator content</div><div class="pi">Creators sourced, briefed and managed, every post approved, rights handled</div><div class="pp2">$6,500<small>a month, creator budget from $13,000</small></div></div>
+    </div>
+    <div class="terms rv d3">
+      <div class="term"><div class="tv2">3 months</div><div class="tl2">Minimum on all Model B plans</div></div>
+      <div class="term"><div class="tv2">~1 week</div><div class="tl2">Until accounts are set up and posting</div></div>
+      <div class="term"><div class="tv2">Month 1</div><div class="tl2">Is the ramp. The three months are the real test.</div></div>
+    </div>
+    <div class="rec rv"><b>Running both models.</b> Model A can run on top of Model B at any time, using the same content, so a launch gets a burst of reach while the owned network keeps growing underneath it.</div>
+
+    <h2 class="statement rv" style="margin-top:4.4rem">Model A, reach.</h2>
+    <p class="body-lg rv d1" style="margin-top:1.3rem;margin-bottom:2.2rem">One price per campaign, paid out at <b>$2 per 1,000 verified views</b>. The campaign runs until the full budget has been paid out.</p>
+    <div class="model rv d2">
+      <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">USD 10,000</span></div>
+      <input type="range" id="budget" min="0" max="400" step="1" value="100" aria-label="Campaign budget in dollars">
+      <div class="range-ends"><span>USD 2,500</span><span>USD 100,000</span></div>
+      <div class="tiers-strip" id="tierStrip"><div>Test</div><div>Launch</div><div>Season</div><div>Flagship</div></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oViews">5M</div><div class="ol">Estimated verified views</div></div>
+        <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per 1,000 views</div></div>
+        <div class="o"><div class="ov" id="oPaid">125K to 500K</div><div class="ol">The same budget on paid social, at $20 to $80</div></div>
+      </div>
+      <div class="tier-now"><span class="tn" id="tierName">Launch</span><span id="tierUse">A product launch</span></div>
+    </div>
+
+    <h3 class="sub rv">Next steps</h3>
+    <div class="next rv d1">
+      <div class="nx"><div class="nn">01</div><p>Choose Model A, Model B, or both.</p></div>
+      <div class="nx"><div class="nn">02</div><p>Agreement signed, payment received.</p></div>
+      <div class="nx"><div class="nn">03</div><p>Kick-off call within 48 hours.</p></div>
+      <div class="nx"><div class="nn">04</div><p>Model A live within three weeks. Model B accounts posting within one week.</p></div>
+    </div>
+    <div class="contact rv d2"><a class="btn solid" href="mailto:contact@maisondelitesagency.com">contact@maisondelitesagency.com <span>&#8599;</span></a></div>
     <div class="signoff rv d3">
       <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
       <div class="s-r">Jacques &middot; Founder<br><a href="https://hello.maisondelites.com" target="_blank" rel="noopener">hello.maisondelites.com</a></div>
@@ -727,28 +1101,126 @@
   }
   once(document.querySelectorAll('.cu'),countUp,0.5);
 
-  /* Model A flow */
-  once([document.getElementById('flowA')],el=>{
-    const steps=[...el.querySelectorAll('.fs')], fill=document.getElementById('flowFillA');
-    fill.style.width='75%';
-    if(reduce){steps.forEach(s=>s.classList.add('lit'));return;}
-    steps.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),i*650));
-  },0.45);
+  function segBind(id,fn){
+    const btns=[...document.querySelectorAll('#'+id+' button')];
+    btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b);});fn(b.dataset.m);}));
+  }
 
-  /* Model B: owned page types and their funnels */
+  /* 01 CPM range bars */
+  once([document.getElementById('rng')],el=>el.classList.add('go'),0.4);
+
+  /* 02 billboard vs clipping */
+  const BB={imp:{a:24000,b:64000000,la:'24,000',lb:'64M',x:'2,667×',xl:'the impressions for the same spend'},
+            clk:{a:62,b:11000,la:'62 QR scans',lb:'11,000 clicks',x:'177×',xl:'the clicks for the same spend'}};
+  let bbOn=false, bbMode='imp';
+  function drawBB(){
+    const d=BB[bbMode];
+    const wa=bbOn?Math.max(d.a/d.b*100,0.8):0, wb=bbOn?100:0;
+    document.getElementById('bbA').style.width=wa+'%';
+    document.getElementById('bbB').style.width=wb+'%';
+    const av=document.getElementById('bbAv'); av.style.setProperty('--x',wa+'%'); av.textContent=d.la;
+    document.getElementById('bbBv').textContent=d.lb;
+    document.getElementById('bbX').textContent=d.x;
+    document.getElementById('bbXl').textContent=d.xl;
+  }
+  segBind('bbSeg',m=>{bbMode=m;drawBB();});
+  drawBB();
+  once([document.getElementById('bb')],()=>{bbOn=true;drawBB();},0.35);
+
+  /* 06 one creator video becomes hundreds of clips */
+  const mxGrid=document.getElementById('mxGrid');
+  mxGrid.innerHTML='<i></i>'.repeat(120);
+  once([document.getElementById('mx')],()=>{
+    const cells=[...mxGrid.children].sort(()=>Math.random()-0.5);
+    if(reduce){cells.forEach(c=>c.classList.add('on'));return;}
+    cells.forEach((c,i)=>setTimeout(()=>c.classList.add('on'),i*14));
+  },0.4);
+
+  /* 07 vetting stepper */
+  const VET=[
+    ['Application','Pages submit account links, follower count, the last 30 days of views, and audience location from their own analytics.'],
+    ['Audience check','A UK and EU majority audience is required. Pages whose views land outside Chillblast’s markets are refused, whatever their size.'],
+    ['Quality check','We review existing content. Low-effort reposts, engagement bait, stolen content, or anything that would sit badly next to Chillblast is refused. Priority goes to pages already posting setups, builds, hardware, sim racing, music production and creator life.'],
+    ['Brand rules signed','Every page agrees to the Chillblast brand rules in writing before posting.'],
+    ['Trial clips','New pages post a small number of clips first, reviewed by hand. Clean work gets full access. Anything else is removed.'],
+    ['Ongoing review','Every clip is checked before it is paid. An off-brand clip is not paid. A second one removes the page.'],
+    ['Fraud filtering','Views are checked against each platform’s own analytics. Bot traffic, bought views, view loops and duplicate uploads are never paid.']
+  ];
+  const vetList=document.getElementById('vetList'), vetBody=document.getElementById('vetBody');
+  vetList.innerHTML=VET.map((v,i)=>'<button class="vstep" data-i="'+i+'"><span class="vn">'+(i+1)+'</span><span class="vt">'+esc(v[0])+'</span></button>').join('');
+  function setVet(i){
+    [...vetList.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.toggle('done',j<i);});
+    vetBody.style.animation='none';void vetBody.offsetWidth;vetBody.style.animation='';
+    vetBody.innerHTML='<div class="vk">Step '+(i+1)+' of '+VET.length+'</div><h4>'+esc(VET[i][0])+'</h4><p>'+esc(VET[i][1])+'</p>';
+  }
+  [...vetList.children].forEach((b,i)=>b.addEventListener('click',()=>setVet(i)));
+  setVet(0);
+
+  /* brand rules tick on reveal */
+  once(document.querySelectorAll('.rule'),el=>setTimeout(()=>el.classList.add('tick'),250),0.6);
+
+  /* 08 lanes */
+  const LANES=[
+    ['Brand value','The Aston Martin collection, The Lab and water-cooled builds. The machines people want on their desk and in their feed.'],
+    ['The hand-built promise','Workshop, assembly, cable management and testing. Shows the care that goes into every Chillblast.'],
+    ['Made on a Chillblast','Music producers, editors and streamers working on a Chillblast.'],
+    ['Sim racing and flight sim','Sim racing and flight sim rigs, built around Chillblast PCs.']
+  ];
+  const laneBtns=[...document.querySelectorAll('.lane')];
+  function setLane(i){
+    laneBtns.forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i);});
+    const p=document.getElementById('laneP');
+    p.style.animation='none';void p.offsetWidth;p.style.animation='';
+    document.getElementById('laneK').textContent=LANES[i][0];
+    p.textContent=LANES[i][1];
+  }
+  laneBtns.forEach((b,i)=>b.addEventListener('click',()=>setLane(i)));
+  setLane(0);
+
+  /* timeline */
+  const TL=[
+    'Brand rules, content library, tracking, page vetting, and creators briefed.',
+    'Creators deliver and the first pages go live.',
+    'Winning formats are pushed harder and weak ones dropped. The campaign runs until the full budget has been paid out.'
+  ];
+  const steps=[...document.querySelectorAll('.tl-step')],tlText=document.getElementById('tlText'),tlFill=document.getElementById('tlFill');
+  function setTL(i){
+    steps.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i);});
+    tlFill.style.width=((i+1)/steps.length*100)+'%';
+    tlText.style.animation='none';void tlText.offsetWidth;tlText.style.animation='';
+    tlText.textContent=TL[i];
+  }
+  steps.forEach((s,i)=>s.addEventListener('click',()=>setTL(i)));
+  setTL(0);
+
+  /* 10 five-step pipeline */
+  const PIPE=[
+    ['Plan','A manager sets the month’s angles, hooks and formats.'],
+    ['Brief','Each post gets a brief with references and the hook to test.'],
+    ['Edit','Editors cut the post for each platform.'],
+    ['Review','A manager checks every post against the brand rules.'],
+    ['Publish','The post goes out on Chillblast’s accounts.']
+  ];
+  const pipeSteps=document.getElementById('pipeSteps'), pipeText=document.getElementById('pipeText'), pipeBar=document.getElementById('pipeBar');
+  pipeSteps.innerHTML=PIPE.map((p,i)=>'<button class="pst" data-i="'+i+'"><i>0'+(i+1)+'</i>'+p[0]+'</button>').join('');
+  let pipeI=0, pipeTimer=null;
+  function setPipe(i){
+    pipeI=i;
+    [...pipeSteps.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.toggle('done',j<i);});
+    pipeBar.style.width=((i+1)/PIPE.length*100)+'%';
+    pipeText.style.animation='none';void pipeText.offsetWidth;pipeText.style.animation='';
+    pipeText.textContent=PIPE[i][1];
+  }
+  [...pipeSteps.children].forEach((b,i)=>b.addEventListener('click',()=>{clearInterval(pipeTimer);setPipe(i);}));
+  setPipe(0);
+  once([document.getElementById('pipe')],()=>{if(!reduce) pipeTimer=setInterval(()=>setPipe((pipeI+1)%PIPE.length),2600);},0.5);
+
+  /* 11 funnels */
   const PAGES=[
-    {k:'Setup pages',h:'Into the “help me choose” flow and the finance offer',
-     clip:'Setup clips: desks, battlestations, the gear people want',
-     dest:['“Help me choose”','A short flow that matches the viewer to the right Chillblast PC, with the finance offer alongside']},
-    {k:'Build pages',h:'Into the “help me choose” flow and the finance offer',
-     clip:'Build clips: components, cable work, the finished machine',
-     dest:['“Help me choose”','The same matching flow, with the finance offer alongside']},
-    {k:'Sim racing pages',h:'Into the sim racing PC guide and configurator',
-     clip:'Sim racing clips: rigs, wheels, on-track footage',
-     dest:['Sim racing guide','The sim racing PC guide and the configurator']},
-    {k:'Creator-life pages',h:'Into the creator PC guide',
-     clip:'Creator clips: editing, streaming, production setups',
-     dest:['Creator PC guide','The creator PC guide, with editing and production benchmarks']}
+    {k:'Setup pages',h:'Into the “help me choose” flow and the 0% finance offer',clip:'Setups: desks, battlestations, the gear people want',dest:['“Help me choose”','Matches the viewer to the right Chillblast, with the 0% finance offer']},
+    {k:'Build pages',h:'Into the “help me choose” flow and the 0% finance offer',clip:'Builds: workshop, components, the finished machine',dest:['“Help me choose”','The same matching flow, with the 0% finance offer']},
+    {k:'Sim racing pages',h:'Into the sim racing PC guide and configurator',clip:'Sim racing: rigs, wheels, on-track footage',dest:['Sim racing guide','The sim racing PC guide and the configurator']},
+    {k:'Creator pages',h:'Into the creator PC guide',clip:'Creators: editing, streaming, production setups',dest:['Creator PC guide','With editing and production benchmarks']}
   ];
   const fsteps=document.getElementById('fsteps');
   function setPage(i){
@@ -756,13 +1228,7 @@
     document.querySelectorAll('.ptab').forEach((t,j)=>{t.classList.toggle('on',j===i);t.setAttribute('aria-selected',j===i);});
     document.getElementById('funK').textContent=p.k+' · funnel';
     document.getElementById('funH').textContent=p.h;
-    const S=[
-      ['Clip',p.clip],
-      ['Follow','The viewer follows a page Chillblast owns'],
-      ['Capture','An email or a quiz answer, before the shop'],
-      [p.dest[0],p.dest[1]],
-      ['Shop','Promo code and tracking link through to the order']
-    ];
+    const S=[['Clip',p.clip],['Follow','The viewer follows a page Chillblast owns'],['Capture','An email or a quiz answer, before the shop'],[p.dest[0],p.dest[1]],['Shop','Promo code and tracking link through to the order']];
     fsteps.innerHTML=S.map((s,j)=>'<div class="fst'+(j===3?' dest':'')+'"><div class="sn">STEP '+(j+1)+'</div><h5>'+esc(s[0])+'</h5><p>'+esc(s[1])+'</p></div>').join('');
     const items=[...fsteps.children];
     if(reduce){items.forEach(x=>x.classList.add('show'));return;}
@@ -771,16 +1237,11 @@
   document.querySelectorAll('.ptab').forEach((t,i)=>t.addEventListener('click',()=>setPage(i)));
   setPage(0);
 
-  /* side by side */
+  /* 05 side by side */
   const cmp=document.getElementById('cmp');
-  function segBind(id,fn){
-    const btns=[...document.querySelectorAll('#'+id+' button')];
-    btns.forEach(b=>b.addEventListener('click',()=>{btns.forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b);});fn(b.dataset.m);}));
-  }
   segBind('cmpSeg',m=>cmp.dataset.on=m);
 
   /* ---------- tiles ---------- */
-  const TT='?autoplay=1&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=1&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0';
   function playTile(t){
     if(t.classList.contains('playing')||t.classList.contains('loading')) return;
     const m=t.querySelector('.vt-media');
@@ -793,8 +1254,8 @@
     }
     t.classList.add('loading');
     const f=document.createElement('iframe');
-    if(t.dataset.ig){f.src='https://www.instagram.com/reel/'+t.dataset.ig+'/embed/';f.title='Instagram clip';f.setAttribute('scrolling','no');}
-    else{f.src='https://www.tiktok.com/player/v1/'+t.dataset.id+TT;f.title='TikTok clip';}
+    f.src='https://www.instagram.com/reel/'+t.dataset.ig+'/embed/';
+    f.title='Instagram clip'; f.setAttribute('scrolling','no');
     f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
     f.setAttribute('allowfullscreen','');
     f.addEventListener('load',()=>{t.classList.remove('loading');t.classList.add('playing');});
@@ -809,10 +1270,6 @@
       m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});
     });
   }
-  window.addEventListener('message',e=>{
-    if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
-    try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
-  });
   document.querySelectorAll('.ytile').forEach(t=>{
     const m=t.querySelector('.yt-media');
     const go=()=>{
@@ -829,22 +1286,22 @@
     m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
   });
 
-  /* ---------- 06 live campaign, wired to the dashboard API ---------- */
+  /* ---------- 04 live campaign, wired to the dashboard API ---------- */
   const COVERS=['DaNoxjDMTeA','DaVJmqdM4KF','DaV-zDRzkni','DaQPqjsIr0w','DaQrr8hR0p-','DaN8U72g22S','DaKZSQMsbQN','DaQS67IsusK','DaO9JLxI1-I','DaJKwUUIEtA'];
-  let LIVE={
+  const LIVE={
     updated:'2026-09-04T02:55:00.173Z',
     summary:{views:2803134,clips:46,creators:13,budgetSpent:2000},
     platforms:[{name:'Instagram',views:2799945},{name:'Youtube',views:2667},{name:'Tiktok',views:522}],
     creators:[{handle:'Danyal',views:1718142,clips:21},{handle:'Destino Ideal',views:471431,clips:3},{handle:'Anthony Jones Quayson',views:406829,clips:3},{handle:'Michael Elliott',views:109696,clips:5},{handle:'ranod',views:82149,clips:3}],
     clips:[
-      {creator:'Danyal',platform:'instagram',url:'https://www.instagram.com/reel/DaNoxjDMTeA/',views:617217,status:'accepted'},
-      {creator:'Danyal',platform:'instagram',url:'https://www.instagram.com/reel/DaVJmqdM4KF/',views:287224,status:'accepted'},
-      {creator:'Danyal',platform:'instagram',url:'https://www.instagram.com/reel/DaV-zDRzkni/',views:265444,status:'accepted'},
-      {creator:'Destino Ideal',platform:'instagram',url:'https://www.instagram.com/reel/DaQPqjsIr0w/',views:182306,status:'accepted'},
-      {creator:'Destino Ideal',platform:'instagram',url:'https://www.instagram.com/reel/DaQrr8hR0p-/',views:150857,status:'accepted'},
-      {creator:'Destino Ideal',platform:'instagram',url:'https://www.instagram.com/reel/DaN8U72g22S/',views:138268,status:'accepted'},
-      {creator:'Danyal',platform:'instagram',url:'https://www.instagram.com/reel/DaKZSQMsbQN/',views:126894,status:'accepted'},
-      {creator:'Danyal',platform:'instagram',url:'https://www.instagram.com/reel/DaQS67IsusK/',views:120297,status:'accepted'}
+      {creator:'Danyal',url:'https://www.instagram.com/reel/DaNoxjDMTeA/',views:617217,status:'accepted'},
+      {creator:'Danyal',url:'https://www.instagram.com/reel/DaVJmqdM4KF/',views:287224,status:'accepted'},
+      {creator:'Danyal',url:'https://www.instagram.com/reel/DaV-zDRzkni/',views:265444,status:'accepted'},
+      {creator:'Destino Ideal',url:'https://www.instagram.com/reel/DaQPqjsIr0w/',views:182306,status:'accepted'},
+      {creator:'Destino Ideal',url:'https://www.instagram.com/reel/DaQrr8hR0p-/',views:150857,status:'accepted'},
+      {creator:'Destino Ideal',url:'https://www.instagram.com/reel/DaN8U72g22S/',views:138268,status:'accepted'},
+      {creator:'Danyal',url:'https://www.instagram.com/reel/DaKZSQMsbQN/',views:126894,status:'accepted'},
+      {creator:'Danyal',url:'https://www.instagram.com/reel/DaQS67IsusK/',views:120297,status:'accepted'}
     ]
   };
   const PLAT={instagram:'Instagram',youtube:'YouTube',tiktok:'TikTok'};
@@ -859,8 +1316,7 @@
     const s=d.summary||{};
     const views=+s.views||0, spent=+s.budgetSpent||0;
     setCu('lvViews',views); setCu('lvClips',+s.clips||0); setCu('lvCreators',+s.creators||0); setCu('lvSpend',spent);
-    if(spent&&views) setCu('lvCpm',(spent/views*1000).toFixed(2));
-    if(spent&&views) document.getElementById('liveH').textContent=short(views)+' views from a $'+full(spent)+' spend.';
+    if(spent&&views){setCu('lvCpm',(spent/views*1000).toFixed(2));document.getElementById('liveH').textContent=short(views)+' views from a $'+full(spent)+' spend.';}
     if(d.updated){
       const dt=new Date(d.updated);
       if(!isNaN(dt)){
@@ -894,34 +1350,34 @@
     const to=setTimeout(()=>ctl&&ctl.abort(),6000);
     fetch('/api/campaign?client=itzdanielmichael',{cache:'no-store',signal:ctl?ctl.signal:undefined})
       .then(r=>r.ok?r.json():null)
-      .then(d=>{clearTimeout(to);if(d&&d.summary&&+d.summary.views>0&&Array.isArray(d.clips)){LIVE=d;renderLive(d);}})
+      .then(d=>{clearTimeout(to);if(d&&d.summary&&+d.summary.views>0&&Array.isArray(d.clips))renderLive(d);})
       .catch(()=>{});
   })();
 
-  /* ---------- 07 case studies (from the main site) ---------- */
+  /* ---------- 03 proof ---------- */
   const CS=[
-    {id:'walmart',client:'Walmart',sub:'Retail creator campaign',vert:'Retail',head:['17M','Total views',17],
+    {client:'Walmart',sub:'Product campaign',vert:'Retail',head:['17M','Total views',17],
      subs:[['0.2%','Conversion rate'],['34K','Conversions']],
-     body:'Creator-led retail campaign for Walmart. 17M views across platforms at a 0.2% conversion rate, around 34,000 conversions. The closest match to Chillblast: a retailer using creator content to move people from the feed to the order.',
+     body:'Creator and clipping distribution for a Walmart product campaign. 17M views at a 0.2% conversion rate, around 34,000 conversions.',
      video:'img/walmart.mp4',poster:'img/walmart.jpg'},
-    {id:'paul',client:'Logan & Jake Paul',sub:'“Paul American” reality show launch',vert:'Launch',head:['11.2M','Total views',11.2],
-     subs:[['$20K','Budget'],['$1.78','CPM'],['6,141','Submissions'],['216','Approved creators']],
-     body:'Clipping campaign for episodes 2 and 3 of Paul American. Distributed across Instagram, TikTok, X and YouTube with strict brand guidelines and a 10K minimum view threshold for payouts.'},
-    {id:'iman',client:'Iman Gadzhi',sub:'Page network growth and brand amplification',vert:'Education',head:['42.2M','Views in 90 days',42.2],
+    {client:'Jake & Logan Paul',sub:'Paul American reality series',vert:'Launch',head:['11.2M','Total views',11.2],
+     subs:[['$20K','Budget'],['$1.78','Cost per 1,000'],['216','Approved pages'],['6,000+','Applicants']],
+     body:'Clipping campaign for the Paul American reality series. 11.2 million views on a $20,000 budget, from 216 approved pages selected out of 6,000 applicants.'},
+    {client:'Wale & Mannywellz',sub:'“How It Feels”',vert:'Music',head:['4.2M','Total views',4.2],
+     subs:[['$0.40','Effective cost per 1,000'],['1.9M','Approved views'],['$776.24','Paid out']],
+     body:'4.2 million views on a single release at under 50 cents per 1,000 views, reported exactly as the client sees it on the dashboard.'},
+    {client:'Iman Gadzhi',sub:'Page network growth',vert:'Education',head:['42.2M','Views in 90 days',42.2],
      subs:[['13.1M','Accounts reached'],['+167%','Reach growth'],['238K','Profile views'],['94.1%','Non-follower reach']],
      body:'Our page network amplified Iman Gadzhi’s personal brand and drove awareness for his education products. 94.1% of the reach came from people who did not already follow him.'},
-    {id:'belmar',client:'Luke Belmar',sub:'Affiliate marketing and content distribution',vert:'Entrepreneurship',head:['200M','Views per month',200],
-     subs:[['$19M','Capital Club revenue'],['7,781','Referrals'],['30%','Recurring commission'],['12M','Weekly views']],
+    {client:'Luke Belmar',sub:'Affiliate and content distribution',vert:'Entrepreneurship',head:['200M','Views per month',200],
+     subs:[['$19M','Capital Club revenue'],['7,781','Referrals'],['12M','Weekly views']],
      body:'Tier 1 ambassador programme with a 30% recurring commission. Our network drives referrals into the Capital Club community.'},
-    {id:'dl',client:'Digital Launchpad',sub:'Multi-platform page network growth',vert:'Education',head:['36M','Views in 60 days',36],
+    {client:'Digital Launchpad',sub:'Multi-platform page network',vert:'Education',head:['36M','Views in 60 days',36],
      subs:[['12.2M','Accounts reached'],['94.3%','Non-follower reach']],
      body:'A page network built to drive awareness and conversions for Digital Launchpad’s online education platform. Nearly all of the views came from non-followers.'},
-    {id:'manny',client:'Mannywellz ft Wale',sub:'“How It Feels” content rewards campaign',vert:'Music',head:['4.2M','Total views',4.2],
-     subs:[['$0.40','Effective CPM'],['1.9M','Approved views'],['39%','Approval rate'],['$776.24','Paid out']],
-     body:'Content rewards campaign for Mannywellz featuring Wale, reported exactly as the client sees it on the dashboard.'},
-    {id:'kojo',client:'Kojo Blak x Fantana',sub:'Music release clipping campaign',vert:'Music',head:['1.9M','Total views',1.9],
-     subs:[['$1.30','CPM'],['100%','Budget used'],['$2,466','Total payout'],['56','Approved creators']],
-     body:'Performance-based music promotion across Instagram, TikTok and YouTube on a $2 CPM reward structure.'}
+    {client:'Kojo Blak x Fantana',sub:'Music release campaign',vert:'Music',head:['1.9M','Total views',1.9],
+     subs:[['$1.30','Cost per 1,000'],['100%','Budget used'],['56','Approved creators']],
+     body:'Performance-based music promotion across Instagram, TikTok and YouTube.'}
   ];
   const csTabs=document.getElementById('csTabs'), csPanel=document.getElementById('csPanel');
   csTabs.innerHTML=CS.map((c,i)=>'<button class="cs-tab'+(i===0?' on':'')+'" data-i="'+i+'" role="tab" aria-selected="'+(i===0)+'">'+esc(c.client)+'<small>'+esc(c.vert)+'</small></button>').join('');
@@ -942,25 +1398,25 @@
   [...csTabs.children].forEach((b,i)=>b.addEventListener('click',()=>setCS(i)));
   setCS(0);
 
-  /* ---------- 08 calculator: $2 per thousand verified views ---------- */
+  /* ---------- 12 Model A calculator: $2 per 1,000 verified views ---------- */
   const CPM=2;
   const bS=document.getElementById('budget');
-  let model='a';
   const m=n=>n>=1e6?(n/1e6).toFixed(n>=1e7?1:2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
-  const STAYS={a:['Views','Clicks','Orders'],b:['Views','Clicks','Orders','Pages','Followers','Funnels','Email list']};
+  const TIERS=[[0,'Test','Prove the channel on one product line'],[10000,'Launch','A product launch'],[25000,'Season','Always-on through a quarter'],[50000,'Flagship','Category-owning run, Europe included']];
+  const KN=[2500,10000,25000,50000,100000];
+  const toBudget=p=>{const s=Math.min(Math.floor(p/100),3),f=(p-s*100)/100;return Math.round((KN[s]+(KN[s+1]-KN[s])*f)/500)*500;};
   function calc(){
-    const b=+bS.value, views=b/CPM*1000;
+    const p=+bS.value, b=toBudget(p), views=b/CPM*1000;
     document.getElementById('budgetVal').textContent='USD '+b.toLocaleString('en-US');
     document.getElementById('oViews').textContent=m(views);
-    bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
+    document.getElementById('oPaid').textContent=m(b/80*1000)+' to '+m(b/20*1000);
+    let t=0; TIERS.forEach((x,i)=>{if(b>=x[0])t=i;});
+    document.getElementById('tierName').textContent=TIERS[t][1];
+    document.getElementById('tierUse').textContent=TIERS[t][2];
+    [...document.getElementById('tierStrip').children].forEach((d,i)=>d.classList.toggle('on',i===t));
+    bS.style.setProperty('--p',(p/4)+'%');
   }
-  function setModel(k){
-    model=k;
-    document.getElementById('oWhere').textContent=k==='a'?'Network pages':'Chillblast pages and the network';
-    document.getElementById('stays').innerHTML='<span class="sk">Chillblast keeps</span>'+STAYS[k].map(s=>'<span class="it">'+s+'</span>').join('');
-  }
-  segBind('calcSeg',setModel);
-  bS.addEventListener('input',calc); calc(); setModel('a');
+  bS.addEventListener('input',calc); calc();
 })();
 </script>
 </body>
