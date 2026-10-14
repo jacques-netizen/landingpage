@@ -22,6 +22,10 @@ export default async function DemoPage() {
       <div className="flex flex-col gap-5">
         {rows.map(({ spec, status }) => {
           const views = spec.clips.reduce((a, c) => a + c.views, 0)
+          const earn = spec.clips.reduce((a, c) => {
+            const raw = Math.floor((c.views * spec.rateCentsPer1000) / 1000)
+            return a + (spec.capPerPostCents ? Math.min(raw, spec.capPerPostCents) : raw)
+          }, 0)
           return (
             <section
               key={spec.slug}
@@ -30,8 +34,9 @@ export default async function DemoPage() {
               <h2 className="m-0 font-app text-[16px] font-semibold">{spec.title}</h2>
               <p className="mt-1 mb-4 text-muted-2">
                 {n(spec.clips.length)} clips, {n(views)} views in the file. Budget {formatDollars(spec.budgetCents)} at{' '}
-                {formatDollars(spec.rateCentsPer1000)} per 1,000 views, so{' '}
-                {formatDollars(Math.floor((views / 1000) * spec.rateCentsPer1000))} would be earned.
+                {formatDollars(spec.rateCentsPer1000)} per 1,000 views
+                {spec.capPerPostCents ? `, ${formatDollars(spec.capPerPostCents)} cap per post` : ''}, so{' '}
+                {formatDollars(earn)} would be earned.
               </p>
               {status ? (
                 <p className="m-0">

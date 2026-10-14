@@ -1,6 +1,7 @@
 import 'server-only'
 import {
   campaignFormSchema,
+  changeBudget,
   createClient,
   createDraft,
   fundCampaign,
@@ -8,7 +9,7 @@ import {
   recordClientFunding,
 } from '@mde/campaigns'
 import { db, recordSnapshot, tables, type Db } from '@mde/db'
-import { accrueEarnings, createPgStore } from '@mde/money'
+import { accrueEarnings, createPgStore, type MoneyStore } from '@mde/money'
 import { and, eq, sql } from 'drizzle-orm'
 
 // A demo campaign for a showcase video (owner request, 2026-10-14): real public clips with their real
@@ -39,6 +40,8 @@ export type DemoSpec = {
   coverImageUrl: string
   budgetCents: number
   rateCentsPer1000: number
+  /** The most one post can earn, in cents; 0 for no cap. */
+  capPerPostCents: number
   minViewsToEarn: number
   platforms: DemoClip['platform'][]
   /** Days before today the campaign started. */
@@ -73,6 +76,108 @@ export async function demoStatus(spec: DemoSpec) {
     views: Number(t?.views ?? 0),
     earnedCents: Number(t?.earned ?? 0),
   }
+}
+
+type DemoCampaignRef = { id: string; termsVersionId: string; rate: number; startAt: Date }
+
+/** One clip into the demo campaign: its creator, account, post, day rows, snapshot and earnings. False when it was there already. */
+async function insertDemoClip(d: Db, store: MoneyStore, c: DemoCampaignRef, clip: DemoClip, now: Date) {
+  const startAt = c.startAt
+  const slug = slugOf(clip.handle)
+  const email = `${slug}.${clip.platform}@demo.invalid`
+  const [u] = await d
+    .insert(tables.users)
+    .values({ email, name: clip.channel, username: null })
+    .onConflictDoNothing({ target: tables.users.email })
+    .returning({ id: tables.users.id })
+  const userId =
+    u?.id ?? (await d.select({ id: tables.users.id }).from(tables.users).where(eq(tables.users.email, email)))[0]!.id
+  await d.insert(tables.creatorProfiles).values({ userId }).onConflictDoNothing()
+  let [acc] = await d
+    .select({ id: tables.linkedAccounts.id })
+    .from(tables.linkedAccounts)
+    .where(and(eq(tables.linkedAccounts.creatorId, userId), eq(tables.linkedAccounts.platform, clip.platform)))
+  if (!acc)
+    [acc] = await d
+      .insert(tables.linkedAccounts)
+      .values({
+        creatorId: userId,
+        platform: clip.platform,
+        handle: slug,
+        linkMethod: 'bio_code',
+        status: 'verified',
+        verifiedAt: now,
+        platformUserId: `${clip.platform}-${slug}`,
+      })
+      .returning({ id: tables.linkedAccounts.id })
+  await d.insert(tables.campaignMembers).values({ campaignId: c.id, creatorId: userId }).onConflictDoNothing()
+
+  // Posted when the platform says, else somewhere in the campaign; submitted an hour after posting.
+  const posted = clip.publishedAt ? new Date(clip.publishedAt) : null
+  const publishedAt =
+    posted && posted.getTime() > startAt.getTime() && posted.getTime() < now.getTime()
+      ? posted
+      : new Date(startAt.getTime() + Math.random() * (now.getTime() - startAt.getTime() - DAY))
+  const submittedAt = new Date(Math.min(publishedAt.getTime() + 3_600_000, now.getTime() - 3_600_000))
+  const [s] = await d
+    .insert(tables.submissions)
+    .values({
+      campaignId: c.id,
+      creatorId: userId,
+      linkedAccountId: acc!.id,
+      platform: clip.platform,
+      postUrl: clip.url,
+      platformPostId: clip.platformPostId,
+      state: 'approved',
+      termsVersionId: c.termsVersionId,
+      rateCentsPer1000Locked: c.rate,
+      publishedAt,
+      submittedAt,
+      baselineViews: 0,
+      latestViews: clip.views,
+      countedViews: clip.views,
+      thumbnailUrl: clip.thumbnail,
+      mediaKind: 'video',
+      checkResults: [],
+      nextCheckAt: null,
+      createdAt: submittedAt,
+      updatedAt: now,
+    })
+    .onConflictDoNothing()
+    .returning({ id: tables.submissions.id })
+  if (!s) return false
+  // The views grew from submission to today; the report draws that curve from the day rows.
+  const days = Math.max(1, Math.floor((now.getTime() - submittedAt.getTime()) / DAY))
+  for (let i = 1; i <= days; i++) {
+    const t = i / days
+    const share = 1 - Math.exp(-4 * t)
+    const at = new Date(submittedAt.getTime() + i * DAY)
+    const v = i === days ? clip.views : Math.floor((clip.views * share) / (1 - Math.exp(-4)))
+    await d
+      .insert(tables.viewSnapshotDays)
+      .values({
+        submissionId: s.id,
+        day: at.toISOString().slice(0, 10),
+        takenAt: at,
+        views: v,
+        likes: clip.likes === null ? null : Math.floor(clip.likes * (v / clip.views)),
+        comments: clip.comments === null ? null : Math.floor(clip.comments * (v / clip.views)),
+        shares: null,
+      })
+      .onConflictDoNothing()
+  }
+  await recordSnapshot(d, {
+    submissionId: s.id,
+    takenAt: now,
+    views: clip.views,
+    likes: clip.likes,
+    comments: clip.comments,
+    shares: null,
+    isPublic: true,
+    source: 'demo',
+  })
+  await accrueEarnings(store, { submissionId: s.id })
+  return true
 }
 
 /** Make the demo campaign with every clip in the spec. Running it again changes nothing. */
@@ -113,7 +218,7 @@ async function importInto(d: Db, actorId: string, spec: DemoSpec) {
       platforms: spec.platforms,
       budgetCents: dollars(spec.budgetCents),
       rateCentsPer1000: dollars(spec.rateCentsPer1000),
-      capPerPostCents: '',
+      capPerPostCents: spec.capPerPostCents ? dollars(spec.capPerPostCents) : '',
       capPerCreatorCents: '',
       minViewsToEarn: String(spec.minViewsToEarn),
       minEngagementBps: '',
@@ -146,105 +251,88 @@ async function importInto(d: Db, actorId: string, spec: DemoSpec) {
   let views = 0
   const clips = [...spec.clips].sort((a, b) => b.views - a.views)
   for (const clip of clips) {
-    const slug = slugOf(clip.handle)
-    const email = `${slug}.${clip.platform}@demo.invalid`
-    const [u] = await d
-      .insert(tables.users)
-      .values({ email, name: clip.channel, username: null })
-      .onConflictDoNothing({ target: tables.users.email })
-      .returning({ id: tables.users.id })
-    const userId =
-      u?.id ?? (await d.select({ id: tables.users.id }).from(tables.users).where(eq(tables.users.email, email)))[0]!.id
-    await d.insert(tables.creatorProfiles).values({ userId }).onConflictDoNothing()
-    let [acc] = await d
-      .select({ id: tables.linkedAccounts.id })
-      .from(tables.linkedAccounts)
-      .where(and(eq(tables.linkedAccounts.creatorId, userId), eq(tables.linkedAccounts.platform, clip.platform)))
-    if (!acc)
-      [acc] = await d
-        .insert(tables.linkedAccounts)
-        .values({
-          creatorId: userId,
-          platform: clip.platform,
-          handle: slug,
-          linkMethod: 'bio_code',
-          status: 'verified',
-          verifiedAt: now,
-          platformUserId: `${clip.platform}-${slug}`,
-        })
-        .returning({ id: tables.linkedAccounts.id })
-    await d.insert(tables.campaignMembers).values({ campaignId: c.id, creatorId: userId }).onConflictDoNothing()
-
-    // Posted when the platform says, else somewhere in the campaign; submitted an hour after posting.
-    const posted = clip.publishedAt ? new Date(clip.publishedAt) : null
-    const publishedAt =
-      posted && posted.getTime() > startAt.getTime() && posted.getTime() < now.getTime()
-        ? posted
-        : new Date(startAt.getTime() + Math.random() * (now.getTime() - startAt.getTime() - DAY))
-    const submittedAt = new Date(Math.min(publishedAt.getTime() + 3_600_000, now.getTime() - 3_600_000))
-    const [s] = await d
-      .insert(tables.submissions)
-      .values({
-        campaignId: c.id,
-        creatorId: userId,
-        linkedAccountId: acc!.id,
-        platform: clip.platform,
-        postUrl: clip.url,
-        platformPostId: clip.platformPostId,
-        state: 'approved',
-        termsVersionId: campaign.currentTermsVersionId,
-        rateCentsPer1000Locked: campaign.rateCentsPer1000,
-        publishedAt,
-        submittedAt,
-        baselineViews: 0,
-        latestViews: clip.views,
-        countedViews: clip.views,
-        thumbnailUrl: clip.thumbnail,
-        mediaKind: 'video',
-        checkResults: [],
-        nextCheckAt: null,
-        createdAt: submittedAt,
-        updatedAt: now,
-      })
-      .onConflictDoNothing()
-      .returning({ id: tables.submissions.id })
-    if (!s) continue
-    // The views grew from submission to today; the report draws that curve from the day rows.
-    const days = Math.max(1, Math.floor((now.getTime() - submittedAt.getTime()) / DAY))
-    for (let i = 1; i <= days; i++) {
-      const t = i / days
-      const share = 1 - Math.exp(-4 * t)
-      const at = new Date(submittedAt.getTime() + i * DAY)
-      const v = i === days ? clip.views : Math.floor((clip.views * share) / (1 - Math.exp(-4)))
-      await d
-        .insert(tables.viewSnapshotDays)
-        .values({
-          submissionId: s.id,
-          day: at.toISOString().slice(0, 10),
-          takenAt: at,
-          views: v,
-          likes: clip.likes === null ? null : Math.floor(clip.likes * (v / clip.views)),
-          comments: clip.comments === null ? null : Math.floor(clip.comments * (v / clip.views)),
-          shares: null,
-        })
-        .onConflictDoNothing()
+    if (
+      await insertDemoClip(
+        d,
+        store,
+        { id: c.id, termsVersionId: campaign.currentTermsVersionId, rate: campaign.rateCentsPer1000, startAt },
+        clip,
+        now,
+      )
+    ) {
+      posts++
+      views += clip.views
     }
-    await recordSnapshot(d, {
-      submissionId: s.id,
-      takenAt: now,
-      views: clip.views,
-      likes: clip.likes,
-      comments: clip.comments,
-      shares: null,
-      isPublic: true,
-      source: 'demo',
-    })
-    await accrueEarnings(store, { submissionId: s.id })
-    posts++
-    views += clip.views
   }
   const [t] = await d.execute<{ earned: string }>(
     sql`select coalesce(sum(earned_cents), 0) as earned from submissions where campaign_id = ${c.id}`,
   )
   return { id: c.id, status: 'live', posts, views, earnedCents: Number(t?.earned ?? 0), created: true }
+}
+
+/**
+ * More clips into an existing demo campaign, biggest first, until the budget is spent. With a top-up the
+ * budget grows first (the demo client "pays" it). Each clip is its own transaction, so a failure part way
+ * keeps what was added.
+ */
+export async function addDemoClips(
+  actorId: string,
+  spec: DemoSpec,
+  clips: DemoClip[],
+  opts: { topUpCents?: number } = {},
+) {
+  const d = db()
+  const status = await demoStatus(spec)
+  if (!status) throw new Error('Make the demo campaign first.')
+  const [campaign] = await d.select().from(tables.campaigns).where(eq(tables.campaigns.id, status.id))
+  if (!campaign?.currentTermsVersionId || !campaign.clientId) throw new Error('The demo campaign is incomplete.')
+  if (opts.topUpCents && opts.topUpCents > 0) {
+    await recordClientFunding(d, actorId, {
+      clientId: campaign.clientId,
+      amountCents: opts.topUpCents,
+      reference: `DEMO-${spec.slug}-${Date.now()}`,
+    })
+    await changeBudget(d, actorId, campaign.id, campaign.budgetCents + opts.topUpCents)
+    if (campaign.status === 'closing')
+      await d.update(tables.campaigns).set({ status: 'live' }).where(eq(tables.campaigns.id, campaign.id))
+  }
+  const [fresh] = await d.select().from(tables.campaigns).where(eq(tables.campaigns.id, campaign.id))
+  const [spent] = await d.execute<{ earned: string }>(
+    sql`select coalesce(sum(earned_cents), 0) as earned from submissions where campaign_id = ${campaign.id}`,
+  )
+  let roomCents = fresh!.budgetCents - Number(spent?.earned ?? 0)
+  const existing = new Set(
+    (
+      await d
+        .select({ p: tables.submissions.platform, id: tables.submissions.platformPostId })
+        .from(tables.submissions)
+        .where(eq(tables.submissions.campaignId, campaign.id))
+    ).map((r) => `${r.p}:${r.id}`),
+  )
+  const now = new Date()
+  const ref: DemoCampaignRef = {
+    id: campaign.id,
+    termsVersionId: campaign.currentTermsVersionId,
+    rate: campaign.rateCentsPer1000,
+    startAt: campaign.startAt ?? new Date(now.getTime() - spec.startedDaysAgo * DAY),
+  }
+  const store = createPgStore(d)
+  let added = 0
+  let views = 0
+  for (const clip of [...clips].sort((a, b) => b.views - a.views)) {
+    if (existing.has(`${clip.platform}:${clip.platformPostId}`)) continue
+    const raw = Math.floor((clip.views * campaign.rateCentsPer1000) / 1000)
+    const cost = campaign.capPerPostCents ? Math.min(raw, campaign.capPerPostCents) : raw
+    if (cost > roomCents) continue
+    const ok = await d.transaction((tx) =>
+      insertDemoClip(tx as unknown as Db, createPgStore(tx as unknown as Db), ref, clip, now),
+    )
+    if (!ok) continue
+    roomCents -= cost
+    added++
+    views += clip.views
+    if (roomCents < 1000) break
+  }
+  void store
+  return { added, views, roomCents, status: await demoStatus(spec) }
 }
