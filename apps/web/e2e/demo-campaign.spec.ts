@@ -1,6 +1,8 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { expect, test } from '@playwright/test'
 import postgres from 'postgres'
-import { DEMOS } from '../src/demo'
+import type { DemoSpec } from '../src/server/demo-import'
 import { signInAs } from './helpers'
 
 const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:5432/mde', {
@@ -16,7 +18,7 @@ test('an admin makes the demo campaign once; creators never see it and the repor
   browser,
 }) => {
   test.setTimeout(10 * 60_000)
-  const spec = DEMOS[0]!
+  const spec = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src/demo/zohran-mamdani.json'), 'utf8')) as DemoSpec
   test.skip(spec.clips.length === 0, 'The clip file is empty.')
   expect(spec.clips.length).toBeGreaterThan(100)
   const fileViews = spec.clips.reduce((a, c) => a + c.views, 0)
@@ -28,7 +30,7 @@ test('an admin makes the demo campaign once; creators never see it and the repor
   const made = await sql`select id from campaigns where title = ${spec.title} and demo`
   if (made.length === 0) {
     await page.getByRole('button', { name: `Create ${spec.title}` }).click()
-    await expect(page.getByText(/^Made /)).toBeVisible({ timeout: 8 * 60_000 })
+    await expect(page.getByText(/^Made: /)).toBeVisible({ timeout: 8 * 60_000 })
   }
   const [c] =
     await sql`select id, status, visibility, demo, budget_cents from campaigns where title = ${spec.title} and demo`
@@ -40,7 +42,10 @@ test('an admin makes the demo campaign once; creators never see it and the repor
     count(*) filter (where next_check_at is not null)::int as scheduled from submissions where campaign_id = ${c!.id}`
   expect(t!.posts).toBe(spec.clips.length)
   expect(Number(t!.views)).toBe(fileViews)
-  expect(Number(t!.earned)).toBe(Math.floor((fileViews / 1000) * spec.rateCentsPer1000))
+  // The engine pays each post in whole cents, so the total is the sum of each post's floor.
+  expect(Number(t!.earned)).toBe(
+    spec.clips.reduce((a, c) => a + Math.floor((c.views * spec.rateCentsPer1000) / 1000), 0),
+  )
   expect(t!.scheduled).toBe(0)
 
   // Made once: the page now shows the figures instead of the button.

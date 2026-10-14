@@ -7,7 +7,7 @@ import {
   publishCampaign,
   recordClientFunding,
 } from '@mde/campaigns'
-import { db, recordSnapshot, tables } from '@mde/db'
+import { db, recordSnapshot, tables, type Db } from '@mde/db'
 import { accrueEarnings, createPgStore } from '@mde/money'
 import { and, eq, sql } from 'drizzle-orm'
 
@@ -79,7 +79,11 @@ export async function demoStatus(spec: DemoSpec) {
 export async function importDemoCampaign(actorId: string, spec: DemoSpec) {
   const existing = await demoStatus(spec)
   if (existing) return { ...existing, created: false }
-  const d = db()
+  // All or nothing: a failure part way leaves no half campaign and no ledger rows.
+  return db().transaction((tx) => importInto(tx as unknown as Db, actorId, spec))
+}
+
+async function importInto(d: Db, actorId: string, spec: DemoSpec) {
   const now = new Date()
   const startAt = new Date(now.getTime() - spec.startedDaysAgo * DAY)
 
@@ -236,13 +240,11 @@ export async function importDemoCampaign(actorId: string, spec: DemoSpec) {
       source: 'demo',
     })
     await accrueEarnings(store, { submissionId: s.id })
-    // The money was reserved as the views came in, not all today.
-    await d.execute(sql`
-      update ledger_transactions set created_at = ${new Date(submittedAt.getTime() + DAY).toISOString()}::timestamptz
-      where submission_id = ${s.id} and kind = 'earning_accrued'`)
     posts++
     views += clip.views
   }
-  const status = await demoStatus(spec)
-  return { ...(status ?? { id: c.id, status: 'live', posts, views, earnedCents: 0 }), created: true }
+  const [t] = await d.execute<{ earned: string }>(
+    sql`select coalesce(sum(earned_cents), 0) as earned from submissions where campaign_id = ${c.id}`,
+  )
+  return { id: c.id, status: 'live', posts, views, earnedCents: Number(t?.earned ?? 0), created: true }
 }
