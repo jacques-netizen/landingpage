@@ -224,6 +224,29 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
   }
 }
 
+// Posts in these states are still tracked (everything but rejected and removed).
+const TRACKED = ['checking', 'needs_review', 'needs_info', 'flagged', 'approved', 'earning', 'final']
+const trackedList = () =>
+  sql.join(
+    TRACKED.map((t) => sql`${t}`),
+    sql`, `,
+  )
+
+/**
+ * Tracked posts on a live or closing campaign that have no next check scheduled get one now (owner
+ * report, 2026-10-14: posts sat on "No check yet" for days). Whatever cleared the schedule, the hourly
+ * check must never stop while the campaign runs. Returns how many were put back.
+ */
+export async function reviveUnscheduled(db: Db, now = new Date()) {
+  const rows = await db.execute<{ id: string }>(sql`
+    update submissions s set next_check_at = ${now.toISOString()}::timestamptz
+    from campaigns c
+    where c.id = s.campaign_id and s.next_check_at is null and s.state in (${trackedList()})
+      and c.status in ('live', 'closing') and c.deleted_at is null
+    returning s.id`)
+  return rows.length
+}
+
 /** Every due check, oldest first, a few at a time. One post failing never stops the rest. */
 export async function runDueViewChecks(
   db: Db,
@@ -232,13 +255,15 @@ export async function runDueViewChecks(
 ) {
   const now = deps.now ?? new Date()
   const { limit = 200, concurrency = 5, log = (e) => console.error(JSON.stringify(e)) } = opts
+  const revived = await reviveUnscheduled(db, now)
+  if (revived) log({ level: 'warn', msg: 'posts with no check scheduled put back on the hourly check', revived })
   const due = await db
     .select({ id: submissions.id })
     .from(submissions)
     .where(lte(submissions.nextCheckAt, now))
     .orderBy(asc(submissions.nextCheckAt))
     .limit(limit)
-  const totals = { due: due.length, checked: 0, removed: 0, flagged: 0, unavailable: 0, failed: 0 }
+  const totals = { due: due.length, revived, checked: 0, removed: 0, flagged: 0, unavailable: 0, failed: 0 }
   let i = 0
   const worker = async () => {
     while (i < due.length) {
@@ -281,5 +306,39 @@ export async function staleCampaigns(db: Db, now = new Date(), staleHours = 3) {
     title: r.title,
     lastSnapshotAt: r.last ? new Date(r.last).toISOString() : null,
     trackedPosts: Number(r.tracked),
+  }))
+}
+
+/**
+ * Where tracking stands on each live or closing campaign, for the health check and the staff dashboard:
+ * how many posts are tracked, how many have no check scheduled, when the next check is due and when the
+ * last snapshot was taken.
+ */
+export async function trackingStatus(db: Db) {
+  const rows = await db.execute<{
+    id: string
+    title: string
+    tracked: string
+    unscheduled: string
+    next_due: Date | null
+    last_snapshot: Date | null
+  }>(sql`
+    select c.id, c.title,
+      count(s.id) filter (where s.state in (${trackedList()})) as tracked,
+      count(s.id) filter (where s.state in (${trackedList()}) and s.next_check_at is null) as unscheduled,
+      min(s.next_check_at) as next_due,
+      (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = c.id) as last_snapshot
+    from campaigns c
+    left join submissions s on s.campaign_id = c.id
+    where c.status in ('live', 'closing') and c.deleted_at is null
+    group by c.id
+    order by c.title`)
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    trackedPosts: Number(r.tracked),
+    unscheduledPosts: Number(r.unscheduled),
+    nextDueAt: r.next_due ? new Date(r.next_due).toISOString() : null,
+    lastSnapshotAt: r.last_snapshot ? new Date(r.last_snapshot).toISOString() : null,
   }))
 }

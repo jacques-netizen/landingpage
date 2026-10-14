@@ -24,5 +24,7 @@ export function nextCheckAt(
   else if (!c.closedAt || c.closedAt > now) hours = intervals.until_close_hours
   else if (now.getTime() < c.closedAt.getTime() + c.keepLiveDays * DAY) hours = intervals.keep_live_hours
   else return null
+  // A broken interval (missing or not a number) must never end tracking: fall back to hourly.
+  if (!Number.isFinite(hours) || hours <= 0) hours = 1
   return new Date(now.getTime() + hours * HOUR)
 }

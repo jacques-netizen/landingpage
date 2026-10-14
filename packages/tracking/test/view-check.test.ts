@@ -14,7 +14,16 @@ import { MockProvider, ProviderRouter, type MockState } from '@mde/platforms'
 import { submitPost } from '@mde/submissions'
 import { and, eq, sql as dsql } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { recheckAccount, runDueViewChecks, runReleases, runViewCheck, staleCampaigns, type CheckOutcome } from '../src'
+import {
+  recheckAccount,
+  reviveUnscheduled,
+  runDueViewChecks,
+  runReleases,
+  runViewCheck,
+  staleCampaigns,
+  trackingStatus,
+  type CheckOutcome,
+} from '../src'
 
 const { db, sql } = createDb(process.env.DATABASE_URL!, { max: 4, onnotice: () => {} })
 afterAll(() => sql.end())
@@ -143,8 +152,9 @@ async function setup(over: Partial<CampaignFormInput> = {}, followers = 50_000) 
       CheckOutcome,
       { ran: true }
     >
-  return { c, id, sub, pending, post, check, account: acc! }
+  return { c, id, sub, pending, post, check, account: acc!, t0 }
 }
+const t0Of = (t: { t0: Date }) => t.t0.getTime()
 
 describe('view checks and earnings', () => {
   it('grows pending earnings with rising views, matching a hand calculation', async () => {
@@ -197,6 +207,29 @@ describe('view checks and earnings', () => {
     t.post(2_000)
     await t.check(4)
     expect((await staleCampaigns(db, later)).map((c) => c.id)).not.toContain(t.c.id)
+  })
+
+  it('a tracked post that lost its check schedule is put back on the hourly check', async () => {
+    const t = await setup()
+    // Whatever cleared it, a live campaign's post must never sit on "No check yet".
+    await db.update(tables.submissions).set({ nextCheckAt: null }).where(eq(tables.submissions.id, t.id))
+    const status = (await trackingStatus(db)).find((c) => c.id === t.c.id)!
+    expect(status.unscheduledPosts).toBe(1)
+    t.post(3_000)
+    const now = new Date(t0Of(t) + 2 * HOUR)
+    const totals = await runDueViewChecks(db, { router, now })
+    expect(totals.revived).toBeGreaterThanOrEqual(1)
+    const s = await t.sub()
+    expect(s.latestViews).toBe(3_000)
+    expect(s.nextCheckAt).not.toBeNull()
+    expect((await trackingStatus(db)).find((c) => c.id === t.c.id)!.unscheduledPosts).toBe(0)
+    // A rejected post stays off the schedule.
+    await db
+      .update(tables.submissions)
+      .set({ state: 'rejected', nextCheckAt: null })
+      .where(eq(tables.submissions.id, t.id))
+    expect(await reviveUnscheduled(db, now)).toBe(0)
+    expect((await t.sub()).nextCheckAt).toBeNull()
   })
 
   it('running the same check twice changes nothing', async () => {
