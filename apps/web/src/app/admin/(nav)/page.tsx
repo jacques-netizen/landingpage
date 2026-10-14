@@ -54,6 +54,15 @@ export default async function AdminDashboard() {
           Refresh stats now, then check the worker.
         </Notice>
       ) : null}
+      {d.proofsWaiting ? (
+        <Notice kind="ok">
+          {d.proofsWaiting} view {d.proofsWaiting === 1 ? 'proof is' : 'proofs are'} waiting for a decision.{' '}
+          <a href="/admin/review/proofs" className="text-ink">
+            Open view proofs
+          </a>
+          .
+        </Notice>
+      ) : null}
       {missingProviders.length ? (
         <Notice kind="bad">
           No data provider is set up for {missingProviders.map((p) => PLATFORM_LABELS[p] ?? p).join(', ')}. Posts there

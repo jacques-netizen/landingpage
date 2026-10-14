@@ -28,6 +28,7 @@ const SECTIONS: { title?: string; links: [string, string, keyof typeof I][] }[] 
       ['Overview', '/admin', 'home'],
       ['Campaigns', '/admin/campaigns', 'campaigns'],
       ['Review queue', '/admin/review', 'review'],
+      ['View proofs', '/admin/review/proofs', 'review'],
       ['Appeals', '/admin/appeals', 'appeals'],
       ['Creators', '/admin/creators', 'creators'],
     ],

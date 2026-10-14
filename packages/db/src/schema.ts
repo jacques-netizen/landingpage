@@ -516,6 +516,44 @@ export const appeals = pgTable(
   () => [check('appeals_status_check', inList('status', APPEAL_STATUSES))],
 )
 
+export const VIEW_PROOF_STATUSES = ['requested', 'submitted', 'approved', 'rejected'] as const
+
+// A creator's own proof of a post's views (owner request, 2026-10-14): for posts whose views the platform
+// does not give (picture posts) or when the automatic check has stopped. The creator asks for a code,
+// records their analytics screen with the code in the recording, uploads the recording and a screenshot,
+// and staff set the views from it. Only staff can change the views.
+export const viewProofs = pgTable(
+  'view_proofs',
+  {
+    id: id(),
+    submissionId: uuid('submission_id')
+      .notNull()
+      .references(() => submissions.id),
+    creatorId: uuid('creator_id')
+      .notNull()
+      .references(() => users.id),
+    // The one-time code the recording must show, like MDE-7K4Q. Expires 24 hours after it was issued.
+    code: text('code').notNull(),
+    status: text('status').notNull().default('requested'),
+    claimedViews: bigint('claimed_views', { mode: 'number' }),
+    screenshotFileId: uuid('screenshot_file_id').references(() => files.id),
+    recordingFileId: uuid('recording_file_id').references(() => files.id),
+    note: text('note'),
+    submittedAt: tz('submitted_at'),
+    // Staff's decision: the views they set (approved) or why not (rejected).
+    reviewerId: uuid('reviewer_id').references(() => users.id),
+    reviewedAt: tz('reviewed_at'),
+    setViews: bigint('set_views', { mode: 'number' }),
+    decisionNote: text('decision_note'),
+    ...timestamps,
+  },
+  (t) => [
+    index('view_proofs_submission').on(t.submissionId),
+    index('view_proofs_status').on(t.status),
+    check('view_proofs_status_check', inList('status', VIEW_PROOF_STATUSES)),
+  ],
+)
+
 export const warnings = pgTable('warnings', {
   id: id(),
   creatorId: uuid('creator_id')

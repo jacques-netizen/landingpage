@@ -2,15 +2,18 @@
 
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
 import { formatDollars } from '@mde/money/dollars'
-import { Button, Drawer, DrawerSection, Field, LineChart, LoadingRows, Textarea } from '@mde/ui'
+import { Button, Drawer, DrawerSection, Field, Input, LineChart, LoadingRows, Textarea } from '@mde/ui'
 import { useActionState, useEffect, useState, useTransition } from 'react'
 import { STATUS_COLOURS } from '@/components/app-ui'
 import { LocalDateTime } from '@/components/local-time'
 import {
   answerInfoAction,
   appealAction,
+  requestViewProofAction,
   submissionDetailAction,
+  submitViewProofAction,
   type AppealFormState,
+  type ProofFormState,
   type SubmissionDetail,
 } from './actions'
 
@@ -206,6 +209,7 @@ function Detail({ d, onAppealed }: { d: SubmissionDetail; onAppealed: () => void
           Last updated {d.lastCheckedAt ? <LocalDateTime iso={d.lastCheckedAt} /> : 'not yet'}. The views at submission
           are the starting point and are not counted.
         </p>
+        <ProofPanel d={d} onChanged={onAppealed} />
       </DrawerSection>
 
       {d.state === 'needs_info' ? (
@@ -365,6 +369,189 @@ function AnswerForm({ id, onDone }: { id: string; onDone: () => void }) {
       ) : null}
       <Button type="submit" tone="app" loading={pending}>
         Send answer
+      </Button>
+    </form>
+  )
+}
+
+const PROOF_STATUS: Record<string, string> = {
+  submitted: 'Your proof was sent and is waiting for review.',
+  approved: 'Your proof was accepted.',
+  rejected: 'Your proof was not accepted.',
+}
+
+/**
+ * Update the views yourself with a screen recording (owner request, 2026-10-14): for picture posts and
+ * any post the automatic check cannot read. A code, the rules, two uploads and the count.
+ */
+function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => void }) {
+  const [busy, start] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const p = d.proof
+  const live = p?.status === 'requested' && new Date(p.expiresAt).getTime() > Date.now()
+  return (
+    <div className="mt-4 border-0 border-t border-solid border-[var(--t-hair)] pt-4">
+      <p className="m-0 text-[13px] font-semibold">Update views yourself</p>
+      <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">
+        For picture posts, or when the count above is behind: record your analytics screen and we set the views from it.
+        Views only go up, once a day per post.
+      </p>
+      {p && p.status !== 'requested' ? (
+        <div className="mt-3 rounded-[12px] bg-[var(--t-glass)] p-3 text-[13px]">
+          <p className="m-0 font-semibold">{PROOF_STATUS[p.status]}</p>
+          {p.status === 'approved' && p.setViews !== null ? (
+            <p className="mt-1 mb-0 text-[var(--t-muted)]">
+              Views set to {count(p.setViews)}
+              {p.reviewedAt ? (
+                <>
+                  {' '}
+                  on <LocalDateTime iso={p.reviewedAt} />
+                </>
+              ) : null}
+              .
+            </p>
+          ) : null}
+          {p.status === 'submitted' && p.claimedViews !== null ? (
+            <p className="mt-1 mb-0 text-[var(--t-muted)]">You reported {count(p.claimedViews)} views.</p>
+          ) : null}
+          {p.decisionNote ? <p className="mt-1 mb-0 text-[var(--t-muted)]">{p.decisionNote}</p> : null}
+        </div>
+      ) : null}
+      {live && p ? (
+        <ProofForm d={d} proofId={p.id} code={p.code} expiresAt={p.expiresAt} onDone={onChanged} />
+      ) : d.canProveViews ? (
+        <div className="mt-3">
+          <Button
+            type="button"
+            tone="app"
+            variant="secondary"
+            size="sm"
+            loading={busy}
+            onClick={() =>
+              start(async () => {
+                setError(null)
+                const r = await requestViewProofAction(d.id)
+                if (r.error) setError(r.error)
+                else onChanged()
+              })
+            }
+          >
+            Update views with a recording
+          </Button>
+          {error ? (
+            <p role="alert" className="mt-2 mb-0 text-[13px] text-flagged">
+              {error}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+function ProofForm({
+  d,
+  proofId,
+  code,
+  expiresAt,
+  onDone,
+}: {
+  d: SubmissionDetail
+  proofId: string
+  code: string
+  expiresAt: string
+  onDone: () => void
+}) {
+  const [files, setFiles] = useState<{ screenshot?: string; recording?: string }>({})
+  const [uploading, setUploading] = useState<{ screenshot?: boolean; recording?: boolean }>({})
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [state, action, pending] = useActionState<ProofFormState, FormData>(async (prev, form) => {
+    const next = await submitViewProofAction(proofId, prev, form)
+    if (next.ok) onDone()
+    return next
+  }, {})
+  const upload = async (kind: 'screenshot' | 'recording', file: File | undefined) => {
+    if (!file) return
+    setUploadError(null)
+    setUploading((u) => ({ ...u, [kind]: true }))
+    try {
+      const res = await fetch(`/api/view-proofs/${proofId}/file?kind=${kind}`, {
+        method: 'POST',
+        body: file,
+        headers: { 'content-type': file.type || 'application/octet-stream' },
+      })
+      const j = (await res.json()) as { fileId?: string; error?: { message: string } }
+      if (!res.ok || !j.fileId) throw new Error(j.error?.message ?? 'The upload failed. Try again.')
+      setFiles((f) => ({ ...f, [kind]: j.fileId }))
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : 'The upload failed. Try again.')
+    } finally {
+      setUploading((u) => ({ ...u, [kind]: false }))
+    }
+  }
+  return (
+    <form action={action} className="mt-3 flex flex-col gap-4">
+      <div className="rounded-[12px] bg-[var(--t-glass)] p-3">
+        <p className="m-0 text-[12px] text-[var(--t-muted)]">Your code. Show it in the recording.</p>
+        <p className="mt-1 mb-0 font-mono text-[24px] font-bold tracking-[0.08em]">{code}</p>
+        <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">
+          Valid until <LocalDateTime iso={expiresAt} />.
+        </p>
+      </div>
+      <div>
+        <p className="m-0 mb-1 text-[13px] font-semibold">Rules for the recording</p>
+        <ol className="m-0 pl-5 text-[12px] text-[var(--t-muted)]">
+          {d.proofRules.map((r) => (
+            <li key={r} className="py-[2px]">
+              {r}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <Field label="Screen recording" tone="app" helper="MP4, MOV or WebM, 10 to 90 seconds.">
+        {(p) => (
+          <input
+            id={p.id}
+            aria-describedby={p.describedBy}
+            type="file"
+            accept="video/mp4,video/quicktime,video/webm"
+            className="block w-full text-[13px]"
+            onChange={(e) => upload('recording', e.target.files?.[0])}
+          />
+        )}
+      </Field>
+      <Field label="Screenshot of the analytics" tone="app" helper="PNG, JPG or WebP.">
+        {(p) => (
+          <input
+            id={p.id}
+            aria-describedby={p.describedBy}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            className="block w-full text-[13px]"
+            onChange={(e) => upload('screenshot', e.target.files?.[0])}
+          />
+        )}
+      </Field>
+      <input type="hidden" name="recordingFileId" value={files.recording ?? ''} />
+      <input type="hidden" name="screenshotFileId" value={files.screenshot ?? ''} />
+      <Field label="Views shown in your analytics" tone="app">
+        {(p) => <Input tone="app" id={p.id} name="views" inputMode="numeric" required placeholder="12,345" />}
+      </Field>
+      <Field label="Note" tone="app" helper="Optional.">
+        {(p) => <Textarea tone="app" id={p.id} aria-describedby={p.describedBy} name="note" rows={2} maxLength={500} />}
+      </Field>
+      {uploadError || (state.error && !pending) ? (
+        <p role="alert" className="m-0 text-[14px] text-flagged">
+          {uploadError ?? state.error}
+        </p>
+      ) : null}
+      <Button
+        type="submit"
+        tone="app"
+        loading={pending}
+        disabled={!files.recording || !files.screenshot || !!uploading.recording || !!uploading.screenshot}
+      >
+        {uploading.recording || uploading.screenshot ? 'Uploading' : 'Send proof'}
       </Button>
     </form>
   )

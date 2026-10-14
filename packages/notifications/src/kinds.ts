@@ -18,4 +18,5 @@ export const EMAIL_SUBJECT: Record<NotificationKind, string> = {
   appeal_due: 'An appeal is due soon',
   campaign_event: 'Campaign update',
   payout_failed: 'A payout failed',
+  view_proof: 'An update on your view proof',
 }

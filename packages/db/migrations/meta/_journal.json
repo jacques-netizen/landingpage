@@ -190,6 +190,13 @@
       "when": 1791808590014,
       "tag": "0026_submission_media",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1791963089832,
+      "tag": "0027_view_proofs",
+      "breakpoints": true
     }
   ]
 }

@@ -19,6 +19,7 @@ export type NotificationKind =
   | 'appeal_due'
   | 'campaign_event'
   | 'payout_failed'
+  | 'view_proof'
 
 export async function notify(
   d: DbOrTx,

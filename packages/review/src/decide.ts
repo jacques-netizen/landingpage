@@ -329,6 +329,7 @@ export async function deleteSubmission(db: Db, staffId: string, id: string) {
     await tx.delete(reviewDecisions).where(eq(reviewDecisions.submissionId, id))
     await tx.delete(fraudFlags).where(eq(fraudFlags.submissionId, id))
     await tx.delete(appeals).where(eq(appeals.submissionId, id))
+    await tx.delete(tables.viewProofs).where(eq(tables.viewProofs.submissionId, id))
     await tx.update(warnings).set({ submissionId: null }).where(eq(warnings.submissionId, id))
     await tx.delete(submissions).where(eq(submissions.id, id))
     await writeAudit(tx, {

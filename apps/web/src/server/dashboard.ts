@@ -43,11 +43,16 @@ export async function staffDashboard(now = new Date()) {
     .map((c) => ({ ...c, ...figures.get(c.id)! }))
     .filter((c) => BigInt(c.leftCents) * 100n <= BigInt(c.budgetCents) * NEAR_END_PERCENT)
     .sort((a, b) => a.leftCents - b.leftCents)
+  const [proofs] = await d
+    .select({ n: count() })
+    .from(tables.viewProofs)
+    .where(eq(tables.viewProofs.status, 'submitted'))
   return {
     waiting: queue?.n ?? 0,
     flagged: flagged?.n ?? 0,
     oldestWaiting: queue?.oldest ?? null,
     appeals,
     nearEnd,
+    proofsWaiting: proofs?.n ?? 0,
   }
 }
