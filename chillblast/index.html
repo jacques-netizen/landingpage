@@ -407,6 +407,30 @@
   .pchip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.7rem 1.05rem;border:1px solid var(--gold);color:var(--gold-soft);background:var(--panel-2);transition:.3s}
   .pchip:hover{background:var(--gold);color:var(--bg)}
 
+  /* photos */
+  .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:2rem}
+  .ph{position:relative;margin:0;aspect-ratio:4/5;overflow:hidden;border-radius:14px;background:#0b0906;box-shadow:0 22px 44px -22px rgba(0,0,0,.85),0 0 0 1px rgba(212,178,106,.2)}
+  .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .ph:hover img{transform:scale(1.06)}
+  .ph:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,8,5,.92));pointer-events:none}
+  .ph figcaption{position:absolute;left:0.9rem;right:0.9rem;bottom:0.85rem;z-index:2;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;color:#fff;line-height:1.2}
+  .ph figcaption small{display:block;font-weight:600;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(239,231,213,.7);margin-top:0.25rem}
+  .band{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:0.8rem;margin-top:2rem}
+  .band .ph{aspect-ratio:auto;min-height:240px}
+  .band-cap{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .lane-panel{display:grid;grid-template-columns:minmax(0,0.9fr) 1.1fr;gap:1.4rem;align-items:center}
+  .lane-img{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:10px;box-shadow:0 0 0 1px rgba(212,178,106,.25)}
+  .lane-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fadein .6s ease}
+  @keyframes fadein{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+  .fun-img{width:210px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 0 0 1px rgba(212,178,106,.3)}
+  .fun-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fadein .6s ease}
+  .src{padding:0;overflow:hidden}
+  .src .src-img{aspect-ratio:16/9;overflow:hidden;position:relative}
+  .src .src-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .src:hover .src-img img{transform:scale(1.05)}
+  .src .src-b{padding:1.4rem 1.4rem 1.6rem}
+  .bsplit-img{margin-top:1rem;aspect-ratio:16/9}
+
   /* CPM range bars */
   .rng{margin-top:2.6rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.4rem,3vw,2.2rem)}
   .alt .rng{background:var(--bg)}
@@ -622,7 +646,15 @@
     .mx-grid{grid-template-columns:repeat(15,1fr)}
     .mx-grid i:nth-child(n+61){display:none}
   }
+  @media(max-width:1020px){
+    .gal{grid-template-columns:1fr 1fr}
+  }
   @media(max-width:700px){
+    .band{grid-template-columns:1fr 1fr}
+    .band .ph:first-child{grid-column:1/-1}
+    .band .ph{min-height:160px}
+    .lane-panel{grid-template-columns:1fr}
+    .fun-img{width:100%}
     .who,.rules,.sources,.facts,.terms,.chan-notes{grid-template-columns:1fr}
     .rng-row,.bb-row{grid-template-columns:1fr;gap:0.5rem}
     .rng-axis{margin-left:0}
@@ -711,6 +743,12 @@
     <div class="chips-row rv d2">
       <span class="pchip">Aston Martin collection</span><span class="pchip">The Lab</span><span class="pchip">Cryo range</span><span class="pchip">Sim racing rigs</span>
     </div>
+    <div class="gal rv d3">
+      <figure class="ph"><img src="img/cb/origin.jpg" alt="Three Chillblast Origin PCs lit in a dark studio" loading="lazy"><figcaption>Origin<small>Chillblast</small></figcaption></figure>
+      <figure class="ph"><img src="img/cb/watercooled-tower.jpg" alt="Chillblast water-cooled PC with branded glass panel" loading="lazy" style="object-position:72% 50%"><figcaption>Water Cooled Series<small>Chillblast</small></figcaption></figure>
+      <figure class="ph"><img src="img/cb/cryo.jpg" alt="Cryo by Chillblast keyboard, mouse and headset" loading="lazy" style="object-position:40% 50%"><figcaption>Cryo range<small>Cryo by Chillblast</small></figcaption></figure>
+      <figure class="ph"><img src="img/cb/ready-to-race.jpg" alt="Chillblast F1 Champions Ready to Race PC" loading="lazy" style="object-position:94% 50%"><figcaption>Ready to Race<small>F1 Champions gaming PC</small></figcaption></figure>
+    </div>
     <p class="body-lg rv d3" style="margin-top:2.2rem">Attention for Chillblast's buyers now lives on TikTok, Instagram Reels and YouTube Shorts. The brands winning there have moved past the single official account. <b>They either pay hundreds of independent pages to post about them, or run their own networks of pages that post every day.</b> Both are bought on performance, and both cost a fraction of paid social.</p>
     <div class="rng rv d3" id="rng">
       <div class="rng-k">Cost per 1,000 views</div>
@@ -780,7 +818,7 @@
     <div class="site-cta rv">
       <div><h5>Maison d'&Eacute;lites</h5><p>The full case studies, the talent network and how distribution works.</p></div>
       <div class="btns">
-        <a class="btn" href="https://hello.maisondelites.com/#faq" target="_blank" rel="noopener">Case studies <span>&#8599;</span></a>
+        <a class="btn" href="https://maisondelites.com/case-studies" target="_blank" rel="noopener">Case studies <span>&#8599;</span></a>
         <a class="btn solid" href="https://hello.maisondelites.com" target="_blank" rel="noopener">hello.maisondelites.com <span>&#8599;</span></a>
       </div>
     </div>
@@ -851,6 +889,12 @@
       <div class="end"><div class="ek">A curated campaign</div><p>Most clipping campaigns let anyone join. That suits a streamer and does not suit a premium brand. <b>We choose every page, Chillblast sees the list, and every clip is reviewed before it is paid.</b></p></div>
       <div class="end"><div class="ek">Centred on the brand</div><p>The PC, the build, the setup, the unboxing, the Aston Martin finish, the cooling loop. <b>The product is the subject of every clip.</b></p></div>
     </div>
+    <div class="band rv d3">
+      <figure class="ph"><img src="img/cb/workshop.jpg" alt="Chillblast team member packing a finished PC" loading="lazy"></figure>
+      <figure class="ph"><img src="img/cb/wrap.jpg" alt="Hands applying a wrap to a Chillblast case" loading="lazy"></figure>
+      <figure class="ph"><img src="img/cb/internals.jpg" alt="Inside a Chillblast build" loading="lazy"></figure>
+    </div>
+    <div class="band-cap rv">From Chillblast's own footage. The build, the finish and the machine are the clip.</div>
     <div class="multiply rv d3" id="mx">
       <div class="mx-src">Creator video</div>
       <div class="mx-arrow">&rarr;</div>
@@ -896,7 +940,7 @@
       <button class="lane" data-l="2" role="tab" aria-selected="false"><div class="ln">03</div><div class="lt">The creator</div></button>
       <button class="lane" data-l="3" role="tab" aria-selected="false"><div class="ln">04</div><div class="lt">The race</div></button>
     </div>
-    <div class="lane-panel rv d2"><div class="lk" id="laneK"></div><p id="laneP"></p></div>
+    <div class="lane-panel rv d2"><div class="lane-img" id="laneImg"></div><div><div class="lk" id="laneK"></div><p id="laneP"></p></div></div>
     <div class="facts rv d3">
       <div class="fact"><div class="fk2">Platforms</div><p><b>TikTok, Instagram Reels, YouTube Shorts</b>, plus X for the enthusiast lane.</p></div>
       <div class="fact"><div class="fk2">Geography</div><p><b>UK first</b>, with EU pages admitted from the start.</p></div>
@@ -937,6 +981,7 @@
           </div>
           <div class="akey"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></svg><span>Openly run by Chillblast. <b>Chillblast keeps it all.</b></span></div>
         </div>
+        <figure class="ph bsplit-img"><img src="img/cb/desk.jpg" alt="Cryo by Chillblast desk setup" loading="lazy"></figure>
         <div class="keeps" style="margin-top:1rem"><span>Accounts</span><span>Followers</span><span>Posts</span><span>Email list</span></div>
       </div>
     </div>
@@ -982,9 +1027,9 @@
     <span class="snum rv">11 &middot; Where the content comes from</span>
     <h2 class="statement rv d1">Chillblast does not need to film every day.</h2>
     <div class="sources rv d2">
-      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M10 9.5v5l4-2.5z"/></svg></div><h5>What Chillblast already has</h5><p>Product and launch footage, The Lab and Aston Martin assets, workshop and testing footage, and existing reviews Chillblast has rights to.</p></div>
-      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-6.5 7-6.5s7 2.6 7 6.5"/></svg></div><h5>Creator content made for the pages</h5><p>Gaming, music and sim racing creators film setup tours, build days and sessions on Chillblast PCs, made for the network. Briefs, approvals and usage rights handled by us.</p></div>
-      <div class="src"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20h16M6 16l2-9 4 5 3-7 3 11"/></svg></div><h5>Studio production</h5><p>Scripts, ideas and shoots planned with Chillblast's team, so every month starts with a clear plan.</p></div>
+      <div class="src"><div class="src-img"><img src="img/cb/origin.jpg" alt="Chillblast product footage" loading="lazy"></div><div class="src-b"><h5>What Chillblast already has</h5><p>Product and launch footage, The Lab and Aston Martin assets, workshop and testing footage, and existing reviews Chillblast has rights to.</p></div></div>
+      <div class="src"><div class="src-img"><img src="img/cb/creator-setup.jpg" alt="Creator setting up a Chillblast PC" loading="lazy"></div><div class="src-b"><h5>Creator content made for the pages</h5><p>Gaming, music and sim racing creators film setup tours, build days and sessions on Chillblast PCs, made for the network. Briefs, approvals and usage rights handled by us.</p></div></div>
+      <div class="src"><div class="src-img"><img src="img/cb/keyboard.jpg" alt="Chillblast Cryo keyboard product shot" loading="lazy"></div><div class="src-b"><h5>Studio production</h5><p>Scripts, ideas and shoots planned with Chillblast's team, so every month starts with a clear plan.</p></div></div>
     </div>
     <div class="owned-note rv d3">Everything posted is content Chillblast owns or has licensed. Nothing is reposted from other people's accounts.</div>
 
@@ -998,6 +1043,7 @@
     <div class="funnel rv d2">
       <div class="fun-head">
         <div><div class="fk" id="funK"></div><div class="fh" id="funH"></div></div>
+        <div class="fun-img" id="funImg"></div>
       </div>
       <div class="fsteps" id="fsteps"></div>
       <div class="fun-foot">
@@ -1161,10 +1207,10 @@
 
   /* 08 lanes */
   const LANES=[
-    ['Brand value','The Aston Martin collection, The Lab and water-cooled builds. The machines people want on their desk and in their feed.'],
-    ['The hand-built promise','Workshop, assembly, cable management and testing. Shows the care that goes into every Chillblast.'],
-    ['Made on a Chillblast','Music producers, editors and streamers working on a Chillblast.'],
-    ['Sim racing and flight sim','Sim racing and flight sim rigs, built around Chillblast PCs.']
+    ['Brand value','The Aston Martin collection, The Lab and water-cooled builds. The machines people want on their desk and in their feed.','watercooled-loop','Water-cooled Chillblast build'],
+    ['The hand-built promise','Workshop, assembly, cable management and testing. Shows the care that goes into every Chillblast.','builder','A Chillblast builder at work'],
+    ['Made on a Chillblast','Music producers, editors and streamers working on a Chillblast.','creator-setup','Creator setting up a Chillblast PC'],
+    ['Sim racing and flight sim','Sim racing and flight sim rigs, built around Chillblast PCs.','williams','Williams Esports driver racing on a Chillblast']
   ];
   const laneBtns=[...document.querySelectorAll('.lane')];
   function setLane(i){
@@ -1172,6 +1218,7 @@
     const p=document.getElementById('laneP');
     p.style.animation='none';void p.offsetWidth;p.style.animation='';
     document.getElementById('laneK').textContent=LANES[i][0];
+    document.getElementById('laneImg').innerHTML='<img src="img/cb/'+LANES[i][2]+'.jpg" alt="'+esc(LANES[i][3])+'">';
     p.textContent=LANES[i][1];
   }
   laneBtns.forEach((b,i)=>b.addEventListener('click',()=>setLane(i)));
@@ -1217,10 +1264,10 @@
 
   /* 11 funnels */
   const PAGES=[
-    {k:'Setup pages',h:'Into the “help me choose” flow and the 0% finance offer',clip:'Setups: desks, battlestations, the gear people want',dest:['“Help me choose”','Matches the viewer to the right Chillblast, with the 0% finance offer']},
-    {k:'Build pages',h:'Into the “help me choose” flow and the 0% finance offer',clip:'Builds: workshop, components, the finished machine',dest:['“Help me choose”','The same matching flow, with the 0% finance offer']},
-    {k:'Sim racing pages',h:'Into the sim racing PC guide and configurator',clip:'Sim racing: rigs, wheels, on-track footage',dest:['Sim racing guide','The sim racing PC guide and the configurator']},
-    {k:'Creator pages',h:'Into the creator PC guide',clip:'Creators: editing, streaming, production setups',dest:['Creator PC guide','With editing and production benchmarks']}
+    {k:'Setup pages',h:'Into the “help me choose” flow and the 0% finance offer',img:'desk',clip:'Setups: desks, battlestations, the gear people want',dest:['“Help me choose”','Matches the viewer to the right Chillblast, with the 0% finance offer']},
+    {k:'Build pages',h:'Into the “help me choose” flow and the 0% finance offer',img:'internals',clip:'Builds: workshop, components, the finished machine',dest:['“Help me choose”','The same matching flow, with the 0% finance offer']},
+    {k:'Sim racing pages',h:'Into the sim racing PC guide and configurator',img:'ready-to-race',clip:'Sim racing: rigs, wheels, on-track footage',dest:['Sim racing guide','The sim racing PC guide and the configurator']},
+    {k:'Creator pages',h:'Into the creator PC guide',img:'creator-setup',clip:'Creators: editing, streaming, production setups',dest:['Creator PC guide','With editing and production benchmarks']}
   ];
   const fsteps=document.getElementById('fsteps');
   function setPage(i){
@@ -1228,6 +1275,7 @@
     document.querySelectorAll('.ptab').forEach((t,j)=>{t.classList.toggle('on',j===i);t.setAttribute('aria-selected',j===i);});
     document.getElementById('funK').textContent=p.k+' · funnel';
     document.getElementById('funH').textContent=p.h;
+    document.getElementById('funImg').innerHTML='<img src="img/cb/'+p.img+'.jpg" alt="">';
     const S=[['Clip',p.clip],['Follow','The viewer follows a page Chillblast owns'],['Capture','An email or a quiz answer, before the shop'],[p.dest[0],p.dest[1]],['Shop','Promo code and tracking link through to the order']];
     fsteps.innerHTML=S.map((s,j)=>'<div class="fst'+(j===3?' dest':'')+'"><div class="sn">STEP '+(j+1)+'</div><h5>'+esc(s[0])+'</h5><p>'+esc(s[1])+'</p></div>').join('');
     const items=[...fsteps.children];
