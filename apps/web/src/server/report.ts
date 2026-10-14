@@ -19,7 +19,9 @@ import { redis } from './rate-limit'
 const CACHE_SECONDS = 60
 
 /** The campaign a report token opens, or null when the token is wrong, expired or revoked. */
-export async function campaignForReportToken(token: string): Promise<{ id: string; title: string } | null> {
+export async function campaignForReportToken(
+  token: string,
+): Promise<{ id: string; title: string; demo: boolean } | null> {
   const claim = readReportToken(token)
   if (!claim) return null
   const [c] = await db()
@@ -28,12 +30,13 @@ export async function campaignForReportToken(token: string): Promise<{ id: strin
       title: tables.campaigns.title,
       secret: tables.campaigns.reportSecret,
       deletedAt: tables.campaigns.deletedAt,
+      demo: tables.campaigns.demo,
     })
     .from(tables.campaigns)
     .where(eq(tables.campaigns.id, claim.c))
   if (!c || c.deletedAt || !c.secret) return null
   const ok = verifyReportToken(token, reportKey(env().AUTH_SECRET, c.secret))
-  return ok ? { id: c.id, title: c.title } : null
+  return ok ? { id: c.id, title: c.title, demo: c.demo } : null
 }
 
 const PLATFORMS = ['tiktok', 'instagram', 'youtube', 'x']

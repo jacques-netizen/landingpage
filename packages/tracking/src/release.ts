@@ -14,7 +14,8 @@ export async function runReleases(db: Db, now = new Date()) {
   const due = await db
     .select({ id: campaigns.id, title: campaigns.title })
     .from(campaigns)
-    .where(and(eq(campaigns.status, 'closed'), lte(campaigns.releaseAt, now)))
+    // Demo campaigns hold play money for a showcase: never released to anyone.
+    .where(and(eq(campaigns.status, 'closed'), lte(campaigns.releaseAt, now), eq(campaigns.demo, false)))
   const totals = { campaigns: due.length, released: 0, releasedCents: 0, held: 0, returnedCents: 0 }
   for (const c of due) {
     const byCreator = new Map<string, number>()

@@ -57,7 +57,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
       res = null
     }
   }
-  if (!res || !(res.status === 200 || res.status === 206)) {
+  // A demo campaign's pictures are kept in our storage; it never spends provider credits here.
+  if (!campaign.demo && (!res || !(res.status === 200 || res.status === 206))) {
     // The stored link has stopped working (or there was none): ask the platform for the post again.
     try {
       const post = await providers().fetchPost('bio_code', {

@@ -118,7 +118,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     from submissions s where s.campaign_id = ${campaignId}`)
   const today = new Date()
   const fromDay = day(q.from ?? first?.first ?? c.startAt ?? c.createdAt)
-  const toDay = day(q.to ?? today)
+  // A closed campaign's report ends on the day it closed.
+  const toDay = day(q.to ?? (c.status === 'closed' && c.closedAt && c.closedAt < today ? c.closedAt : today))
   const fromTs = `${fromDay}T00:00:00Z`
   const toTs = `${toDay}T23:59:59.999Z`
 
@@ -217,15 +218,28 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       from days left join per_day on per_day.day = days.day left join submitted on submitted.day = days.day
       order by days.day`),
       // Spend by day from the ledger: money reserved for posts counts when reserved; returns when returned.
+      // A demo campaign's ledger rows were all written the day it was built, so its spend is spread over
+      // the days each post gained its views instead (owner request, 2026-10-14).
       db.execute<{ day: string; spend: string; clips: string }>(sql`
-      with moves as (
+      with moves as (${
+        c.demo
+          ? sql`
+        select day, sum(spend)::bigint as spend from (
+          select v.day, (v.views - lag(v.views, 1, 0::bigint) over (partition by v.submission_id order by v.day))
+            * s.earned_cents / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
+          from view_snapshot_days v join submissions s on s.id = v.submission_id
+          where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})
+            and v.day >= ${fromDay}::date and v.day <= ${toDay}::date
+        ) x group by day`
+          : sql`
         select (t.created_at at time zone 'UTC')::date as day, -sum(e.amount_cents) as spend
         from ledger_transactions t
         join ledger_entries e on e.transaction_id = t.id
         join ledger_accounts a on a.id = e.account_id and a.kind = 'campaign_budget'
         where t.campaign_id = ${campaignId} and t.kind in ('earning_accrued', 'earning_reversed')
           and t.created_at >= ${fromTs}::timestamptz and t.created_at <= ${toTs}::timestamptz
-        group by 1
+        group by 1`
+      }
       ), submitted as (
         select (s.submitted_at at time zone 'UTC')::date as day, count(*) as clips from submissions s
         where ${inRange} group by 1
