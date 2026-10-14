@@ -342,12 +342,21 @@ export async function trackingStatus(db: Db) {
     unscheduled: string
     next_due: Date | null
     last_snapshot: Date | null
+    with_views_24h: string
+    unavailable_24h: string
+    last_error: string | null
   }>(sql`
     select c.id, c.title,
       count(s.id) filter (where s.state in (${trackedList()})) as tracked,
       count(s.id) filter (where s.state in (${trackedList()}) and s.next_check_at is null) as unscheduled,
       min(s.next_check_at) as next_due,
-      (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = c.id) as last_snapshot
+      (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = c.id) as last_snapshot,
+      (select count(*) from view_snapshots v join submissions x on x.id = v.submission_id
+        where x.campaign_id = c.id and v.views is not null and v.taken_at > now() - interval '24 hours') as with_views_24h,
+      (select count(*) from view_snapshots v join submissions x on x.id = v.submission_id
+        where x.campaign_id = c.id and v.source = 'unavailable' and v.taken_at > now() - interval '24 hours') as unavailable_24h,
+      (select left(v.raw->>'error', 300) from view_snapshots v join submissions x on x.id = v.submission_id
+        where x.campaign_id = c.id and v.source = 'unavailable' order by v.taken_at desc limit 1) as last_error
     from campaigns c
     left join submissions s on s.campaign_id = c.id
     where c.status in ('live', 'closing') and c.deleted_at is null
@@ -360,5 +369,9 @@ export async function trackingStatus(db: Db) {
     unscheduledPosts: Number(r.unscheduled),
     nextDueAt: r.next_due ? new Date(r.next_due).toISOString() : null,
     lastSnapshotAt: r.last_snapshot ? new Date(r.last_snapshot).toISOString() : null,
+    /** Checks in the last day that got views, and that the provider could not answer, with its last error. */
+    checksWithViews24h: Number(r.with_views_24h),
+    checksUnavailable24h: Number(r.unavailable_24h),
+    lastProviderError: r.last_error,
   }))
 }
