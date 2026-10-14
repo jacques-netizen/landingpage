@@ -93,7 +93,8 @@ export async function leaderboard(limit = 50): Promise<LeaderRow[]> {
     select u.id, coalesce(u.username, u.display_name) as name, u.is_private_profile as private,
       sum(s.counted_views)::bigint as views, count(*) as posts
     from submissions s join users u on u.id = s.creator_id
-    where s.state in ${APPROVED} and u.status = 'active'
+    join campaigns c on c.id = s.campaign_id
+    where s.state in ${APPROVED} and u.status = 'active' and not c.demo
     group by u.id
     having sum(s.counted_views) > 0
     order by views desc, min(s.submitted_at) asc

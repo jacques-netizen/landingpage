@@ -251,7 +251,7 @@ export async function reviveUnscheduled(db: Db, now = new Date()) {
     update submissions s set next_check_at = ${now.toISOString()}::timestamptz
     from campaigns c
     where c.id = s.campaign_id and s.next_check_at is null and s.state in (${trackedList()})
-      and c.status in ('live', 'closing') and c.deleted_at is null
+      and c.status in ('live', 'closing') and c.deleted_at is null and not c.demo
     returning s.id`)
   return rows.length
 }
@@ -318,7 +318,7 @@ export async function staleCampaigns(db: Db, now = new Date(), staleHours = 3) {
       count(s.id) as tracked
     from campaigns c
     join submissions s on s.campaign_id = c.id and s.next_check_at is not null and s.submitted_at <= ${cutoff.toISOString()}::timestamptz
-    where c.status in ('live', 'closing') and c.deleted_at is null
+    where c.status in ('live', 'closing') and c.deleted_at is null and not c.demo
     group by c.id
     having coalesce(max((select max(v.taken_at) from view_snapshots v where v.submission_id = s.id)), 'epoch'::timestamptz) < ${cutoff.toISOString()}::timestamptz`)
   return rows.map((r) => ({
@@ -359,7 +359,7 @@ export async function trackingStatus(db: Db) {
         where x.campaign_id = c.id and v.source = 'unavailable' order by v.taken_at desc limit 1) as last_error
     from campaigns c
     left join submissions s on s.campaign_id = c.id
-    where c.status in ('live', 'closing') and c.deleted_at is null
+    where c.status in ('live', 'closing') and c.deleted_at is null and not c.demo
     group by c.id
     order by c.title`)
   return rows.map((r) => ({

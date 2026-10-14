@@ -218,7 +218,7 @@ describe('view checks and earnings', () => {
       .set({ baselineViews: 2_500, countedViews: 0, earnedCents: 0 })
       .where(eq(tables.submissions.id, u.id))
     u.post(2_600)
-    expect((await u.check(98)).deltaCents).toBe(520)
+    expect((await u.check(103)).deltaCents).toBe(520)
     expect(await u.sub()).toMatchObject({ baselineViews: 0, countedViews: 2_600, earnedCents: 520 })
   })
 

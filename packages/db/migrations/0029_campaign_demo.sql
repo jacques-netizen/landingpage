@@ -1,0 +1,1 @@
+ALTER TABLE "campaigns" ADD COLUMN "demo" boolean DEFAULT false NOT NULL;

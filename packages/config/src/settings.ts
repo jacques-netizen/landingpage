@@ -39,7 +39,7 @@ export const SETTINGS_DEFAULTS: Settings = {
   max_linked_accounts: 8,
   max_post_age_hours: 24,
   // Every hour while a campaign runs (client report brief, 2026-10-12; was 2 hours since the testing report).
-  view_check_intervals: { first_72h_hours: 1, until_close_hours: 1, keep_live_hours: 24 },
+  view_check_intervals: { first_72h_hours: 1, until_close_hours: 6, keep_live_hours: 24 },
   deleted_post_grace_hours: 48,
   review_window_days: 7,
   withdrawal_min_cents: 500,
