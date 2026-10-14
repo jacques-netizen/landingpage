@@ -52,11 +52,13 @@ export class ProviderRouter {
       log = (e) => console.error(JSON.stringify(e)),
     } = this.opts
     const candidates = this.providers.filter((p) => p.supports(platform, method))
+    let last: string | null = null
     for (const p of candidates) {
       for (let i = 1; i <= attempts; i++) {
         try {
           return await withTimeout(fn(p), timeoutMs)
         } catch (err) {
+          last = `${p.name}: ${err instanceof Error ? err.message : String(err)}`
           log({
             level: 'warn',
             msg: 'provider call failed',
@@ -70,8 +72,11 @@ export class ProviderRouter {
         }
       }
     }
+    // The last provider's own words travel with the error, so the snapshot and the health check show why.
     throw new ProviderUnavailable(
-      candidates.length ? `No provider could ${what} right now.` : `No provider supports ${platform} by ${method}.`,
+      candidates.length
+        ? `No provider could ${what} right now${last ? ` (${last})` : ''}.`
+        : `No provider supports ${platform} by ${method}.`,
       candidates.map((p) => p.name).join(',') || 'none',
       candidates.length ? 'failed' : 'none_configured',
     )

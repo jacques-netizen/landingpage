@@ -85,7 +85,10 @@ export class ScrapeCreatorsProvider implements ViewProvider {
     const res = await this.http(url, { headers: { 'x-api-key': this.apiKey } })
     if (res.status === 404) return null
     // 402 means the account is out of credits: an outage, so the router retries and reports it.
-    if (!res.ok) throw new Error(`Scrape Creators ${url.pathname} returned ${res.status}`)
+    if (!res.ok) {
+      const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200)
+      throw new Error(`Scrape Creators ${url.pathname} returned ${res.status}${text ? `: ${text}` : ''}`)
+    }
     const body = (await res.json()) as Json
     if (body.success === false) {
       const msg = String(body.message ?? body.error ?? '')
