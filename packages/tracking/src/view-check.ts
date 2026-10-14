@@ -33,6 +33,10 @@ export type CheckOutcome =
 
 // A claimed check that never finishes is retried after this long.
 const LEASE_MS = 30 * 60_000
+// A first successful check this long after submission is late (an outage on our side, not the
+// creator's): the baseline is then the views at submission, which we never saw, taken as 0, so every
+// view counts (owner decision, 2026-10-14). On time, the first check that works sets the baseline.
+const LATE_FIRST_MS = 3 * 3_600_000
 // Posts in these states are paused by a new flag (03_SYSTEMS.md section 6).
 const PAUSABLE = ['needs_review', 'needs_info', 'approved', 'earning']
 const EARNING = ['approved', 'earning']
@@ -156,7 +160,11 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       })
     } else if (visible && post.views !== null) {
       // 5 and 6. The first successful check sets the baseline; counted views move only while earning.
-      const baseline = previous.length === 0 ? post.views : s.baselineViews
+      // A late first check (ours was the outage) sets it to 0 instead, and a baseline that an earlier
+      // late check set is corrected the same way, so no creator loses the views of the outage.
+      const firstAt = previous.length === 0 ? now : ((await firstViewsAt(db, s.id)) ?? now)
+      const late = firstAt.getTime() - s.submittedAt.getTime() > LATE_FIRST_MS
+      const baseline = late ? 0 : previous.length === 0 ? post.views : s.baselineViews
       patch.baselineViews = baseline
       // A post the platform could not show at submission gets its published time now.
       if (!s.publishedAt && post.publishedAt) patch.publishedAt = post.publishedAt
@@ -246,6 +254,17 @@ export async function reviveUnscheduled(db: Db, now = new Date()) {
       and c.status in ('live', 'closing') and c.deleted_at is null
     returning s.id`)
   return rows.length
+}
+
+/** When the post's views were first seen, or null when they never were. */
+async function firstViewsAt(db: Db, submissionId: string) {
+  const [r] = await db
+    .select({ at: viewSnapshots.takenAt })
+    .from(viewSnapshots)
+    .where(and(eq(viewSnapshots.submissionId, submissionId), isNotNull(viewSnapshots.views)))
+    .orderBy(asc(viewSnapshots.takenAt))
+    .limit(1)
+  return r?.at ?? null
 }
 
 /** Every due check, oldest first, a few at a time. One post failing never stops the rest. */

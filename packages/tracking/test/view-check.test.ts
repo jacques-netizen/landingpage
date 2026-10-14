@@ -197,6 +197,31 @@ describe('view checks and earnings', () => {
     expect(await t.sub()).toMatchObject({ countedViews: 2_000, earnedCents: 400 })
   })
 
+  it('a first check that comes days late counts every view, and corrects a baseline a late check set', async () => {
+    state = { ...state, down: true }
+    const t = await setup()
+    state = { ...state, down: false }
+    // Nothing worked for 3 days (the outage of 2026-10-14). The first check that works counts everything:
+    // 3,000 views at $2.00 per 1,000 = $6.00, not a new baseline of 3,000.
+    t.post(3_000)
+    expect((await t.check(72)).deltaCents).toBe(600)
+    expect(await t.sub()).toMatchObject({ baselineViews: 0, latestViews: 3_000, countedViews: 3_000, earnedCents: 600 })
+
+    // A post whose baseline an earlier late check already set (before this rule) is corrected on its next check.
+    state = { ...state, down: true }
+    const u = await setup()
+    state = { ...state, down: false }
+    u.post(2_500)
+    await u.check(96)
+    await db
+      .update(tables.submissions)
+      .set({ baselineViews: 2_500, countedViews: 0, earnedCents: 0 })
+      .where(eq(tables.submissions.id, u.id))
+    u.post(2_600)
+    expect((await u.check(98)).deltaCents).toBe(520)
+    expect(await u.sub()).toMatchObject({ baselineViews: 0, countedViews: 2_600, earnedCents: 520 })
+  })
+
   it('names a live campaign whose posts have had no snapshot for over 3 hours (owner request, 2026-10-12)', async () => {
     const t = await setup()
     // Just submitted: its snapshot is fresh, so nothing is stale yet.
