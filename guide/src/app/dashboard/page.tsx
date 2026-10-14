@@ -7,6 +7,7 @@ import { config } from "@/lib/server/config";
 import { dropOff, eventCounts, funnel, rangeFor, videoWatch, type FunnelRow } from "@/lib/server/dashboard";
 
 export const metadata = { title: "Funnel dashboard", robots: { index: false, follow: false } };
+export const maxDuration = 60;
 
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "");
 const th = "py-3 pr-6 text-left text-[13px] font-medium text-muted";
@@ -33,7 +34,18 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
 
   const days = Math.min(90, Math.max(1, Number(sp.days) || 14));
   const { from, to } = rangeFor(days);
-  const [rows, drops, videos, events] = await Promise.all([funnel(from, to), dropOff(from, to), videoWatch(from, to), eventCounts(from, to)]);
+  let rows: FunnelRow[] = [];
+  let drops: Awaited<ReturnType<typeof dropOff>> = [];
+  let videos: Awaited<ReturnType<typeof videoWatch>> = [];
+  let events: Awaited<ReturnType<typeof eventCounts>> = [];
+  let loadError = "";
+  try {
+    [rows, drops, videos, events] = await Promise.all([funnel(from, to), dropOff(from, to), videoWatch(from, to), eventCounts(from, to)]);
+  } catch (e) {
+    // This page is for the owner only: showing the database error beats a blank 500.
+    loadError = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+    console.error("dashboard query failed", loadError);
+  }
 
   const totals = (variant: string) => {
     const r = rows.filter((x) => x.variant === variant);
@@ -57,6 +69,11 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
       </header>
 
       <h1 className="mt-14 font-serif text-display">Funnel, last {days} days</h1>
+      {loadError && (
+        <p role="alert" className="mt-6 border border-proof-2 p-4 text-[14px] text-proof-2">
+          The numbers could not be loaded. Database error: {loadError}
+        </p>
+      )}
       {(["full", "plain"] as const).map((v) => {
         const t = totals(v);
         return (
