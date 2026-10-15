@@ -284,9 +284,9 @@ describe('changes after publishing', () => {
 
   it('keeps the minimum views fixed once live but lets the rate and the caps change', async () => {
     const { actor, client, c } = await liveCampaign()
-    await expect(
-      updateCampaign(db, actor, c.id, form(client.id, { minViewsToEarn: '5000' })),
-    ).rejects.toBeInstanceOf(CampaignError)
+    await expect(updateCampaign(db, actor, c.id, form(client.id, { minViewsToEarn: '5000' }))).rejects.toBeInstanceOf(
+      CampaignError,
+    )
     const after = await updateCampaign(db, actor, c.id, form(client.id, { rateCentsPer1000: '$3.00' }))
     expect(after.rateCentsPer1000).toBe(300)
     // The caps may move while live (owner request, 2026-10-15); the engine keeps earnings under them.
