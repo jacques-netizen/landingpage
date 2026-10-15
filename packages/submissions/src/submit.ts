@@ -86,6 +86,20 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     .select()
     .from(campaignMembers)
     .where(and(eq(campaignMembers.campaignId, c.id), eq(campaignMembers.creatorId, input.creatorId)))
+  // Three rejected view verifications in a campaign block the creator from it (owner brief, 2026-10-15).
+  const [blocked] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(tables.viewProofs)
+    .innerJoin(tables.submissions, eq(tables.submissions.id, tables.viewProofs.submissionId))
+    .where(
+      and(
+        eq(tables.viewProofs.creatorId, input.creatorId),
+        eq(tables.viewProofs.status, 'rejected'),
+        eq(tables.submissions.campaignId, c.id),
+      ),
+    )
+  if ((blocked?.n ?? 0) >= 3)
+    return stop('Three of your view verifications in this campaign were rejected, so it no longer takes your posts.')
   const rules = { ...c, platforms: c.platforms as string[] }
 
   // 1 and 2.

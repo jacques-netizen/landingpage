@@ -410,6 +410,9 @@ export const submissions = pgTable(
     // 'video' or 'image' as the platform describes the post; null until a check could tell. Only picture
     // posts may update their views with a proof (owner rule, 2026-10-14).
     mediaKind: text('media_kind'),
+    // The views the newest approved verification showed (owner brief, 2026-10-15). The post's views are
+    // the higher of the scraped count and this, so a verified count stands until the scraper passes it.
+    verifiedViews: bigint('verified_views', { mode: 'number' }).notNull().default(0),
     ...timestamps,
   },
   (t) => [
@@ -551,6 +554,9 @@ export const viewProofs = pgTable(
     reviewedAt: tz('reviewed_at'),
     setViews: bigint('set_views', { mode: 'number' }),
     decisionNote: text('decision_note'),
+    // Raised when the claim looks too big (over 10 times the scraped count, or over 50,000 on an
+    // Instagram post): 'claim_over_10x' or 'claim_over_50k'. Staff see it beside the verification.
+    flag: text('flag'),
     ...timestamps,
   },
   (t) => [

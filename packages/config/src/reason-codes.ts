@@ -25,6 +25,11 @@ export const REASON_CODES = [
     'Post limit reached',
     'This account has already submitted the most posts this campaign allows.',
   ],
+  // The quick reasons of the campaign review card (owner brief, 2026-10-15).
+  ['wrong_audio', 'Wrong audio', 'The post does not use the sound the campaign asks for.'],
+  ['wrong_content', 'Wrong content', 'The post does not match what the campaign asks for.'],
+  ['low_quality', 'Low quality', 'The post does not meet the quality the campaign asks for.'],
+  ['account_not_eligible', 'Account not eligible', 'The account does not meet the campaign rules.'],
   ['other', 'Other', 'See the note from the reviewer.'],
 ] as const
 

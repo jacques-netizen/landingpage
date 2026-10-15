@@ -218,6 +218,13 @@
       "when": 1791987201791,
       "tag": "0030_six_hour_checks",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1792072379899,
+      "tag": "0031_view_verification",
+      "breakpoints": true
     }
   ]
 }

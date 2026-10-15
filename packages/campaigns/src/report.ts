@@ -44,6 +44,8 @@ export type ReportClip = {
   /** What the post has earned, and whether that has been paid out. */
   payoutCents: number
   payout: 'paid' | 'pending' | 'none'
+  /** The views come from a verification the creator proved, not from the scraper (owner brief, 2026-10-15). */
+  verified: boolean
 }
 
 export type CampaignReport = {
@@ -127,7 +129,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // Each post with its latest figures (the newest day row).
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
-      s.thumbnail_url, s.video_url, s.counted_views, a.handle, u.username,
+      s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
@@ -146,6 +148,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     thumbnail_url: string | null
     video_url: string | null
     counted_views: string
+    verified_views: string
+    latest_views: string
     published_at: Date | null
     submitted_at: Date
     state: string
@@ -175,6 +179,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     shares: n(r.shares),
     payoutCents: n(r.earned_cents),
     payout: r.state === 'paid_out' ? 'paid' : APPROVED.includes(r.state) && n(r.earned_cents) > 0 ? 'pending' : 'none',
+    verified: n(r.verified_views) > 0 && n(r.verified_views) >= n(r.latest_views),
   })
 
   const order =

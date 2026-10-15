@@ -168,7 +168,9 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
       patch.baselineViews = baseline
       // A post the platform could not show at submission gets its published time now.
       if (!s.publishedAt && post.publishedAt) patch.publishedAt = post.publishedAt
-      patch.latestViews = post.views
+      // A verified count the creator proved stands until the scraper passes it (owner brief, 2026-10-15).
+      const effective = Math.max(post.views, s.verifiedViews)
+      patch.latestViews = effective
       // The platform's picture and video links expire, so keep the newest ones.
       if (post.thumbnailUrl || post.videoUrl) {
         patch.thumbnailUrl = post.thumbnailUrl ?? s.thumbnailUrl
@@ -176,7 +178,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
         patch.mediaUpdatedAt = now
       }
       if (post.mediaKind) patch.mediaKind = post.mediaKind
-      const counted = Math.max(0, post.views - baseline)
+      const counted = Math.max(0, effective - baseline)
       if (EARNING.includes(before)) patch.countedViews = counted
       // After close, only corrections down (02_DATA_AND_MONEY.md 5.3).
       else if (before === 'final') patch.countedViews = Math.min(s.countedViews, counted)
