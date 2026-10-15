@@ -8,6 +8,12 @@ const sql = postgres(process.env.DATABASE_URL ?? 'postgres://postgres@localhost:
 })
 test.afterAll(() => sql.end())
 
+/** The review tab of "Sample clipping" (review lives inside each campaign, owner brief 2026-10-15). */
+async function reviewTab() {
+  const [c] = await sql`select id from campaigns where title = 'Sample clipping'`
+  return `/admin/campaigns/${c!.id}?tab=review`
+}
+
 /** Clean posts waiting for review on "Sample clipping", from a fresh creator. */
 async function seedPosts(n: number, tag: string) {
   const [c] =
@@ -35,8 +41,8 @@ test('a reviewer clears 50 clean posts in under 10 minutes with the keyboard', a
   await sql`update submissions set state = 'needs_info' where state in ('needs_review', 'flagged')`
   const { ids } = await seedPosts(50, 'keyboard')
   await signInAs(page, 'reviewer@seed.invalid')
-  await page.goto('/admin/review')
-  await expect(page.getByText('Oldest first')).toBeVisible()
+  await page.goto(await reviewTab())
+  await expect(page.getByText('50 left')).toBeVisible()
   await page.waitForLoadState('networkidle')
 
   const started = Date.now()
@@ -54,7 +60,7 @@ test('a reviewer clears 50 clean posts in under 10 minutes with the keyboard', a
   const minutes = (Date.now() - started) / 60_000
   test.info().annotations.push({ type: 'timing', description: `50 posts in ${minutes.toFixed(2)} minutes` })
   expect(minutes).toBeLessThan(10)
-  await expect(page.getByText('Nothing waiting for review.')).toBeVisible()
+  await expect(page.getByText('All caught up. New posts appear here as clippers submit them.')).toBeVisible()
   const [{ n }] =
     (await sql`select count(*)::int as n from review_decisions where submission_id = any(${ids}) and outcome = 'approve'`) as unknown as [
       { n: number },
@@ -66,14 +72,15 @@ test('a reviewer rejects with a reason using J and R, and the creator sees why',
   await sql`update submissions set state = 'needs_info' where state in ('needs_review', 'flagged')`
   const { ids, creatorId } = await seedPosts(2, 'rejecter')
   await signInAs(page, 'reviewer@seed.invalid')
-  await page.goto('/admin/review')
+  await page.goto(await reviewTab())
   await page.waitForLoadState('networkidle')
   await page.keyboard.press('r')
   await expect(page.getByText('Choose a reason, then reject.').first()).toBeVisible()
   await page.keyboard.press('j') // the second post
   const [label] = await sql`select label from reason_codes where code = 'missing_hashtag'`
-  await page.getByText(label!.label as string, { exact: true }).click()
-  await page.getByLabel('Note to creator').fill('Add #client to the caption.')
+  await page.getByRole('button', { name: 'More reasons' }).click()
+  await page.getByRole('button', { name: label!.label as string, exact: true }).click()
+  await page.getByLabel('Note to clipper').fill('Add #client to the caption.')
   await page.locator('body').click({ position: { x: 5, y: 890 } }) // leave the note so shortcuts work
   await page.keyboard.press('r')
   await expect(page.getByText('Rejected.').first()).toBeVisible()
@@ -95,8 +102,8 @@ test('staff open the full post detail from the queue', async ({ page }) => {
   await sql`update submissions set state = 'needs_info' where state in ('needs_review', 'flagged')`
   await seedPosts(1, 'detail')
   await signInAs(page, 'reviewer@seed.invalid')
-  await page.goto('/admin/review')
-  await page.getByText('Post detail', { exact: true }).click()
+  await page.goto(await reviewTab())
+  await page.getByRole('link', { name: 'Post detail' }).click()
   await expect(page.getByRole('heading', { name: 'Post detail' })).toBeVisible()
   for (const h of ['Creator and account', 'Checks', 'Flags', 'Decisions', 'Decide'])
     await expect(page.getByRole('heading', { name: h })).toBeVisible()

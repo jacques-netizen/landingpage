@@ -14,7 +14,8 @@ export class ReviewError extends Error {
       | 'bad_file'
       | 'expired'
       | 'views_required'
-      | 'views_down',
+      | 'views_down'
+      | 'blocked',
     message: string,
   ) {
     super(message)

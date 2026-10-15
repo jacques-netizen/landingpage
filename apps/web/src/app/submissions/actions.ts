@@ -4,14 +4,17 @@ import { db } from '@mde/db'
 import {
   answerInfo,
   APPEALABLE,
+  INSTAGRAM_POST_TEXT,
   latestViewProof,
   openAppeal,
-  PROOF_CODE_HOURS,
   PROOF_RULES,
-  canProveViews,
   requestViewProof,
   ReviewError,
   submitViewProof,
+  VERIFY_INSTRUCTION,
+  VERIFY_LIMITS,
+  verifyOptions,
+  type VerifyWhy,
 } from '@mde/review'
 import { CREATOR_STATE, DECISION_LABEL, getCreatorSubmission } from '@mde/submissions'
 import { reasonMessages } from '@/server/submissions'
@@ -37,18 +40,27 @@ export type SubmissionDetail = {
   history: { at: string; text: string; note: string | null }[]
   appeal: { status: string; reply: string | null; dueAt: string } | null
   canAppeal: boolean
-  /** The newest proof of views the creator sent, if any (owner request, 2026-10-14). */
+  /** The newest view verification the creator sent, if any (owner brief, 2026-10-15). */
   proof: ViewProofSummary | null
-  /** Whether the creator may ask for a new proof code now. */
-  canProveViews: boolean
+  /** Whether "Verify views" is open now, why, and what stops it otherwise. */
+  verify: VerifyState
   proofRules: string[]
+  verifyText: { instruction: string; limits: string; instagram: string }
+}
+
+export type VerifyState = {
+  can: boolean
+  why: VerifyWhy | null
+  pending: boolean
+  blocked: boolean
+  /** When the next verification may be sent after an approved one. */
+  nextAt: string | null
 }
 
 export type ViewProofSummary = {
   id: string
   status: 'requested' | 'submitted' | 'approved' | 'rejected'
   code: string
-  expiresAt: string
   claimedViews: number | null
   setViews: number | null
   decisionNote: string | null
@@ -61,7 +73,6 @@ function proofSummary(p: NonNullable<Awaited<ReturnType<typeof latestViewProof>>
     id: p.id,
     status: p.status as ViewProofSummary['status'],
     code: p.code,
-    expiresAt: new Date(p.createdAt.getTime() + PROOF_CODE_HOURS * 3_600_000).toISOString(),
     claimedViews: p.claimedViews,
     setViews: p.setViews,
     decisionNote: p.decisionNote,
@@ -78,12 +89,8 @@ export async function submissionDetailAction(id: string): Promise<SubmissionDeta
   if (!s) return null
   const messages = await reasonMessages()
   const reasonText = (code: string | null) => (code && code !== 'other' ? (messages[code] ?? null) : null)
-  const proof = await latestViewProof(db(), id)
-  const now = Date.now()
-  const openProof =
-    proof &&
-    (proof.status === 'submitted' ||
-      (proof.status === 'requested' && now < proof.createdAt.getTime() + PROOF_CODE_HOURS * 3_600_000))
+  const [proof, opts] = await Promise.all([latestViewProof(db(), id), verifyOptions(db(), viewer.id, [s])])
+  const opt = opts.get(id) ?? { why: null, pending: false, blocked: false, nextAt: null }
   return {
     id: s.id,
     campaignTitle: s.campaignTitle,
@@ -119,21 +126,21 @@ export async function submissionDetailAction(id: string): Promise<SubmissionDeta
     appeal: s.appeal ? { status: s.appeal.status, reply: s.appeal.reply, dueAt: s.appeal.dueAt.toISOString() } : null,
     canAppeal: !s.appeal && APPEALABLE.includes(s.state),
     proof: proof ? proofSummary(proof) : null,
-    canProveViews:
-      canProveViews(s) &&
-      !openProof &&
-      !(
-        proof?.status === 'approved' &&
-        proof.reviewedAt &&
-        now < proof.reviewedAt.getTime() + PROOF_CODE_HOURS * 3_600_000
-      ),
+    verify: {
+      can: !!opt.why && !opt.pending && !opt.blocked && !opt.nextAt,
+      why: opt.why,
+      pending: opt.pending,
+      blocked: opt.blocked,
+      nextAt: opt.nextAt?.toISOString() ?? null,
+    },
     proofRules: PROOF_RULES,
+    verifyText: { instruction: VERIFY_INSTRUCTION, limits: VERIFY_LIMITS, instagram: INSTAGRAM_POST_TEXT },
   }
 }
 
 export type ProofFormState = { error?: string; ok?: boolean }
 
-/** A code for the creator's recording. The same open code comes back while it is live. */
+/** Open a verification. The same open one comes back while it is unsent. */
 export async function requestViewProofAction(
   submissionId: string,
 ): Promise<ProofFormState & { proof?: ViewProofSummary }> {
@@ -149,7 +156,7 @@ export async function requestViewProofAction(
   }
 }
 
-/** The creator sends the two files (already uploaded) and the count their analytics show. */
+/** The creator sends the recording (already uploaded), the count their insights show, and a screenshot if any. */
 export async function submitViewProofAction(
   proofId: string,
   _prev: ProofFormState,

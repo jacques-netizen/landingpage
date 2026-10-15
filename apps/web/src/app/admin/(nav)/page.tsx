@@ -1,40 +1,55 @@
 import { formatDollars } from '@mde/money/dollars'
 import { EmptyState } from '@mde/ui'
-import type { ReactNode } from 'react'
 import { db } from '@mde/db'
 import { unreadCount } from '@mde/notifications'
-import { requireStaff } from '@/server/guard'
 import { PLATFORM_LABELS } from '@mde/campaigns/templates'
+import { homeCampaigns, type HomeStatus } from '@/server/admin-home'
+import { staffDashboard } from '@/server/dashboard'
+import { requireStaff } from '@/server/guard'
 import { platformsWithoutProvider } from '@/server/providers'
 import { workerStatus } from '@/server/worker-status'
-import { staffDashboard } from '@/server/dashboard'
 import { AdminPage, Notice } from './_components/ui'
 
 export const dynamic = 'force-dynamic'
 
 const when = (d: Date) => d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC'
+const n = (v: number) => v.toLocaleString('en-US')
+const TONE: Record<HomeStatus, string> = { live: '#4FB286', ended: '#9A958C', draft: '#E0A94A' }
+const FILTERS: [string, string][] = [
+  ['live', 'Live'],
+  ['ended', 'Ended'],
+  ['draft', 'Drafts'],
+  ['all', 'All'],
+]
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section aria-label={title} className="mb-10">
-      <h2 className="m-0 mb-3 font-app text-[16px] font-semibold">{title}</h2>
-      {children}
-    </section>
-  )
+/** How long ago, e.g. "13m ago", "4h ago". */
+function ago(d: Date | null, now: number) {
+  if (!d) return 'Never'
+  const m = Math.max(0, Math.round((now - d.getTime()) / 60_000))
+  return m < 60 ? `${m}m ago` : m < 48 * 60 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`
 }
 
-// What needs staff attention now (01_PRODUCT.md 8.4). Not in the mockups; staff style from 05 section 8.
-// Payouts waiting joins this page with payouts (Phase 6).
-export default async function AdminDashboard() {
+// The staff home (owner brief, 2026-10-15): the campaigns, the ones needing attention first, with what
+// is waiting on each. Every review action lives inside a campaign; a row opens its workspace.
+export default async function AdminHome({ searchParams }: { searchParams: Promise<{ show?: string }> }) {
   const viewer = await requireStaff()
+  const { show: showParam } = await searchParams
+  const show = FILTERS.some(([k]) => k === showParam) ? showParam! : 'live'
   const now = new Date()
-  const [d, unread] = await Promise.all([staffDashboard(now), unreadCount(db(), viewer.id)])
+  const [rows, d, unread, worker] = await Promise.all([
+    homeCampaigns(now),
+    staffDashboard(now),
+    unreadCount(db(), viewer.id),
+    workerStatus(),
+  ])
   const missingProviders = platformsWithoutProvider()
-  const worker = await workerStatus()
+  const campaigns = rows.filter((c) => show === 'all' || c.status === show)
+  const hidden = rows.length - campaigns.length
+  const waitingElsewhere = rows.filter((c) => c.status !== show && show !== 'all' && c.waiting + c.verifications > 0)
   return (
     <AdminPage
-      title="Dashboard"
-      lead="What needs attention today."
+      title="Campaigns"
+      lead="What needs attention, campaign by campaign. Open one to review its clips and verifications."
       actions={
         <a href="/admin/notifications" className="text-[14px]">
           Notifications{unread ? ` (${unread} new)` : ''}
@@ -56,21 +71,6 @@ export default async function AdminDashboard() {
             checks). Its last answer: {c.lastProviderError ?? 'no detail'}. No views are counted until this is fixed.
           </Notice>
         ))}
-      {worker.stale.length ? (
-        <Notice kind="bad">
-          No view snapshot for over 3 hours on {worker.stale.map((c) => c.title).join(', ')}. Open the campaign and use
-          Refresh stats now, then check the worker.
-        </Notice>
-      ) : null}
-      {d.proofsWaiting ? (
-        <Notice kind="ok">
-          {d.proofsWaiting} view {d.proofsWaiting === 1 ? 'proof is' : 'proofs are'} waiting for a decision.{' '}
-          <a href="/admin/review/proofs" className="text-ink">
-            Open view proofs
-          </a>
-          .
-        </Notice>
-      ) : null}
       {missingProviders.length ? (
         <Notice kind="bad">
           No data provider is set up for {missingProviders.map((p) => PLATFORM_LABELS[p] ?? p).join(', ')}. Posts there
@@ -78,58 +78,145 @@ export default async function AdminDashboard() {
           {missingProviders.includes('youtube') ? ' and YOUTUBE_API_KEY' : ''} on the server.
         </Notice>
       ) : null}
-      <Section title="Posts waiting for review">
-        {d.waiting === 0 ? (
-          <EmptyState body="The review queue is empty." />
-        ) : (
-          <p className="m-0 text-[14px]">
-            <a href="/admin/review" className="font-medium">
-              {d.waiting.toLocaleString('en-US')} {d.waiting === 1 ? 'post' : 'posts'} waiting
-            </a>
-            {d.flagged ? `, ${d.flagged} flagged` : ''}.
-            {d.oldestWaiting ? <span className="text-muted-2"> Oldest submitted {when(d.oldestWaiting)}.</span> : null}
-          </p>
-        )}
-      </Section>
+      {d.appeals.length ? (
+        <Notice kind="ok">
+          {d.appeals.length} {d.appeals.length === 1 ? 'appeal is' : 'appeals are'} due within 24 hours
+          {d.appeals.some((a) => a.dueAt <= now) ? ', some already late' : ''}.{' '}
+          <a href="/admin/appeals" className="text-ink">
+            Open appeals
+          </a>
+          .
+        </Notice>
+      ) : null}
+      {waitingElsewhere.length ? (
+        <Notice kind="ok">
+          {waitingElsewhere.map((c) => c.title).join(', ')} {waitingElsewhere.length === 1 ? 'has' : 'have'} posts or
+          verifications waiting but {waitingElsewhere.length === 1 ? 'is' : 'are'} not live.{' '}
+          <a href="/admin?show=all" className="text-ink">
+            Show all campaigns
+          </a>
+          .
+        </Notice>
+      ) : null}
 
-      <Section title="Appeals due within 24 hours">
-        {d.appeals.length === 0 ? (
-          <EmptyState body="No appeal is due within 24 hours." />
-        ) : (
-          <ul className="m-0 list-none p-0 text-[14px]">
-            {d.appeals.map((a) => (
-              <li key={a.id} className="border-0 border-t border-solid border-line py-3 first:border-t-0">
-                <a href={`/admin/appeals/${a.id}`} className="font-medium">
-                  {a.name ?? a.email}
-                </a>{' '}
-                <span className="text-muted-2">{a.campaignTitle}.</span>{' '}
-                <span className={a.dueAt <= now ? 'font-medium text-bad' : 'font-medium text-[#B26A00]'}>
-                  {a.dueAt <= now ? 'Late, was due' : 'Reply by'} {when(a.dueAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
+      <nav aria-label="Campaigns by state" className="mb-4 flex gap-2">
+        {FILTERS.map(([k, label]) => (
+          <a
+            key={k}
+            href={k === 'live' ? '/admin' : `/admin?show=${k}`}
+            aria-current={show === k ? 'true' : undefined}
+            className={`rounded-pill border border-solid px-4 py-[6px] text-[13px] no-underline ${
+              show === k ? 'border-gold-soft bg-[rgba(216,197,143,0.12)] text-gold-soft' : 'border-line text-muted-2'
+            }`}
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
 
-      <Section title="Campaigns near the end of their budget">
-        {d.nearEnd.length === 0 ? (
-          <EmptyState body="No live campaign has 10% or less of its budget left." />
-        ) : (
-          <ul className="m-0 list-none p-0 text-[14px]">
-            {d.nearEnd.map((c) => (
-              <li key={c.id} className="border-0 border-t border-solid border-line py-3 first:border-t-0">
-                <a href={`/admin/campaigns/${c.id}/monitor`} className="font-medium">
-                  {c.title}
-                </a>{' '}
-                <span className="text-muted-2">
-                  {formatDollars(c.leftCents)} left of {formatDollars(c.budgetCents)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Section>
+      {campaigns.length === 0 ? (
+        <EmptyState
+          body={
+            rows.length === 0
+              ? 'No campaigns yet. Start one from Campaigns.'
+              : `No ${show === 'all' ? '' : `${show} `}campaigns.${hidden ? ` ${hidden} under other filters.` : ''}`
+          }
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-[14px] border border-solid border-line">
+          <table className="w-full border-collapse text-[13px]">
+            <caption className="sr-only">Campaigns, the ones needing attention first</caption>
+            <thead className="bg-field">
+              <tr className="text-left text-[12px] text-muted">
+                {[
+                  'Campaign',
+                  'Status',
+                  'Submissions waiting',
+                  'Verifications waiting',
+                  'Budget',
+                  'Views',
+                  'Last scrape',
+                ].map((h) => (
+                  <th key={h} scope="col" className="px-3 py-3 font-medium whitespace-nowrap">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {campaigns.map((c) => {
+                const used = c.budgetCents > 0 ? Math.min(100, Math.round((c.spentCents / c.budgetCents) * 100)) : 0
+                const attention = c.waiting + c.verifications > 0
+                const open = `/admin/campaigns/${c.id}`
+                return (
+                  <tr
+                    key={c.id}
+                    className={`border-0 border-t border-solid border-line align-middle ${attention ? 'bg-[rgba(216,197,143,0.04)]' : ''}`}
+                  >
+                    <td className="min-w-[240px] px-3 py-3">
+                      <a href={open} className="text-[14px] font-semibold text-ink no-underline hover:text-gold-soft">
+                        {c.title}
+                      </a>
+                      <div className="mt-[2px] text-[11px] text-muted">
+                        {c.clientName ?? 'No client'}
+                        {c.demo ? ' · demo' : ''}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <span
+                        className="inline-flex items-center rounded-pill border border-solid px-[10px] py-[2px] text-[11px] font-semibold whitespace-nowrap"
+                        style={{
+                          color: TONE[c.status],
+                          borderColor: TONE[c.status],
+                          background: `${TONE[c.status]}1F`,
+                        }}
+                      >
+                        {c.statusLabel}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3">
+                      <a
+                        href={`${open}?tab=review`}
+                        className={`text-[15px] font-bold tabular-nums no-underline ${c.waiting ? 'text-pending' : 'text-muted'}`}
+                      >
+                        {n(c.waiting)}
+                      </a>
+                    </td>
+                    <td className="px-3 py-3">
+                      <a
+                        href={`${open}?tab=verifications`}
+                        className={`text-[15px] font-bold tabular-nums no-underline ${c.verifications ? 'text-pending' : 'text-muted'}`}
+                      >
+                        {n(c.verifications)}
+                      </a>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="w-[180px]">
+                        <div className="flex justify-between gap-2 text-[11px] tabular-nums">
+                          <span className="text-ink">{formatDollars(c.spentCents)}</span>
+                          <span className="text-muted">of {formatDollars(c.budgetCents)}</span>
+                        </div>
+                        <span className="mt-1 block h-[4px] rounded-[2px] bg-field-2" aria-hidden>
+                          <span className="block h-full rounded-[2px] bg-[#4FB286]" style={{ width: `${used}%` }} />
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 text-[14px] font-semibold tabular-nums">{n(c.views)}</td>
+                    <td className="px-3 py-3 whitespace-nowrap">
+                      <span
+                        className={c.stale ? 'font-semibold text-bad' : 'text-muted-2'}
+                        title={c.lastScrapeAt ? when(c.lastScrapeAt) : undefined}
+                      >
+                        {c.status === 'live' || c.lastScrapeAt ? ago(c.lastScrapeAt, now.getTime()) : 'Not tracked'}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </AdminPage>
   )
 }

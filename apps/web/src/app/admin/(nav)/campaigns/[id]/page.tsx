@@ -4,33 +4,78 @@ import { campaignFigures, isFunded, missingForPublish } from '@mde/campaigns'
 import { db, tables } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { serviceFeeCents } from '@mde/money/quote'
+import { listViewProofs } from '@mde/review'
 import { CREATOR_STATE } from '@mde/submissions/states'
 import { EmptyState, StatusBadge } from '@mde/ui'
 import { asc, eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { clientHolding } from '@/server/admin-queries'
 import { campaignReport } from '@mde/campaigns'
-import { BUCKETS, campaignCreators, campaignOverview, campaignPages, type Bucket } from '@/server/campaign-overview'
+import { BUCKETS, campaignOverview, campaignPages, type Bucket } from '@/server/campaign-overview'
+import {
+  campaignClippers,
+  campaignClips,
+  campaignHeadline,
+  campaignPayouts,
+  campaignReviewQueue,
+  type ClipFilters,
+  type PayoutStatus,
+} from '@/server/campaign-workspace'
 import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
 import { Notice } from '../../_components/ui'
+import { ClipsGrid } from './clips-grid'
+import { CopyReportLink } from './copy-report-link'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
-import { PostActions } from './post-actions'
 import { RefreshButton } from './refresh-button'
 import { ReportLink } from './report-link'
+import { CampaignReview } from './review-cards'
+import { CampaignVerifications, type VerificationRow } from './verifications'
 import { CampaignBuilder } from '../builder'
 import { CampaignActions } from '../campaign-actions'
 import { valuesFrom } from '../values'
 
+const TABS = ['review', 'verifications', 'clips', 'clippers', 'payouts', 'pages', 'overview', 'settings'] as const
+type Tab = (typeof TABS)[number]
+/** Old tab names still land somewhere sensible. */
+const OLD_TABS: Record<string, Tab> = { creators: 'clippers', submissions: 'clips', edit: 'settings' }
+const PAYOUT_LABEL: Record<PayoutStatus, string> = {
+  reserved: 'Reserved',
+  held: 'In hold',
+  paid: 'Paid',
+  returned: 'Returned',
+}
+const PAYOUT_TONE: Record<PayoutStatus, string> = {
+  reserved: '#E0A94A',
+  held: '#D8C58F',
+  paid: '#4FB286',
+  returned: '#9A958C',
+}
+
+type Search = {
+  saved?: string
+  copied?: string
+  tab?: string
+  show?: string
+  q?: string
+  status?: string
+  platform?: string
+  clipper?: string
+  needs?: string
+  sort?: string
+}
+
+// The staff campaign workspace (owner brief, 2026-10-15): everything about a campaign in one place,
+// review and verifications included, with the clips playing inline.
 export default async function CampaignAdminPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ saved?: string; copied?: string; tab?: string; show?: string; q?: string }>
+  searchParams: Promise<Search>
 }) {
   const { id } = await params
-  const { saved, copied, tab: tabParam, show, q } = await searchParams
+  const sp = await searchParams
   const viewer = await requireStaff('staff', `/admin/campaigns/${id}`)
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
   const d = db()
@@ -58,36 +103,38 @@ export default async function CampaignAdminPage({
   // The budget can always change; its difference moves through the ledger (see changeBudget).
   const locked = live ? ['capPerPost', 'capPerCreator', 'minViewsToEarn', 'clientId'] : []
   const status = CAMPAIGN_STATUS[c.status]
-  const TABS = ['overview', 'creators', 'pages', 'submissions', 'edit'] as const
-  type Tab = (typeof TABS)[number]
-  const tab: Tab = TABS.includes(tabParam as Tab) ? (tabParam as Tab) : open ? 'edit' : 'overview'
-  const bucket: Bucket = show === 'pending' || show === 'rejected' ? show : 'approved'
-  const [o, creators, pages] = await Promise.all([
-    campaignOverview(id, bucket, tab === 'submissions' ? q : undefined),
-    tab === 'creators' ? campaignCreators(id, q) : Promise.resolve([]),
+  const head = await campaignHeadline(id)
+  const asked = (sp.tab && OLD_TABS[sp.tab]) ?? sp.tab
+  const tab: Tab = TABS.includes(asked as Tab)
+    ? (asked as Tab)
+    : open
+      ? 'settings'
+      : head.waiting > 0
+        ? 'review'
+        : 'overview'
+  const clipFilters: ClipFilters = {
+    status: ['approved', 'pending', 'rejected'].includes(sp.status ?? '') ? (sp.status as Bucket) : 'all',
+    platform: ['tiktok', 'instagram', 'youtube', 'x'].includes(sp.platform ?? '') ? sp.platform : undefined,
+    clipper: sp.clipper && /^[0-9a-f-]{36}$/i.test(sp.clipper) ? sp.clipper : undefined,
+    needs: sp.needs === 'verification' ? 'verification' : undefined,
+    sort: sp.sort === 'newest' || sp.sort === 'least' ? sp.sort : 'most',
+    q: sp.q,
+  }
+  const [o, review, proofs, decidedProofs, clips, clippers, pages, payouts] = await Promise.all([
+    tab === 'overview' ? campaignOverview(id, 'approved') : Promise.resolve(null),
+    tab === 'review' ? campaignReviewQueue(id) : Promise.resolve([]),
+    tab === 'verifications' ? listViewProofs(d, 'submitted', { campaignId: id }) : Promise.resolve([]),
+    tab === 'verifications' ? listViewProofs(d, 'decided', { campaignId: id }) : Promise.resolve([]),
+    tab === 'clips' ? campaignClips(id, clipFilters) : Promise.resolve([]),
+    tab === 'clips' || tab === 'clippers' ? campaignClippers(id) : Promise.resolve([]),
     tab === 'pages' ? campaignPages(id) : Promise.resolve([]),
+    tab === 'payouts' ? campaignPayouts(id) : Promise.resolve(null),
   ])
-  const reasons =
-    tab === 'submissions'
-      ? await d
-          .select({ code: tables.reasonCodes.code, label: tables.reasonCodes.label })
-          .from(tables.reasonCodes)
-          .orderBy(asc(tables.reasonCodes.label))
-      : []
-  const canDelete = hasAccess(viewer, 'admin')
   // Platforms with their eCPM: staff only, moved off the client report (owner request, 2026-10-12).
   const byPlatform =
     tab === 'overview' ? ((await campaignReport(d, id, { mode: 'all', page: 1 }))?.platforms ?? []) : []
-  const now = Date.now()
-  // How long ago a post's stats were fetched, e.g. "13m ago".
-  const ago = (t: Date | null) => {
-    if (!t) return 'Not yet'
-    const m = Math.max(0, Math.round((now - t.getTime()) / 60_000))
-    return m < 60 ? `${m}m ago` : m < 48 * 60 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`
-  }
-  const stat = (v: number | null) => (v === null ? '-' : n(v))
   const usedPercent = c.budgetCents > 0 ? Math.min(100, Math.round((figures.paidCents / c.budgetCents) * 100)) : 0
-  const cpm = o.countedViews > 0 ? Math.round((o.earnedCents * 1000) / o.countedViews) : null
+  const cpm = o && o.countedViews > 0 ? Math.round((o.earnedCents * 1000) / o.countedViews) : null
   const base = `/admin/campaigns/${c.id}`
 
   const n = (v: number) => v.toLocaleString('en-US')
@@ -102,11 +149,89 @@ export default async function CampaignAdminPage({
         })
       : null
   const tf = c.templateFields as Record<string, string | number | boolean>
+  const platformLabel = (p: string) => PLATFORM_LABELS[p as keyof typeof PLATFORM_LABELS] ?? p
+  const fieldLabel = (k: string) => k.replace(/([A-Z])/g, ' $1').replace(/^./, (x) => x.toUpperCase())
+  /** The rules a reviewer checks against, shown once above the review cards. */
+  const ruleLines: [string, string][] = [
+    ['Platforms', c.platforms.map(platformLabel).join(', ')],
+    ['Required hashtags', c.requiredHashtags?.length ? c.requiredHashtags.join(' ') : 'None'],
+    ['Minimum video length', c.minDurationSeconds === null ? 'None' : `${c.minDurationSeconds} seconds`],
+    ['Minimum followers', c.minFollowers === null ? 'None' : n(c.minFollowers)],
+    ['Minimum account age', c.minAccountAgeDays === null ? 'None' : `${c.minAccountAgeDays} days`],
+    ['Posts per account', c.maxPostsPerAccount === null ? 'No limit' : n(c.maxPostsPerAccount)],
+    ['Pay per 1,000 views', formatDollars(c.rateCentsPer1000)],
+    ['Max payout per post', c.capPerPostCents === null ? 'No cap' : formatDollars(c.capPerPostCents)],
+    ...Object.entries(tf)
+      .filter(([, v]) => v !== '' && v !== false)
+      .map(([k, v]): [string, string] => [fieldLabel(k), v === true ? 'Yes' : String(v)]),
+  ]
+  const verificationRows = (xs: typeof proofs): VerificationRow[] =>
+    xs.map((p) => ({
+      id: p.id,
+      status: p.status,
+      claimedViews: p.claimedViews,
+      setViews: p.setViews,
+      scrapedViews: p.scrapedViews,
+      flag: p.flag,
+      note: p.note,
+      decisionNote: p.decisionNote,
+      submittedAt: p.submittedAt?.toISOString() ?? null,
+      reviewedAt: p.reviewedAt?.toISOString() ?? null,
+      screenshotUrl: p.screenshotUrl,
+      recordingUrl: p.recordingUrl,
+      clip: {
+        id: p.submission.id,
+        platform: p.submission.platform,
+        platformPostId: p.submission.platformPostId,
+        postUrl: p.submission.postUrl,
+        handle: p.creator.handle ? `@${p.creator.handle}` : (p.creator.username ?? p.creator.email),
+        hasVideo: !!p.submission.videoUrl,
+        hasThumbnail: !!p.submission.thumbnailUrl,
+      },
+      submission: {
+        state: p.submission.state,
+        latestViews: p.submission.latestViews,
+        countedViews: p.submission.countedViews,
+        earnedCents: p.submission.earnedCents,
+        postedAt: p.submission.publishedAt?.toISOString() ?? null,
+      },
+      creator: { id: p.creator.id, name: p.creator.username ?? p.creator.name ?? p.creator.email },
+    }))
+  const clipHref = (patch: Partial<Record<keyof Search, string | undefined>>) => {
+    const q = new URLSearchParams({ tab: 'clips' })
+    const next = {
+      status: clipFilters.status,
+      platform: clipFilters.platform,
+      clipper: clipFilters.clipper,
+      needs: clipFilters.needs,
+      sort: clipFilters.sort,
+      q: clipFilters.q,
+      ...patch,
+    }
+    for (const [k, v] of Object.entries(next)) if (v && v !== 'all' && !(k === 'sort' && v === 'most')) q.set(k, v)
+    return `${base}?${q}`
+  }
+  const pill = (on: boolean, href: string, label: string, key?: string) => (
+    <a
+      key={key ?? label}
+      href={href}
+      aria-current={on ? 'true' : undefined}
+      className={`rounded-pill border border-solid px-3 py-[5px] text-[12px] no-underline ${
+        on ? 'border-gold-soft bg-[rgba(216,197,143,0.12)] text-gold-soft' : 'border-line text-muted-2'
+      }`}
+    >
+      {label}
+    </a>
+  )
+  const count = (v: number) =>
+    v ? (
+      <span className="ml-[6px] rounded-[6px] bg-[rgba(224,169,74,0.22)] px-[6px] text-[11px] text-pending">{v}</span>
+    ) : null
 
   return (
-    <div className="mx-auto max-w-[1040px] px-8 py-6">
+    <div className="mx-auto max-w-[1200px] px-8 py-6">
       <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-muted">
-        <a href="/admin/campaigns" className="text-muted no-underline hover:text-ink">
+        <a href="/admin" className="text-muted no-underline hover:text-ink">
           Campaigns
         </a>
         <span className="mx-2">›</span>
@@ -115,19 +240,16 @@ export default async function CampaignAdminPage({
 
       <section className="flex gap-6 rounded-[16px] border border-solid border-line bg-panel p-4">
         {c.coverImageUrl ? (
-          <img src={c.coverImageUrl} alt="" className="h-[214px] w-[168px] flex-none rounded-[12px] object-cover" />
+          <img src={c.coverImageUrl} alt="" className="h-[180px] w-[140px] flex-none rounded-[12px] object-cover" />
         ) : (
-          <div className="flex h-[214px] w-[168px] flex-none items-center justify-center rounded-[12px] bg-field text-[12px] text-muted">
+          <div className="flex h-[180px] w-[140px] flex-none items-center justify-center rounded-[12px] bg-field text-[12px] text-muted">
             No picture
           </div>
         )}
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="m-0 font-mono text-[11px] text-muted">
-                {c.id} · created {day(c.createdAt)}
-              </p>
-              <h1 className="m-0 mt-2 flex items-center gap-2 font-app text-[22px] font-bold">
+              <h1 className="m-0 flex items-center gap-2 font-app text-[22px] font-bold">
                 {c.title}
                 <a
                   href={`/campaigns/${c.id}`}
@@ -143,6 +265,7 @@ export default async function CampaignAdminPage({
                 {client?.name ?? 'No client'} · {c.type}
                 {c.startAt ? ` · starts ${day(c.startAt)}` : ''}
                 {c.endAt ? ` · ends ${day(c.endAt)}` : ''}
+                {c.demo ? ' · demo' : ''}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {c.platforms.map((p) => (
@@ -150,12 +273,26 @@ export default async function CampaignAdminPage({
                 ))}
               </div>
             </div>
-            <StatusBadge status={status?.dot ?? 'neutral'}>{status?.label ?? c.status}</StatusBadge>
+            <div className="flex flex-col items-end gap-3">
+              <StatusBadge status={status?.dot ?? 'neutral'}>{status?.label ?? c.status}</StatusBadge>
+              {canMoney ? <CopyReportLink campaignId={c.id} /> : null}
+            </div>
           </div>
-          <div className="mt-auto flex flex-wrap gap-6 pt-4 text-[13px]">
+          <div className="mt-auto flex flex-wrap items-end gap-6 pt-4 text-[13px]">
+            <div className="min-w-[260px]">
+              <div className="flex justify-between gap-2 text-muted">
+                <span>Budget</span>
+                <span className="tabular-nums">
+                  <span className="text-ink">{formatDollars(figures.paidCents)}</span> of {formatDollars(c.budgetCents)}{' '}
+                  · {usedPercent}%
+                </span>
+              </div>
+              <span className="mt-1 block h-[5px] rounded-[3px] bg-field-2" aria-hidden>
+                <span className="block h-full rounded-[3px] bg-[#4FB286]" style={{ width: `${usedPercent}%` }} />
+              </span>
+            </div>
             {[
-              ['Budget', formatDollars(c.budgetCents)],
-              ['Earned', formatDollars(figures.paidCents)],
+              ['Total views', n(head.views)],
               ['Left', formatDollars(figures.leftCents)],
               ['Per 1,000 views', formatDollars(c.rateCentsPer1000)],
             ].map(([k, v]) => (
@@ -173,63 +310,30 @@ export default async function CampaignAdminPage({
         </div>
       </section>
 
-      {saved ? (
+      {sp.saved ? (
         <div className="mt-4">
           <Notice kind="ok">Draft saved.</Notice>
         </div>
       ) : null}
-      {copied ? (
+      {sp.copied ? (
         <div className="mt-4">
           <Notice kind="ok">Copied as a new draft. Set the dates and budget for this month.</Notice>
         </div>
       ) : null}
 
-      {/* Ended campaigns keep the actions box so admins can still delete them. */}
-      {canMoney && (open || live || viewer.roles.includes('admin')) ? (
-        <section className="mt-4">
-          <CampaignActions
-            id={c.id}
-            fundLabel={`Fund ${formatDollars(c.budgetCents + feeCents)} from client balance`}
-            goLive={
-              open
-                ? {
-                    lines: [
-                      ['Budget for creators', formatDollars(c.budgetCents)],
-                      [`Service fee (${(client?.serviceFeeBps ?? 0) / 100}%)`, formatDollars(feeCents)],
-                      ['Client pays in total', formatDollars(c.budgetCents + feeCents)],
-                      ...(holding > 0 && !funded
-                        ? ([['Already paid in', formatDollars(holding)]] as [string, string][])
-                        : []),
-                    ],
-                    missing: [...missing, ...(client ? [] : ['client'])],
-                    owedNow: formatDollars(funded ? 0 : Math.max(0, c.budgetCents + feeCents - holding)),
-                  }
-                : null
-            }
-            can={{
-              fund: !funded && !['closed', 'cancelled'].includes(c.status),
-              publish: open,
-              copy: true,
-              close: live,
-              cancel: open && !funded,
-              delete: viewer.roles.includes('admin'),
-            }}
-            keepsRecords={funded || hasPosts}
-          />
-        </section>
-      ) : null}
-      {canMoney ? <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} /> : null}
-
-      <nav aria-label="Campaign" className="mt-5 grid grid-cols-5 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
+      <nav aria-label="Campaign" className="mt-5 grid grid-cols-8 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
         {(
           [
-            ['overview', 'Overview'],
-            ['creators', `Creators`],
-            ['pages', 'Pages'],
-            ['submissions', `Submissions`],
-            ['edit', 'Edit'],
+            ['review', 'Review', head.waiting],
+            ['verifications', 'Verifications', head.verifications],
+            ['clips', 'Clips', 0],
+            ['clippers', 'Clippers', 0],
+            ['payouts', 'Payouts', 0],
+            ['pages', 'Pages', 0],
+            ['overview', 'Overview', 0],
+            ['settings', 'Settings', 0],
           ] as const
-        ).map(([key, label]) => (
+        ).map(([key, label, waiting]) => (
           <a
             key={key}
             href={`${base}?tab=${key}`}
@@ -241,18 +345,322 @@ export default async function CampaignAdminPage({
             }`}
           >
             {label}
+            {count(waiting)}
           </a>
         ))}
       </nav>
 
       <div className="mt-4 flex flex-col gap-4">
-        {tab === 'overview' ? (
+        {tab === 'review' ? (
+          <CampaignReview campaignId={c.id} items={review} reasons={head.reasons} rules={ruleLines} />
+        ) : tab === 'verifications' ? (
+          <CampaignVerifications
+            campaignId={c.id}
+            items={verificationRows(proofs)}
+            decided={verificationRows(decidedProofs)}
+          />
+        ) : tab === 'clips' ? (
+          <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <form action={base} className="flex gap-2">
+                <input type="hidden" name="tab" value="clips" />
+                {clipFilters.status !== 'all' ? <input type="hidden" name="status" value={clipFilters.status} /> : null}
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={clipFilters.q ?? ''}
+                  aria-label="Search clips"
+                  placeholder="Search clipper, handle or link"
+                  className="h-9 w-[240px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+                />
+                <select
+                  name="clipper"
+                  defaultValue={clipFilters.clipper ?? ''}
+                  aria-label="Clipper"
+                  className="h-9 max-w-[200px] rounded-[10px] border border-solid border-line bg-field px-2 text-[13px] text-ink"
+                >
+                  <option value="">Every clipper</option>
+                  {clippers.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="submit"
+                  className="h-9 cursor-pointer rounded-[10px] border border-solid border-line bg-field-2 px-4 text-[13px] text-ink"
+                >
+                  Filter
+                </button>
+              </form>
+            </div>
+            <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+              <nav aria-label="Clips by status" className="flex gap-2">
+                {pill(clipFilters.status === 'all', clipHref({ status: 'all' }), 'All')}
+                {(Object.keys(BUCKETS) as Bucket[]).map((b) =>
+                  pill(clipFilters.status === b, clipHref({ status: b }), BUCKETS[b].label, b),
+                )}
+              </nav>
+              <nav aria-label="Clips by platform" className="flex gap-2">
+                {pill(!clipFilters.platform, clipHref({ platform: undefined }), 'Every platform')}
+                {c.platforms.map((p) =>
+                  pill(clipFilters.platform === p, clipHref({ platform: p }), platformLabel(p), p),
+                )}
+              </nav>
+              {c.platforms.includes('instagram')
+                ? pill(
+                    clipFilters.needs === 'verification',
+                    clipHref({ needs: clipFilters.needs ? undefined : 'verification' }),
+                    'Instagram posts needing verification',
+                  )
+                : null}
+              <nav aria-label="Sort clips" className="ml-auto flex gap-2">
+                {pill(clipFilters.sort === 'newest', clipHref({ sort: 'newest' }), 'Newest')}
+                {pill(clipFilters.sort === 'most', clipHref({ sort: 'most' }), 'Most views')}
+                {pill(clipFilters.sort === 'least', clipHref({ sort: 'least' }), 'Least views')}
+              </nav>
+            </div>
+            {clips.length === 0 ? (
+              <EmptyState body="No clips match these filters." />
+            ) : (
+              <ClipsGrid
+                campaignId={c.id}
+                reasons={head.reasons}
+                canDelete={hasAccess(viewer, 'admin')}
+                clips={clips.map((p) => ({
+                  id: p.id,
+                  platform: p.platform,
+                  platformPostId: p.platformPostId,
+                  postUrl: p.postUrl,
+                  handle: p.handle,
+                  creator: p.creator,
+                  creatorId: p.creatorId,
+                  hasVideo: p.hasVideo,
+                  hasThumbnail: p.hasThumbnail,
+                  views: p.views,
+                  verified: p.verified,
+                  earnedCents: p.earnedCents,
+                  state: p.state,
+                  stateLabel: CREATOR_STATE[p.state]?.label ?? p.state,
+                  bucket: p.bucket,
+                  needsVerification: p.needsVerification,
+                  submittedAt: p.submittedAt.toISOString(),
+                }))}
+              />
+            )}
+          </Card>
+        ) : tab === 'clippers' ? (
+          <Card title="Clippers" note="Everyone who joined this campaign. Click a clipper to see their clips.">
+            {clippers.length === 0 ? (
+              <EmptyState body="Nobody has joined yet." />
+            ) : (
+              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
+                <table className="w-full border-collapse text-[13px]">
+                  <thead className="bg-field">
+                    <tr>
+                      <Th>Clipper</Th>
+                      <Th>Handles</Th>
+                      <Th right>Submissions</Th>
+                      <Th right>Approved</Th>
+                      <Th right>Rejected</Th>
+                      <Th right>Total views</Th>
+                      <Th right>Earned</Th>
+                      <Th right>Verifications waiting</Th>
+                      <Th>Flags</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clippers.map((m) => (
+                      <tr key={m.id} className="border-0 border-t border-solid border-line">
+                        <td className="px-3 py-3">
+                          <a href={clipHref({ clipper: m.id })} className="font-semibold text-ink">
+                            {m.name}
+                          </a>
+                          <a href={`/admin/creators/${m.id}`} className="ml-2 text-[11px] text-muted-2">
+                            Profile
+                          </a>
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="flex flex-wrap gap-3">
+                            {m.handles.slice(0, 3).map((a) => (
+                              <span key={a.platform + a.handle} className="inline-flex items-center gap-1">
+                                @{a.handle}
+                                <Dot status={a.status} />
+                              </span>
+                            ))}
+                            {m.handles.length > 3 ? (
+                              <span className="text-muted">+{m.handles.length - 3} more</span>
+                            ) : null}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums">{m.submissions}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{m.approved}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{m.rejected}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{n(m.views)}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(m.earnedCents)}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">
+                          {m.pendingVerifications ? (
+                            <a href={`${base}?tab=verifications`} className="font-semibold text-pending">
+                              {m.pendingVerifications}
+                            </a>
+                          ) : (
+                            0
+                          )}
+                        </td>
+                        <td className="px-3 py-3">
+                          {m.flags.length ? (
+                            <span className="flex flex-wrap gap-1">
+                              {m.flags.map((f) => (
+                                <span
+                                  key={f}
+                                  className="rounded-[6px] border border-solid border-[rgba(229,103,92,0.5)] px-2 py-[1px] text-[11px] text-[#F08A80]"
+                                >
+                                  {f}
+                                </span>
+                              ))}
+                            </span>
+                          ) : (
+                            <span className="text-muted">None</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        ) : tab === 'payouts' && payouts ? (
+          <Card
+            title="Payouts"
+            note="What each clip has earned and where that money stands. Dates come from the ledger."
+          >
+            <dl className="m-0 mb-4 grid grid-cols-4 gap-3 max-lg:grid-cols-2">
+              {[
+                ['Paid', formatDollars(payouts.totals.paidCents)],
+                ['In hold', formatDollars(payouts.totals.holdCents)],
+                ['Returned to budget', formatDollars(payouts.totals.returnedCents)],
+                ['Remaining budget', formatDollars(payouts.totals.remainingCents)],
+              ].map(([k, v]) => (
+                <div key={k} className="rounded-[12px] border border-solid border-line bg-field px-4 py-3">
+                  <dt className="text-[12px] text-muted">{k}</dt>
+                  <dd className="m-0 mt-1 text-[20px] font-semibold tabular-nums">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {payouts.rows.length === 0 ? (
+              <EmptyState body="Nothing has earned yet." />
+            ) : (
+              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
+                <table className="w-full border-collapse text-[13px]">
+                  <thead className="bg-field">
+                    <tr>
+                      <Th>Clipper</Th>
+                      <Th>Clip</Th>
+                      <Th right>Amount</Th>
+                      <Th>Status</Th>
+                      <Th right>Date</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {payouts.rows.map((p) => (
+                      <tr key={p.submissionId} className="border-0 border-t border-solid border-line">
+                        <td className="px-3 py-3">
+                          <a href={`/admin/creators/${p.creatorId}`} className="text-ink">
+                            {p.clipper}
+                          </a>
+                        </td>
+                        <td className="px-3 py-3">
+                          <a href={`/admin/submissions/${p.submissionId}`} className="text-ink">
+                            {p.handle}
+                          </a>{' '}
+                          <PlatformTag platform={p.platform} small />
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(p.amountCents)}</td>
+                        <td className="px-3 py-3">
+                          <span
+                            className="inline-flex items-center gap-[6px] text-[12px] font-semibold"
+                            style={{ color: PAYOUT_TONE[p.status] }}
+                          >
+                            <span
+                              aria-hidden
+                              className="size-[6px] rounded-full"
+                              style={{ background: PAYOUT_TONE[p.status] }}
+                            />
+                            {PAYOUT_LABEL[p.status]}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-right whitespace-nowrap text-muted">
+                          {p.at ? p.at.toISOString().slice(0, 10) : 'Not yet'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        ) : tab === 'pages' ? (
+          <Card title="Pages" note="The accounts clippers in this campaign post from.">
+            {pages.length === 0 ? (
+              <EmptyState body="No accounts yet." />
+            ) : (
+              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
+                <table className="w-full border-collapse text-[13px]">
+                  <thead className="bg-field">
+                    <tr>
+                      <Th>Account</Th>
+                      <Th>Clipper</Th>
+                      <Th>Status</Th>
+                      <Th right>Followers</Th>
+                      <Th right>Posts</Th>
+                      <Th right>Views</Th>
+                      <Th right>Earned</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pages.map((a) => (
+                      <tr key={a.id} className="border-0 border-t border-solid border-line">
+                        <td className="px-3 py-3">
+                          <span className="inline-flex items-center gap-2">
+                            <PlatformTag platform={a.platform} small />@{a.handle}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3">
+                          <a href={`/admin/creators/${a.creatorId}`} className="text-ink">
+                            {a.creator}
+                          </a>
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="inline-flex items-center gap-2">
+                            <Dot status={a.status} />
+                            {a.status === 'verified'
+                              ? 'Verified'
+                              : a.status === 'pending'
+                                ? 'Pending'
+                                : 'Needs attention'}
+                          </span>
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums">
+                          {a.followers === null ? '-' : n(a.followers)}
+                        </td>
+                        <td className="px-3 py-3 text-right tabular-nums">{a.posts}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{n(a.views)}</td>
+                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(a.earnedCents)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+        ) : tab === 'overview' && o ? (
           <>
             <dl className="m-0 grid grid-cols-4 gap-3 max-lg:grid-cols-2">
               {[
                 ['Views on approved posts', n(o.views)],
                 ['Counted views', n(o.countedViews)],
-                ['Creators earning', n(o.creators)],
+                ['Clippers earning', n(o.creators)],
                 ['Cost per 1,000 counted views', cpm === null ? 'None yet' : formatDollars(cpm)],
                 ['Approved posts', n(o.counts.approved)],
                 ['Pending posts', n(o.counts.pending)],
@@ -339,9 +747,7 @@ export default async function CampaignAdminPage({
                 <Rule label="Posts per account">
                   {c.maxPostsPerAccount === null ? 'No limit' : n(c.maxPostsPerAccount)}
                 </Rule>
-                <Rule label="Platforms">
-                  {c.platforms.map((p) => PLATFORM_LABELS[p as keyof typeof PLATFORM_LABELS] ?? p).join(', ')}
-                </Rule>
+                <Rule label="Platforms">{c.platforms.map(platformLabel).join(', ')}</Rule>
                 {c.languages?.length ? <Rule label="Languages">{c.languages.join(', ')}</Rule> : null}
                 {c.allowedRegions?.length ? <Rule label="Regions">{c.allowedRegions.join(', ')}</Rule> : null}
               </RuleGroup>
@@ -355,7 +761,7 @@ export default async function CampaignAdminPage({
                 {Object.entries(tf)
                   .filter(([, v]) => v !== '' && v !== false)
                   .map(([k, v]) => (
-                    <Rule key={k} label={k.replace(/([A-Z])/g, ' $1').replace(/^./, (x) => x.toUpperCase())}>
+                    <Rule key={k} label={fieldLabel(k)}>
                       {v === true ? 'Yes' : String(v)}
                     </Rule>
                   ))}
@@ -390,267 +796,55 @@ export default async function CampaignAdminPage({
               </RuleGroup>
             </Card>
           </>
-        ) : tab === 'creators' ? (
-          <Card title="Campaign creators" note="Everyone who joined this campaign, newest first.">
-            <form className="mb-4 flex gap-2">
-              <input type="hidden" name="tab" value="creators" />
-              <input
-                name="q"
-                defaultValue={q}
-                placeholder="Search creators..."
-                aria-label="Search creators"
-                className="h-9 w-[240px] rounded-[9px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
-              />
-            </form>
-            {creators.length === 0 ? (
-              <EmptyState body={q ? `No creator matches "${q}".` : 'Nobody has joined yet.'} />
-            ) : (
-              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
-                <table className="w-full border-collapse text-[13px]">
-                  <thead className="bg-field">
-                    <tr>
-                      <Th>Creator</Th>
-                      <Th>Accounts</Th>
-                      <Th>Linked accounts</Th>
-                      <Th right>Posts</Th>
-                      <Th right>Approved</Th>
-                      <Th right>Joined</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {creators.map((m) => {
-                      const verified = m.accounts.filter((a) => a.status === 'verified').length
-                      const waiting = m.accounts.filter((a) => a.status === 'pending').length
-                      return (
-                        <tr key={m.id} className="border-0 border-t border-solid border-line">
-                          <td className="px-3 py-3">
-                            <a href={`/admin/creators/${m.id}`} className="font-semibold text-ink">
-                              {m.name}
-                            </a>
-                            {m.suspended ? <span className="ml-2 text-[11px] text-bad">Suspended</span> : null}
-                          </td>
-                          <td className="px-3 py-3 tabular-nums">
-                            {verified}/{m.accounts.length}
-                            {waiting ? (
-                              <span className="ml-2 rounded-pill border border-solid border-[rgba(224,169,74,0.5)] px-2 py-[1px] text-[11px] text-pending">
-                                {waiting} pending
-                              </span>
-                            ) : null}
-                          </td>
-                          <td className="px-3 py-3">
-                            <span className="flex flex-wrap gap-3">
-                              {m.accounts.slice(0, 3).map((a) => (
-                                <span key={a.platform + a.handle} className="inline-flex items-center gap-1">
-                                  @{a.handle}
-                                  <Dot status={a.status} />
-                                </span>
-                              ))}
-                              {m.accounts.length > 3 ? (
-                                <span className="text-muted">+{m.accounts.length - 3} more</span>
-                              ) : null}
-                            </span>
-                          </td>
-                          <td className="px-3 py-3 text-right tabular-nums">{m.posts}</td>
-                          <td className="px-3 py-3 text-right tabular-nums">{m.approved}</td>
-                          <td className="px-3 py-3 text-right whitespace-nowrap text-muted">{day(m.joinedAt)}</td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
-        ) : tab === 'pages' ? (
-          <Card title="Pages" note="The accounts creators in this campaign post from.">
-            {pages.length === 0 ? (
-              <EmptyState body="No accounts yet." />
-            ) : (
-              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
-                <table className="w-full border-collapse text-[13px]">
-                  <thead className="bg-field">
-                    <tr>
-                      <Th>Account</Th>
-                      <Th>Creator</Th>
-                      <Th>Status</Th>
-                      <Th right>Followers</Th>
-                      <Th right>Posts</Th>
-                      <Th right>Views</Th>
-                      <Th right>Earned</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pages.map((a) => (
-                      <tr key={a.id} className="border-0 border-t border-solid border-line">
-                        <td className="px-3 py-3">
-                          <span className="inline-flex items-center gap-2">
-                            <PlatformTag platform={a.platform} small />@{a.handle}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3">
-                          <a href={`/admin/creators/${a.creatorId}`} className="text-ink">
-                            {a.creator}
-                          </a>
-                        </td>
-                        <td className="px-3 py-3">
-                          <span className="inline-flex items-center gap-2">
-                            <Dot status={a.status} />
-                            {a.status === 'verified'
-                              ? 'Verified'
-                              : a.status === 'pending'
-                                ? 'Pending'
-                                : 'Needs attention'}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3 text-right tabular-nums">
-                          {a.followers === null ? '—' : n(a.followers)}
-                        </td>
-                        <td className="px-3 py-3 text-right tabular-nums">{a.posts}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{n(a.views)}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(a.earnedCents)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
-        ) : tab === 'submissions' ? (
-          <Card title="Submissions" note="Views, likes and comments refresh with each check, every 2 hours.">
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <form action={base} className="flex gap-2">
-                <input type="hidden" name="tab" value="submissions" />
-                <input type="hidden" name="show" value={bucket} />
-                <input
-                  type="search"
-                  name="q"
-                  defaultValue={q ?? ''}
-                  aria-label="Search posts"
-                  placeholder="Search creator, account or link"
-                  className="h-9 w-[260px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
-                />
-                <button
-                  type="submit"
-                  className="h-9 cursor-pointer rounded-[10px] border border-solid border-line bg-field-2 px-4 text-[13px] text-ink"
-                >
-                  Search
-                </button>
-              </form>
-              <nav aria-label="Posts by outcome" className="flex gap-2">
-                {(Object.keys(BUCKETS) as Bucket[]).map((b) => (
-                  <a
-                    key={b}
-                    href={`${base}?tab=submissions&show=${b}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
-                    aria-current={bucket === b ? 'true' : undefined}
-                    className={`flex items-center gap-3 rounded-pill border border-solid px-4 py-[6px] text-[13px] no-underline ${
-                      bucket === b
-                        ? 'border-gold-soft bg-[rgba(216,197,143,0.12)] text-gold-soft'
-                        : 'border-line text-muted-2'
-                    }`}
-                  >
-                    {BUCKETS[b].label}
-                    <span className="tabular-nums">{o.counts[b]}</span>
-                  </a>
-                ))}
-              </nav>
-            </div>
-            {o.posts.length === 0 ? (
-              <EmptyState
-                body={
-                  q
-                    ? `No ${BUCKETS[bucket].label.toLowerCase()} posts match "${q}".`
-                    : `No ${BUCKETS[bucket].label.toLowerCase()} posts yet.`
-                }
-              />
-            ) : (
-              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
-                <table className="w-full border-collapse text-[13px]">
-                  <caption className="sr-only">{BUCKETS[bucket].label} posts</caption>
-                  <thead className="bg-field">
-                    <tr>
-                      <Th>Actions</Th>
-                      <Th>Post</Th>
-                      <Th>Submitted by</Th>
-                      <Th>Status</Th>
-                      <Th>Fetch</Th>
-                      <Th right>Views</Th>
-                      <Th>Engagement</Th>
-                      <Th right>Earned</Th>
-                      <Th right>Submitted</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {o.posts.map((p) => {
-                      const engaged = (p.likes ?? 0) + (p.comments ?? 0) + (p.shares ?? 0)
-                      return (
-                        <tr key={p.id} className="border-0 border-t border-solid border-line align-top">
-                          <td className="px-3 py-3">
-                            <PostActions
-                              campaignId={c.id}
-                              id={p.id}
-                              state={p.state}
-                              reasons={reasons}
-                              canDelete={canDelete}
-                            />
-                          </td>
-                          <td className="px-3 py-3">
-                            <a href={p.postUrl} target="_blank" rel="noreferrer" className="text-gold-soft">
-                              {p.handle
-                                ? `@${p.handle}`
-                                : `${PLATFORM_LABELS[p.platform as keyof typeof PLATFORM_LABELS] ?? p.platform} post`}
-                            </a>
-                            <div className="mt-1 flex items-center gap-2">
-                              <PlatformTag platform={p.platform} small />
-                              <a href={`/admin/submissions/${p.id}`} className="text-[12px] text-muted-2">
-                                Details
-                              </a>
-                            </div>
-                          </td>
-                          <td className="px-3 py-3">
-                            <a href={`/admin/creators/${p.creatorId}`} className="text-ink">
-                              {p.creator}
-                            </a>
-                          </td>
-                          <td className="px-3 py-3">{CREATOR_STATE[p.state]?.label ?? p.state}</td>
-                          <td className="px-3 py-3 whitespace-nowrap text-muted-2">{ago(p.checkedAt)}</td>
-                          <td className="px-3 py-3 text-right tabular-nums">{n(p.views)}</td>
-                          <td className="px-3 py-3 whitespace-nowrap tabular-nums">
-                            {p.likes === null && p.comments === null ? (
-                              <span className="text-muted">No check yet</span>
-                            ) : (
-                              <>
-                                <span>{stat(p.likes)} likes</span>
-                                <span className="ml-3">{stat(p.comments)} comments</span>
-                                <span className="ml-3 text-muted" title="Likes, comments and shares per view">
-                                  {p.views > 0 ? `${((engaged / p.views) * 100).toFixed(2)}%` : ''}
-                                </span>
-                              </>
-                            )}
-                          </td>
-                          <td className="px-3 py-3 text-right tabular-nums">{formatDollars(p.earnedCents)}</td>
-                          <td className="px-3 py-3 text-right whitespace-nowrap text-muted">
-                            {p.submittedAt.toISOString().slice(0, 10)}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
-        ) : canMoney && !['closed', 'cancelled'].includes(c.status) ? (
-          <Card title="Edit campaign">
-            <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} funded={funded} />
-          </Card>
         ) : (
-          <Card title="Edit campaign">
-            <p className="m-0 text-[14px] text-muted-2">
-              {['closed', 'cancelled'].includes(c.status)
-                ? 'This campaign has ended and can no longer be edited.'
-                : 'Only finance and admin staff can edit campaigns.'}
-            </p>
-          </Card>
+          <>
+            {/* Ended campaigns keep the actions box so admins can still delete them. */}
+            {canMoney && (open || live || viewer.roles.includes('admin')) ? (
+              <CampaignActions
+                id={c.id}
+                fundLabel={`Fund ${formatDollars(c.budgetCents + feeCents)} from client balance`}
+                goLive={
+                  open
+                    ? {
+                        lines: [
+                          ['Budget for creators', formatDollars(c.budgetCents)],
+                          [`Service fee (${(client?.serviceFeeBps ?? 0) / 100}%)`, formatDollars(feeCents)],
+                          ['Client pays in total', formatDollars(c.budgetCents + feeCents)],
+                          ...(holding > 0 && !funded
+                            ? ([['Already paid in', formatDollars(holding)]] as [string, string][])
+                            : []),
+                        ],
+                        missing: [...missing, ...(client ? [] : ['client'])],
+                        owedNow: formatDollars(funded ? 0 : Math.max(0, c.budgetCents + feeCents - holding)),
+                      }
+                    : null
+                }
+                can={{
+                  fund: !funded && !['closed', 'cancelled'].includes(c.status),
+                  publish: open,
+                  copy: true,
+                  close: live,
+                  cancel: open && !funded,
+                  delete: viewer.roles.includes('admin'),
+                }}
+                keepsRecords={funded || hasPosts}
+              />
+            ) : null}
+            {canMoney ? <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} /> : null}
+            {canMoney && !['closed', 'cancelled'].includes(c.status) ? (
+              <Card title="Edit campaign">
+                <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} funded={funded} />
+              </Card>
+            ) : (
+              <Card title="Edit campaign">
+                <p className="m-0 text-[14px] text-muted-2">
+                  {['closed', 'cancelled'].includes(c.status)
+                    ? 'This campaign has ended and can no longer be edited.'
+                    : 'Only finance and admin staff can edit campaigns.'}
+                </p>
+              </Card>
+            )}
+          </>
         )}
       </div>
     </div>

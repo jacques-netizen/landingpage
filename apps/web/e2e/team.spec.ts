@@ -15,13 +15,13 @@ test('an admin adds a moderator, who signs in at the staff page and sees only wh
 
   // The new moderator: staff sign in, lands on the dashboard.
   await page.context().clearCookies()
-  await page.goto('/admin/review')
-  await expect(page).toHaveURL(/\/staff\/sign-in\?next=%2Fadmin%2Freview$/)
+  await page.goto('/admin/campaigns')
+  await expect(page).toHaveURL(/\/staff\/sign-in\?next=%2Fadmin%2Fcampaigns$/)
   await page.getByLabel('Email').fill(email)
   await page.getByRole('button', { name: 'Email me a sign-in link' }).click()
   await page.waitForURL('**/check-email')
   await page.goto(await latestLink(email))
-  await expect(page).toHaveURL(/\/admin\/review$/)
+  await expect(page).toHaveURL(/\/admin\/campaigns$/)
   expect((await page.goto('/admin/team'))?.status()).toBe(403)
 
   // Removed again: no more access.

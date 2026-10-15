@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { db } from '@mde/db'
+import { verifyOptions } from '@mde/review'
 import { CREATOR_FILTERS, CREATOR_STATE, listCreatorSubmissions } from '@mde/submissions'
 import { EmptyState } from '@mde/ui'
 import { cookies } from 'next/headers'
@@ -30,6 +31,8 @@ export default async function SubmissionsPage({
     listCreatorSubmissions(db(), viewer.id, filter?.states),
     reasonMessages(),
   ])
+  // Which approved posts offer "Verify views" now (owner brief, 2026-10-15).
+  const verify = await verifyOptions(db(), viewer.id, rows)
 
   const pill = (key: string | null, label: string) => {
     const on = (filter?.key ?? null) === key
@@ -90,6 +93,11 @@ export default async function SubmissionsPage({
               countedViews: r.countedViews,
               earnedCents: r.earnedCents,
               submittedAt: r.submittedAt.toISOString(),
+              verify: (() => {
+                const v = verify.get(r.id)
+                if (!v) return null
+                return { why: v.why, open: !!v.why && !v.pending && !v.blocked && !v.nextAt, pending: v.pending }
+              })(),
             }))}
           />
         )}

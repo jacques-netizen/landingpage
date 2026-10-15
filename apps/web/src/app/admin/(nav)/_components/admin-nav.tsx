@@ -25,12 +25,10 @@ const I = {
 const SECTIONS: { title?: string; links: [string, string, keyof typeof I][] }[] = [
   {
     links: [
-      ['Overview', '/admin', 'home'],
+      ['Home', '/admin', 'home'],
       ['Campaigns', '/admin/campaigns', 'campaigns'],
-      ['Review queue', '/admin/review', 'review'],
-      ['View proofs', '/admin/review/proofs', 'review'],
       ['Appeals', '/admin/appeals', 'appeals'],
-      ['Creators', '/admin/creators', 'creators'],
+      ['Clippers', '/admin/creators', 'creators'],
     ],
   },
   {
@@ -84,8 +82,8 @@ export function AdminSideNav({ email, role }: { email: string; role: string }) {
           <Icon d="M9 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM17 17l-3.5-3.5" />
           <input
             name="q"
-            placeholder="Search creators"
-            aria-label="Find a creator"
+            placeholder="Search clippers"
+            aria-label="Find a clipper"
             className="w-full border-0 bg-transparent text-[13px] text-ink outline-none placeholder:text-muted"
           />
         </label>

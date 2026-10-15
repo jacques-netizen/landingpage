@@ -88,7 +88,12 @@ describe('view verification', () => {
     expect(canVerifyViews({ ...base, scrapedChangedAt: new Date(now.getTime() - 49 * HOUR) }, now)).toBe('stale')
     expect(canVerifyViews({ ...base, scrapedChangedAt: new Date(now.getTime() - 47 * HOUR) }, now)).toBeNull()
     expect(canVerifyViews({ ...base, state: 'needs_review', scrapedViews: 0 }, now)).toBeNull()
-    expect(canVerifyViews({ ...base, state: 'rejected', platform: 'instagram', postUrl: 'https://www.instagram.com/p/x/' }, now)).toBeNull()
+    expect(
+      canVerifyViews(
+        { ...base, state: 'rejected', platform: 'instagram', postUrl: 'https://www.instagram.com/p/x/' },
+        now,
+      ),
+    ).toBeNull()
   })
 
   it('flags claims over 10 times the scraped count on videos and over 50,000 on picture posts', () => {
@@ -126,7 +131,7 @@ describe('view verification', () => {
     )
   })
 
-  it('a verification needs the recording and a count; the screenshot is optional and files must be the creator\'s', async () => {
+  it("a verification needs the recording and a count; the screenshot is optional and files must be the creator's", async () => {
     const t = await approvedWithProof()
     const base = { proofId: t.proof.id, creatorId: t.creator, now: t.now, note: null }
     await expect(

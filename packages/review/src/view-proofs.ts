@@ -228,7 +228,9 @@ export async function verifyOptions(
     const pending = last?.status === 'submitted'
     const blocked = blockedIn.has(p.campaignId)
     const nextAt =
-      last?.status === 'approved' && last.reviewedAt ? new Date(last.reviewedAt.getTime() + VERIFY_AGAIN_HOURS * HOUR) : null
+      last?.status === 'approved' && last.reviewedAt
+        ? new Date(last.reviewedAt.getTime() + VERIFY_AGAIN_HOURS * HOUR)
+        : null
     out.set(p.id, { why, pending, blocked, nextAt: nextAt && nextAt > now ? nextAt : null })
   }
   return out
@@ -258,7 +260,8 @@ export async function requestViewProof(db: Db, i: { submissionId: string; creato
     )
   const last = await latestViewProof(db, i.submissionId)
   if (last) {
-    if (last.status === 'submitted') throw new ReviewError('waiting', 'Your last verification is still waiting for review.')
+    if (last.status === 'submitted')
+      throw new ReviewError('waiting', 'Your last verification is still waiting for review.')
     if (last.status === 'requested') return { id: last.id, code: last.code }
     if (opt.nextAt)
       throw new ReviewError(
@@ -318,7 +321,9 @@ export async function submitViewProof(
   if (!Number.isInteger(i.claimedViews) || i.claimedViews <= 0)
     throw new ReviewError('views_required', 'Enter the view count shown in your insights.')
   const recording = await ownFile(db, i.recordingFileId, i.creatorId, 'screen recording', 'video')
-  const screenshot = i.screenshotFileId ? await ownFile(db, i.screenshotFileId, i.creatorId, 'screenshot', 'image') : null
+  const screenshot = i.screenshotFileId
+    ? await ownFile(db, i.screenshotFileId, i.creatorId, 'screenshot', 'image')
+    : null
   const scraped = (await scrapedState(db, [s.id])).get(s.id)?.scrapedViews ?? null
   await db
     .update(viewProofs)
@@ -478,7 +483,9 @@ export async function listViewProofs(db: Db, status: 'submitted' | 'decided', f:
     .leftJoin(linkedAccounts, eq(linkedAccounts.id, submissions.linkedAccountId))
     .where(
       and(
-        status === 'submitted' ? eq(viewProofs.status, 'submitted') : inArray(viewProofs.status, ['approved', 'rejected']),
+        status === 'submitted'
+          ? eq(viewProofs.status, 'submitted')
+          : inArray(viewProofs.status, ['approved', 'rejected']),
         f.campaignId ? eq(submissions.campaignId, f.campaignId) : undefined,
       ),
     )

@@ -29,6 +29,8 @@ type Row = {
   countedViews: number
   earnedCents: number
   submittedAt: string
+  /** "Verify views" on an approved post (owner brief, 2026-10-15): open now, or waiting on staff. */
+  verify: { why: string | null; open: boolean; pending: boolean } | null
 }
 
 const count = (n: number) => n.toLocaleString('en-US')
@@ -140,7 +142,31 @@ export function SubmissionsTable({
                     <div className="mt-1 max-w-[260px] text-[12px] leading-[1.4] text-[var(--t-muted)]">{r.reason}</div>
                   ) : null}
                 </td>
-                <td className={`${td} text-right tabular-nums`}>{count(r.latestViews)}</td>
+                <td className={`${td} text-right tabular-nums`}>
+                  {count(r.latestViews)}
+                  {r.verify?.open ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        // Opens the verification and the drawer with its form in one step.
+                        start(async () => {
+                          await requestViewProofAction(r.id)
+                          load(r)
+                        })
+                      }}
+                      className={`mt-1 block w-full cursor-pointer rounded-[8px] border border-solid px-2 py-[3px] font-app text-[11px] font-semibold ${
+                        r.verify.why === 'instagram_post'
+                          ? 'border-gold-soft bg-gold-soft text-ink'
+                          : 'border-[var(--t-hair)] bg-transparent text-[var(--t-text)]'
+                      }`}
+                    >
+                      Verify views
+                    </button>
+                  ) : r.verify?.pending ? (
+                    <span className="mt-1 block text-[11px] text-[var(--t-muted)]">Verification pending</span>
+                  ) : null}
+                </td>
                 <td className={`${td} text-right tabular-nums`}>{count(r.countedViews)}</td>
                 <td className={`${td} text-right font-semibold tabular-nums`}>{formatDollars(r.earnedCents)}</td>
                 <td className={`${td} whitespace-nowrap text-[var(--t-muted)]`}>{shortDate(r.submittedAt)}</td>
@@ -375,35 +401,39 @@ function AnswerForm({ id, onDone }: { id: string; onDone: () => void }) {
 }
 
 const PROOF_STATUS: Record<string, string> = {
-  submitted: 'Your proof was sent and is waiting for review.',
-  approved: 'Your proof was accepted.',
-  rejected: 'Your proof was not accepted.',
+  submitted: 'Verification pending',
+  approved: 'Your verification was approved.',
+  rejected: 'Your verification was not accepted.',
+}
+
+const WHY: Record<string, string> = {
+  picture: 'Picture posts do not show views publicly. Upload your insights to get your views counted.',
+  no_views: 'The automatic check has not read any views on this post yet. Upload your insights to get them counted.',
+  stale: 'The view count has not moved for two days. Upload your insights if it is higher.',
 }
 
 /**
- * Update the views yourself with a screen recording (owner request, 2026-10-14): for picture posts and
- * any post the automatic check cannot read. A code, the rules, two uploads and the count.
+ * Verify views (owner brief, 2026-10-15): a screen recording of the post's insights with the count it
+ * shows, for Instagram posts always and for other approved posts when the automatic check reads nothing.
  */
 function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => void }) {
   const [busy, start] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const p = d.proof
-  const live = p?.status === 'requested' && new Date(p.expiresAt).getTime() > Date.now()
-  // Picture posts only: a video or reel never shows this.
-  if (!p && !d.canProveViews) return null
+  const v = d.verify
+  const open = p?.status === 'requested'
+  if (!p && !v.why) return null
+  const why = v.why === 'instagram_post' ? d.verifyText.instagram : v.why ? WHY[v.why] : null
   return (
     <div className="mt-4 border-0 border-t border-solid border-[var(--t-hair)] pt-4">
-      <p className="m-0 text-[13px] font-semibold">Update views yourself</p>
-      <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">
-        This is a picture post, so the platform does not give us its views. Record your analytics screen and we set the
-        views from it. Views only go up, once a day per post.
-      </p>
+      <p className="m-0 text-[13px] font-semibold">Verify views</p>
+      {why ? <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">{why}</p> : null}
       {p && p.status !== 'requested' ? (
         <div className="mt-3 rounded-[12px] bg-[var(--t-glass)] p-3 text-[13px]">
           <p className="m-0 font-semibold">{PROOF_STATUS[p.status]}</p>
           {p.status === 'approved' && p.setViews !== null ? (
             <p className="mt-1 mb-0 text-[var(--t-muted)]">
-              Views set to {count(p.setViews)}
+              {count(p.setViews)} views verified
               {p.reviewedAt ? (
                 <>
                   {' '}
@@ -414,19 +444,30 @@ function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => vo
             </p>
           ) : null}
           {p.status === 'submitted' && p.claimedViews !== null ? (
-            <p className="mt-1 mb-0 text-[var(--t-muted)]">You reported {count(p.claimedViews)} views.</p>
+            <p className="mt-1 mb-0 text-[var(--t-muted)]">
+              You reported {count(p.claimedViews)} views. We check the recording and update the count.
+            </p>
           ) : null}
           {p.decisionNote ? <p className="mt-1 mb-0 text-[var(--t-muted)]">{p.decisionNote}</p> : null}
         </div>
       ) : null}
-      {live && p ? (
-        <ProofForm d={d} proofId={p.id} code={p.code} expiresAt={p.expiresAt} onDone={onChanged} />
-      ) : d.canProveViews ? (
+      {v.blocked ? (
+        <p className="mt-2 mb-0 text-[12px] text-flagged">
+          Three of your verifications in this campaign were rejected, so you cannot send more here.
+        </p>
+      ) : v.nextAt ? (
+        <p className="mt-2 mb-0 text-[12px] text-[var(--t-muted)]">
+          You can send the next verification after <LocalDateTime iso={v.nextAt} />.
+        </p>
+      ) : null}
+      {open && p ? (
+        <ProofForm d={d} proofId={p.id} onDone={onChanged} />
+      ) : v.can ? (
         <div className="mt-3">
           <Button
             type="button"
             tone="app"
-            variant="secondary"
+            variant={v.why === 'instagram_post' ? 'primary' : 'secondary'}
             size="sm"
             loading={busy}
             onClick={() =>
@@ -438,7 +479,7 @@ function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => vo
               })
             }
           >
-            Update views with a recording
+            Verify views
           </Button>
           {error ? (
             <p role="alert" className="mt-2 mb-0 text-[13px] text-flagged">
@@ -451,19 +492,28 @@ function ProofPanel({ d, onChanged }: { d: SubmissionDetail; onChanged: () => vo
   )
 }
 
-function ProofForm({
-  d,
-  proofId,
-  code,
-  expiresAt,
-  onDone,
-}: {
-  d: SubmissionDetail
-  proofId: string
-  code: string
-  expiresAt: string
-  onDone: () => void
-}) {
+const MAX_SECONDS = 60
+const MAX_BYTES = 100 * 1024 * 1024
+
+/** How long a video file runs, read in the browser before it is uploaded. */
+function duration(file: File) {
+  return new Promise<number | null>((resolve) => {
+    const url = URL.createObjectURL(file)
+    const v = document.createElement('video')
+    v.preload = 'metadata'
+    v.onloadedmetadata = () => {
+      URL.revokeObjectURL(url)
+      resolve(Number.isFinite(v.duration) ? v.duration : null)
+    }
+    v.onerror = () => {
+      URL.revokeObjectURL(url)
+      resolve(null)
+    }
+    v.src = url
+  })
+}
+
+function ProofForm({ d, proofId, onDone }: { d: SubmissionDetail; proofId: string; onDone: () => void }) {
   const [files, setFiles] = useState<{ screenshot?: string; recording?: string }>({})
   const [uploading, setUploading] = useState<{ screenshot?: boolean; recording?: boolean }>({})
   const [uploadError, setUploadError] = useState<string | null>(null)
@@ -475,6 +525,12 @@ function ProofForm({
   const upload = async (kind: 'screenshot' | 'recording', file: File | undefined) => {
     if (!file) return
     setUploadError(null)
+    if (kind === 'recording') {
+      if (file.size > MAX_BYTES) return setUploadError('The recording is over 100 MB. Trim it and try again.')
+      const secs = await duration(file)
+      if (secs !== null && secs > MAX_SECONDS + 0.5)
+        return setUploadError(`The recording runs ${Math.round(secs)} seconds. Keep it to ${MAX_SECONDS} seconds.`)
+    }
     setUploading((u) => ({ ...u, [kind]: true }))
     try {
       const res = await fetch(`/api/view-proofs/${proofId}/file?kind=${kind}`, {
@@ -494,35 +550,33 @@ function ProofForm({
   return (
     <form action={action} className="mt-3 flex flex-col gap-4">
       <div className="rounded-[12px] bg-[var(--t-glass)] p-3">
-        <p className="m-0 text-[12px] text-[var(--t-muted)]">Your code. Show it in the recording.</p>
-        <p className="mt-1 mb-0 font-mono text-[24px] font-bold tracking-[0.08em]">{code}</p>
-        <p className="mt-1 mb-0 text-[12px] text-[var(--t-muted)]">
-          Valid until <LocalDateTime iso={expiresAt} />.
-        </p>
-      </div>
-      <div>
-        <p className="m-0 mb-1 text-[13px] font-semibold">Rules for the recording</p>
-        <ol className="m-0 pl-5 text-[12px] text-[var(--t-muted)]">
-          {d.proofRules.map((r) => (
+        <p className="m-0 text-[13px] font-semibold">{d.verifyText.instruction}</p>
+        <ol className="mt-2 mb-0 pl-5 text-[12px] text-[var(--t-muted)]">
+          {d.proofRules.slice(1).map((r) => (
             <li key={r} className="py-[2px]">
               {r}
             </li>
           ))}
         </ol>
       </div>
-      <Field label="Screen recording" tone="app" helper="MP4, MOV or WebM, 10 to 90 seconds.">
+      <Field label="Screen recording" tone="app" helper={d.verifyText.limits}>
         {(p) => (
           <input
             id={p.id}
             aria-describedby={p.describedBy}
             type="file"
-            accept="video/mp4,video/quicktime,video/webm"
+            accept="video/mp4,video/quicktime,.mp4,.mov"
             className="block w-full text-[13px]"
             onChange={(e) => upload('recording', e.target.files?.[0])}
           />
         )}
       </Field>
-      <Field label="Screenshot of the analytics" tone="app" helper="PNG, JPG or WebP.">
+      <input type="hidden" name="recordingFileId" value={files.recording ?? ''} />
+      <input type="hidden" name="screenshotFileId" value={files.screenshot ?? ''} />
+      <Field label="Views shown in your insights" tone="app">
+        {(p) => <Input tone="app" id={p.id} name="views" inputMode="numeric" required placeholder="12,345" />}
+      </Field>
+      <Field label="Screenshot of the insights" tone="app" helper="Optional. PNG, JPG or WebP.">
         {(p) => (
           <input
             id={p.id}
@@ -533,11 +587,6 @@ function ProofForm({
             onChange={(e) => upload('screenshot', e.target.files?.[0])}
           />
         )}
-      </Field>
-      <input type="hidden" name="recordingFileId" value={files.recording ?? ''} />
-      <input type="hidden" name="screenshotFileId" value={files.screenshot ?? ''} />
-      <Field label="Views shown in your analytics" tone="app">
-        {(p) => <Input tone="app" id={p.id} name="views" inputMode="numeric" required placeholder="12,345" />}
       </Field>
       <Field label="Note" tone="app" helper="Optional.">
         {(p) => <Textarea tone="app" id={p.id} aria-describedby={p.describedBy} name="note" rows={2} maxLength={500} />}
@@ -551,9 +600,9 @@ function ProofForm({
         type="submit"
         tone="app"
         loading={pending}
-        disabled={!files.recording || !files.screenshot || !!uploading.recording || !!uploading.screenshot}
+        disabled={!files.recording || !!uploading.recording || !!uploading.screenshot}
       >
-        {uploading.recording || uploading.screenshot ? 'Uploading' : 'Send proof'}
+        {uploading.recording || uploading.screenshot ? 'Uploading' : 'Send verification'}
       </Button>
     </form>
   )

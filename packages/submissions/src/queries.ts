@@ -19,6 +19,7 @@ export async function listCreatorSubmissions(d: DbOrTx, creatorId: string, state
       countedViews: submissions.countedViews,
       earnedCents: submissions.earnedCents,
       submittedAt: submissions.submittedAt,
+      mediaKind: submissions.mediaKind,
     })
     .from(submissions)
     .innerJoin(campaigns, eq(campaigns.id, submissions.campaignId))

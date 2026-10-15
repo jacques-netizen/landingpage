@@ -1155,6 +1155,7 @@ export function ReportView({
                       </a>
                     </span>
                     <span style={{ fontFamily: mono }}>{full(c.views)}</span>
+                    {c.verified ? <Verified /> : null}
                     <span style={{ fontFamily: mono }}>{full(c.likes)}</span>
                     <span style={{ fontFamily: mono }}>{full(c.comments)}</span>
                     <span style={{ fontFamily: mono }}>{full(c.shares)}</span>
@@ -1433,6 +1434,27 @@ function spendLabel(c: ReportClip, minViews: number) {
 }
 
 /** The platform's own player for the post, the way the clip is shown wherever it is embedded. */
+/** The views come from the creator's verified insights, not the scraper (owner brief, 2026-10-15). */
+function Verified() {
+  return (
+    <span
+      title="Verified from the creator's insights"
+      style={{
+        marginLeft: 6,
+        padding: '1px 6px',
+        borderRadius: 5,
+        background: 'rgba(47,125,79,0.12)',
+        color: '#2F7D4F',
+        fontSize: 10,
+        fontWeight: 600,
+        verticalAlign: 'middle',
+      }}
+    >
+      Verified
+    </span>
+  )
+}
+
 function embedUrl(c: ReportClip, play: boolean) {
   switch (c.platform) {
     case 'tiktok':
@@ -1746,7 +1768,7 @@ function SubmissionCard({
   onPlay: (c: ReportClip) => void
 }) {
   const rows = [
-    ['Views', full(c.views)],
+    ['Views', `${full(c.views)}${c.verified ? ' · Verified' : ''}`],
     ['Comments', full(c.comments)],
     ['Likes', full(c.likes)],
     ['Spend', spendLabel(c, minViews)],

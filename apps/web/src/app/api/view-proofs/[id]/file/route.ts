@@ -1,4 +1,5 @@
 import { db, tables } from '@mde/db'
+import { RECORDING_MAX_BYTES } from '@mde/review'
 import { and, eq } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
 import { rateLimit } from '@/server/rate-limit'
@@ -7,11 +8,12 @@ import { getViewer } from '@/server/viewer'
 
 export const runtime = 'nodejs'
 
-// The screenshot and screen recording for a view proof (owner request, 2026-10-14). The file type is
-// read from its first bytes, never from what the browser says. The proof must be the creator's own and
-// still open. Pictures up to 10 MB; recordings up to the storage limit, 200 MB at most.
+// The screen recording and optional screenshot for a view verification (owner brief, 2026-10-15). The
+// file type is read from its first bytes, never from what the browser says. The verification must be
+// the creator's own and still open. Pictures up to 10 MB; recordings MP4 or MOV up to 100 MB, or the
+// storage limit when that is lower (25 MB with files kept in the database).
 const IMAGE_MAX = 10 * 1024 * 1024
-const VIDEO_MAX = 200 * 1024 * 1024
+const VIDEO_MAX = RECORDING_MAX_BYTES
 const bad = (code: string, message: string, status = 400) => NextResponse.json({ error: { code, message } }, { status })
 
 function imageType(b: Uint8Array): string | null {
@@ -28,7 +30,6 @@ function videoType(b: Uint8Array): string | null {
     const brand = String.fromCharCode(...b.slice(8, 12))
     return brand.startsWith('qt') ? 'video/quicktime' : 'video/mp4'
   }
-  if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return 'video/webm'
   return null
 }
 
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const viewer = await getViewer()
   if (!viewer) return bad('unauthenticated', 'Sign in to continue.', 401)
   const { id } = await params
-  if (!/^[0-9a-f-]{36}$/i.test(id)) return bad('not_found', 'This proof was not found.', 404)
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return bad('not_found', 'This verification was not found.', 404)
   if (!(await rateLimit(`proof-upload:${viewer.id}`, 30, 3600)))
     return bad('rate_limited', 'Too many uploads. Try later.', 429)
   const kind = req.nextUrl.searchParams.get('kind') === 'recording' ? 'recording' : 'screenshot'
@@ -44,13 +45,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     .select({ status: tables.viewProofs.status })
     .from(tables.viewProofs)
     .where(and(eq(tables.viewProofs.id, id), eq(tables.viewProofs.creatorId, viewer.id)))
-  if (!p) return bad('not_found', 'This proof was not found.', 404)
-  if (p.status !== 'requested') return bad('wrong_state', 'This proof was already sent.')
+  if (!p) return bad('not_found', 'This verification was not found.', 404)
+  if (p.status !== 'requested') return bad('wrong_state', 'This verification was already sent.')
 
   const max = kind === 'recording' ? Math.min(VIDEO_MAX, maxUploadBytes()) : IMAGE_MAX
   const limitText =
     kind === 'recording'
-      ? `That recording is too large. The limit is ${Math.floor(max / (1024 * 1024))} MB. Keep it under 90 seconds.`
+      ? `That recording is too large. The limit is ${Math.floor(max / (1024 * 1024))} MB. Keep it under 60 seconds.`
       : 'That picture is too large. The limit is 10 MB.'
   if (Number(req.headers.get('content-length') ?? 0) > max) return bad('too_large', limitText, 413)
   const data = new Uint8Array(await req.arrayBuffer())
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!type)
     return bad(
       'bad_type',
-      kind === 'recording' ? 'Choose an MP4, MOV or WebM screen recording.' : 'Choose a PNG, JPG or WebP screenshot.',
+      kind === 'recording' ? 'Choose an MP4 or MOV screen recording.' : 'Choose a PNG, JPG or WebP screenshot.',
     )
   const ext = {
     'image/png': 'png',
@@ -69,7 +70,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     'image/webp': 'webp',
     'video/mp4': 'mp4',
     'video/quicktime': 'mov',
-    'video/webm': 'webm',
   }[type]
   try {
     const file = await saveUpload(
