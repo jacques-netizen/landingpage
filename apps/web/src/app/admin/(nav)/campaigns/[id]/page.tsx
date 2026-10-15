@@ -101,7 +101,7 @@ export default async function CampaignAdminPage({
   const live = ['live', 'closing'].includes(c.status)
   const missing = missingForPublish(c)
   // The budget can always change; its difference moves through the ledger (see changeBudget).
-  const locked = live ? ['capPerPost', 'capPerCreator', 'minViewsToEarn', 'clientId'] : []
+  const locked = live ? ['minViewsToEarn', 'clientId'] : []
   const status = CAMPAIGN_STATUS[c.status]
   const head = await campaignHeadline(id)
   const asked = (sp.tab && OLD_TABS[sp.tab]) ?? sp.tab

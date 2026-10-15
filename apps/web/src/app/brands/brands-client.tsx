@@ -16,6 +16,13 @@ function toggleVideo(ev: MouseEvent<HTMLElement>) {
   else video.pause()
 }
 
+/** The video id of a YouTube watch, share or embed link; null for anything else. */
+function youtubeId(url: string) {
+  const m =
+    /(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/.exec(url)
+  return m ? m[1]! : null
+}
+
 const scrollTo = (id: string) => () => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
 // The brand site, built from "Platform Mockups" (screen "For brands").
@@ -51,6 +58,9 @@ export function BrandsClient({
   })).filter((s) => s.l)
 
   const testimonial = copy('video.kojo-testimonial')
+  // The testimonial may be a YouTube link (owner request, 2026-10-15): it plays in YouTube's player
+  // inside the same frame, after the mockup's poster and play button.
+  const youtube = youtubeId(testimonial)
 
   const v = {
     authoring: false,
@@ -122,11 +132,14 @@ export function BrandsClient({
       }
     }),
     tm: {
-      video: testimonial,
+      video: youtube ? '' : testimonial,
+      youtube: youtube
+        ? `https://www.youtube-nocookie.com/embed/${youtube}?autoplay=1&playsinline=1&rel=0&modestbranding=1`
+        : null,
       hasVideo: !!testimonial,
       noVideo: !testimonial,
       showPlay: !playing['kojo-testimonial'],
-      toggle: toggleVideo,
+      toggle: youtube ? setPlay('kojo-testimonial', true) : toggleVideo,
       onPlay: setPlay('kojo-testimonial', true),
       onPause: setPlay('kojo-testimonial', false),
     },

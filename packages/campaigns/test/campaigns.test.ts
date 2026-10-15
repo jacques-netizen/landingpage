@@ -282,13 +282,16 @@ describe('changes after publishing', () => {
     expect(audit.some((a) => a.action === 'campaign.delete')).toBe(true)
   })
 
-  it('keeps the money rules fixed but lets the rate change for new posts', async () => {
+  it('keeps the minimum views fixed once live but lets the rate and the caps change', async () => {
     const { actor, client, c } = await liveCampaign()
     await expect(
-      updateCampaign(db, actor, c.id, form(client.id, { capPerPostCents: '$400.00' })),
+      updateCampaign(db, actor, c.id, form(client.id, { minViewsToEarn: '5000' })),
     ).rejects.toBeInstanceOf(CampaignError)
     const after = await updateCampaign(db, actor, c.id, form(client.id, { rateCentsPer1000: '$3.00' }))
     expect(after.rateCentsPer1000).toBe(300)
+    // The caps may move while live (owner request, 2026-10-15); the engine keeps earnings under them.
+    const capped = await updateCampaign(db, actor, c.id, form(client.id, { capPerPostCents: '$100.00' }))
+    expect(capped.capPerPostCents).toBe(10_000)
   })
 
   it('changes the budget of a live campaign through the ledger, recording what the client pays for a raise', async () => {

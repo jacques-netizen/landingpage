@@ -106,11 +106,12 @@ export async function createDraft(db: Db, actorId: string, f: CampaignForm) {
   })
 }
 
-// Once live, the money rules that existing posts were earned under (caps, minimum views) and the type
-// stay as they are. The rate may change: existing posts keep their locked rate (section 5.6). The budget
-// may change at any time (owner request, 2026-10-07): the difference moves through the ledger.
+// Once live, the minimum views, the type and the client stay as they are. The rate may change: existing
+// posts keep their locked rate (section 5.6). The budget may change at any time (owner request,
+// 2026-10-07): the difference moves through the ledger. The caps per post and per creator may change
+// too (owner request, 2026-10-15): the next check brings every post's earnings under the new cap.
 const LOCKED_AFTER_FUNDING = [] as const
-const LOCKED_AFTER_LIVE = ['capPerPostCents', 'capPerCreatorCents', 'minViewsToEarn', 'type', 'clientId'] as const
+const LOCKED_AFTER_LIVE = ['minViewsToEarn', 'type', 'clientId'] as const
 
 /**
  * Change a funded campaign's budget. A raise first records the client's payment for whatever their

@@ -61,7 +61,7 @@ export const brandsDataContent: Record<string, string> = {
   'video.wale': '',
   'video.kojo-blak': '',
   'video.jake-logan-paul': '',
-  'video.kojo-testimonial': '',
+  'video.kojo-testimonial': 'https://www.youtube.com/watch?v=n140a7k9fQ4',
   'video.frame-1': '',
   'video.frame-2': '',
   'video.frame-3': '',
