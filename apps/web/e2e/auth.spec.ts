@@ -220,7 +220,7 @@ test('each staff role can open the staff pages', async ({ page }) => {
     await signInAs(page, `${role}@seed.invalid`)
     const res = await page.goto('/admin')
     expect(res?.status()).toBe(200)
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Campaigns' })).toBeVisible()
     const me = await page.request.get('/api/v1/admin/me')
     expect(me.status()).toBe(200)
     expect(((await me.json()) as { roles: string[] }).roles).toEqual([role])

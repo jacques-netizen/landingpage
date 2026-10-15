@@ -113,7 +113,9 @@ export default async function CampaignAdminPage({
         ? 'review'
         : 'overview'
   const clipFilters: ClipFilters = {
-    status: ['approved', 'pending', 'rejected'].includes(sp.status ?? '') ? (sp.status as Bucket) : 'all',
+    status: ['approved', 'pending', 'rejected'].includes(sp.status ?? sp.show ?? '')
+      ? ((sp.status ?? sp.show) as Bucket)
+      : 'all',
     platform: ['tiktok', 'instagram', 'youtube', 'x'].includes(sp.platform ?? '') ? sp.platform : undefined,
     clipper: sp.clipper && /^[0-9a-f-]{36}$/i.test(sp.clipper) ? sp.clipper : undefined,
     needs: sp.needs === 'verification' ? 'verification' : undefined,
@@ -321,6 +323,42 @@ export default async function CampaignAdminPage({
         </div>
       ) : null}
 
+      {/* Ended campaigns keep the actions box so admins can still delete them. */}
+      {canMoney && (open || live || viewer.roles.includes('admin')) ? (
+        <section className="mt-4">
+          <CampaignActions
+            id={c.id}
+            fundLabel={`Fund ${formatDollars(c.budgetCents + feeCents)} from client balance`}
+            goLive={
+              open
+                ? {
+                    lines: [
+                      ['Budget for creators', formatDollars(c.budgetCents)],
+                      [`Service fee (${(client?.serviceFeeBps ?? 0) / 100}%)`, formatDollars(feeCents)],
+                      ['Client pays in total', formatDollars(c.budgetCents + feeCents)],
+                      ...(holding > 0 && !funded
+                        ? ([['Already paid in', formatDollars(holding)]] as [string, string][])
+                        : []),
+                    ],
+                    missing: [...missing, ...(client ? [] : ['client'])],
+                    owedNow: formatDollars(funded ? 0 : Math.max(0, c.budgetCents + feeCents - holding)),
+                  }
+                : null
+            }
+            can={{
+              fund: !funded && !['closed', 'cancelled'].includes(c.status),
+              publish: open,
+              copy: true,
+              close: live,
+              cancel: open && !funded,
+              delete: viewer.roles.includes('admin'),
+            }}
+            keepsRecords={funded || hasPosts}
+          />
+        </section>
+      ) : null}
+      {canMoney ? <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} /> : null}
+
       <nav aria-label="Campaign" className="mt-5 grid grid-cols-8 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
         {(
           [
@@ -439,6 +477,9 @@ export default async function CampaignAdminPage({
                   hasThumbnail: p.hasThumbnail,
                   views: p.views,
                   verified: p.verified,
+                  likes: p.likes,
+                  comments: p.comments,
+                  checkedAt: p.checkedAt?.toISOString() ?? null,
                   earnedCents: p.earnedCents,
                   state: p.state,
                   stateLabel: CREATOR_STATE[p.state]?.label ?? p.state,
@@ -798,39 +839,6 @@ export default async function CampaignAdminPage({
           </>
         ) : (
           <>
-            {/* Ended campaigns keep the actions box so admins can still delete them. */}
-            {canMoney && (open || live || viewer.roles.includes('admin')) ? (
-              <CampaignActions
-                id={c.id}
-                fundLabel={`Fund ${formatDollars(c.budgetCents + feeCents)} from client balance`}
-                goLive={
-                  open
-                    ? {
-                        lines: [
-                          ['Budget for creators', formatDollars(c.budgetCents)],
-                          [`Service fee (${(client?.serviceFeeBps ?? 0) / 100}%)`, formatDollars(feeCents)],
-                          ['Client pays in total', formatDollars(c.budgetCents + feeCents)],
-                          ...(holding > 0 && !funded
-                            ? ([['Already paid in', formatDollars(holding)]] as [string, string][])
-                            : []),
-                        ],
-                        missing: [...missing, ...(client ? [] : ['client'])],
-                        owedNow: formatDollars(funded ? 0 : Math.max(0, c.budgetCents + feeCents - holding)),
-                      }
-                    : null
-                }
-                can={{
-                  fund: !funded && !['closed', 'cancelled'].includes(c.status),
-                  publish: open,
-                  copy: true,
-                  close: live,
-                  cancel: open && !funded,
-                  delete: viewer.roles.includes('admin'),
-                }}
-                keepsRecords={funded || hasPosts}
-              />
-            ) : null}
-            {canMoney ? <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} /> : null}
             {canMoney && !['closed', 'cancelled'].includes(c.status) ? (
               <Card title="Edit campaign">
                 <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} funded={funded} />

@@ -29,14 +29,14 @@ const state = async (id: string) => (await sql`select state from submissions whe
 
 // Testing report (2026-10-08), items 1 and 8: each post in a campaign shows its views, likes and
 // comments, and staff approve, deny, set to pending or delete it from the row.
-test('staff manage a campaign’s posts from its Submissions tab', async ({ page }) => {
+test('staff manage a campaign’s posts from its Clips tab', async ({ page }) => {
   const tag = `sub${Date.now() % 1e9}`
   const { campaignId, id } = await seedPost(tag)
   await signInAs(page, 'admin@seed.invalid')
   await page.goto(`/admin/campaigns/${campaignId}?tab=submissions&show=pending`)
-  await page.getByLabel('Search posts').fill(tag)
-  await page.getByRole('button', { name: 'Search' }).click()
-  const row = page.getByRole('row').filter({ hasText: tag })
+  await page.getByLabel('Search clips').fill(tag)
+  await page.getByRole('button', { name: 'Filter' }).click()
+  const row = page.getByRole('listitem').filter({ hasText: tag })
   await expect(row).toHaveCount(1)
   await expect(row).toContainText('4,353')
   await expect(row).toContainText('25 likes')
@@ -73,7 +73,7 @@ test('reviewers decide posts but only admins delete them', async ({ page }) => {
   const { campaignId } = await seedPost(tag)
   await signInAs(page, 'reviewer@seed.invalid')
   await page.goto(`/admin/campaigns/${campaignId}?tab=submissions&show=pending&q=${tag}`)
-  const row = page.getByRole('row').filter({ hasText: tag })
+  const row = page.getByRole('listitem').filter({ hasText: tag })
   await expect(row.getByRole('button', { name: 'Approve' })).toBeEnabled()
   await expect(row.getByRole('button', { name: 'Delete' })).toHaveCount(0)
 })

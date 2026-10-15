@@ -21,6 +21,9 @@ export type ClipTile = {
   hasThumbnail: boolean
   views: number
   verified: boolean
+  likes: number | null
+  comments: number | null
+  checkedAt: string | null
   earnedCents: number
   state: string
   stateLabel: string
@@ -31,6 +34,12 @@ export type ClipTile = {
 
 const TONE = { approved: '#4FB286', pending: '#E0A94A', rejected: '#E5675C' } as const
 const n = (v: number) => v.toLocaleString('en-US')
+/** How long ago a post's stats were fetched, e.g. "13m ago". */
+function ago(iso: string | null) {
+  if (!iso) return 'No check yet'
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000))
+  return m < 60 ? `${m}m ago` : m < 48 * 60 ? `${Math.round(m / 60)}h ago` : `${Math.round(m / 1440)}d ago`
+}
 
 export function ClipsGrid({
   clips,
@@ -91,11 +100,21 @@ export function ClipsGrid({
               <dd className="m-0 font-semibold tabular-nums">{formatDollars(c.earnedCents)}</dd>
             </div>
           </dl>
+          <p className="mt-1 mb-0 text-[11px] text-muted">
+            {c.likes === null && c.comments === null
+              ? 'No check yet'
+              : `${n(c.likes ?? 0)} likes · ${n(c.comments ?? 0)} comments · ${ago(c.checkedAt)}`}
+          </p>
           <div className="mt-3 flex items-end justify-between gap-2">
             <PostActions campaignId={campaignId} id={c.id} state={c.state} reasons={reasons} canDelete={canDelete} />
-            <a href={`/admin/submissions/${c.id}`} className="text-[11px] text-muted-2">
-              Details
-            </a>
+            <span className="flex gap-3 text-[11px]">
+              <a href={c.postUrl} target="_blank" rel="noopener noreferrer" className="text-muted-2">
+                Open post ↗
+              </a>
+              <a href={`/admin/submissions/${c.id}`} className="text-muted-2">
+                Details
+              </a>
+            </span>
           </div>
         </li>
       ))}

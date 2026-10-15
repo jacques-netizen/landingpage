@@ -72,10 +72,11 @@ test('staff see appeals ordered by deadline and the dashboard flags any within 2
   expect(soonAt).toBeLessThan(laterAt)
   await expect(page.getByText(/within 24 hours/).first()).toBeVisible()
 
+  // The staff home flags appeals due within a day and links to the inbox.
   await page.goto('/admin')
-  const due = page.getByRole('region', { name: 'Appeals due within 24 hours' })
-  await expect(due.locator(`a[href="/admin/appeals/${soonAppeal!.id}"]`)).toBeVisible()
-  await expect(due.locator(`a[href="/admin/appeals/${laterAppeal!.id}"]`)).toHaveCount(0)
+  const due = page.getByRole('status').filter({ hasText: /due within 24 hours/ })
+  await expect(due).toBeVisible()
+  await expect(due.getByRole('link', { name: 'Open appeals' })).toHaveAttribute('href', '/admin/appeals')
 })
 
 test('overturning an appeal restores the post and tells the creator', async ({ page }) => {
