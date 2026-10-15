@@ -141,6 +141,10 @@
   .vtile.playing .vt-play,.vtile.playing .vt-meta,.vtile.playing .vt-views,.vtile.playing .vt-rank{opacity:0;pointer-events:none}
   .vtile.playing .vt-media:after{opacity:0}
   .vtile.playing .vt-media{cursor:default}
+  .vtile.wide .vt-media{aspect-ratio:16/9}
+  .vtile.wide .vt-media video{object-fit:contain}
+  .vtile.wide .vt-play{top:50%}
+  .vtile.wide .vt-media:after{background:linear-gradient(180deg,rgba(0,0,0,.25),transparent 30%)}
   .vt-open{display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.8rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.62rem;
     letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .25s}
   .vt-open:hover{color:var(--gold-soft)}
@@ -793,6 +797,19 @@
       </div>
       <div class="bb-mult"><b id="bbX">2,667&times;</b><span id="bbXl">the impressions for the same spend</span></div>
     </div>
+    <div class="bb-vid rv d2">
+      <div class="vtile wide" data-video="img/billboard-test.mp4">
+        <div class="vt-media" role="button" tabindex="0" aria-label="Play the billboard versus clipping video">
+          <img src="img/billboard-test.jpg" alt="Content Rewards billboard on a Toronto street at dusk" loading="lazy">
+          <span class="vt-views"><i></i>1:13</span>
+          <span class="vt-play" aria-hidden="true"><span></span></span>
+        </div>
+      </div>
+      <div class="bb-side">
+        <div class="bk">The test on film</div>
+        <h4>A billboard in Toronto, then the same $5,000 on Content Rewards.</h4>
+      </div>
+    </div>
     <p class="body-lg rv" style="margin-top:1.8rem">A premium hardware brand whose product looks good on camera, and whose buyers live inside gaming and creator culture, <b>is a better fit than most of the names above.</b></p>
   </div>
 </section>
@@ -1306,6 +1323,8 @@
     m.addEventListener('click',go);
     m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
   });
+
+  bindTiles(document);
 
   /* ---------- 03 proof ---------- */
   const CS=[
