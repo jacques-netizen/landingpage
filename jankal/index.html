@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Jankal Deejay &times; Maison d'&Eacute;lites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+  img{display:block;max-width:100%}
+  button{font:inherit;color:inherit}
+  a{color:inherit}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:26ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .section{padding:clamp(4.2rem,10vh,7.5rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3.2rem 0 1.2rem}
+  .alt{background:var(--panel)}
+  .btn{display:inline-flex;align-items:center;gap:0.6rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;padding:0.95rem 1.3rem;border:1px solid var(--gold);color:var(--gold-soft);transition:.3s;background:transparent}
+  .btn:hover{background:var(--gold);color:var(--bg)}
+  .btn span{font-size:0.95rem}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%),var(--bg)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.1fr 0.9fr;gap:2rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3rem,8.6vw,7.4rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.36em;letter-spacing:0.02em;color:var(--gold-soft);margin-top:0.7rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.86;margin-top:1.8rem;max-width:44ch;line-height:1.5}
+  .hero-chips{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:2rem}
+  .hchip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 0.95rem;border:1px solid var(--hair);color:var(--text);border-radius:999px;background:rgba(31,25,17,.6)}
+  .hchip b{color:var(--gold-soft)}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .portrait{position:relative;width:min(100%,440px);aspect-ratio:1;justify-self:center;isolation:isolate}
+  .p-glow{position:absolute;inset:-14%;z-index:-1;background:radial-gradient(circle,rgba(212,178,106,.34),transparent 62%);filter:blur(24px);animation:pulse 6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+  .portrait img{width:100%;height:100%;object-fit:cover;border-radius:16px;transform:rotate(-2.5deg);box-shadow:0 50px 90px -30px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.3);animation:fl 10s ease-in-out infinite}
+  @keyframes fl{0%,100%{transform:rotate(-2.5deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-12px)}}
+  .vinyl{position:absolute;right:-12%;top:12%;width:46%;aspect-ratio:1;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,var(--gold) 0 13%,#0b0906 13.5% 15%,#1a1610 15.5% 100%);
+    box-shadow:0 30px 50px -20px rgba(0,0,0,.9);animation:spin 6s linear infinite}
+  .vinyl:before{content:"";position:absolute;inset:4%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.035) 3px 4px)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .p-badge{position:absolute;z-index:3;display:flex;align-items:center;gap:0.55rem;padding:0.6rem 0.95rem;border-radius:999px;background:rgba(21,18,13,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(235,214,158,.28);font-family:'Archivo',sans-serif;font-size:0.78rem;color:var(--text);white-space:nowrap;box-shadow:0 14px 30px -12px rgba(0,0,0,.8)}
+  .p-badge b{color:var(--gold-soft);font-weight:800}
+  .p-badge.b1{left:-6%;bottom:14%;animation:fl2 8s ease-in-out infinite}
+  .p-badge.b2{right:-2%;bottom:2%;animation:fl2 9s ease-in-out infinite reverse}
+  @keyframes fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  /* ============ 01 TODAY ============ */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.4rem}
+  .st{background:var(--panel);padding:1.6rem 1.3rem}
+  .st .sv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2rem,4.6vw,3rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.03em}
+  .st .sl{font-family:'Archivo',sans-serif;font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem}
+  .mixes{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.2rem}
+  .mix{position:relative;background:var(--panel);border:1px solid var(--hair-soft);cursor:pointer;text-align:left;padding:0;overflow:hidden;transition:.35s}
+  .mix:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .mix.on{border-color:var(--gold)}
+  .mix .mc{position:relative;aspect-ratio:1;overflow:hidden}
+  .mix .mc img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+  .mix:hover .mc img{transform:scale(1.05)}
+  .mix .mp{position:absolute;right:0.8rem;bottom:0.8rem;width:48px;height:48px;border-radius:50%;background:rgba(15,12,8,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;transition:.3s}
+  .mix .mp span{width:0;height:0;margin-left:4px;border-left:14px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent}
+  .mix:hover .mp,.mix.on .mp{background:var(--gold);border-color:var(--gold-soft)}
+  .mix .mt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.86rem;padding:0.9rem 1rem 1rem;line-height:1.3}
+  .mix .mt small{display:block;font-weight:600;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .player{margin-top:1rem;background:var(--panel-2);border:1px solid var(--hair);overflow:hidden;max-height:0;opacity:0;transition:max-height .6s cubic-bezier(.2,.7,.2,1),opacity .4s}
+  .player.open{max-height:300px;opacity:1}
+  .player iframe{display:block;width:100%;height:252px;border:0}
+  .missing{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
+  .ms{background:var(--panel);border:1px solid var(--hair-soft);padding:1.5rem 1.4rem}
+  .ms .mk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
+  .ms.dim .mk{color:var(--dim)}
+  .ms p{font-size:1.02rem;color:var(--mute);margin-top:0.6rem;line-height:1.6}
+  .ms p b{color:var(--text);font-weight:500}
+  .ms ul{list-style:none;margin-top:0.7rem}
+  .ms li{font-size:1rem;color:var(--text);padding:0.45rem 0 0.45rem 1.6rem;position:relative;border-top:1px solid var(--hair-soft)}
+  .ms li:first-child{border-top:0}
+  .ms li:before{content:"?";position:absolute;left:0;top:0.45rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--gold-light)}
+
+  /* ============ YOUTUBE TILES ============ */
+  .ytile{position:relative}
+  .yt-media{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;box-shadow:0 26px 50px -24px rgba(0,0,0,.9),0 0 0 1px rgba(212,178,106,.22);transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s}
+  .ytile:hover .yt-media{transform:translateY(-5px);box-shadow:0 36px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.38)}
+  .yt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .ytile:hover .yt-media img{transform:scale(1.05)}
+  .yt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;background:linear-gradient(180deg,transparent 45%,rgba(10,8,5,.9) 100%)}
+  .vt-views{position:absolute;top:0.8rem;left:0.8rem;z-index:3;display:flex;align-items:center;gap:0.45rem;padding:0.4rem 0.7rem;border-radius:999px;background:rgba(15,12,8,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(235,214,158,.25);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.74rem;color:var(--gold-soft);transition:opacity .4s}
+  .vt-views i{width:0;height:0;border-left:7px solid var(--gold-light);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+  .vt-play{position:absolute;left:50%;top:50%;z-index:3;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.4);transition:transform .45s cubic-bezier(.2,.7,.2,1),background .45s,opacity .4s}
+  .vt-play:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(212,178,106,.55);animation:ring 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+  .vt-play > span{width:0;height:0;margin-left:5px;border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent}
+  .ytile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9);border-color:var(--gold-soft)}
+  @keyframes ring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+  .yt-meta{position:absolute;left:1rem;right:1rem;bottom:0.9rem;z-index:3;transition:opacity .4s}
+  .vt-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-0.01em}
+  .vt-s{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(239,231,213,.72);margin-top:0.25rem}
+  .yt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s}
+  .ytile.playing iframe{opacity:1}
+  .ytile.playing .vt-play,.ytile.playing .yt-meta,.ytile.playing .vt-views{opacity:0;pointer-events:none}
+  .ytile.playing .yt-media:after{opacity:0}
+  .vt-open{display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.8rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .25s}
+  .vt-open:hover{color:var(--gold-soft)}
+
+  /* ============ 02 WHAT WORKS ============ */
+  .djs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.4rem}
+  .dj{background:var(--bg);border:1px solid var(--hair-soft);padding:1rem 1rem 1.4rem;transition:.4s;display:flex;flex-direction:column}
+  .dj:hover{border-color:var(--hair)}
+  .dj .dk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);margin-top:1.2rem}
+  .dj h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem;margin-top:0.35rem;letter-spacing:-0.01em}
+  .dj .dv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.6vw,2.4rem);line-height:1;letter-spacing:-0.03em;color:var(--gold-soft);margin-top:0.9rem}
+  .dj .dl{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.4rem}
+  .dj p{font-size:0.98rem;color:var(--mute);margin-top:0.9rem;line-height:1.55}
+  .dj .take{margin-top:auto;padding-top:1rem}
+  .dj .take div{border-top:1px solid var(--hair-soft);padding-top:0.9rem;font-size:0.98rem;color:var(--text);line-height:1.5}
+  .dj .take span{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light);margin-bottom:0.35rem}
+  .growth{margin-top:1.2rem;background:linear-gradient(160deg,var(--panel-3),var(--bg) 70%);border:1px solid var(--hair);padding:clamp(1.4rem,3vw,2.2rem)}
+  .growth .gk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .growth h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.15rem,2.2vw,1.45rem);margin-top:0.4rem}
+  .g-row{display:grid;grid-template-columns:130px 1fr;gap:1rem;align-items:center;margin-top:1.1rem}
+  .g-row .gn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--mute)}
+  .g-track{position:relative;height:40px;background:var(--panel-3)}
+  .g-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+  .g-fill.dim{background:#7a6646}
+  .g-val{position:absolute;top:50%;transform:translateY(-50%);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;white-space:nowrap;opacity:0;transition:opacity .5s 1s}
+  .growth.go .g-val{opacity:1}
+  .g-val.vin{right:0.8rem;color:var(--bg)}
+  .g-val.vout{left:calc(var(--x) + 0.7rem);color:var(--text)}
+  .thread{margin-top:1.6rem;background:var(--panel-2);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.3rem 1.5rem;font-size:1.08rem;color:var(--text);line-height:1.6}
+  .thread b{color:var(--gold-soft);font-weight:500}
+
+  /* ============ 03 THE PLAN ============ */
+  .vtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:2.4rem}
+  .vtab{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.2rem 1.1rem 1.1rem;text-align:left;cursor:pointer;transition:.35s;overflow:hidden}
+  .vtab:hover{border-color:var(--hair);background:var(--panel-2)}
+  .vtab.on{border-color:var(--gold);background:var(--panel-2)}
+  .vtab.on:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gold)}
+  .vtab .vn{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.2rem;line-height:0.85;color:var(--panel-3);transition:color .35s}
+  .vtab.on .vn{color:var(--gold)}
+  .vtab .vt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem;margin-top:0.8rem;line-height:1.25}
+  .vtab .vw{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .vpanel{display:grid;grid-template-columns:0.95fr 1.05fr;gap:1.6rem;margin-top:1rem;background:linear-gradient(160deg,var(--panel-3),var(--panel) 65%);border:1px solid var(--hair);padding:clamp(1.3rem,3vw,2rem);align-items:center}
+  .alt .vpanel{background:linear-gradient(160deg,var(--panel-3),var(--bg) 65%)}
+  .vp-img{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px rgba(212,178,106,.25)}
+  .vp-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fadein .6s ease}
+  .vp-img .tag{position:absolute;left:0.8rem;bottom:0.8rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.4rem 0.6rem;background:rgba(15,12,8,.75);color:var(--gold-soft);border:1px solid var(--hair)}
+  @keyframes fadein{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+  .vp-body{animation:fadeup .45s ease}
+  .vp-body .vk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .vp-body h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.4rem,2.8vw,2rem);letter-spacing:-0.02em;margin-top:0.5rem;line-height:1.1}
+  .vp-body p{font-size:1.04rem;color:var(--text);opacity:.88;margin-top:0.8rem;line-height:1.62}
+  .beats{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.1rem}
+  .beats span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.06em;padding:0.45rem 0.7rem;border:1px solid var(--hair);color:var(--text);background:var(--bg);opacity:0;transform:translateY(6px)}
+  .beats span.show{opacity:1;transform:none;transition:opacity .4s,transform .4s}
+  .beats span i{font-style:normal;color:var(--gold-light);margin-right:0.35rem}
+  .shorts{display:grid;grid-template-columns:repeat(10,1fr);gap:0.6rem;margin-top:1.2rem}
+  .sh{position:relative;aspect-ratio:9/16;border-radius:10px;overflow:hidden;background:linear-gradient(170deg,var(--panel-3),#0b0906);border:1px solid var(--hair-soft);display:flex;flex-direction:column;justify-content:flex-end;padding:0.55rem;transition:.35s;opacity:0;transform:translateY(14px)}
+  .sh.show{opacity:1;transform:none}
+  .sh:hover{border-color:var(--gold);transform:translateY(-4px)}
+  .sh .sn{position:absolute;top:0.5rem;left:0.55rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;color:var(--gold-light)}
+  .sh .si{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;border:1px solid rgba(235,214,158,.5);display:flex;align-items:center;justify-content:center}
+  .sh .si:after{content:"";margin-left:2px;border-left:8px solid var(--gold-soft);border-top:5px solid transparent;border-bottom:5px solid transparent}
+  .sh .st2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;line-height:1.25;color:var(--text)}
+  .sh .brand{position:absolute;left:0;right:0;top:0;height:3px;background:var(--gold)}
+  .shorts-note{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1rem}
+  .sn2{background:var(--panel);padding:1.1rem 1.1rem}
+  .alt .sn2{background:var(--bg)}
+  .sn2 .k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
+  .sn2 p{font-size:0.98rem;color:var(--mute);margin-top:0.4rem;line-height:1.5}
+
+  /* ============ 04 HOW IT RUNS ============ */
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
+  .role{background:var(--panel);border:1px solid var(--hair-soft);padding:1.7rem 1.5rem}
+  .role.us{background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border-color:var(--hair)}
+  .role .rk{display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.32rem 0.6rem;border:1px solid var(--gold);color:var(--gold-light)}
+  .role.us .rk{background:var(--gold);color:var(--bg)}
+  .role h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.3rem;margin-top:1rem}
+  .role ul{list-style:none;margin-top:0.9rem}
+  .role li{display:grid;grid-template-columns:26px 1fr;gap:0.8rem;align-items:start;font-size:1.02rem;color:var(--text);padding:0.65rem 0;border-top:1px solid var(--hair-soft);line-height:1.45}
+  .role li:first-child{border-top:0}
+  .role .ck{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center}
+  .role .ck svg{width:13px;height:13px;stroke:var(--gold-soft);fill:none;stroke-width:2.6;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .5s ease}
+  .role li.tick .ck{background:rgba(184,148,79,.18)}
+  .role li.tick .ck svg{stroke-dashoffset:0}
+
+  /* ============ 05 TIMELINE ============ */
+  .weeks{display:grid;grid-template-columns:repeat(8,1fr);gap:0.4rem;margin-top:2.4rem}
+  .wk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);text-align:center;padding-bottom:0.5rem}
+  .blocks{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem}
+  .blk{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.1rem 1rem;text-align:left;cursor:pointer;transition:.35s;overflow:hidden}
+  .blk:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .blk.on{border-color:var(--gold);background:var(--panel-2)}
+  .blk.on:before,.blk.done:before{width:100%}
+  .blk .bn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.14em;color:var(--gold-light)}
+  .blk .bt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;margin-top:0.4rem;line-height:1.25}
+  .pulse-row{display:grid;grid-template-columns:repeat(8,1fr);gap:0.4rem;margin-top:0.4rem}
+  .pr{height:34px;border:1px solid var(--hair-soft);display:flex;align-items:center;justify-content:center;gap:4px;background:var(--bg)}
+  .alt .pr{background:var(--bg)}
+  .pr i{width:6px;height:10px;border-radius:1px;background:var(--panel-3);transition:background .4s}
+  .pr.lit i{background:var(--gold)}
+  .pr.lit i.long{height:16px;width:10px;background:var(--gold-soft)}
+  .legend{display:flex;gap:1.4rem;flex-wrap:wrap;margin-top:0.9rem;font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+  .legend span{display:inline-flex;align-items:center;gap:0.5rem}
+  .legend i{display:inline-block;width:6px;height:10px;background:var(--gold)}
+  .legend i.long{width:10px;height:16px;background:var(--gold-soft)}
+  .tl-panel{margin-top:1.4rem;background:var(--panel-2);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.3rem 1.5rem;min-height:84px}
+  .tl-panel p{font-size:1.04rem;color:var(--text);line-height:1.6;animation:fadeup .45s ease}
+  .tl-panel p b{color:var(--gold-soft);font-weight:500}
+
+  /* ============ 06 INVESTMENT ============ */
+  .price{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:2.4rem;border:1px solid var(--hair);background:linear-gradient(160deg,var(--panel-3),var(--panel) 60%)}
+  .price .pl{padding:clamp(1.6rem,4vw,2.6rem);border-right:1px solid var(--hair-soft)}
+  .price .pv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(3.4rem,9vw,6rem);line-height:0.9;letter-spacing:-0.045em;color:var(--gold-soft)}
+  .price .pk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.64rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);margin-top:0.9rem}
+  .price .pay{margin-top:1.6rem;font-size:1rem;color:var(--text)}
+  .price .pay b{color:var(--gold-soft);font-weight:500}
+  .price .pr2{padding:clamp(1.6rem,4vw,2.6rem)}
+  .inc{list-style:none}
+  .inc li{display:flex;justify-content:space-between;gap:1rem;padding:0.75rem 0;border-top:1px solid var(--hair-soft);font-size:1.02rem;color:var(--text)}
+  .inc li:first-child{border-top:0}
+  .inc li b{font-family:'Archivo',sans-serif;font-weight:800;color:var(--gold-soft);white-space:nowrap}
+  .model{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 55%);border:1px solid var(--hair);padding:clamp(1.6rem,4vw,3rem);margin-top:1rem}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--panel-3) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .o{background:var(--bg);padding:1.5rem 1.1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.2rem,2.6vw,1.7rem);color:var(--gold-soft);line-height:1.1;letter-spacing:-0.015em;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(2rem,5vw,3.4rem);line-height:1}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .next{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.2rem}
+  .nx{border-top:2px solid var(--gold);padding-top:1rem}
+  .nx .nn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.16em;color:var(--gold-light)}
+  .nx p{font-size:1rem;color:var(--text);margin-top:0.4rem;line-height:1.5}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--gold-soft);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:1.6rem}
+    .portrait{width:min(78%,380px);margin:1rem auto 0}
+    .djs{grid-template-columns:1fr 1fr}
+    .djs .dj:last-child{grid-column:1/-1}
+    .mixes{grid-template-columns:1fr 1fr}
+    .vpanel{grid-template-columns:1fr}
+    .shorts{grid-template-columns:repeat(5,1fr)}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+    .next{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:700px){
+    .stats,.missing,.djs,.roles,.shorts-note,.price{grid-template-columns:1fr}
+    .djs .dj:last-child{grid-column:auto}
+    .price .pl{border-right:0;border-bottom:1px solid var(--hair-soft)}
+    .vtabs{grid-template-columns:1fr 1fr}
+    .g-row{grid-template-columns:1fr;gap:0.4rem}
+    .weeks,.pulse-row{grid-template-columns:repeat(8,1fr);gap:0.2rem}
+    .wk{font-size:0.5rem;letter-spacing:0.04em}
+    .blocks{grid-template-columns:1fr 1fr}
+    .next{grid-template-columns:1fr}
+    .p-badge{font-size:0.7rem;padding:0.5rem 0.8rem}
+    .p-badge.b1{left:-4%}
+    .p-badge.b2{right:-3%}
+    .vinyl{right:-8%}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue,.portrait img,.p-glow,.p-badge,.vt-play:before,.vinyl{animation:none}
+    .g-fill{transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>The channel today</span></a>
+  <a href="#s2"><span>What works</span></a>
+  <a href="#s3"><span>The plan</span></a>
+  <a href="#s4"><span>How it runs</span></a>
+  <a href="#s5"><span>Timeline</span></a>
+  <a href="#s6"><span>Investment</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top">
+    <a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Jankal Deejay <b>&times;</b> Maison <b>d'&Eacute;lites</b></a>
+    <div class="label" style="color:var(--mute)">Proposal &middot; Private &amp; Confidential</div>
+  </div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Reggae and dancehall &middot; Nairobi</span>
+      <h1 class="rv d1">Jankal Deejay<span>YouTube growth proposal</span></h1>
+      <p class="hero-sub rv d2">Putting the selector on camera next to his music, so people who hear the mixes get to know the man behind them.</p>
+      <div class="hero-chips rv d3">
+        <span class="hchip"><b>4</b> long videos</span>
+        <span class="hchip"><b>10</b> Shorts</span>
+        <span class="hchip"><b>8</b> weeks</span>
+      </div>
+    </div>
+    <div class="portrait rv d2">
+      <div class="p-glow"></div>
+      <div class="vinyl"></div>
+      <img src="img/jankal.jpg" alt="Jankal Deejay">
+      <div class="p-badge b1"><span><b>Wildstyle Veteran</b></span></div>
+      <div class="p-badge b2"><span>Nairobi City, <b>Kenya</b></span></div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d4" style="color:var(--mute)">Prepared October 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 01 TODAY ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; Where the channel is today</span>
+    <h2 class="statement rv d1">Right now your music lives online as mixes.</h2>
+    <div class="stats rv d2">
+      <div class="st"><div class="sv"><span class="cu" data-target="37054">37,054</span></div><div class="sl">Total plays on Audiomack</div></div>
+      <div class="st"><div class="sv"><span class="cu" data-target="620">620</span></div><div class="sl">Monthly listeners</div></div>
+      <div class="st"><div class="sv"><span class="cu" data-target="157">157</span></div><div class="sl">Followers</div></div>
+    </div>
+    <div class="mixes rv d2" id="mixes">
+      <button class="mix" data-slug="anthony-b-raw-unfiltered-gmix-jankal-deejay"><div class="mc"><img src="img/mix-anthony-b.jpg" alt="Anthony B Raw and Unfiltered gmix cover" loading="lazy"><span class="mp"><span></span></span></div><div class="mt">Anthony B Raw &amp; Unfiltered<small>Gmix</small></div></button>
+      <button class="mix" data-slug="topshot-gregory-isaacs-gmix-unkl-dj"><div class="mc"><img src="img/mix-gregory-isaacs.jpg" alt="Topshot Gregory Isaacs gmix cover" loading="lazy"><span class="mp"><span></span></span></div><div class="mt">Topshot Gregory Isaacs<small>Gmix</small></div></button>
+      <button class="mix" data-slug="rally-riddim-gmixunkl-dj"><div class="mc"><img src="img/mix-rally-riddim.jpg" alt="Rally Riddim gmix cover" loading="lazy"><span class="mp"><span></span></span></div><div class="mt">Rally Riddim<small>Gmix</small></div></button>
+      <button class="mix" data-slug="wup-dem-naija-mixstyle-jnkl-dj"><div class="mc"><img src="img/mix-naija.jpg" alt="Wup Dem Naija Mixstyle cover" loading="lazy"><span class="mp"><span></span></span></div><div class="mt">Wup Dem Naija<small>Mixstyle</small></div></button>
+    </div>
+    <div class="player" id="player"></div>
+    <div class="missing rv d3">
+      <div class="ms"><div class="mk">What people get today</div><p><b>The mixes are good.</b> People can hear the selector, with gmixes built around artists like Anthony B and Gregory Isaacs.</p></div>
+      <div class="ms dim"><div class="mk">What's missing is you</div><ul><li>Who is the selector?</li><li>Where does he play?</li><li>Why does reggae mean so much to him?</li></ul></div>
+    </div>
+    <p class="body-lg rv" style="margin-top:2rem">On YouTube, people subscribe to a person. A mix gets played once. <b>A DJ people feel they know gets followed.</b> This plan puts you on camera next to your music.</p>
+  </div>
+</section>
+
+<!-- ============ 02 WHAT WORKS ============ -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; What works for DJs on YouTube</span>
+    <h2 class="statement rv d1">Three DJs show the way, at three different sizes.</h2>
+    <div class="djs rv d2">
+      <div class="dj">
+        <div class="ytile" data-yt="GZOV93NoXSI" data-title="Best of Afrobeats Naija Overdose 13, Dj Shinski">
+          <div class="yt-media" role="button" tabindex="0" aria-label="Play DJ Shinski mix">
+            <img src="img/shinski.jpg" alt="DJ Shinski Afrobeats video mix" loading="lazy">
+            <span class="vt-views"><i></i>45M views</span>
+            <span class="vt-play" aria-hidden="true"><span></span></span>
+          </div>
+        </div>
+        <div class="dk">Kenya</div>
+        <h4>DJ Shinski</h4>
+        <div class="dv"><span class="cu" data-target="2">2</span>M+</div><div class="dl">Subscribers, passed in 2026</div>
+        <p>The proof that a Kenyan DJ can win on YouTube. The first Kenyan DJ past 2 million subscribers, and now the most subscribed African DJ on the platform.</p>
+        <div class="take"><div><span>What to take</span>A clear name for his sound and a steady upload habit, so fans always know what they are getting.</div></div>
+      </div>
+      <div class="dj">
+        <div class="ytile" data-yt="v0xTb9ZqDVM" data-title="Balcony Mix Africa w/ Major League DJz B2B JAZZWRLD">
+          <div class="yt-media" role="button" tabindex="0" aria-label="Play Balcony Mix Africa">
+            <img src="img/balcony.jpg" alt="Major League DJz playing Balcony Mix Africa" loading="lazy">
+            <span class="vt-views"><i></i>7.1M views</span>
+            <span class="vt-play" aria-hidden="true"><span></span></span>
+          </div>
+        </div>
+        <div class="dk">South Africa</div>
+        <h4>Major League DJz</h4>
+        <div class="dv"><span class="cu" data-target="1.2" data-dec="1">1.2</span>M</div><div class="dl">Subscribers today</div>
+        <p>The best example of a series. They turned their live sets into one named show, Balcony Mix Africa, and said it earned them more money on YouTube and took them to more countries than before.</p>
+        <div class="take"><div><span>What to take</span>The same set, filmed in a great location, under one name. Fans come back for the show.</div></div>
+      </div>
+      <div class="dj">
+        <div class="ytile" data-yt="eZdfQ8oyCN0" data-title="St Tropez partying, Tomorrowland mainstage debut and Mykonos birthday">
+          <div class="yt-media" role="button" tabindex="0" aria-label="Play John Summit tour vlog">
+            <img src="img/summit.jpg" alt="John Summit tour vlog" loading="lazy">
+            <span class="vt-views"><i></i>212K views</span>
+            <span class="vt-play" aria-hidden="true"><span></span></span>
+          </div>
+        </div>
+        <div class="dk">USA</div>
+        <h4>John Summit</h4>
+        <div class="dv">On tour</div><div class="dl">Festivals, live sets, travel</div>
+        <p>Built his early fanbase with YouTube tutorials and streaming his work for fans. Now he documents his life on tour.</p>
+        <div class="take"><div><span>What to take</span>Fans want the trip to the gig, the crowd, the moments nobody else sees.</div></div>
+      </div>
+    </div>
+
+    <div class="growth rv d2" id="growth">
+      <div class="gk">Major League DJz &middot; after Balcony Mix Africa</div>
+      <h4>From 11,000 to 130,000 subscribers in less than a year.</h4>
+      <div class="g-row"><div class="gn">Before the show</div><div class="g-track"><div class="g-fill dim" data-w="8.46"></div><div class="g-val vout" style="--x:8.46%">11,000</div></div></div>
+      <div class="g-row"><div class="gn">Under a year later</div><div class="g-track"><div class="g-fill" data-w="100"></div><div class="g-val vin">130,000</div></div></div>
+    </div>
+    <div class="thread rv">The common thread: <b>each one gives people a reason to come back besides the mix itself.</b> That's what we'll build for you.</div>
+  </div>
+</section>
+
+<!-- ============ 03 THE PLAN ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; The plan</span>
+    <h2 class="statement rv d1">4 long videos and 10 Shorts.</h2>
+    <div class="vtabs rv d2" role="tablist" id="vtabs"></div>
+    <div class="vpanel rv d2">
+      <div class="vp-img" id="vpImg"></div>
+      <div class="vp-body" id="vpBody"></div>
+    </div>
+
+    <h3 class="sub rv">10 Shorts, cut from the four long videos</h3>
+    <div class="shorts" id="shorts"></div>
+    <div class="shorts-note rv d1">
+      <div class="sn2"><div class="k">Cut from the long videos</div><p>The best crowd reaction, the drop that hits, a quick record story, a funny moment from the night.</p></div>
+      <div class="sn2"><div class="k">Every Short points home</div><p>Each one sends people to the full video on your channel.</p></div>
+      <div class="sn2"><div class="k">One look</div><p>They all carry the same look, so people recognise you at a glance.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 HOW IT RUNS ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; How it runs</span>
+    <h2 class="statement rv d1">You film. We do everything else.</h2>
+    <div class="roles">
+      <div class="role rv d1"><span class="rk">You</span><h4>What you do</h4><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Film the four videos, using a shot list we send before each one</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Be on camera and talk, even when it feels strange at first</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Send us all the footage</li>
+      </ul></div>
+      <div class="role us rv d2"><span class="rk">Maison d'&Eacute;lites</span><h4>What we do</h4><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Plan each video and write the shot list and talking points</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Edit all 4 long videos and all 10 Shorts</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Write titles and make thumbnails</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Set the upload schedule and post on your channel</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Review how each video did and use that to shape the next one</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 TIMELINE ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; Timeline</span>
+    <h2 class="statement rv d1">Eight weeks. The channel is active every week.</h2>
+    <div class="rv d2">
+      <div class="weeks"><div class="wk">Wk 1</div><div class="wk">Wk 2</div><div class="wk">Wk 3</div><div class="wk">Wk 4</div><div class="wk">Wk 5</div><div class="wk">Wk 6</div><div class="wk">Wk 7</div><div class="wk">Wk 8</div></div>
+      <div class="blocks" id="blocks"></div>
+      <div class="pulse-row" id="pulse"></div>
+      <div class="legend"><span><i class="long"></i>Long video</span><span><i></i>Shorts</span></div>
+    </div>
+    <div class="tl-panel rv d3"><p id="tlText"></p></div>
+  </div>
+</section>
+
+<!-- ============ 06 INVESTMENT ============ -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Investment</span>
+    <h2 class="statement rv d1">One price, everything included.</h2>
+    <div class="price rv d2">
+      <div class="pl">
+        <div class="pv">$<span class="cu" data-target="4000">4,000</span></div>
+        <div class="pk">4 long videos and 10 Shorts</div>
+        <div class="pay">All planned, edited and posted by us. <b>Paid in full before production starts.</b></div>
+      </div>
+      <div class="pr2">
+        <ul class="inc">
+          <li>A Night With Jankal<b>Long video</b></li>
+          <li>The Wildstyle Session, Episode 1<b>Long video</b></li>
+          <li>Building a Gmix<b>Long video</b></li>
+          <li>Why Reggae<b>Long video</b></li>
+          <li>Shorts cut from all four<b>&times; 10</b></li>
+          <li>Shot lists, titles, thumbnails, posting<b>Included</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub rv">Add reach to the Shorts</h3>
+    <p class="body-lg rv d1" style="margin-bottom:1.6rem">Optional. Our clipping network can push the Shorts further at <b>$2 per 1,000 verified views</b>, sending more people to the full videos on your channel.</p>
+    <div class="model rv d2">
+      <div class="ctrl-head"><span class="cl">Reach budget</span><span class="cv" id="budgetVal">USD 1,000</span></div>
+      <input type="range" id="budget" min="500" max="5000" step="250" value="1000" aria-label="Reach budget in dollars">
+      <div class="range-ends"><span>USD 500</span><span>USD 5,000</span></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oViews">500K</div><div class="ol">Verified views on the Shorts</div></div>
+        <div class="o"><div class="ov">$2.00</div><div class="ol">Cost per 1,000 views</div></div>
+        <div class="o"><div class="ov" id="oPer">50K</div><div class="ol">Views per Short, across 10</div></div>
+      </div>
+    </div>
+
+    <h3 class="sub rv">Next steps</h3>
+    <div class="next rv d1">
+      <div class="nx"><div class="nn">01</div><p>Confirm you want to go ahead.</p></div>
+      <div class="nx"><div class="nn">02</div><p>Payment.</p></div>
+      <div class="nx"><div class="nn">03</div><p>Planning call to lock in locations and dates for the first two videos.</p></div>
+      <div class="nx"><div class="nn">04</div><p>First shot list sent within 48 hours of the call.</p></div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=[...document.querySelectorAll('#dots a')];
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  /* count-ups */
+  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
+  once(document.querySelectorAll('.cu'),el=>{
+    const t=parseFloat(el.dataset.target);
+    if(reduce){el.textContent=fmt(t,el);return;}
+    const dur=1300,s=performance.now();
+    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
+  },0.5);
+
+  /* 01 mixes: tap to play from Audiomack */
+  const player=document.getElementById('player');
+  const mixes=[...document.querySelectorAll('.mix')];
+  mixes.forEach(b=>b.addEventListener('click',()=>{
+    if(b.classList.contains('on')) return;
+    mixes.forEach(x=>x.classList.toggle('on',x===b));
+    player.innerHTML='<iframe src="https://audiomack.com/embed/JANKAL_DEEJAY/song/'+b.dataset.slug+'?background=1&color=d4b26a" scrolling="no" allow="autoplay" title="Jankal Deejay mix on Audiomack"></iframe>';
+    player.classList.add('open');
+  }));
+
+  /* YouTube tiles */
+  document.querySelectorAll('.ytile').forEach(t=>{
+    const m=t.querySelector('.yt-media');
+    const go=()=>{
+      if(t.classList.contains('playing')) return;
+      const f=document.createElement('iframe');
+      f.src='https://www.youtube-nocookie.com/embed/'+t.dataset.yt+'?autoplay=1&playsinline=1&rel=0&modestbranding=1';
+      f.title=t.dataset.title||'Video';
+      f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.setAttribute('allowfullscreen','');
+      m.appendChild(f); t.classList.add('playing');
+    };
+    m.addEventListener('click',go);
+    m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+
+  /* 02 growth bars */
+  once([document.getElementById('growth')],el=>{el.classList.add('go');el.querySelectorAll('.g-fill').forEach(f=>f.style.width=f.dataset.w+'%');},0.4);
+
+  /* 03 the four long videos */
+  const V=[
+    {t:'A Night With Jankal',w:'Weeks 1 and 2',img:'jankal.jpg',tag:'You, on the night',
+     p:'A vlog of one full gig night in Nairobi. This introduces the man behind the name on the mix.',
+     beats:['Getting ready','Picking the records','The drive','Setting up','The crowd','The best moments of the set','The end of the night']},
+    {t:'The Wildstyle Session, Episode 1',w:'Weeks 3 and 4',img:'balcony.jpg',tag:'Reference: Balcony Mix Africa',
+     p:'Your own version of Balcony Mix. A full set filmed in one strong Nairobi location, with a crowd and good light. Same name, same opening, same look every time, so it can become a series after this campaign.',
+     beats:['A rooftop','A yard','A sound system setup','A crowd','Good light','One name, one opening']},
+    {t:'Building a Gmix',w:'Weeks 5 and 6',img:'mix-gregory-isaacs.jpg',tag:'Behind the gmix',
+     p:'Behind the scenes of how you make a mix. This shows your skill and knowledge, which is what makes people trust a selector.',
+     beats:['Picking the tunes','Why one riddim follows another','The stories behind the songs']},
+    {t:'Why Reggae',w:'Weeks 7 and 8',img:'mix-anthony-b.jpg',tag:'Your story',
+     p:'Your story, told sitting down and mixed with footage of you playing. This is the video that turns viewers into fans.',
+     beats:['How you found reggae','What Wildstyle Veteran stands for','The Nairobi reggae scene','What you want to build next']}
+  ];
+  const vtabs=document.getElementById('vtabs'), vpImg=document.getElementById('vpImg'), vpBody=document.getElementById('vpBody');
+  vtabs.innerHTML=V.map((v,i)=>'<button class="vtab'+(i===0?' on':'')+'" role="tab" aria-selected="'+(i===0)+'"><div class="vn">0'+(i+1)+'</div><div class="vt">'+esc(v.t)+'</div><div class="vw">'+esc(v.w)+'</div></button>').join('');
+  function setV(i){
+    const v=V[i];
+    [...vtabs.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i);});
+    vpImg.innerHTML='<img src="img/'+v.img+'" alt=""><span class="tag">'+esc(v.tag)+'</span>';
+    vpBody.style.animation='none';void vpBody.offsetWidth;vpBody.style.animation='';
+    vpBody.innerHTML='<div class="vk">Long video '+(i+1)+' &middot; '+esc(v.w)+'</div><h4>'+esc(v.t)+'</h4><p>'+esc(v.p)+'</p><div class="beats">'+v.beats.map((b,j)=>'<span><i>'+(j+1)+'</i>'+esc(b)+'</span>').join('')+'</div>';
+    const bs=[...vpBody.querySelectorAll('.beats span')];
+    if(reduce){bs.forEach(b=>b.classList.add('show'));return;}
+    bs.forEach((b,j)=>setTimeout(()=>b.classList.add('show'),120+j*90));
+  }
+  [...vtabs.children].forEach((b,i)=>b.addEventListener('click',()=>setV(i)));
+  setV(0);
+
+  /* 10 Shorts */
+  const SH=['The crowd reaction','The drop that hits','A record story','A funny moment','The crowd reaction','The drop that hits','A record story','A funny moment','The crowd reaction','The drop that hits'];
+  const shorts=document.getElementById('shorts');
+  shorts.innerHTML=SH.map((s,i)=>'<div class="sh"><span class="brand"></span><span class="sn">'+String(i+1).padStart(2,'0')+'</span><span class="si"></span><div class="st2">'+esc(s)+'</div></div>').join('');
+  once([shorts],el=>{const c=[...el.children];if(reduce){c.forEach(x=>x.classList.add('show'));return;}c.forEach((x,i)=>setTimeout(()=>{x.style.transition='opacity .5s,transform .5s';x.classList.add('show');},i*90));},0.3);
+
+  /* 04 tick lists */
+  once(document.querySelectorAll('.role li'),el=>setTimeout(()=>el.classList.add('tick'),250),0.6);
+
+  /* 05 timeline */
+  const B=[
+    ['Weeks 1 and 2','A Night With Jankal'],
+    ['Weeks 3 and 4','The Wildstyle Session, Episode 1'],
+    ['Weeks 5 and 6','Building a Gmix'],
+    ['Weeks 7 and 8','Why Reggae']
+  ];
+  const blocks=document.getElementById('blocks'), pulse=document.getElementById('pulse'), tlText=document.getElementById('tlText');
+  blocks.innerHTML=B.map((b,i)=>'<button class="blk"><div class="bn">'+esc(b[0])+'</div><div class="bt">'+esc(b[1])+'</div></button>').join('');
+  pulse.innerHTML=Array.from({length:8},(_,w)=>'<div class="pr">'+(w%2===0?'<i class="long"></i><i></i>':'<i></i><i></i>')+'</div>').join('');
+  function setB(i){
+    [...blocks.children].forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.toggle('done',j<i);});
+    [...pulse.children].forEach((p,w)=>p.classList.toggle('lit',w<=i*2+1));
+    tlText.style.animation='none';void tlText.offsetWidth;tlText.style.animation='';
+    tlText.innerHTML='<b>'+esc(B[i][0])+':</b> '+esc(B[i][1])+'. One long video every two weeks, with Shorts going out in between, so the channel is active every week.';
+  }
+  [...blocks.children].forEach((b,i)=>b.addEventListener('click',()=>setB(i)));
+  setB(0);
+
+  /* 06 reach calculator: $2 per 1,000 verified views */
+  const CPM=2, bS=document.getElementById('budget');
+  const m=n=>n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
+  function calc(){
+    const b=+bS.value, views=b/CPM*1000;
+    document.getElementById('budgetVal').textContent='USD '+b.toLocaleString('en-US');
+    document.getElementById('oViews').textContent=m(views);
+    document.getElementById('oPer').textContent=m(views/10);
+    bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
+  }
+  bS.addEventListener('input',calc); calc();
+})();
+</script>
+</body>
+</html>
