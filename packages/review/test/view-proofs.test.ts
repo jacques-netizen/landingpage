@@ -3,7 +3,9 @@ import { desc, eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
   approve,
+  askForVerification,
   canVerifyViews,
+  staffVerifyViews,
   claimFlag,
   creatorVerificationStats,
   decideViewProof,
@@ -267,5 +269,37 @@ describe('view verification', () => {
       note: null,
     })
     expect((await latestViewProof(db, t.id))!.flag).toBe('claim_over_10x')
+  })
+
+  it('staff set the views from analytics the creator sent them, with a screenshot, and can ask the creator to verify', async () => {
+    const t = await postInReview()
+    await approve(db, t.staffId, t.id)
+    const shot = await file(t.staffId, 'whatsapp.png', 'image/png')
+    await expect(
+      staffVerifyViews(db, t.staffId, { submissionId: t.id, views: 0, screenshotFileId: shot, note: null }),
+    ).rejects.toThrow(/analytics show/i)
+    const r = await staffVerifyViews(db, t.staffId, {
+      submissionId: t.id,
+      views: 6_500,
+      screenshotFileId: shot,
+      note: 'Sent over WhatsApp.',
+    })
+    // 6,500 - 500 baseline = 6,000 counted at $2.00 per 1,000 = $12.00.
+    expect(r.deltaCents).toBe(1_200)
+    const s = await t.sub()
+    expect(s.verifiedViews).toBe(6_500)
+    expect(s.latestViews).toBe(6_500)
+    expect(s.earnedCents).toBe(1_200)
+    const p = (await latestViewProof(db, t.id))!
+    expect(p.status).toBe('approved')
+    expect(p.setViews).toBe(6_500)
+    expect(p.screenshotFileId).toBe(shot)
+    expect(p.reviewerId).toBe(t.staffId)
+    expect((await notes(t.creator))[0]!.title).toBe('Your views were updated from your analytics')
+    const audit = await db.select().from(tables.auditLog).where(eq(tables.auditLog.entityId, t.id))
+    expect(audit.some((a) => a.action === 'submission.views_verified')).toBe(true)
+    await askForVerification(db, t.staffId, t.id, 'Your views look higher than we can read.')
+    expect((await notes(t.creator))[0]!.title).toBe('Please verify the views on your post')
+    expect(audit.length).toBeGreaterThan(0)
   })
 })

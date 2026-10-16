@@ -77,3 +77,32 @@ test('reviewers decide posts but only admins delete them', async ({ page }) => {
   await expect(row.getByRole('button', { name: 'Approve' })).toBeEnabled()
   await expect(row.getByRole('button', { name: 'Delete' })).toHaveCount(0)
 })
+
+test('staff set a post’s views from analytics the clipper sent them, and the report marks them verified', async ({
+  page,
+}) => {
+  const tag = `ana${Date.now() % 1e9}`
+  const { campaignId, id } = await seedPost(tag)
+  await sql`update submissions set state = 'approved' where id = ${id}`
+  await signInAs(page, 'admin@seed.invalid')
+  await page.goto(`/admin/campaigns/${campaignId}?tab=clips&q=${tag}`)
+  const tile = page.getByRole('listitem').filter({ hasText: tag })
+  await tile.getByRole('button', { name: 'Set views from analytics' }).click()
+  await tile.getByLabel('Views in the analytics').fill('8,000')
+  await tile.getByLabel('Note').fill('Screenshot sent over WhatsApp.')
+  await tile.getByRole('button', { name: 'Set views', exact: true }).click()
+  await expect(page.getByText(/8,000 views verified from the analytics/)).toBeVisible()
+  await expect(tile.getByText('Verified')).toBeVisible()
+  const [s] = await sql`select latest_views, verified_views from submissions where id = ${id}`
+  expect(Number(s!.latest_views)).toBe(8000)
+  expect(Number(s!.verified_views)).toBe(8000)
+  const [p] = await sql`select status, set_views from view_proofs where submission_id = ${id}`
+  expect(p).toMatchObject({ status: 'approved', set_views: '8000' })
+  // Asking the clipper to verify sends them a notification.
+  await tile.getByRole('button', { name: 'Ask clipper to verify' }).click()
+  await tile.getByRole('button', { name: 'Send request' }).click()
+  await expect(page.getByText('The clipper has been asked to verify the views.')).toBeVisible()
+  const [n] =
+    await sql`select title from notifications where user_id = (select creator_id from submissions where id = ${id}) order by created_at desc limit 1`
+  expect(n!.title).toBe('Please verify the views on your post')
+})

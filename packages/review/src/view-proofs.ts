@@ -399,49 +399,17 @@ export async function decideViewProof(
     }
     const views = d.views
     if (!Number.isInteger(views) || views < 0) throw new ReviewError('views_required', 'Enter the views to approve.')
-    const scraped = (await scrapedState(tx, [s.id])).get(s.id)?.scrapedViews ?? 0
-    const effective = Math.max(scraped, views)
-    await recordSnapshot(tx, {
-      submissionId: s.id,
-      takenAt: now,
-      views: effective,
-      source: 'manual',
-      raw: { proofId: p.id, reviewerId, claimedViews: p.claimedViews, verifiedViews: views, scrapedViews: scraped },
-    })
-    const earning = EARNING.includes(s.state)
-    await tx
-      .update(submissions)
-      .set({
-        verifiedViews: views,
-        latestViews: effective,
-        countedViews: earning ? Math.max(0, effective - s.baselineViews) : s.countedViews,
-        updatedAt: now,
-      })
-      .where(eq(submissions.id, s.id))
-    await tx
-      .update(viewProofs)
-      .set({ status: 'approved', reviewerId, reviewedAt: now, setViews: views, decisionNote: note, updatedAt: now })
-      .where(eq(viewProofs.id, p.id))
-    await writeAudit(tx, {
-      actorId: reviewerId,
-      action: 'submission.views_verified',
-      entity: 'submission',
-      entityId: s.id,
-      before: {
-        latestViews: s.latestViews,
-        verifiedViews: s.verifiedViews,
-        countedViews: s.countedViews,
-        claimedViews: p.claimedViews,
-        flag: p.flag,
-      },
-      after: { verifiedViews: views, latestViews: effective, scrapedViews: scraped, proofId: p.id, note },
-    })
-    await notify(tx, s.creatorId, 'view_proof', {
-      title: 'Your view verification was approved',
-      body: `${c?.title ?? 'Your campaign'}: ${views.toLocaleString('en-US')} views verified.${
-        views !== p.claimedViews ? ` You reported ${(p.claimedViews ?? 0).toLocaleString('en-US')}.` : ''
-      }${note ? ` ${note}` : ''}`,
-      link: link(s.id),
+    const earning = await applyVerifiedViews(tx, {
+      s,
+      proofId: p.id,
+      reviewerId,
+      views,
+      claimedViews: p.claimedViews,
+      flag: p.flag,
+      note,
+      campaignTitle: c?.title ?? null,
+      byStaff: false,
+      now,
     })
     return { accrue: earning, submissionId: s.id, blocked: false }
   })
@@ -551,4 +519,191 @@ export async function creatorVerificationStats(d: DbOrTx, campaignId: string) {
     .where(eq(submissions.campaignId, campaignId))
     .groupBy(viewProofs.creatorId)
   return new Map(rows.map((r) => [r.creatorId, { ...r, blocked: r.rejected >= REJECTIONS_TO_BLOCK }]))
+}
+
+/**
+ * Keep an approved count as the post's verified views, set its views to the higher of scraped and
+ * verified, record a manual snapshot, mark the verification approved, audit it and tell the creator.
+ * Returns whether the post earns (so the caller pays it through the engine).
+ */
+async function applyVerifiedViews(
+  tx: DbOrTx,
+  i: {
+    s: typeof submissions.$inferSelect
+    proofId: string
+    reviewerId: string
+    views: number
+    claimedViews: number | null
+    flag: string | null
+    note: string | null
+    campaignTitle: string | null
+    /** Staff set the count themselves from analytics the creator sent them outside the app. */
+    byStaff: boolean
+    now: Date
+  },
+) {
+  const { s, views, now, note } = i
+  const scraped = (await scrapedState(tx, [s.id])).get(s.id)?.scrapedViews ?? 0
+  const effective = Math.max(scraped, views)
+  await recordSnapshot(tx, {
+    submissionId: s.id,
+    takenAt: now,
+    views: effective,
+    source: 'manual',
+    raw: {
+      proofId: i.proofId,
+      reviewerId: i.reviewerId,
+      claimedViews: i.claimedViews,
+      verifiedViews: views,
+      scrapedViews: scraped,
+      byStaff: i.byStaff,
+    },
+  })
+  const earning = EARNING.includes(s.state)
+  await tx
+    .update(submissions)
+    .set({
+      verifiedViews: views,
+      latestViews: effective,
+      countedViews: earning ? Math.max(0, effective - s.baselineViews) : s.countedViews,
+      updatedAt: now,
+    })
+    .where(eq(submissions.id, s.id))
+  await tx
+    .update(viewProofs)
+    .set({
+      status: 'approved',
+      reviewerId: i.reviewerId,
+      reviewedAt: now,
+      setViews: views,
+      decisionNote: note,
+      updatedAt: now,
+    })
+    .where(eq(viewProofs.id, i.proofId))
+  await writeAudit(tx, {
+    actorId: i.reviewerId,
+    action: 'submission.views_verified',
+    entity: 'submission',
+    entityId: s.id,
+    before: {
+      latestViews: s.latestViews,
+      verifiedViews: s.verifiedViews,
+      countedViews: s.countedViews,
+      claimedViews: i.claimedViews,
+      flag: i.flag,
+    },
+    after: {
+      verifiedViews: views,
+      latestViews: effective,
+      scrapedViews: scraped,
+      proofId: i.proofId,
+      note,
+      byStaff: i.byStaff,
+    },
+  })
+  const title = i.campaignTitle ?? 'Your campaign'
+  await notify(tx, s.creatorId, 'view_proof', {
+    title: i.byStaff ? 'Your views were updated from your analytics' : 'Your view verification was approved',
+    body: i.byStaff
+      ? `${title}: ${views.toLocaleString('en-US')} views verified from the analytics you sent us.${note ? ` ${note}` : ''}`
+      : `${title}: ${views.toLocaleString('en-US')} views verified.${
+          views !== i.claimedViews ? ` You reported ${(i.claimedViews ?? 0).toLocaleString('en-US')}.` : ''
+        }${note ? ` ${note}` : ''}`,
+    link: link(s.id),
+  })
+  return earning
+}
+
+/**
+ * Staff set a post's views from analytics the creator sent them outside the app (owner request,
+ * 2026-10-16: a screenshot over WhatsApp). It is kept as an approved verification on the post, with the
+ * screenshot when there is one, and counts like any other: the post's views become the higher of the
+ * scraped count and this, the report marks it Verified, and the post earns from it.
+ */
+export async function staffVerifyViews(
+  db: Db,
+  reviewerId: string,
+  i: { submissionId: string; views: number; screenshotFileId: string | null; note: string | null; now?: Date },
+) {
+  const now = i.now ?? new Date()
+  const note = i.note?.trim() || null
+  if (!Number.isInteger(i.views) || i.views <= 0)
+    throw new ReviewError('views_required', 'Enter the views the analytics show.')
+  const result = await db.transaction(async (tx) => {
+    const [s] = await tx.select().from(submissions).where(eq(submissions.id, i.submissionId)).for('update')
+    if (!s) throw new ReviewError('not_found', 'This post was not found.')
+    if (!PROVABLE_STATES.includes(s.state))
+      throw new ReviewError('wrong_state', 'Views can only be set on an approved post that is still in the campaign.')
+    const [c] = await tx.select({ title: campaigns.title }).from(campaigns).where(eq(campaigns.id, s.campaignId))
+    if (i.screenshotFileId) {
+      const [f] = await tx
+        .select({ id: files.id, type: files.contentType })
+        .from(files)
+        .where(eq(files.id, i.screenshotFileId))
+      if (!f || !f.type.startsWith('image/'))
+        throw new ReviewError('bad_file', 'The screenshot could not be used. Upload it again.')
+    }
+    // An unsent verification the creator opened is replaced by this one.
+    await tx.delete(viewProofs).where(and(eq(viewProofs.submissionId, s.id), eq(viewProofs.status, 'requested')))
+    const scraped = (await scrapedState(tx, [s.id])).get(s.id)?.scrapedViews ?? null
+    const [p] = await tx
+      .insert(viewProofs)
+      .values({
+        submissionId: s.id,
+        creatorId: s.creatorId,
+        code: newCode(),
+        status: 'submitted',
+        claimedViews: i.views,
+        screenshotFileId: i.screenshotFileId,
+        note: 'Set by staff from analytics the creator sent.',
+        flag: claimFlag(s, i.views, scraped),
+        submittedAt: now,
+        createdAt: now,
+        updatedAt: now,
+      })
+      .returning()
+    const earning = await applyVerifiedViews(tx, {
+      s,
+      proofId: p!.id,
+      reviewerId,
+      views: i.views,
+      claimedViews: i.views,
+      flag: p!.flag,
+      note,
+      campaignTitle: c?.title ?? null,
+      byStaff: true,
+      now,
+    })
+    return { accrue: earning, submissionId: s.id, proofId: p!.id }
+  })
+  if (!result.accrue) return { deltaCents: 0, proofId: result.proofId }
+  const r = await accrueEarnings(createPgStore(db), { submissionId: result.submissionId })
+  return { deltaCents: r.deltaCents, proofId: result.proofId }
+}
+
+/** Ask the creator to verify a post's views: a notification with the link to the form. Audited. */
+export async function askForVerification(db: Db, reviewerId: string, submissionId: string, note: string | null) {
+  const [row] = await db
+    .select({ s: submissions, title: campaigns.title })
+    .from(submissions)
+    .innerJoin(campaigns, eq(campaigns.id, submissions.campaignId))
+    .where(eq(submissions.id, submissionId))
+  if (!row) throw new ReviewError('not_found', 'This post was not found.')
+  if (!PROVABLE_STATES.includes(row.s.state))
+    throw new ReviewError('wrong_state', 'Only an approved post that is still in the campaign can be verified.')
+  const text = note?.trim() || null
+  await db.transaction(async (tx) => {
+    await writeAudit(tx, {
+      actorId: reviewerId,
+      action: 'submission.verification_requested',
+      entity: 'submission',
+      entityId: row.s.id,
+      after: { note: text },
+    })
+    await notify(tx, row.s.creatorId, 'view_proof', {
+      title: 'Please verify the views on your post',
+      body: `${row.title}: open the post, press Verify views, and upload a screen recording of its insights with the view count.${text ? ` ${text}` : ''}`,
+      link: link(row.s.id),
+    })
+  })
 }

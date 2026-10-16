@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@mde/db'
-import { decideViewProof, ReviewError } from '@mde/review'
+import { askForVerification, decideViewProof, ReviewError, staffVerifyViews } from '@mde/review'
 import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/server/guard'
 
@@ -43,5 +43,33 @@ export async function rejectVerificationAction(campaignId: string, id: string, n
     return r.blocked
       ? 'Verification rejected. That was the third in this campaign: the clipper is now blocked here.'
       : 'Verification rejected. The clipper has been told.'
+  })
+}
+
+/** Staff set a post's views from analytics the clipper sent them outside the app (owner request, 2026-10-16). */
+export async function staffVerifyAction(
+  campaignId: string,
+  submissionId: string,
+  views: number,
+  screenshotFileId: string | null,
+  note: string,
+): Promise<DecisionResult> {
+  return run(campaignId, async (reviewerId) => {
+    const r = await staffVerifyViews(db(), reviewerId, { submissionId, views, screenshotFileId, note })
+    return `${views.toLocaleString('en-US')} views verified from the analytics.${
+      r.deltaCents ? ` Earnings moved by ${(r.deltaCents / 100).toFixed(2)} USD.` : ''
+    }`
+  })
+}
+
+/** Ask the clipper to verify a post's views themselves: a notification with the link to the form. */
+export async function askVerificationAction(
+  campaignId: string,
+  submissionId: string,
+  note: string,
+): Promise<DecisionResult> {
+  return run(campaignId, async (reviewerId) => {
+    await askForVerification(db(), reviewerId, submissionId, note)
+    return 'The clipper has been asked to verify the views.'
   })
 }

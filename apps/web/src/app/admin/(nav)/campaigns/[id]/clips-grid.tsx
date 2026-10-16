@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { ClipPlayer, UnavailableBadge } from '../../_components/clip-player'
 import { PlatformTag } from './parts'
 import { PostActions } from './post-actions'
+import { SetViews } from './set-views'
 
 // The Clips tab of a campaign (owner brief, 2026-10-15): a grid of tiles, each the clip's picture that
 // plays on click, with the handle, platform, views, status and payout.
@@ -105,6 +106,7 @@ export function ClipsGrid({
               ? 'No check yet'
               : `${n(c.likes ?? 0)} likes · ${n(c.comments ?? 0)} comments · ${ago(c.checkedAt)}`}
           </p>
+          <SetViews campaignId={campaignId} id={c.id} state={c.state} views={c.views} />
           <div className="mt-3 flex items-end justify-between gap-2">
             <PostActions campaignId={campaignId} id={c.id} state={c.state} reasons={reasons} canDelete={canDelete} />
             <span className="flex gap-3 text-[11px]">
