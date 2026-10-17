@@ -8,6 +8,8 @@ import { askVerificationAction, staffVerifyAction } from './verification-actions
 // 2026-10-16), or ask the clipper to verify the views themselves. Only on approved posts.
 
 const APPROVED = ['approved', 'earning']
+/** A typed count, or null when the box was left empty (the last figures read are kept). */
+const num = (v: string) => (v.replace(/[^0-9]/g, '') ? Number(v.replace(/[^0-9]/g, '')) : null)
 const field = 'h-9 w-full rounded-[8px] border border-solid border-line bg-field-2 px-2 font-app text-[13px] text-ink'
 
 export function SetViews({
@@ -24,6 +26,9 @@ export function SetViews({
   const router = useRouter()
   const [panel, setPanel] = useState<null | 'set' | 'ask'>(null)
   const [count, setCount] = useState('')
+  const [likes, setLikes] = useState('')
+  const [comments, setComments] = useState('')
+  const [shares, setShares] = useState('')
   const [note, setNote] = useState('')
   const [fileId, setFileId] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -60,6 +65,9 @@ export function SetViews({
       if (r.ok) {
         setPanel(null)
         setCount('')
+        setLikes('')
+        setComments('')
+        setShares('')
         setNote('')
         setFileId(null)
         router.refresh()
@@ -87,8 +95,8 @@ export function SetViews({
       {panel === 'set' ? (
         <div className="flex flex-col gap-2 rounded-[10px] border border-solid border-line bg-field p-3">
           <p className="m-0 text-[11px] text-muted-2">
-            The count the clipper's analytics show. It stands as the post's views until the scraper passes it (now{' '}
-            {views.toLocaleString('en-US')}).
+            The counts the clipper's analytics show. Likes, comments and shares left empty keep the last ones read. It
+            stands as the post's views until the scraper passes it (now {views.toLocaleString('en-US')}).
           </p>
           <input
             aria-label="Views in the analytics"
@@ -98,6 +106,25 @@ export function SetViews({
             onChange={(e) => setCount(e.target.value)}
             className={field}
           />
+          <div className="grid grid-cols-3 gap-2">
+            {(
+              [
+                ['Likes', likes, setLikes],
+                ['Comments', comments, setComments],
+                ['Shares', shares, setShares],
+              ] as const
+            ).map(([label, value, set]) => (
+              <input
+                key={label}
+                aria-label={label}
+                inputMode="numeric"
+                placeholder={label}
+                value={value}
+                onChange={(e) => set(e.target.value)}
+                className={field}
+              />
+            ))}
+          </div>
           <label className="text-[11px] text-muted-2">
             Screenshot of the analytics (optional)
             <input
@@ -119,7 +146,13 @@ export function SetViews({
               type="button"
               disabled={busy || uploading}
               onClick={() =>
-                run(() => staffVerifyAction(campaignId, id, Number(count.replace(/[^0-9]/g, '')), fileId, note))
+                run(() =>
+                  staffVerifyAction(campaignId, id, Number(count.replace(/[^0-9]/g, '')), fileId, note, {
+                    likes: num(likes),
+                    comments: num(comments),
+                    shares: num(shares),
+                  }),
+                )
               }
               className="h-8 cursor-pointer rounded-[8px] border-0 bg-gold-soft px-3 font-app text-[12px] font-semibold text-[#1A1510] disabled:opacity-60"
             >

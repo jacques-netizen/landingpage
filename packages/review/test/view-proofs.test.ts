@@ -283,7 +283,16 @@ describe('view verification', () => {
       views: 6_500,
       screenshotFileId: shot,
       note: 'Sent over WhatsApp.',
+      comments: 80,
     })
+    // Comments as entered; likes kept from the last check (500 views / 20), never dropped to nothing.
+    const [snap] = await db
+      .select()
+      .from(tables.viewSnapshots)
+      .where(eq(tables.viewSnapshots.submissionId, t.id))
+      .orderBy(desc(tables.viewSnapshots.takenAt))
+      .limit(1)
+    expect(snap).toMatchObject({ source: 'manual', views: 6_500, likes: 25, comments: 80 })
     // 6,500 - 500 baseline = 6,000 counted at $2.00 per 1,000 = $12.00.
     expect(r.deltaCents).toBe(1_200)
     const s = await t.sub()

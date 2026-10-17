@@ -232,6 +232,13 @@
       "when": 1792225240693,
       "tag": "0032_client_spend_factor",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1792228928502,
+      "tag": "0033_keep_engagement_on_manual",
+      "breakpoints": true
     }
   ]
 }

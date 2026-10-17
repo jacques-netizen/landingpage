@@ -53,9 +53,14 @@ export async function staffVerifyAction(
   views: number,
   screenshotFileId: string | null,
   note: string,
+  engagement: { likes: number | null; comments: number | null; shares: number | null } = {
+    likes: null,
+    comments: null,
+    shares: null,
+  },
 ): Promise<DecisionResult> {
   return run(campaignId, async (reviewerId) => {
-    const r = await staffVerifyViews(db(), reviewerId, { submissionId, views, screenshotFileId, note })
+    const r = await staffVerifyViews(db(), reviewerId, { submissionId, views, screenshotFileId, note, ...engagement })
     return `${views.toLocaleString('en-US')} views verified from the analytics.${
       r.deltaCents ? ` Earnings moved by ${(r.deltaCents / 100).toFixed(2)} USD.` : ''
     }`

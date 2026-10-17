@@ -12,7 +12,7 @@ import { accrueEarnings, createPgStore } from '@mde/money'
 import { and, desc, eq, inArray, sql } from 'drizzle-orm'
 import { ReviewError } from './errors'
 
-const { submissions, campaigns, viewProofs, files, users, linkedAccounts } = tables
+const { submissions, campaigns, viewProofs, viewSnapshots, files, users, linkedAccounts } = tables
 
 /** Posts whose views a verification may set: approved posts still in the campaign. */
 export const PROVABLE_STATES = ['approved', 'earning']
@@ -539,16 +539,35 @@ async function applyVerifiedViews(
     campaignTitle: string | null
     /** Staff set the count themselves from analytics the creator sent them outside the app. */
     byStaff: boolean
+    /** Likes, comments and shares the analytics show, when staff entered them. */
+    engagement?: { likes: number | null; comments: number | null; shares: number | null }
     now: Date
   },
 ) {
   const { s, views, now, note } = i
   const scraped = (await scrapedState(tx, [s.id])).get(s.id)?.scrapedViews ?? 0
   const effective = Math.max(scraped, views)
+  // The snapshot keeps the post's likes, comments and shares: the ones staff entered, else the last
+  // ones a check read, so the report never drops them to zero (owner report, 2026-10-17).
+  const [last] = await tx
+    .select({ likes: viewSnapshots.likes, comments: viewSnapshots.comments, shares: viewSnapshots.shares })
+    .from(viewSnapshots)
+    .where(
+      and(
+        eq(viewSnapshots.submissionId, s.id),
+        sql`(${viewSnapshots.likes} is not null or ${viewSnapshots.comments} is not null or ${viewSnapshots.shares} is not null)`,
+      ),
+    )
+    .orderBy(desc(viewSnapshots.takenAt))
+    .limit(1)
+  const keep = (entered: number | null | undefined, before: number | null | undefined) => entered ?? before ?? null
   await recordSnapshot(tx, {
     submissionId: s.id,
     takenAt: now,
     views: effective,
+    likes: keep(i.engagement?.likes, last?.likes),
+    comments: keep(i.engagement?.comments, last?.comments),
+    shares: keep(i.engagement?.shares, last?.shares),
     source: 'manual',
     raw: {
       proofId: i.proofId,
@@ -623,7 +642,17 @@ async function applyVerifiedViews(
 export async function staffVerifyViews(
   db: Db,
   reviewerId: string,
-  i: { submissionId: string; views: number; screenshotFileId: string | null; note: string | null; now?: Date },
+  i: {
+    submissionId: string
+    views: number
+    screenshotFileId: string | null
+    note: string | null
+    /** Likes, comments and shares from the same analytics; any left out keep the last ones read. */
+    likes?: number | null
+    comments?: number | null
+    shares?: number | null
+    now?: Date
+  },
 ) {
   const now = i.now ?? new Date()
   const note = i.note?.trim() || null
@@ -672,6 +701,7 @@ export async function staffVerifyViews(
       note,
       campaignTitle: c?.title ?? null,
       byStaff: true,
+      engagement: { likes: i.likes ?? null, comments: i.comments ?? null, shares: i.shares ?? null },
       now,
     })
     return { accrue: earning, submissionId: s.id, proofId: p!.id }
