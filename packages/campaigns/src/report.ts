@@ -373,19 +373,20 @@ export const CLIENT_SPEND_FACTOR = 2
 
 const clientClip = (c: ReportClip, f: number): ReportClip => ({ ...c, payoutCents: c.payoutCents * f })
 
-/** The report as the client sees it: every money amount at the client's rate. Views and counts unchanged. */
+/** The report as the client sees it: every amount spent at the client's rate. The budget, views and counts unchanged. */
 export function forClient(r: CampaignReport, f = CLIENT_SPEND_FACTOR): CampaignReport {
   const x = (v: number) => v * f
   const xn = (v: number | null) => (v === null ? null : v * f)
   return {
     ...r,
     campaign: { ...r.campaign, rateCentsPer1000: x(r.campaign.rateCentsPer1000) },
+    // The budget is what the client set; only what was spent from it is at the client's rate.
     budget: {
-      budgetCents: x(r.budget.budgetCents),
+      budgetCents: r.budget.budgetCents,
       spentCents: x(r.budget.spentCents),
       paidOutCents: x(r.budget.paidOutCents),
       holdCents: x(r.budget.holdCents),
-      remainingCents: x(r.budget.remainingCents),
+      remainingCents: Math.max(0, r.budget.budgetCents - x(r.budget.spentCents)),
       ecpmCents: xn(r.budget.ecpmCents),
     },
     platforms: r.platforms.map((p) => ({ ...p, spentCents: x(p.spentCents), ecpmCents: xn(p.ecpmCents) })),

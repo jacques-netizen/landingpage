@@ -213,7 +213,7 @@ describe('campaign report', () => {
 })
 
 describe('the client report rate', () => {
-  it('doubles every money amount for the client and leaves views and counts alone', async () => {
+  it('doubles what was spent for the client and leaves the budget, views and counts alone', async () => {
     const { forClient, CLIENT_SPEND_FACTOR } = await import('../src/report')
     expect(CLIENT_SPEND_FACTOR).toBe(2)
     const clip = {
@@ -267,12 +267,13 @@ describe('the client report rate', () => {
     })
     expect(r.campaign.rateCentsPer1000).toBe(200)
     expect(r.campaign.minViewsToEarn).toBe(1_000)
+    // The budget stays as set; what is left is the budget less the spend at the client's rate.
     expect(r.budget).toEqual({
-      budgetCents: 20_000,
+      budgetCents: 10_000,
       spentCents: 1_000,
       paidOutCents: 0,
       holdCents: 1_000,
-      remainingCents: 19_000,
+      remainingCents: 9_000,
       ecpmCents: 200,
     })
     expect(r.platforms[0]).toMatchObject({ views: 5_000, spentCents: 1_000, ecpmCents: 200 })
