@@ -1,6 +1,7 @@
 // Worker entry. Handles the upload API and media streaming; everything else
 // (index.html, /admin, /talent, images) is served from static assets.
 import { handleRunItBakApi, handleRunItBakPage } from './lib/runitbak.js';
+import { handleOnboarding } from './lib/onboarding.js';
 import { handleUpload, handleList, handleMedia, handleNotify, handleBrandSheet, handleCampaign, handleCampaignList, handleCampaignImport, handleCampaignBanner, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
@@ -22,6 +23,10 @@ export default {
     if (path === '/api/img') return handleImageProxy(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
     if (path.startsWith('/api/runitbak/')) return handleRunItBakApi(request, env);
+    // Client onboarding form, its admin page and API all live under /onboarding,
+    // so one Cloudflare route (maisondelites.com/onboarding*) serves it on the
+    // main domain. Answered on every host, before the campaigns.* slug routing.
+    if (path === '/onboarding' || path.startsWith('/onboarding/')) return handleOnboarding(request, env, ctx);
     if (path === '/runitbak' || path.startsWith('/runitbak/') || (path === '/' && url.hostname.startsWith('runitbak.'))) return handleRunItBakPage(request, env);
 
     // On the booking subdomain (book.*), the root IS the calendar.

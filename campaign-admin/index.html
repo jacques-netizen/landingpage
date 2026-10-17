@@ -63,6 +63,9 @@ input[type=password]:focus{border-color:var(--gold)}
 /* ---------- cards ---------- */
 .card{background:var(--ink-card);border:1px solid var(--hair);border-radius:14px;padding:1.3rem 1.4rem}
 .ctitle{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.sf textarea{padding:.65rem .85rem;background:#0a0a0c;border:1px solid var(--hair-mid);border-radius:8px;color:var(--text-cream);font-size:.88rem;font-family:inherit;outline:none;transition:.15s;width:100%;min-height:70px;resize:vertical}
+.sf textarea:focus{border-color:var(--gold)}
+.onbnote{background:rgba(199,168,103,.1);border:1px solid rgba(199,168,103,.35);color:var(--gold-bright);border-radius:12px;padding:.9rem 1.1rem;font-size:.85rem;line-height:1.5}
 .chint{font-size:.72rem;color:var(--text-dim);font-weight:400;letter-spacing:0;text-transform:none}
 
 /* fields */
@@ -171,6 +174,8 @@ kbd{font-family:inherit;font-size:.68rem;background:#0a0a0c;border:1px solid var
   <div id="app" style="display:none">
     <div class="stack">
 
+      <div class="onbnote" id="onbNote" style="display:none"></div>
+
       <!-- Live state -->
       <div class="strip">
         <div class="st"><div class="n" id="lsViews">—</div><div class="l">Views</div></div>
@@ -219,6 +224,21 @@ kbd{font-family:inherit;font-size:.68rem;background:#0a0a0c;border:1px solid var
           </div>
           <div class="ptrack"><i id="pvFill"></i></div>
           <div class="pmeta"><span><b id="pvPct">0%</b> deployed</span><span><b id="pvRemain">$0</b> remaining</span></div>
+        </div>
+      </div>
+
+      <!-- Brief (prefilled from the onboarding form; never shown to the client) -->
+      <div class="card">
+        <div class="ctitle">Campaign brief <span class="chint">Internal only, not shown on the dashboard</span></div>
+        <div class="fields">
+          <div class="sf full"><label>Main link</label><input id="bMain" type="text" placeholder="https://"></div>
+          <div class="sf full"><label>Platforms</label><input id="bPlatforms" type="text" placeholder="TikTok, Instagram Reels, YouTube Shorts, X"></div>
+          <div class="sf full"><label>Off limits</label><textarea id="bOff" placeholder="Topics, people, old content, language"></textarea></div>
+          <div class="sf"><label>Required sound</label><input id="bSound" type="text"></div>
+          <div class="sf"><label>Hashtags</label><input id="bTags" type="text"></div>
+          <div class="sf"><label>Accounts to tag</label><input id="bMentions" type="text"></div>
+          <div class="sf"><label>Caption / call to action</label><input id="bCta" type="text"></div>
+          <div class="sf full"><label>Report recipients</label><input id="bRecipients" type="text" placeholder="Comma-separated emails"></div>
         </div>
       </div>
 
@@ -293,6 +313,40 @@ const prettyClient = CLIENT.split('-').map(w => w ? w[0].toUpperCase()+w.slice(1
 const DASH = '/' + CLIENT;
 const withClient = (path) => path + (path.includes('?') ? '&' : '?') + 'client=' + encodeURIComponent(CLIENT);
 
+// "Create campaign from this" on /onboarding/admin opens this editor with
+// ?onboarding=<token>: the form is prefilled from that submission, and saving
+// records this campaign on the onboarding link.
+let onboardingToken = new URLSearchParams(location.search).get('onboarding') || '';
+async function prefillFromOnboarding(){
+  try{
+    const r = await fetch('/onboarding/api/admin/prefill?token='+encodeURIComponent(onboardingToken), { headers:{'Authorization':'Bearer '+pw()} });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const p = await r.json();
+    $('#sClient').value = p.client || $('#sClient').value;
+    $('#sCampaign').value = p.campaign || $('#sCampaign').value;
+    fillBrief(p.brief);
+    const note = $('#onbNote');
+    note.textContent = 'Prefilled from the onboarding form for ' + (p.client || 'this client') + '. Check the details, then save.';
+    note.style.display = '';
+    renderBudgetPreview(); refreshDirty();
+  }catch(e){
+    const note = $('#onbNote');
+    note.textContent = 'Couldn’t load the onboarding answers ('+(e.message||e)+').';
+    note.style.display = '';
+    onboardingToken = '';
+  }
+}
+async function linkOnboarding(){
+  try{
+    await fetch('/onboarding/api/admin/link?token='+encodeURIComponent(onboardingToken), {
+      method:'POST', headers:hdr(), body: JSON.stringify({ action:'set_campaign', campaign_id: CLIENT }),
+    });
+  }catch(e){ /* the campaign is saved either way */ }
+  onboardingToken = '';
+  history.replaceState(null, '', location.pathname);
+  $('#onbNote').textContent = 'Saved and linked to the onboarding form.';
+}
+
 let pendingCSV = '';
 let current = null;   // last-loaded campaign — the baseline for dirty checks
 
@@ -324,7 +378,33 @@ function formState(){
     budgetTotal: Number($('#sBudget').value) || 0,
     budgetSpent: manual ? (Number(spentRaw) || 0) : (current && current.summary ? Number(current.summary.budgetSpent)||0 : 0),
     spendManual: manual,
+    brief: briefState(),
   };
+}
+const list = (v) => String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
+function briefState(){
+  return {
+    mainLink: $('#bMain').value.trim(),
+    platforms: list($('#bPlatforms').value),
+    offLimits: $('#bOff').value.trim(),
+    sound: $('#bSound').value.trim(),
+    hashtags: $('#bTags').value.trim(),
+    tags: $('#bMentions').value.trim(),
+    cta: $('#bCta').value.trim(),
+    reportRecipients: list($('#bRecipients').value),
+    onboarding: onboardingToken || (current && current.brief && current.brief.onboarding) || '',
+  };
+}
+function fillBrief(b){
+  b = b || {};
+  $('#bMain').value = b.mainLink || '';
+  $('#bPlatforms').value = (b.platforms||[]).join(', ');
+  $('#bOff').value = b.offLimits || '';
+  $('#bSound').value = b.sound || '';
+  $('#bTags').value = b.hashtags || '';
+  $('#bMentions').value = b.tags || '';
+  $('#bCta').value = b.cta || '';
+  $('#bRecipients').value = (b.reportRecipients||[]).join(', ');
 }
 // Metadata sent alongside a CSV import, so publishing never contradicts the form.
 function meta(){
@@ -347,12 +427,14 @@ function baseline(){
     budgetTotal: Number(s.budgetTotal)||0,
     budgetSpent: Number(s.budgetSpent)||0,
     spendManual: !!s.spendManual,
+    brief: JSON.stringify(Object.assign(emptyBrief(), current && current.brief || {})),
   };
 }
+function emptyBrief(){ return { mainLink:'', platforms:[], offLimits:'', sound:'', hashtags:'', tags:'', cta:'', reportRecipients:[], onboarding:'' }; }
 function isDirty(){
   if(!current) return false;
   const a = formState(), b = baseline();
-  return a.client!==b.client || a.campaign!==b.campaign || a.tagline!==b.tagline
+  return JSON.stringify(a.brief)!==b.brief || a.client!==b.client || a.campaign!==b.campaign || a.tagline!==b.tagline
       || a.budgetTotal!==b.budgetTotal || a.spendManual!==b.spendManual
       || (a.spendManual && a.budgetSpent!==b.budgetSpent);
 }
@@ -402,6 +484,7 @@ function prefill(data){
   const bt = Number(s.budgetTotal);
   $('#sBudget').value = (bt && bt > 0) ? bt : '';
   $('#sSpent').value = s.spendManual ? (Number(s.budgetSpent)||0) : '';
+  fillBrief(data.brief);
   $('#markClient').textContent = data.client || prettyClient;
   showBannerPreview(data.banner || '');
   renderLiveStrip();
@@ -420,13 +503,14 @@ async function save(){
     const r = await fetch(withClient('/api/campaign'), {
       method:'POST', headers:hdr(),
       body: JSON.stringify({
-        client:f.client, campaign:f.campaign, tagline:f.tagline,
+        client:f.client, campaign:f.campaign, tagline:f.tagline, brief:f.brief,
         summary:{ budgetTotal:f.budgetTotal, budgetSpent:f.budgetSpent, spendManual:f.spendManual, spendKnown: f.spendManual ? true : !!(current&&current.summary&&current.summary.spendKnown) },
       }),
     });
     if(r.status===401){ clrPw(); showGate('Session expired.'); return; }
     const j = await r.json();
     if(!r.ok){ $('#saveMsg').textContent = j.error||'Save failed'; $('#saveMsg').className='savemsg'; return; }
+    if(onboardingToken) await linkOnboarding();
     await loadCurrent(null, true);          // re-read what was actually stored
     $('#saveMsg').textContent = 'Saved ✓'; $('#saveMsg').className='savemsg saved';
     $('#saveBar').classList.add('show');
@@ -442,7 +526,7 @@ document.addEventListener('keydown', e=>{
 window.addEventListener('beforeunload', e=>{ if(isDirty()){ e.preventDefault(); e.returnValue=''; } });
 
 // field wiring
-['#sClient','#sCampaign','#sTagline','#sBudget','#sSpent'].forEach(sel=>{
+['#sClient','#sCampaign','#sTagline','#sBudget','#sSpent','#bMain','#bPlatforms','#bOff','#bSound','#bTags','#bMentions','#bCta','#bRecipients'].forEach(sel=>{
   $(sel).addEventListener('input', ()=>{ renderBudgetPreview(); refreshDirty(); });
 });
 $('#spendSlider').addEventListener('input', e=>{
@@ -599,6 +683,7 @@ async function loadCurrent(wrongMsg, quiet){
     const j = await r.json();
     prefill(j);
     if(!quiet) showApp();
+    if(onboardingToken && !quiet) await prefillFromOnboarding();
   }catch(e){ if(!quiet) showGate('Network error.'); }
 }
 $('#unlockBtn').addEventListener('click', async()=>{
