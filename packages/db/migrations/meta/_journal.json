@@ -239,6 +239,13 @@
       "when": 1792228928502,
       "tag": "0033_keep_engagement_on_manual",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1792253221465,
+      "tag": "0034_davido_client_spend",
+      "breakpoints": true
     }
   ]
 }

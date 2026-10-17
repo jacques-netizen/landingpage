@@ -3,10 +3,24 @@
 import { Button, Dialog } from '@mde/ui'
 import { useState, useTransition } from 'react'
 import { Notice } from '../../_components/ui'
-import { createReportLinkAction, revokeReportLinksAction, type ReportLinkResult } from './report-link-actions'
+import {
+  createReportLinkAction,
+  revokeReportLinksAction,
+  setClientSpendFactorAction,
+  type ReportLinkResult,
+} from './report-link-actions'
 
 // "Create report link" and "Revoke report links" on the staff campaign page (client report brief).
-export function ReportLink({ campaignId, hasLinks }: { campaignId: string; hasLinks: boolean }) {
+export function ReportLink({
+  campaignId,
+  hasLinks,
+  doubled,
+}: {
+  campaignId: string
+  hasLinks: boolean
+  /** The client report shows spend at twice what clippers earn. */
+  doubled: boolean
+}) {
   const [result, setResult] = useState<ReportLinkResult | null>(null)
   const [confirm, setConfirm] = useState(false)
   const [busy, start] = useTransition()
@@ -51,6 +65,25 @@ export function ReportLink({ campaignId, hasLinks }: { campaignId: string; hasLi
           ) : null}
         </div>
       </div>
+      <label className="mt-4 flex cursor-pointer items-center gap-3 text-[13px]">
+        <input
+          type="checkbox"
+          defaultChecked={doubled}
+          disabled={busy}
+          onChange={(e) => {
+            const on = e.currentTarget.checked
+            start(async () => setResult(await setClientSpendFactorAction(campaignId, on)))
+          }}
+          className="size-4 accent-[#D8C58F]"
+        />
+        <span>
+          Show spend at twice what clippers earn
+          <span className="block text-[12px] text-muted">
+            For campaigns where clippers get $1 and we keep $1 per 1,000 views: the client sees a $2 CPM. The budget,
+            views and clipper earnings do not change.
+          </span>
+        </span>
+      </label>
       {result ? (
         <div className="mt-4">
           {result.ok ? <Notice kind="ok">{result.message}</Notice> : <Notice kind="bad">{result.error}</Notice>}
