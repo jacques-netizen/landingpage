@@ -211,3 +211,75 @@ describe('campaign report', () => {
     expect(handleFor({ handle: null, url: 'https://www.instagram.com/reel/ABC/', username: 'benny' })).toBe('@benny')
   })
 })
+
+describe('the client report rate', () => {
+  it('doubles every money amount for the client and leaves views and counts alone', async () => {
+    const { forClient, CLIENT_SPEND_FACTOR } = await import('../src/report')
+    expect(CLIENT_SPEND_FACTOR).toBe(2)
+    const clip = {
+      id: 'c',
+      platform: 'tiktok',
+      platformPostId: '1',
+      handle: '@a',
+      url: 'u',
+      thumbnail: null,
+      video: null,
+      countedViews: 5_000,
+      postedAt: null,
+      submittedAt: '2026-10-01T00:00:00Z',
+      status: 'approved' as const,
+      views: 5_000,
+      likes: 1,
+      comments: 1,
+      shares: 0,
+      payoutCents: 500,
+      payout: 'pending' as const,
+      verified: false,
+    }
+    const r = forClient({
+      campaign: {
+        title: 't',
+        startAt: null,
+        status: 'Live',
+        thumbnail: null,
+        rateCentsPer1000: 100,
+        minViewsToEarn: 1_000,
+      },
+      range: { from: '2026-10-01', to: '2026-10-02' },
+      totals: { views: 5_000, likes: 1, comments: 1, shares: 0, clips: 1 },
+      viewsByDay: [{ day: '2026-10-01', views: 5_000, clips: 1 }],
+      budget: {
+        budgetCents: 10_000,
+        spentCents: 500,
+        paidOutCents: 0,
+        holdCents: 500,
+        remainingCents: 9_500,
+        ecpmCents: 100,
+      },
+      platforms: [{ platform: 'tiktok', views: 5_000, clips: 1, spentCents: 500, ecpmCents: 100 }],
+      spendByDay: [{ day: '2026-10-01', spendCents: 500, clips: 1 }],
+      accounts: [{ handle: '@a', posts: 1, spentCents: 500, share: 1 }],
+      clipsByPlatformDay: [],
+      topClips: [clip],
+      counts: { submitted: 1, approved: 1, pending: 0, rejected: 0 },
+      submissions: { rows: [clip], total: 1, page: 1, pageSize: 50 },
+      lastUpdated: null,
+    })
+    expect(r.campaign.rateCentsPer1000).toBe(200)
+    expect(r.campaign.minViewsToEarn).toBe(1_000)
+    expect(r.budget).toEqual({
+      budgetCents: 20_000,
+      spentCents: 1_000,
+      paidOutCents: 0,
+      holdCents: 1_000,
+      remainingCents: 19_000,
+      ecpmCents: 200,
+    })
+    expect(r.platforms[0]).toMatchObject({ views: 5_000, spentCents: 1_000, ecpmCents: 200 })
+    expect(r.spendByDay[0]!.spendCents).toBe(1_000)
+    expect(r.accounts[0]).toMatchObject({ spentCents: 1_000, share: 1 })
+    expect(r.topClips[0]).toMatchObject({ views: 5_000, payoutCents: 1_000 })
+    expect(r.submissions.rows[0]!.payoutCents).toBe(1_000)
+    expect(r.totals.views).toBe(5_000)
+  })
+})

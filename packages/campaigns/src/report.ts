@@ -363,3 +363,38 @@ export async function campaignReportRows(db: DbOrTx, campaignId: string, q: Repo
   }
   return all
 }
+
+/**
+ * What the client pays per dollar a clipper earns (owner rule, 2026-10-17): clippers get $1 per 1,000
+ * views and the agency keeps $1, so the client's report counts every amount at twice the clippers'
+ * earnings, a $2 CPM on a $1 campaign. Staff screens and the ledger keep the clippers' figures.
+ */
+export const CLIENT_SPEND_FACTOR = 2
+
+const clientClip = (c: ReportClip, f: number): ReportClip => ({ ...c, payoutCents: c.payoutCents * f })
+
+/** The report as the client sees it: every money amount at the client's rate. Views and counts unchanged. */
+export function forClient(r: CampaignReport, f = CLIENT_SPEND_FACTOR): CampaignReport {
+  const x = (v: number) => v * f
+  const xn = (v: number | null) => (v === null ? null : v * f)
+  return {
+    ...r,
+    campaign: { ...r.campaign, rateCentsPer1000: x(r.campaign.rateCentsPer1000) },
+    budget: {
+      budgetCents: x(r.budget.budgetCents),
+      spentCents: x(r.budget.spentCents),
+      paidOutCents: x(r.budget.paidOutCents),
+      holdCents: x(r.budget.holdCents),
+      remainingCents: x(r.budget.remainingCents),
+      ecpmCents: xn(r.budget.ecpmCents),
+    },
+    platforms: r.platforms.map((p) => ({ ...p, spentCents: x(p.spentCents), ecpmCents: xn(p.ecpmCents) })),
+    spendByDay: r.spendByDay.map((d) => ({ ...d, spendCents: x(d.spendCents) })),
+    accounts: r.accounts.map((a) => ({ ...a, spentCents: x(a.spentCents) })),
+    topClips: r.topClips.map((c) => clientClip(c, f)),
+    submissions: { ...r.submissions, rows: r.submissions.rows.map((c) => clientClip(c, f)) },
+  }
+}
+
+/** One clip at the client's rate, for the CSV export. */
+export const clipForClient = (c: ReportClip, f = CLIENT_SPEND_FACTOR) => clientClip(c, f)

@@ -1,4 +1,4 @@
-import { campaignReportRows } from '@mde/campaigns'
+import { campaignReportRows, clipForClient } from '@mde/campaigns'
 import { db } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { type NextRequest } from 'next/server'
@@ -13,7 +13,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
   const { token } = await params
   const campaign = await campaignForReportToken(token)
   if (!campaign) return new Response('This report link is no longer active.', { status: 404 })
-  const rows = await campaignReportRows(db(), campaign.id, parseReportQuery(req.nextUrl.searchParams))
+  // At the client's rate, like the report page (owner rule, 2026-10-17).
+  const rows = (await campaignReportRows(db(), campaign.id, parseReportQuery(req.nextUrl.searchParams))).map((r) =>
+    clipForClient(r),
+  )
   const lines = [
     ['Date', 'Platform', 'Clipper', 'Link', 'Status', 'Views', 'Likes', 'Comments', 'Shares', 'Spend', 'Payout']
       .map(cell)

@@ -1,6 +1,7 @@
 import 'server-only'
 import {
   campaignReport,
+  forClient,
   type CampaignReport,
   type ReportQuery,
   type ReportSort,
@@ -71,7 +72,7 @@ export function reportCacheKey(token: string, q: ReportQuery) {
     q.status ?? '',
     q.sort ?? 'views',
   ]
-  return `report:${token}:${parts.join('|')}`
+  return `report:v2:${token}:${parts.join('|')}`
 }
 
 /** The report, from Redis when a copy under 60 seconds old exists, else from Postgres (and then cached). */
@@ -83,7 +84,9 @@ export async function cachedReport(token: string, campaignId: string, q: ReportQ
   } catch (err) {
     console.error(JSON.stringify({ level: 'warn', msg: 'report cache read failed', err: String(err) }))
   }
-  const report = await campaignReport(db(), campaignId, q)
+  // Clients see every amount at their rate, not the clippers' (owner rule, 2026-10-17).
+  const raw = await campaignReport(db(), campaignId, q)
+  const report = raw ? forClient(raw) : null
   if (report)
     redis()
       .set(key, JSON.stringify(report), 'EX', CACHE_SECONDS)
