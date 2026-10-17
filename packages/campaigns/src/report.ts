@@ -365,16 +365,15 @@ export async function campaignReportRows(db: DbOrTx, campaignId: string, q: Repo
 }
 
 /**
- * What the client pays per dollar a clipper earns (owner rule, 2026-10-17): clippers get $1 per 1,000
- * views and the agency keeps $1, so the client's report counts every amount at twice the clippers'
- * earnings, a $2 CPM on a $1 campaign. Staff screens and the ledger keep the clippers' figures.
+ * The client report can count what was spent at a multiple of the clippers' earnings, per campaign
+ * (`campaigns.client_spend_factor`, owner rule 2026-10-17: Marrz-Audio at 2, a $2 CPM on a $1 campaign,
+ * every other campaign at 1). Staff screens and the ledger keep the clippers' figures.
  */
-export const CLIENT_SPEND_FACTOR = 2
-
 const clientClip = (c: ReportClip, f: number): ReportClip => ({ ...c, payoutCents: c.payoutCents * f })
 
 /** The report as the client sees it: every amount spent at the client's rate. The budget, views and counts unchanged. */
-export function forClient(r: CampaignReport, f = CLIENT_SPEND_FACTOR): CampaignReport {
+export function forClient(r: CampaignReport, f: number): CampaignReport {
+  if (f === 1) return r
   const x = (v: number) => v * f
   const xn = (v: number | null) => (v === null ? null : v * f)
   return {
@@ -398,4 +397,4 @@ export function forClient(r: CampaignReport, f = CLIENT_SPEND_FACTOR): CampaignR
 }
 
 /** One clip at the client's rate, for the CSV export. */
-export const clipForClient = (c: ReportClip, f = CLIENT_SPEND_FACTOR) => clientClip(c, f)
+export const clipForClient = (c: ReportClip, f: number) => clientClip(c, f)

@@ -214,8 +214,7 @@ describe('campaign report', () => {
 
 describe('the client report rate', () => {
   it('doubles what was spent for the client and leaves the budget, views and counts alone', async () => {
-    const { forClient, CLIENT_SPEND_FACTOR } = await import('../src/report')
-    expect(CLIENT_SPEND_FACTOR).toBe(2)
+    const { forClient } = await import('../src/report')
     const clip = {
       id: 'c',
       platform: 'tiktok',
@@ -236,7 +235,7 @@ describe('the client report rate', () => {
       payout: 'pending' as const,
       verified: false,
     }
-    const r = forClient({
+    const base: Parameters<typeof forClient>[0] = {
       campaign: {
         title: 't',
         startAt: null,
@@ -264,7 +263,10 @@ describe('the client report rate', () => {
       counts: { submitted: 1, approved: 1, pending: 0, rejected: 0 },
       submissions: { rows: [clip], total: 1, page: 1, pageSize: 50 },
       lastUpdated: null,
-    })
+    }
+    // A campaign at 1 (every campaign but Marrz-Audio) is left exactly as it is.
+    expect(forClient(base, 1)).toBe(base)
+    const r = forClient(base, 2)
     expect(r.campaign.rateCentsPer1000).toBe(200)
     expect(r.campaign.minViewsToEarn).toBe(1_000)
     // The budget stays as set; what is left is the budget less the spend at the client's rate.

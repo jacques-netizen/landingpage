@@ -22,7 +22,7 @@ const CACHE_SECONDS = 60
 /** The campaign a report token opens, or null when the token is wrong, expired or revoked. */
 export async function campaignForReportToken(
   token: string,
-): Promise<{ id: string; title: string; demo: boolean } | null> {
+): Promise<{ id: string; title: string; demo: boolean; clientSpendFactor: number } | null> {
   const claim = readReportToken(token)
   if (!claim) return null
   const [c] = await db()
@@ -32,12 +32,13 @@ export async function campaignForReportToken(
       secret: tables.campaigns.reportSecret,
       deletedAt: tables.campaigns.deletedAt,
       demo: tables.campaigns.demo,
+      clientSpendFactor: tables.campaigns.clientSpendFactor,
     })
     .from(tables.campaigns)
     .where(eq(tables.campaigns.id, claim.c))
   if (!c || c.deletedAt || !c.secret) return null
   const ok = verifyReportToken(token, reportKey(env().AUTH_SECRET, c.secret))
-  return ok ? { id: c.id, title: c.title, demo: c.demo } : null
+  return ok ? { id: c.id, title: c.title, demo: c.demo, clientSpendFactor: c.clientSpendFactor } : null
 }
 
 const PLATFORMS = ['tiktok', 'instagram', 'youtube', 'x']
@@ -72,7 +73,7 @@ export function reportCacheKey(token: string, q: ReportQuery) {
     q.status ?? '',
     q.sort ?? 'views',
   ]
-  return `report:v2:${token}:${parts.join('|')}`
+  return `report:v3:${token}:${parts.join('|')}`
 }
 
 /** The report, from Redis when a copy under 60 seconds old exists, else from Postgres (and then cached). */
@@ -84,9 +85,15 @@ export async function cachedReport(token: string, campaignId: string, q: ReportQ
   } catch (err) {
     console.error(JSON.stringify({ level: 'warn', msg: 'report cache read failed', err: String(err) }))
   }
-  // Clients see every amount at their rate, not the clippers' (owner rule, 2026-10-17).
-  const raw = await campaignReport(db(), campaignId, q)
-  const report = raw ? forClient(raw) : null
+  // A campaign with a client spend factor shows its spend at that multiple (owner rule, 2026-10-17).
+  const [raw, [c]] = await Promise.all([
+    campaignReport(db(), campaignId, q),
+    db()
+      .select({ f: tables.campaigns.clientSpendFactor })
+      .from(tables.campaigns)
+      .where(eq(tables.campaigns.id, campaignId)),
+  ])
+  const report = raw ? forClient(raw, c?.f ?? 1) : null
   if (report)
     redis()
       .set(key, JSON.stringify(report), 'EX', CACHE_SECONDS)
