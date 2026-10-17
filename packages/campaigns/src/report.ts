@@ -125,7 +125,9 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const fromTs = `${fromDay}T00:00:00Z`
   const toTs = `${toDay}T23:59:59.999Z`
 
-  const inRange = sql`s.campaign_id = ${campaignId} and s.submitted_at >= ${fromTs}::timestamptz and s.submitted_at <= ${toTs}::timestamptz`
+  // Rejected and removed posts never appear on the client's report (owner request, 2026-10-17).
+  const inRange = sql`s.campaign_id = ${campaignId} and s.submitted_at >= ${fromTs}::timestamptz and s.submitted_at <= ${toTs}::timestamptz
+    and s.state not in (${list(REJECTED)})`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,

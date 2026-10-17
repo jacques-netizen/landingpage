@@ -149,7 +149,7 @@ describe('campaign report', () => {
     expect(r.campaign).toMatchObject({ title: 'Report campaign', status: 'Live', rateCentsPer1000: 200 })
     expect(r.totals).toEqual({ views: 3_500, likes: 350, comments: 35, shares: 2, clips: 2 })
     expect(r.viewsByDay.map((x) => x.views)).toEqual([100, 1_000, 3_500])
-    expect(r.viewsByDay.map((x) => x.clips)).toEqual([1, 1, 1])
+    expect(r.viewsByDay.map((x) => x.clips)).toEqual([1, 1, 0])
     expect(r.viewsByDay[0]!.day).toBe(d(2).toISOString().slice(0, 10))
     expect(r.platforms).toEqual([
       { platform: 'instagram', views: 2_000, clips: 1, spentCents: 400, ecpmCents: 200 },
@@ -169,21 +169,21 @@ describe('campaign report', () => {
       ['@ben', 2_000, 'paid'],
       ['@maya.clips', 1_500, 'pending'],
     ])
-    expect(r.submissions.total).toBe(3)
+    expect(r.submissions.total).toBe(2)
     expect(r.accounts.map((a) => [a.posts, a.spentCents, a.share])).toEqual([
       [1, 400, 57.1],
       [1, 300, 42.9],
     ])
+    // The rejected post C never appears on the client's report (owner request, 2026-10-17).
     expect(r.clipsByPlatformDay.map((x) => [x.platform, x.clips])).toEqual([
       ['tiktok', 1],
       ['instagram', 1],
-      ['tiktok', 1],
     ])
     // Most views first by default; newest when asked.
-    expect(r.submissions.rows.map((x) => x.status)).toEqual(['approved', 'approved', 'rejected'])
-    expect(r.counts).toEqual({ submitted: 3, approved: 2, pending: 0, rejected: 1 })
+    expect(r.submissions.rows.map((x) => x.status)).toEqual(['approved', 'approved'])
+    expect(r.counts).toEqual({ submitted: 2, approved: 2, pending: 0, rejected: 0 })
     const newest = (await campaignReport(db, id, { mode: 'all', page: 1, sort: 'newest' }))!
-    expect(newest.submissions.rows.map((x) => x.status)).toEqual(['rejected', 'approved', 'approved'])
+    expect(newest.submissions.rows.map((x) => x.status)).toEqual(['approved', 'approved'])
     expect(r.lastUpdated).not.toBeNull()
   })
 
@@ -195,13 +195,13 @@ describe('campaign report', () => {
     // The budget block is always the whole campaign.
     expect(paid.budget.spentCents).toBe(700)
     const rejected = (await campaignReport(db, id, { mode: 'all', page: 1, status: 'rejected' }))!
-    expect(rejected.submissions.rows).toHaveLength(1)
-    expect(rejected.submissions.total).toBe(1)
+    expect(rejected.submissions.rows).toHaveLength(0)
+    expect(rejected.submissions.total).toBe(0)
     const tiktok = (await campaignReport(db, id, { mode: 'all', page: 1, platform: 'tiktok' }))!
-    expect(tiktok.submissions.rows.map((x) => x.platform)).toEqual(['tiktok', 'tiktok'])
+    expect(tiktok.submissions.rows.map((x) => x.platform)).toEqual(['tiktok'])
     const narrow = (await campaignReport(db, id, { mode: 'all', page: 1, from: new Date(), to: new Date() }))!
     expect(narrow.totals.clips).toBe(0)
-    expect(narrow.submissions.total).toBe(1)
+    expect(narrow.submissions.total).toBe(0)
   })
 
   it('names the clipper by their linked account, their link, or their username', () => {
