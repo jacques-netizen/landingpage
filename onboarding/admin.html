@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Onboarding · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100E0A; --surface:#191510; --surface-2:#20190F;
+    --cream:#F4EEE2; --text:#EFE7D5; --muted:#9E9278;
+    --line:rgba(199,168,103,.16); --line-strong:rgba(199,168,103,.30);
+    --gold:#C7A867; --gold-bright:#E1BF73; --danger:#E58C77; --ok:#8FCBA0; --blue:#9DB7E0;
+    --serif:'EB Garamond', Garamond, serif; --sans:'Archivo', system-ui, sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg); color:var(--text); font-family:var(--sans); font-weight:300; line-height:1.6; -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+  [hidden]{display:none!important}
+  .wrap{max-width:980px; margin:0 auto; padding:32px 16px 80px}
+  .eyebrow{font-weight:600; font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold)}
+  header{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap}
+  h1{font-family:var(--serif); font-weight:500; font-size:2rem; margin:8px 0 0; letter-spacing:-.01em}
+  .hdr-btns{display:flex; gap:10px}
+  .btn{font-family:var(--sans); font-weight:500; font-size:13.5px; border:1px solid var(--gold); background:var(--gold); color:#1b1407; border-radius:9px; padding:10px 18px; cursor:pointer; transition:.16s; white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center; gap:6px}
+  .btn:hover{background:var(--gold-bright); border-color:var(--gold-bright)}
+  .btn.ghost{background:transparent; color:var(--gold)}
+  .btn.ghost:hover{background:color-mix(in srgb,var(--gold) 10%, transparent)}
+  .btn.sm{padding:6px 11px; font-size:12px; border-radius:7px}
+  .btn.danger{border-color:color-mix(in srgb,var(--danger) 50%, transparent); color:var(--danger); background:transparent}
+  .btn.danger:hover{background:color-mix(in srgb,var(--danger) 12%, transparent)}
+  .btn:disabled{opacity:.5; cursor:not-allowed}
+  input[type=text], input[type=password], select{padding:11px 13px; border-radius:9px; border:1px solid var(--line-strong); background:#0e0b07; color:var(--cream); font-size:15px; font-family:var(--sans); width:100%}
+  select{width:auto; font-size:13px; padding:8px 10px}
+  input:focus, select:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 20%, transparent)}
+  label.mini{display:block; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+
+  .gate{max-width:380px; margin:8vh auto 0; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:30px 26px}
+  .gateMsg{color:var(--danger); font-size:12.5px; min-height:16px; margin-top:10px}
+
+  .newbox{background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; padding:18px; margin-bottom:22px}
+  .newrow{display:grid; grid-template-columns:1fr 1fr auto auto; gap:10px; align-items:end}
+  @media (max-width:700px){ .newrow{grid-template-columns:1fr} }
+  .created{margin-top:14px; padding:12px 14px; border-radius:9px; background:color-mix(in srgb,var(--ok) 10%, transparent); border:1px solid color-mix(in srgb,var(--ok) 30%, transparent); font-size:13.5px; word-break:break-all}
+  .created b{color:var(--ok); font-weight:600}
+  .err{color:var(--danger); font-size:13px; margin-top:8px}
+  .err:empty{display:none}
+
+  .filters{display:flex; gap:10px; align-items:center; margin-bottom:14px; flex-wrap:wrap; font-size:12.5px; color:var(--muted)}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  th{text-align:left; font-weight:600; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); padding:10px 10px; border-bottom:1px solid var(--line-strong); white-space:nowrap}
+  td{padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:middle}
+  tr:hover td{background:color-mix(in srgb,var(--surface) 70%, transparent)}
+  td .nm{font-family:var(--serif); font-size:1.15rem; color:var(--text); line-height:1.2}
+  td .sub{font-size:12px; color:var(--muted)}
+  td.dt{font-size:12px; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums}
+  td.acts{white-space:nowrap; text-align:right}
+  td.acts .btn{margin-left:4px}
+  .pill{display:inline-block; font-size:11px; font-weight:600; letter-spacing:.06em; padding:3px 9px; border-radius:99px; border:1px solid; white-space:nowrap}
+  .pill.sent{color:var(--muted); border-color:var(--line-strong)}
+  .pill.opened{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 45%, transparent)}
+  .pill.in_progress{color:var(--gold); border-color:color-mix(in srgb,var(--gold) 50%, transparent)}
+  .pill.submitted{color:var(--ok); border-color:color-mix(in srgb,var(--ok) 50%, transparent)}
+  .empty{text-align:center; color:var(--muted); padding:60px 20px; font-family:var(--serif); font-size:1.15rem}
+  /* mobile: rows become cards */
+  @media (max-width:760px){
+    thead{display:none}
+    table, tbody, tr, td{display:block; width:100%}
+    tr{border:1px solid var(--line); border-radius:12px; margin-bottom:12px; padding:6px 4px; background:var(--surface)}
+    td{border:none; padding:6px 12px}
+    td.acts{text-align:left}
+    td.acts .btn{margin:4px 4px 0 0}
+    td[data-l]::before{content:attr(data-l) ' '; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.1em; margin-right:6px}
+  }
+
+  .back{background:none; border:none; color:var(--gold); font-family:var(--sans); font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; cursor:pointer; padding:6px 0; margin-bottom:8px}
+  .det-head{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; margin:8px 0 16px}
+  .det-head .nm{font-family:var(--serif); font-size:1.7rem; color:var(--text); line-height:1.2}
+  .det-head .nm span{color:var(--gold)}
+  .det-head .call{margin-top:10px; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-bright)}
+  .det-head .meta{font-size:12.5px; color:var(--muted); margin-top:8px; display:flex; gap:16px; flex-wrap:wrap}
+  .det-head a{color:var(--gold-bright)}
+  .tools{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
+  .sec{border-top:1px solid var(--line); padding:18px 0}
+  .sec-h{font-weight:600; font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); margin-bottom:10px}
+  .qa{padding:7px 0}
+  .qa .l{font-size:12px; color:var(--muted)}
+  .qa .v{font-family:var(--serif); font-size:1.1rem; line-height:1.5; color:var(--text); white-space:pre-wrap; word-break:break-word; margin-top:2px}
+  .qa .v a{color:var(--gold-bright)}
+  .file{display:flex; align-items:center; gap:12px; padding:9px 12px; border:1px solid var(--line); border-radius:9px; margin-top:6px; background:var(--surface)}
+  .file .fn{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px}
+  .file .fs{font-size:12px; color:var(--muted); white-space:nowrap}
+  .status{font-size:12.5px; color:var(--muted); margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate" class="gate" hidden>
+    <div class="eyebrow">Maison d'Élites</div>
+    <h1 style="font-size:1.5rem;margin-bottom:18px">Onboarding</h1>
+    <label class="mini" for="pw">Admin password</label>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••••">
+    <div class="gateMsg" id="gateMsg"></div>
+    <button class="btn" id="unlock" style="margin-top:14px;width:100%;justify-content:center">Unlock</button>
+  </div>
+
+  <div id="app" hidden>
+    <header>
+      <div><div class="eyebrow">Maison d'Élites</div><h1>Onboarding</h1></div>
+      <div class="hdr-btns">
+        <button class="btn" id="newBtn" type="button">+ New onboarding link</button>
+        <button class="btn ghost" id="lock" type="button">Lock</button>
+      </div>
+    </header>
+    <div id="view"></div>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  function pw(){ try { return sessionStorage.getItem('mde_pw') || ''; } catch (e) { return ''; } }
+  function setPw(v){ try { sessionStorage.setItem('mde_pw', v); } catch (e) {} }
+  function clearPw(){ try { sessionStorage.removeItem('mde_pw'); } catch (e) {} }
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmt(s){ if (!s) return '—'; try { return new Date(s).toLocaleString(undefined, { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); } catch (e) { return s; } }
+  function size(n){ return n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+  function slugify(v){ return String(v || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); }
+  var STATUS = { sent:'Sent', opened:'Opened', in_progress:'In progress', submitted:'Submitted' };
+  var CALL = { personal_branding:'Personal branding call', standard:'Standard onboarding call' };
+  var BASE = 'https://maisondelites.com';
+  var LINKS = [];
+  var filters = { status:'', call:'' };
+  var openNew = false;
+
+  function req(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({ 'Authorization':'Bearer ' + pw() }, opts.headers || {});
+    return fetch('/onboarding/api/admin/' + path, opts).then(function(r){
+      if (r.status === 401) { clearPw(); showGate('Wrong password.'); throw new Error('unauthorized'); }
+      return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok) throw new Error(j.error || ('Error ' + r.status)); return j; });
+    });
+  }
+  function showGate(msg){ $('#app').hidden = true; $('#gate').hidden = false; $('#gateMsg').textContent = msg || ''; $('#pw').focus(); }
+  function showApp(){ $('#gate').hidden = true; $('#app').hidden = false; }
+  function linkUrl(token){ return BASE + '/onboarding/' + token; }
+  function copy(text, btn){
+    var done = function(){ var t = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(function(){ btn.textContent = t; }, 1400); };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function(){ prompt('Copy this link:', text); });
+    else prompt('Copy this link:', text);
+  }
+
+  // ---------- list ----------
+  function loadList(){
+    if (!pw()) { showGate(); return; }
+    return req('links').then(function(j){
+      showApp();
+      BASE = j.base || BASE;
+      LINKS = j.links || [];
+      if (location.hash.length > 1) { loadOne(location.hash.slice(1)); return; }
+      renderList();
+    }).catch(function(e){ if (e.message !== 'unauthorized') showGate(e.message); });
+  }
+  function renderList(newUrl){
+    var view = $('#view');
+    var rows = LINKS.filter(function(l){
+      return (!filters.status || l.status === filters.status) && (!filters.call || l.call_type === filters.call);
+    });
+    var html = '<div class="newbox" id="newBox" hidden>'
+      + '<div class="newrow">'
+      + '<div><label class="mini" for="nClient">Client name</label><input id="nClient" type="text" placeholder="e.g. Acme Records"></div>'
+      + '<div><label class="mini" for="nCampaign">Campaign name</label><input id="nCampaign" type="text" placeholder="e.g. Summer single launch"></div>'
+      + '<button class="btn" id="createBtn" type="button">Create link</button>'
+      + '<button class="btn ghost" id="cancelBtn" type="button">Cancel</button>'
+      + '</div><div class="err" id="newErr"></div></div>'
+      + (newUrl ? '<div class="created" id="created"><b>Link created.</b> Send this to the client: <span id="newUrl">' + esc(newUrl) + '</span> <button class="btn sm ghost" id="copyNew" type="button">Copy link</button></div><div style="height:18px"></div>' : '')
+      + '<div class="filters">Filter'
+      + '<select id="fStatus"><option value="">All statuses</option>' + Object.keys(STATUS).map(function(k){ return '<option value="' + k + '"' + (filters.status === k ? ' selected' : '') + '>' + STATUS[k] + '</option>'; }).join('') + '</select>'
+      + '<select id="fCall"><option value="">All call types</option>' + Object.keys(CALL).map(function(k){ return '<option value="' + k + '"' + (filters.call === k ? ' selected' : '') + '>' + CALL[k] + '</option>'; }).join('') + '</select>'
+      + '<span style="margin-left:auto">' + rows.length + ' of ' + LINKS.length + '</span></div>';
+    if (!LINKS.length) html += '<div class="empty">No onboarding links yet.<br>Click <b>New onboarding link</b> to create the first one.</div>';
+    else if (!rows.length) html += '<div class="empty">Nothing matches these filters.</div>';
+    else {
+      html += '<table><thead><tr><th>Client · campaign</th><th>Status</th><th>Call type</th><th>Created</th><th>Submitted</th><th></th></tr></thead><tbody>'
+        + rows.map(function(l){
+          return '<tr><td><div class="nm">' + esc(l.client_name) + '</div><div class="sub">' + esc(l.campaign_name) + '</div></td>'
+            + '<td data-l="Status"><span class="pill ' + esc(l.status) + '">' + esc(STATUS[l.status] || l.status) + '</span></td>'
+            + '<td data-l="Call" class="dt">' + esc(CALL[l.call_type] || '—') + '</td>'
+            + '<td data-l="Created" class="dt">' + esc(fmt(l.created_at)) + '</td>'
+            + '<td data-l="Submitted" class="dt">' + esc(fmt(l.submitted_at)) + '</td>'
+            + '<td class="acts">'
+            + '<button class="btn sm ghost" data-copy="' + esc(l.token) + '" type="button">Copy link</button>'
+            + '<button class="btn sm ghost" data-view="' + esc(l.token) + '" type="button">View answers</button>'
+            + (l.status === 'submitted' ? '<button class="btn sm ghost" data-reopen="' + esc(l.token) + '" type="button">Reopen</button>' : '')
+            + '<button class="btn sm danger" data-del="' + esc(l.token) + '" type="button">Delete</button>'
+            + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    }
+    view.innerHTML = html;
+    wireList();
+    if (openNew) { openNew = false; openNewBox(); }
+    if (newUrl) $('#copyNew').onclick = function(){ copy(newUrl, this); };
+  }
+  function wireList(){
+    $('#fStatus').onchange = function(){ filters.status = this.value; renderList(); };
+    $('#fCall').onchange = function(){ filters.call = this.value; renderList(); };
+    $('#cancelBtn').onclick = function(){ $('#newBox').hidden = true; };
+    $('#createBtn').onclick = create;
+    ['#nClient', '#nCampaign'].forEach(function(s){ $(s).addEventListener('keydown', function(e){ if (e.key === 'Enter') create(); }); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function(b){ b.onclick = function(){ copy(linkUrl(b.getAttribute('data-copy')), b); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-view]'), function(b){ b.onclick = function(){ location.hash = b.getAttribute('data-view'); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-reopen]'), function(b){ b.onclick = function(){ reopen(b.getAttribute('data-reopen')); }; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function(b){ b.onclick = function(){ del(b.getAttribute('data-del')); }; });
+  }
+  function openNewBox(){
+    var c = $('#created'); if (c) c.remove();
+    $('#newBox').hidden = false; $('#nClient').focus();
+  }
+  function create(){
+    var c = $('#nClient').value.trim(), k = $('#nCampaign').value.trim();
+    if (!c || !k) { $('#newErr').textContent = 'Enter both the client name and the campaign name.'; return; }
+    $('#createBtn').disabled = true;
+    req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k }) })
+      .then(function(j){ LINKS.unshift(j.link); renderList(j.url); })
+      .catch(function(e){ $('#newErr').textContent = e.message; $('#createBtn').disabled = false; });
+  }
+  function reopen(token){
+    if (!confirm('Reopen this form? The client will be able to edit their answers and submit again.')) return;
+    req('link?token=' + encodeURIComponent(token), { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ action:'reopen' }) })
+      .then(function(){ return location.hash.length > 1 ? loadOne(token) : loadList(); })
+      .catch(function(e){ alert(e.message); });
+  }
+  function del(token){
+    var l = LINKS.find(function(x){ return x.token === token; }) || {};
+    if (!confirm('Delete the onboarding link for “' + (l.client_name || 'this client') + '”? The link, the answers and all uploaded files are removed permanently.')) return;
+    req('link?token=' + encodeURIComponent(token), { method:'DELETE' })
+      .then(function(){ LINKS = LINKS.filter(function(x){ return x.token !== token; }); if (location.hash.length > 1) location.hash = ''; else renderList(); })
+      .catch(function(e){ alert(e.message); });
+  }
+
+  // ---------- answer view ----------
+  function loadOne(token){
+    var view = $('#view');
+    view.innerHTML = '<div class="status">Loading…</div>';
+    return req('link?token=' + encodeURIComponent(token)).then(function(j){ renderOne(j); })
+      .catch(function(e){ if (e.message !== 'unauthorized') view.innerHTML = '<button class="back" id="back">‹ All onboarding links</button><div class="status">' + esc(e.message) + '</div>'; var b = $('#back'); if (b) b.onclick = function(){ location.hash = ''; }; });
+  }
+  function renderOne(j){
+    var l = j.link, a = j.answers || {}, L = j.labels || {}, files = j.files || [];
+    function lab(group, v){ return (L[group] && L[group][v]) || v; }
+    function link(u){ return /^https?:\/\//i.test(u || '') ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a>' : esc(u); }
+    function filesHtml(qid){
+      return files.filter(function(f){ return f.qid === qid; }).map(function(f){
+        return '<div class="file"><span class="fn">' + esc(f.name) + '</span><span class="fs">' + size(f.size) + '</span><a class="btn sm ghost" href="' + esc(f.url) + '">Download</a></div>';
+      }).join('');
+    }
+    function qa(labelText, valueHtml){ return valueHtml ? '<div class="qa"><div class="l">' + esc(labelText) + '</div><div class="v">' + valueHtml + '</div></div>' : ''; }
+    var q2 = a.q2 || {}, q9 = a.q9 || {}, q14 = a.q14 || {}, q17 = a.q17 || {}, q11b = a.q11b || {};
+    var contactLabel = a.q3 === 'whatsapp' ? 'WhatsApp number' : a.q3 === 'instagram' ? 'Instagram handle' : 'Email address';
+    var sections = [
+      ['About you', [
+        qa('Campaign name', esc(a.q1)),
+        qa('Name and role', esc([q2.name, q2.role].filter(Boolean).join(', '))),
+        qa('Best way to reach them', esc(lab('contact', a.q3))),
+        qa(contactLabel, a.q3 === 'email' && a.q3b ? '<a href="mailto:' + esc(a.q3b) + '">' + esc(a.q3b) + '</a>' : esc(a.q3b)),
+        qa('Email address', a.q4 ? '<a href="mailto:' + esc(a.q4) + '">' + esc(a.q4) + '</a>' : ''),
+        qa('Also gets campaign updates', esc((a.q5 || []).map(function(p){ return [p.name, p.email].filter(Boolean).join(' · '); }).join('\n')))
+      ]],
+      ['What we’re promoting', [
+        qa('Campaign is for', esc(a.q6 === 'other' ? 'Something else: ' + (a.q6_other || '') : lab('promo', a.q6))),
+        qa('Package includes personal branding', a.q7 ? (a.q7 === 'yes' ? 'Yes' : 'No') : ''),
+        qa('Main link', link(a.q8)),
+        qa('Key date', esc(q9.none ? 'No set date' : [q9.date, q9.what].filter(Boolean).join(' · '))),
+        qa('What makes it a win', esc((a.q10 || []).map(function(x){ return x === 'other' ? 'Something else: ' + (a.q10_other || '') : lab('wins', x); }).join('\n')))
+      ]],
+      ['The content', [
+        qa('Footage sources', esc((a.q11 || []).map(function(x){ return lab('sources', x); }).join('\n'))),
+        qa('Source links', Object.keys(q11b).map(function(k){ return esc(lab('sources', k)) + ': ' + link(q11b[k]); }).join('\n')),
+        qa('Uploaded footage', filesHtml('q11b')),
+        qa('Clip the most', esc(a.q12)),
+        qa('Off limits', esc(a.q13)),
+        qa('Sound or song to use', esc(q14.sound)),
+        qa('Hashtags', esc(q14.hashtags)),
+        qa('Accounts to tag', esc(q14.tags)),
+        qa('Caption or call to action', esc(q14.cta)),
+        qa('Logos and brand guidelines', filesHtml('q15'))
+      ]],
+      ['Where it runs', [
+        qa('Platforms', esc((a.q16 || []).map(function(x){ return lab('platforms', x); }).join(', '))),
+        qa('Countries or audiences', esc(q17.worldwide ? 'Worldwide, no preference' : q17.text))
+      ]],
+      ['Wrap-up', [
+        qa('Report recipients', esc((a.q18 || []).join('\n'))),
+        qa('Anything else', esc(a.q19))
+      ]]
+    ];
+    var body = sections.map(function(s){
+      var items = s[1].join('');
+      return '<div class="sec"><div class="sec-h">' + esc(s[0]) + '</div>' + (items || '<div class="qa"><div class="l">Nothing answered yet</div></div>') + '</div>';
+    }).join('');
+    var dash = l.campaign_id ? campaignsBase() + '/' + encodeURIComponent(l.campaign_id) : '';
+    $('#view').innerHTML = '<button class="back" id="back">‹ All onboarding links</button>'
+      + '<div class="det-head"><div class="nm">' + esc(l.client_name) + ' <span>· ' + esc(l.campaign_name) + '</span></div>'
+      + (l.call_type ? '<div class="call">' + esc(CALL[l.call_type]) + '</div>' : '')
+      + '<div class="meta"><span class="pill ' + esc(l.status) + '">' + esc(STATUS[l.status]) + '</span>'
+      + '<span>Created ' + esc(fmt(l.created_at)) + '</span>'
+      + (l.opened_at ? '<span>Opened ' + esc(fmt(l.opened_at)) + '</span>' : '')
+      + (l.submitted_at ? '<span>Submitted ' + esc(fmt(l.submitted_at)) + '</span>' : '')
+      + (l.booking_state === 'booked' ? '<span>Call booked in the form</span>' : l.booking_state === 'book_later' ? '<span>Chose “Book later”</span>' : '')
+      + (dash ? '<span>Campaign: <a href="' + esc(dash) + '/admin" target="_blank" rel="noopener">' + esc(l.campaign_id) + '</a></span>' : '')
+      + '</div>'
+      + '<div class="tools">'
+      + (l.status === 'submitted' ? '<button class="btn" id="mkCampaign" type="button">Create campaign from this</button>' : '')
+      + '<button class="btn ghost" id="copyOne" type="button">Copy link</button>'
+      + (l.status === 'submitted' ? '<button class="btn ghost" id="reopenOne" type="button">Reopen</button>' : '')
+      + '<button class="btn danger" id="delOne" type="button">Delete</button>'
+      + '</div></div>' + body;
+    $('#back').onclick = function(){ location.hash = ''; };
+    $('#copyOne').onclick = function(){ copy(linkUrl(l.token), this); };
+    $('#delOne').onclick = function(){ del(l.token); };
+    var r = $('#reopenOne'); if (r) r.onclick = function(){ reopen(l.token); };
+    var m = $('#mkCampaign'); if (m) m.onclick = function(){ makeCampaign(l, a); };
+    window.scrollTo(0, 0);
+  }
+
+  // Campaign dashboards live on campaigns.maisondelites.com/<slug>; the editor
+  // there reads ?onboarding=<token> and prefills itself from this submission.
+  function campaignsBase(){ return location.hostname.indexOf('campaigns.') === 0 ? '' : 'https://campaigns.maisondelites.com'; }
+  function makeCampaign(l, a){
+    var slug = slugify(prompt('Dashboard address for this campaign (campaigns.maisondelites.com/…):', l.campaign_id || slugify(a.q1 || l.client_name)) || '');
+    if (!slug) return;
+    window.open(campaignsBase() + '/' + slug + '/admin?onboarding=' + encodeURIComponent(l.token), '_blank', 'noopener');
+  }
+
+  window.addEventListener('hashchange', function(){ if (location.hash.length > 1) loadOne(location.hash.slice(1)); else loadList(); });
+  $('#newBtn').onclick = function(){
+    if (location.hash.length > 1) { openNew = true; location.hash = ''; return; }
+    openNewBox();
+  };
+  $('#unlock').onclick = function(){ var v = $('#pw').value.trim(); if (!v) { $('#gateMsg').textContent = 'Enter the password.'; return; } setPw(v); loadList(); };
+  $('#pw').addEventListener('keydown', function(e){ if (e.key === 'Enter') $('#unlock').click(); });
+  $('#lock').onclick = function(){ clearPw(); showGate(); };
+  loadList();
+})();
+</script>
+</body>
+</html>

@@ -194,6 +194,59 @@ read what they submit.
    Email is best-effort: if it isn't configured, storage + Discord still capture
    every answer, so nothing is ever lost.
 
+## Client onboarding form (`/onboarding`)
+
+The form a client fills in after signing and paying. Each client gets a private
+link, answers one question per screen (progress saves to the server), uploads
+footage and brand files, then books their onboarding call on Cal.com.
+
+| URL | Who | What |
+|-----|-----|------|
+| `/onboarding/<token>` | The client | The form. No sign-in; the long random token is the key. Reopening it resumes where they stopped. |
+| `/onboarding/admin` | You (password-gated) | Create links, track status (sent, opened, in progress, submitted), filter, read answers, download files, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/onboarding/api/...` | — | The form's API. Everything sits under `/onboarding` so one route covers it. |
+
+**Put it on maisondelites.com.** The root domain is on Framer, so add a Worker
+route: Worker → **Settings → Domains & Routes → Add → Route** →
+`maisondelites.com/onboarding*` → this Worker. The page, its API and file
+uploads all live under that path, so nothing else on the domain changes. The
+form also works on any other hostname attached to the Worker.
+
+**Variables** (Settings → Variables and Secrets):
+
+| Name | What |
+|------|------|
+| `CAL_ONBOARDING_URL` | Full Cal.com link for the standard onboarding call, e.g. `https://cal.com/maisondelites/onboarding` |
+| `CAL_PERSONAL_BRANDING_URL` | Full Cal.com link for the personal branding onboarding call |
+| `ONBOARDING_NOTIFY_EMAIL` | Inbox(es) for "Onboarding submitted" emails, comma-separated |
+| `ONBOARDING_DISCORD_WEBHOOK` | Discord webhook for team pings (skipped if unset) |
+| `ONBOARDING_FROM` | Optional sender, e.g. `Maison d'Élites <hello@maisondelites.com>` (falls back to `BRANDSHEET_FROM`) |
+| `ONBOARDING_BASE_URL` | Optional. Base for links in emails and "Copy link". Defaults to `https://maisondelites.com` |
+
+Email uses the existing `RESEND_API_KEY`. The client confirmation goes to the
+client and every report recipient, so the sending domain must be verified in
+Resend (until then Resend only delivers to your own account address).
+
+**How it behaves**
+- Question 7 (personal branding) picks the calendar: Yes shows
+  `CAL_PERSONAL_BRANDING_URL`, No shows `CAL_ONBOARDING_URL`. Name and email
+  are prefilled. "Book later" skips to the confirmation; the booking link is
+  also in the confirmation email.
+- On submit, the team email, Discord ping and client email go out once per link
+  (a reopened and resubmitted form does not send them again).
+- Files go to the `MEDIA` R2 bucket under `onboarding/files/<token>/`, uploaded
+  in 10 MB chunks. Video (MP4, MOV) up to 2 GB; images, PDF and ZIP up to
+  50 MB, enforced on the server. Admin downloads use signed links that expire
+  after 15 minutes. Records are in `onboarding/links/<token>.json`.
+- Public routes are rate-limited per IP (`ONBOARDING_LIMITER` in
+  `wrangler.toml`, 300 requests a minute, using `CF-Connecting-IP`).
+- **Create campaign from this** (on a submitted form) opens
+  `campaigns.maisondelites.com/<slug>/admin?onboarding=<token>`. The editor
+  prefills the client name, campaign name and a new internal **Campaign brief**
+  card (main link, platforms, off limits, sound, hashtags, tags, call to action,
+  report recipients). Saving stores the campaign and links it back to the
+  onboarding record. The brief is never included in the public dashboard feed.
+
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the
   `functions/` folder) if you ever switch — same handlers power both.
