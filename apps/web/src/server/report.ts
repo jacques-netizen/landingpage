@@ -89,11 +89,11 @@ export async function cachedReport(token: string, campaignId: string, q: ReportQ
   const [raw, [c]] = await Promise.all([
     campaignReport(db(), campaignId, q),
     db()
-      .select({ f: tables.campaigns.clientSpendFactor })
+      .select({ f: tables.campaigns.clientSpendFactor, budget: tables.campaigns.clientBudgetCents })
       .from(tables.campaigns)
       .where(eq(tables.campaigns.id, campaignId)),
   ])
-  const report = raw ? forClient(raw, c?.f ?? 1) : null
+  const report = raw ? forClient(raw, c?.f ?? 1, c?.budget ?? null) : null
   if (report)
     redis()
       .set(key, JSON.stringify(report), 'EX', CACHE_SECONDS)

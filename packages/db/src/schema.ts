@@ -280,6 +280,9 @@ export const campaigns = pgTable(
     // The client report counts what was spent at this many times the clippers' earnings (owner rule,
     // 2026-10-17: Marrz-Audio only, clippers $1 and the agency $1 per 1,000 views). 1 everywhere else.
     clientSpendFactor: integer('client_spend_factor').notNull().default(1),
+    // The budget the client report shows, in cents, when it differs from the clippers' budget (owner
+    // request, 2026-10-17: Davido X Winnerman-Audio shows $2,000). Null shows the campaign's budget.
+    clientBudgetCents: cents('client_budget_cents'),
     // Set when staff delete a campaign that has money or posts: hidden everywhere, kept for the books.
     deletedAt: tz('deleted_at'),
     briefMarkdown: text('brief_markdown'),

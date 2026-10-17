@@ -284,5 +284,8 @@ describe('the client report rate', () => {
     expect(r.topClips[0]).toMatchObject({ views: 5_000, payoutCents: 1_000 })
     expect(r.submissions.rows[0]!.payoutCents).toBe(1_000)
     expect(r.totals.views).toBe(5_000)
+    // A budget set for the client's report replaces the campaign's there.
+    const own = forClient(base, 2, 20_000)
+    expect(own.budget).toMatchObject({ budgetCents: 20_000, spentCents: 1_000, remainingCents: 19_000 })
   })
 })

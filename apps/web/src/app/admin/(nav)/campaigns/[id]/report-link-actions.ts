@@ -1,6 +1,7 @@
 'use server'
 
 import { db, tables, writeAudit } from '@mde/db'
+import { formatDollars, parseDollarsToCents } from '@mde/money/dollars'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/server/guard'
@@ -57,5 +58,45 @@ export async function setClientSpendFactorAction(campaignId: string, doubled: bo
     message: doubled
       ? 'The client report now shows spend at twice what clippers earn. It can take a minute to update.'
       : 'The client report now shows spend at what clippers earn. It can take a minute to update.',
+  }
+}
+
+/**
+ * The budget the client report shows, when it differs from the clippers' budget (owner request,
+ * 2026-10-17). Empty goes back to the campaign's budget. Finance and admins only; audited.
+ */
+export async function setClientBudgetAction(campaignId: string, input: string): Promise<ReportLinkResult> {
+  const viewer = await requireStaff('money', `/admin/campaigns/${campaignId}`)
+  let cents: number | null = null
+  if (input.trim()) {
+    const parsed = parseDollarsToCents(input)
+    if (!parsed.ok) return { ok: false, error: parsed.message }
+    if (parsed.cents <= 0) return { ok: false, error: 'Enter a budget above $0, or leave it empty.' }
+    cents = parsed.cents
+  }
+  const d = db()
+  const [before] = await d
+    .select({ b: tables.campaigns.clientBudgetCents })
+    .from(tables.campaigns)
+    .where(eq(tables.campaigns.id, campaignId))
+  if (!before) return { ok: false, error: 'This campaign was not found.' }
+  await d.transaction(async (tx) => {
+    await tx.update(tables.campaigns).set({ clientBudgetCents: cents }).where(eq(tables.campaigns.id, campaignId))
+    await writeAudit(tx, {
+      actorId: viewer.id,
+      action: 'campaign.client_budget',
+      entity: 'campaign',
+      entityId: campaignId,
+      before: { clientBudgetCents: before.b },
+      after: { clientBudgetCents: cents },
+    })
+  })
+  revalidatePath(`/admin/campaigns/${campaignId}`)
+  return {
+    ok: true,
+    message:
+      cents === null
+        ? 'The client report shows the campaign budget again. It can take a minute to update.'
+        : `The client report now shows a budget of ${formatDollars(cents)}. It can take a minute to update.`,
   }
 }

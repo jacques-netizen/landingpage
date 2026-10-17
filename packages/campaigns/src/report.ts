@@ -374,20 +374,21 @@ export async function campaignReportRows(db: DbOrTx, campaignId: string, q: Repo
 const clientClip = (c: ReportClip, f: number): ReportClip => ({ ...c, payoutCents: c.payoutCents * f })
 
 /** The report as the client sees it: every amount spent at the client's rate. The budget, views and counts unchanged. */
-export function forClient(r: CampaignReport, f: number): CampaignReport {
-  if (f === 1) return r
+export function forClient(r: CampaignReport, f: number, clientBudgetCents: number | null = null): CampaignReport {
+  if (f === 1 && clientBudgetCents === null) return r
+  const budgetCents = clientBudgetCents ?? r.budget.budgetCents
   const x = (v: number) => v * f
   const xn = (v: number | null) => (v === null ? null : v * f)
   return {
     ...r,
     campaign: { ...r.campaign, rateCentsPer1000: x(r.campaign.rateCentsPer1000) },
-    // The budget is what the client set; only what was spent from it is at the client's rate.
+    // The budget is the campaign's, or the one set for the client's report; spend is at the client's rate.
     budget: {
-      budgetCents: r.budget.budgetCents,
+      budgetCents,
       spentCents: x(r.budget.spentCents),
       paidOutCents: x(r.budget.paidOutCents),
       holdCents: x(r.budget.holdCents),
-      remainingCents: Math.max(0, r.budget.budgetCents - x(r.budget.spentCents)),
+      remainingCents: Math.max(0, budgetCents - x(r.budget.spentCents)),
       ecpmCents: xn(r.budget.ecpmCents),
     },
     platforms: r.platforms.map((p) => ({ ...p, spentCents: x(p.spentCents), ecpmCents: xn(p.ecpmCents) })),

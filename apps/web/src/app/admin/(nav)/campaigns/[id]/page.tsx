@@ -358,7 +358,12 @@ export default async function CampaignAdminPage({
         </section>
       ) : null}
       {canMoney ? (
-        <ReportLink campaignId={c.id} hasLinks={!!c.reportSecret} doubled={c.clientSpendFactor === 2} />
+        <ReportLink
+          campaignId={c.id}
+          hasLinks={!!c.reportSecret}
+          doubled={c.clientSpendFactor === 2}
+          clientBudget={c.clientBudgetCents === null ? '' : (c.clientBudgetCents / 100).toFixed(2)}
+        />
       ) : null}
 
       <nav aria-label="Campaign" className="mt-5 grid grid-cols-8 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">

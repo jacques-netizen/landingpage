@@ -6,6 +6,7 @@ import { Notice } from '../../_components/ui'
 import {
   createReportLinkAction,
   revokeReportLinksAction,
+  setClientBudgetAction,
   setClientSpendFactorAction,
   type ReportLinkResult,
 } from './report-link-actions'
@@ -15,14 +16,18 @@ export function ReportLink({
   campaignId,
   hasLinks,
   doubled,
+  clientBudget,
 }: {
   campaignId: string
   hasLinks: boolean
+  /** The budget the client report shows instead of the campaign's, in dollars; empty when none is set. */
+  clientBudget: string
   /** The client report shows spend at twice what clippers earn. */
   doubled: boolean
 }) {
   const [result, setResult] = useState<ReportLinkResult | null>(null)
   const [confirm, setConfirm] = useState(false)
+  const [budget, setBudget] = useState(clientBudget)
   const [busy, start] = useTransition()
   const url = result?.ok ? result.url : undefined
   // A link made just now can be revoked at once, before the page data is refreshed.
@@ -84,6 +89,31 @@ export function ReportLink({
           </span>
         </span>
       </label>
+      <form
+        className="mt-4 flex flex-wrap items-end gap-3 text-[13px]"
+        onSubmit={(e) => {
+          e.preventDefault()
+          start(async () => setResult(await setClientBudgetAction(campaignId, budget)))
+        }}
+      >
+        <label className="flex flex-col gap-1">
+          Budget shown to the client
+          <input
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            placeholder="Same as the campaign"
+            inputMode="decimal"
+            className="h-9 w-[200px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+          />
+        </label>
+        <Button size="sm" variant="secondary" type="submit" loading={busy}>
+          Save
+        </Button>
+        <span className="basis-full text-[12px] text-muted">
+          Only the report changes. What clippers can earn stays at the campaign budget. Leave empty to show the campaign
+          budget.
+        </span>
+      </form>
       {result ? (
         <div className="mt-4">
           {result.ok ? <Notice kind="ok">{result.message}</Notice> : <Notice kind="bad">{result.error}</Notice>}
