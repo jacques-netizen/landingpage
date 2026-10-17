@@ -9,7 +9,15 @@ import { dropOff, eventCounts, funnel, rangeFor, videoWatch, type FunnelRow } fr
 export const metadata = { title: "Funnel dashboard", robots: { index: false, follow: false } };
 export const maxDuration = 60;
 
-const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "");
+const pct = (a: number, b: number) => (Number(b) ? `${Math.round((Number(a) / Number(b)) * 100)}%` : "");
+/** Anything the database hands back, as text. Never throws. */
+const cell = (v: unknown): string => {
+  if (v === null || v === undefined) return "";
+  if (typeof v === "bigint") return v.toString();
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+};
 const th = "py-3 pr-6 text-left text-[13px] font-medium text-muted";
 const td = "py-3 pr-6 text-[14px] tabular-nums";
 
@@ -85,7 +93,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
             <div className="mt-4 overflow-x-auto">
               <table className="w-full border-t border-line">
                 <thead><tr className="border-b border-line">{cols.map(([, l]) => <th key={l} className={th}>{l}</th>)}</tr></thead>
-                <tbody><tr className="border-b border-line">{cols.map(([k]) => <td key={k} className={td}>{t[k]}{k !== "starts" && t.starts ? <span className="ml-1 text-muted">{pct(t[k], t.starts)}</span> : null}</td>)}</tr></tbody>
+                <tbody><tr className="border-b border-line">{cols.map(([k]) => <td key={k} className={td}>{cell(t[k])}{k !== "starts" && t.starts ? <span className="ml-1 text-muted">{pct(t[k], t.starts)}</span> : null}</td>)}</tr></tbody>
               </table>
             </div>
           </section>
@@ -99,9 +107,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
             <thead><tr className="border-b border-line"><th className={th}>Day</th><th className={th}>Variant</th><th className={th}>Path</th>{cols.map(([, l]) => <th key={l} className={th}>{l}</th>)}</tr></thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={`${r.day}${r.variant}${r.path}`} className="border-b border-line">
-                  <td className={td}>{r.day}</td><td className={td}>{r.variant}</td><td className={td}>{r.path}</td>
-                  {cols.map(([k]) => <td key={k} className={td}>{r[k]}</td>)}
+                <tr key={`${cell(r.day)}${cell(r.variant)}${cell(r.path)}`} className="border-b border-line">
+                  <td className={td}>{cell(r.day)}</td><td className={td}>{cell(r.variant)}</td><td className={td}>{cell(r.path)}</td>
+                  {cols.map(([k]) => <td key={k} className={td}>{cell(r[k])}</td>)}
                 </tr>
               ))}
             </tbody>
@@ -115,7 +123,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
           <p className="mt-2 text-[14px] text-muted">Last scene seen by sessions that did not reach the gate submit.</p>
           <table className="mt-4 w-full border-t border-line">
             <thead><tr className="border-b border-line"><th className={th}>Variant</th><th className={th}>Scene</th><th className={th}>Sessions</th></tr></thead>
-            <tbody>{drops.map((d) => <tr key={d.variant + d.scene} className="border-b border-line"><td className={td}>{d.variant}</td><td className={td}>{d.scene}</td><td className={td}>{d.sessions}</td></tr>)}</tbody>
+            <tbody>{drops.map((d, i) => <tr key={i} className="border-b border-line"><td className={td}>{cell(d.variant)}</td><td className={td}>{cell(d.scene)}</td><td className={td}>{cell(d.sessions)}</td></tr>)}</tbody>
           </table>
         </section>
         <section>
@@ -123,7 +131,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
           <p className="mt-2 text-[14px] text-muted">Sessions reaching each quarter, and the average share watched.</p>
           <table className="mt-4 w-full border-t border-line">
             <thead><tr className="border-b border-line">{["Film", "Plays", "25%", "50%", "75%", "100%", "Avg"].map((h) => <th key={h} className={th}>{h}</th>)}</tr></thead>
-            <tbody>{videos.map((v) => <tr key={v.media} className="border-b border-line"><td className={td}>{v.media}</td><td className={td}>{v.plays}</td><td className={td}>{v.p25}</td><td className={td}>{v.p50}</td><td className={td}>{v.p75}</td><td className={td}>{v.p100}</td><td className={td}>{v.avg_pct}%</td></tr>)}</tbody>
+            <tbody>{videos.map((v, i) => <tr key={i} className="border-b border-line"><td className={td}>{cell(v.media)}</td><td className={td}>{cell(v.plays)}</td><td className={td}>{cell(v.p25)}</td><td className={td}>{cell(v.p50)}</td><td className={td}>{cell(v.p75)}</td><td className={td}>{cell(v.p100)}</td><td className={td}>{cell(v.avg_pct)}%</td></tr>)}</tbody>
           </table>
         </section>
       </div>
@@ -131,7 +139,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
       <section className="mt-16">
         <h2 className="font-serif text-subtitle">All events</h2>
         <table className="mt-4 w-full max-w-md border-t border-line">
-          <tbody>{events.map((e) => <tr key={e.name} className="border-b border-line"><td className={td}>{e.name}</td><td className={td}>{e.count}</td></tr>)}</tbody>
+          <tbody>{events.map((e, i) => <tr key={i} className="border-b border-line"><td className={td}>{cell(e.name)}</td><td className={td}>{cell(e.count)}</td></tr>)}</tbody>
         </table>
       </section>
     </main>
