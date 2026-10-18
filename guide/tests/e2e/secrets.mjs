@@ -68,6 +68,10 @@ checks.caseOpen = (await p.locator('#cases .case dl').first().innerText()).slice
 await p.locator('#alone input[type=checkbox]').nth(0).check();
 await p.locator('#alone input[type=checkbox]').nth(1).check();
 checks.selfCheck = await p.locator('#alone .callout').innerText();
+await p.locator('#testimonial').scrollIntoViewIfNeeded();
+await p.waitForTimeout(2500);
+checks.testimonialFrame = await p.locator('#testimonial iframe').count();
+await p.locator('#testimonial').screenshot({ path: `${out}/08-testimonial.png` });
 await p.locator('.sx-spots').scrollIntoViewIfNeeded();
 await p.waitForTimeout(1500);
 checks.spots = await p.locator('.sx-spots span').innerText();

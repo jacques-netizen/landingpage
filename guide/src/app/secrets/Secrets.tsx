@@ -135,9 +135,10 @@ function embedUrl(p: Post): string {
 /** One outside post, shown through its platform's embed. The frame loads only once it scrolls into view. */
 function PostTile({ post, names, open }: { post: Post; names: Record<string, string>; open: string }) {
   const [ref, inView] = useInView<HTMLDivElement>(0.05, true);
+  const poster = post.platform === "youtube" ? `https://i.ytimg.com/vi/${post.id}/hqdefault.jpg` : null;
   return (
     <div ref={ref} className="sx-post">
-      <div className="sx-post-frame">
+      <div className="sx-post-frame" style={poster ? { backgroundImage: `url(${poster})` } : undefined}>
         {inView ? <iframe src={embedUrl(post)} title={`${names[post.platform] ?? post.platform}: ${post.page}`} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : null}
       </div>
       <a className="sx-post-meta" href={post.url} target="_blank" rel="noopener noreferrer">
@@ -326,6 +327,17 @@ function Everywhere({ slots }: { slots: boolean }) {
             <div className="sx-six">{Array.from({ length: 6 }, (_, i) => <Clip key={i} id={null} slots={slots} label={`page ${i + 1}`} small />)}</div>
           )}
           <p className="model-note">{same.caption}</p>
+          {same.alsoPosts.length > 0 && (
+            <p className="sx-also">
+              {same.also}{" "}
+              {same.alsoPosts.map((a, i) => (
+                <span key={a.url}>
+                  <a href={a.url} target="_blank" rel="noopener noreferrer">{same.platforms[a.platform as keyof typeof same.platforms] ?? a.platform} ({a.page})</a>
+                  {i < same.alsoPosts.length - 1 ? ", " : "."}
+                </span>
+              ))}
+            </p>
+          )}
         </div>
       )}
       {s.body.map((b, i) => <p key={i} className="body-lg sx-body">{b}</p>)}
@@ -719,6 +731,24 @@ function Alone({ slots }: { slots: boolean }) {
   );
 }
 
+/** A client speaking for the work, near the end, through YouTube's own player. */
+function Testimonial() {
+  const t = content.testimonial;
+  const [ref, inView] = useInView<HTMLDivElement>(0.05, true);
+  return (
+    <section className="section alt" id="testimonial">
+      <div className="wrap">
+        <div className="snum">{t.label}</div>
+        <h2 className="sx-h2">{t.title}</h2>
+        <div ref={ref} className="sx-video sx-yt" style={{ backgroundImage: `url(https://i.ytimg.com/vi/${t.youtube}/hqdefault.jpg)` }}>
+          {inView ? <iframe src={`https://www.youtube-nocookie.com/embed/${t.youtube}?rel=0&modestbranding=1`} title={t.title} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : null}
+        </div>
+        <p className="model-note">{t.caption} <a href={t.url} target="_blank" rel="noopener noreferrer">{t.open} &rarr;</a></p>
+      </div>
+    </section>
+  );
+}
+
 /** The day's open spot count: usually the full count, some days one or two fewer. Seeded by the date so it holds for the whole day. */
 function spotsToday(total: number, odds: Record<string, number>): number {
   const day = Math.floor(Date.now() / 86400000);
@@ -775,6 +805,7 @@ export function Secrets({ cases, bookingUrl, showSlots }: { cases: Case[]; booki
       <Fit slots={showSlots} />
       <Cases cases={cases} slots={showSlots} />
       <Alone slots={showSlots} />
+      <Testimonial />
       <Next bookingUrl={bookingUrl} />
     </main>
   );
