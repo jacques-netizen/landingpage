@@ -33,7 +33,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/dashboard"
     [rows, drops, videos, events] = await Promise.all([funnel(from, to), dropOff(from, to), videoWatch(from, to), eventCounts(from, to)]);
   } catch (e) {
     // This page is for the owner only: showing the database error beats a blank 500.
-    loadError = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+    // Drizzle wraps the driver error; the useful part is the cause.
+    const cause = e instanceof Error && e.cause instanceof Error ? e.cause.message : "";
+    loadError = cause || (e instanceof Error ? e.message.split("\n")[0].slice(0, 300) : String(e));
     console.error("dashboard query failed", loadError);
   }
 
