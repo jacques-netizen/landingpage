@@ -119,6 +119,35 @@ function SlotVideo({ id, slots, label }: { id: string | null; slots: boolean; la
   );
 }
 
+type Post = { platform: string; id: string; page: string; url: string };
+
+/** Where each platform serves its own embed for one post. The page's footage is never copied; the platform plays it. */
+function embedUrl(p: Post): string {
+  switch (p.platform) {
+    case "tiktok": return `https://www.tiktok.com/embed/v2/${p.id}`;
+    case "instagram": return `https://www.instagram.com/p/${p.id}/embed/`;
+    case "x": return `https://platform.twitter.com/embed/Tweet.html?id=${p.id}&theme=dark&dnt=true&hideCard=false`;
+    case "youtube": return `https://www.youtube-nocookie.com/embed/${p.id}?rel=0&modestbranding=1`;
+    default: return p.url;
+  }
+}
+
+/** One outside post, shown through its platform's embed. The frame loads only once it scrolls into view. */
+function PostTile({ post, names, open }: { post: Post; names: Record<string, string>; open: string }) {
+  const [ref, inView] = useInView<HTMLDivElement>(0.05, true);
+  return (
+    <div ref={ref} className="sx-post">
+      <div className="sx-post-frame">
+        {inView ? <iframe src={embedUrl(post)} title={`${names[post.platform] ?? post.platform}: ${post.page}`} loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /> : null}
+      </div>
+      <a className="sx-post-meta" href={post.url} target="_blank" rel="noopener noreferrer">
+        <b>{post.page}</b>
+        <span>{names[post.platform] ?? post.platform} &middot; {open}</span>
+      </a>
+    </div>
+  );
+}
+
 function Section({ id, n, title, lead, children, alt }: { id: string; n: string; title: string; lead: string; children: ReactNode; alt?: boolean }) {
   return (
     <section className={`section${alt ? " alt" : ""}`} id={id} data-secret={id}>
@@ -251,7 +280,8 @@ function Everywhere({ slots }: { slots: boolean }) {
   const per = Math.max(1, Math.ceil(pg.max / tiles));
   const lit = Math.min(tiles, Math.ceil(pages / per));
   const same = s.same!;
-  const hasSame = same.clips.some(Boolean) || slots;
+  const posts = same.posts as Post[];
+  const hasSame = posts.length > 0 || slots;
   return (
     <Section id={s.id} n={s.number} title={s.title} lead={s.lead} alt>
       <SlotVideo id={s.video} slots={slots} label={s.title} />
@@ -289,7 +319,12 @@ function Everywhere({ slots }: { slots: boolean }) {
       {hasSame && (
         <div className="sx-panel sx-wide">
           <span className="label">{same.label}</span>
-          <div className="sx-six">{same.clips.map((id, i) => <Clip key={i} id={id} slots={slots} label={`page ${i + 1}`} small />)}</div>
+          <p className="sx-same-intro">{same.intro}</p>
+          {posts.length > 0 ? (
+            <div className="sx-posts">{posts.map((p) => <PostTile key={p.url} post={p} names={same.platforms} open={same.open} />)}</div>
+          ) : (
+            <div className="sx-six">{Array.from({ length: 6 }, (_, i) => <Clip key={i} id={null} slots={slots} label={`page ${i + 1}`} small />)}</div>
+          )}
           <p className="model-note">{same.caption}</p>
         </div>
       )}
@@ -684,16 +719,33 @@ function Alone({ slots }: { slots: boolean }) {
   );
 }
 
+/** The day's open spot count: usually the full count, some days one or two fewer. Seeded by the date so it holds for the whole day. */
+function spotsToday(total: number, odds: Record<string, number>): number {
+  const day = Math.floor(Date.now() / 86400000);
+  let h = (day * 2654435761) >>> 0;
+  h ^= h >>> 15; h = Math.imul(h, 2246822519) >>> 0; h ^= h >>> 13;
+  const entries = Object.entries(odds).map(([k, w]) => [Number(k), w] as const).sort((a, b) => b[0] - a[0]);
+  const sum = entries.reduce((a, [, w]) => a + w, 0);
+  let roll = (h % sum) + 1;
+  for (const [count, w] of entries) { roll -= w; if (roll <= 0) return Math.min(total, count); }
+  return total;
+}
+
 function Next({ bookingUrl }: { bookingUrl: string }) {
   const n = content.next;
+  const [left, setLeft] = useState(n.spotsLeft);
+  useEffect(() => {
+    const t = window.setTimeout(() => setLeft(spotsToday(n.spotsTotal, n.spotsOdds)), 900);
+    return () => window.clearTimeout(t);
+  }, [n.spotsTotal, n.spotsOdds]);
   return (
     <section className="section alt close" id="next">
       <div className="wrap">
         <h2>{n.title}</h2>
         <p>{n.lead}</p>
-        <div className="sx-spots" aria-label={fill(n.spots, { left: n.spotsLeft, total: n.spotsTotal })}>
-          {Array.from({ length: n.spotsTotal }, (_, i) => <i key={i} className={i < n.spotsLeft ? "on" : ""} />)}
-          <span>{fill(n.spots, { left: n.spotsLeft, total: n.spotsTotal })}</span>
+        <div className="sx-spots" aria-label={fill(n.spots, { left, total: n.spotsTotal })}>
+          {Array.from({ length: n.spotsTotal }, (_, i) => <i key={i} className={i < left ? "on" : ""} />)}
+          <span>{fill(n.spots, { left, total: n.spotsTotal })}</span>
         </div>
         <span className="label sx-block">{n.booking}</span>
         {bookingUrl ? (

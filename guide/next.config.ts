@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
     "/dashboard": ["./drizzle/**"],
     "/": ["./drizzle/**", "./content/**"],
   },
+  // The seven secrets page answers on its own hostname once that domain is attached to this Vercel project.
+  // On every other host it stays at /secrets. The guide funnel keeps the root on its own domain.
+  async rewrites() {
+    return [
+      { source: "/", destination: "/secrets", has: [{ type: "host", value: "secrets.maisondelites.com" }] },
+      { source: "/", destination: "/secrets", has: [{ type: "host", value: "www.secrets.maisondelites.com" }] },
+    ];
+  },
   serverExternalPackages: ["playwright-core", "@electric-sql/pglite", "@sparticuz/chromium"],
   turbopack: {
     rules: {

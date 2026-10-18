@@ -29,7 +29,12 @@ await p.locator('.sx-feed-item').first().click();
 checks.reveal = await p.locator('.sx-reveal').first().innerText().catch(() => 'none');
 await p.getByLabel('One post or many pages').fill('200');
 checks.pagesTotal = await p.locator('#everywhere .o.big .ov').innerText();
-checks.sameHidden = await p.locator('#everywhere .sx-six').count();
+checks.posts = await p.locator('#everywhere .sx-post').count();
+await p.locator('#everywhere .sx-posts').scrollIntoViewIfNeeded();
+await p.waitForTimeout(4000);
+checks.postFrames = await p.locator('#everywhere .sx-post iframe').count();
+checks.postMeta = await p.locator('#everywhere .sx-post-meta').allInnerTexts();
+await p.locator('#everywhere .sx-panel.sx-wide').screenshot({ path: `${out}/02b-same.png` });
 // Secret 3: budget, stop spend
 await p.locator('#sx-budget').fill('3000');
 checks.bars = await p.locator('#ads .sx-bar .v').allInnerTexts();
@@ -63,7 +68,10 @@ checks.caseOpen = (await p.locator('#cases .case dl').first().innerText()).slice
 await p.locator('#alone input[type=checkbox]').nth(0).check();
 await p.locator('#alone input[type=checkbox]').nth(1).check();
 checks.selfCheck = await p.locator('#alone .callout').innerText();
+await p.locator('.sx-spots').scrollIntoViewIfNeeded();
+await p.waitForTimeout(1500);
 checks.spots = await p.locator('.sx-spots span').innerText();
+checks.spotsOn = await p.locator('.sx-spots i.on').count();
 checks.slotsHiddenLive = await p.locator('.sx-slot').count();
 await p.screenshot({ path: `${out}/99-full.png`, fullPage: true });
 await p.goto(base + '/secrets?slots=1', { waitUntil: 'domcontentloaded' });
