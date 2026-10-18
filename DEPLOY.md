@@ -202,15 +202,15 @@ footage and brand files, then books their onboarding call on Cal.com.
 
 | URL | Who | What |
 |-----|-----|------|
-| `/onboarding/<token>` | The client | The form. No sign-in; the long random token is the key. Reopening it resumes where they stopped. |
-| `/onboarding/admin` | You (password-gated) | Create links, track status (sent, opened, in progress, submitted), filter, read answers, download files, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
-| `/onboarding/api/...` | — | The form's API. Everything sits under `/onboarding` so one route covers it. |
+| `onboarding.maisondelites.com/<token>` | The client | The form. No sign-in; the long random token is the key. Reopening it resumes where they stopped. |
+| `onboarding.maisondelites.com/admin` | You (password-gated) | Create links, track status (sent, opened, in progress, submitted), filter, read answers, download files, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/onboarding/api/...` | — | The form's API (same on every host). |
 
-**Put it on maisondelites.com.** The root domain is on Framer, so add a Worker
-route: Worker → **Settings → Domains & Routes → Add → Route** →
-`maisondelites.com/onboarding*` → this Worker. The page, its API and file
-uploads all live under that path, so nothing else on the domain changes. The
-form also works on any other hostname attached to the Worker.
+**Connect the subdomain:** Worker → **Settings → Domains & Routes → Add →
+Custom Domain** → `onboarding.maisondelites.com`. Cloudflare creates the DNS
+record and certificate. On that host `/` redirects to `maisondelites.com`. The
+same pages also answer as `/onboarding/<token>` and `/onboarding/admin` on the
+Worker's other hosts (e.g. proposals.*), which is handy for testing.
 
 **Variables** (Settings → Variables and Secrets):
 
@@ -221,7 +221,7 @@ form also works on any other hostname attached to the Worker.
 | `ONBOARDING_NOTIFY_EMAIL` | Inbox(es) for "Onboarding submitted" emails, comma-separated |
 | `ONBOARDING_DISCORD_WEBHOOK` | Discord webhook for team pings (skipped if unset) |
 | `ONBOARDING_FROM` | Optional sender, e.g. `Maison d'Élites <hello@maisondelites.com>` (falls back to `BRANDSHEET_FROM`) |
-| `ONBOARDING_BASE_URL` | Optional. Base for links in emails and "Copy link". Defaults to `https://maisondelites.com` |
+| `ONBOARDING_BASE_URL` | Optional. Base for links in emails and "Copy link". Defaults to `https://onboarding.maisondelites.com` |
 
 Email uses the existing `RESEND_API_KEY`. The client confirmation goes to the
 client and every report recipient, so the sending domain must be verified in
