@@ -1,9 +1,6 @@
-// Internal funnel dashboard (section 11.2). Password protected. Not linked.
-import { cookies } from "next/headers";
+// Internal funnel dashboard (section 11.2). Not linked, not indexed, no password. Counts only.
 import { connection } from "next/server";
 import { Logo } from "@/components/funnel/ui";
-import { DASH_COOKIE, dashCookieValue } from "@/lib/server/dashauth";
-import { config } from "@/lib/server/config";
 import { dropOff, eventCounts, funnel, rangeFor, videoWatch, type FunnelRow } from "@/lib/server/dashboard";
 
 export const metadata = { title: "Funnel dashboard", robots: { index: false, follow: false } };
@@ -24,22 +21,7 @@ const td = "py-3 pr-6 text-[14px] tabular-nums";
 export default async function Dashboard({ searchParams }: PageProps<"/dashboard">) {
   await connection();
   const sp = await searchParams;
-  const authed = config().dashboardPassword && (await cookies()).get(DASH_COOKIE)?.value === dashCookieValue();
-  if (!authed) {
-    return (
-      <main className="mx-auto max-w-md px-5 py-16">
-        <Logo />
-        <form method="post" action="/api/dashboard" className="mt-16">
-          <label htmlFor="password" className="block font-serif text-subtitle">Funnel dashboard</label>
-          <input id="password" name="password" type="password" autoComplete="current-password" className="mt-6 h-12 w-full border-b border-ink bg-transparent text-lg outline-none" />
-          {sp.e && <p className="mt-2 text-[14px] text-proof-2">Wrong password.</p>}
-          {!config().dashboardPassword && <p className="mt-2 text-[14px] text-proof-2">Set DASHBOARD_PASSWORD to use the dashboard.</p>}
-          <button type="submit" className="mt-8 h-12 rounded-pill bg-ink px-7 text-[15px] font-medium text-white">Open</button>
-        </form>
-      </main>
-    );
-  }
-
+  // Open on purpose: the page shows counts only, never names, emails or numbers.
   const days = Math.min(90, Math.max(1, Number(sp.days) || 14));
   const { from, to } = rangeFor(days);
   let rows: FunnelRow[] = [];
