@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Maison d'Élites · Distribution Board · Fuzzbucket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0f;--ink-soft:#1a1a1f;--cream:#f4f1ea;--cream-deep:#ece7db;
+    --gold:#a88a4f;--gold-light:#b89968;--text-dark:#23211c;--text-mute:#6f6a5e;
+    --text-cream:#e8e3d6;--text-cream-mute:#9b9484;--hair:rgba(35,33,28,0.16);
+    --sticky-y:#f6e7a8;--sticky-g:#d9e8c4;--sticky-p:#f2d4cf;--sticky-b:#d3e1ec;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:'Archivo',sans-serif;background:#e9e5db;color:var(--text-dark);-webkit-font-smoothing:antialiased;touch-action:none}
+  #viewport{position:fixed;inset:0;cursor:grab;
+    background-image:radial-gradient(rgba(35,33,28,0.22) 1px,transparent 1px);background-size:24px 24px}
+  #viewport.drag{cursor:grabbing}
+  #board{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+
+  /* frames */
+  .frame{position:absolute;background:var(--cream);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 10px 30px rgba(0,0,0,.06);padding:56px 48px 48px}
+  .frame.dark{background:var(--ink);color:var(--text-cream)}
+  .flabel{position:absolute;top:-30px;left:2px;font-size:14px;font-weight:500;color:var(--text-mute);white-space:nowrap}
+  .flabel b{color:var(--gold);font-weight:600;margin-right:6px}
+  .frame h2{font-family:'EB Garamond',serif;font-weight:400;font-size:44px;line-height:1.05;letter-spacing:-.01em;margin-bottom:28px}
+  .frame h2 i{font-style:italic;color:var(--gold)}
+  .frame.dark h2 i{color:var(--gold-light)}
+  .frame h3{font-family:'EB Garamond',serif;font-weight:400;font-size:28px;margin-bottom:14px}
+  .frame h4{font-family:'EB Garamond',serif;font-weight:400;font-size:24px;margin-bottom:8px;color:var(--gold)}
+  .frame.dark h4{color:var(--gold-light)}
+  .frame p{font-size:17px;line-height:1.55;font-weight:300}
+  .frame .mute{color:var(--text-mute)}
+  .frame.dark .mute{color:var(--text-cream-mute)}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px}
+  .frame.dark .eyebrow{color:var(--gold-light)}
+
+  /* stickies */
+  .stickies{display:flex;flex-wrap:wrap;gap:22px}
+  .sticky{width:220px;min-height:200px;padding:22px 20px;background:var(--sticky-y);color:var(--text-dark);
+    font-family:'EB Garamond',serif;font-size:21px;line-height:1.3;box-shadow:0 2px 0 rgba(0,0,0,.05),0 8px 18px rgba(0,0,0,.12);transform:rotate(var(--r,0deg))}
+  .sticky.g{background:var(--sticky-g)}.sticky.p{background:var(--sticky-p)}.sticky.b{background:var(--sticky-b)}
+  .sticky .tag{display:block;font-family:'Archivo';font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:rgba(35,33,28,.6);margin-bottom:10px}
+
+  .cards{display:grid;gap:18px}
+  .card{background:var(--cream-deep);border-radius:4px;padding:24px}
+  .frame.dark .card{background:var(--ink-soft)}
+  .card.gold{border-top:4px solid var(--gold)}
+  .row{padding:12px 0;border-top:1px solid var(--hair)}
+  .frame.dark .row{border-top-color:rgba(232,227,214,.16)}
+  .row .k{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .row .v{font-family:'EB Garamond',serif;font-size:22px;line-height:1.3}
+  .strike .v{text-decoration:line-through;color:var(--text-mute)}
+
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+  .node{border:1.5px solid var(--hair);background:#fff;border-radius:10px;padding:16px 18px;font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-align:center;width:150px}
+  .node.ours{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+  .node.ours small{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-size:12px;margin-top:4px}
+  .arrow{font-size:22px;color:var(--gold)}
+
+  .big{font-family:'EB Garamond',serif;font-size:56px;line-height:1;color:var(--gold-light)}
+  .lab{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--text-cream-mute);margin-top:8px}
+  .stat{background:var(--ink-soft);padding:22px;border-radius:4px;text-align:center}
+  .stat.s .big{font-size:34px}
+  .bar{height:8px;background:rgba(232,227,214,.12);border-radius:4px;margin-top:8px}
+  .bar i{display:block;height:100%;background:var(--gold-light);border-radius:4px}
+  .plat{display:grid;grid-template-columns:110px 1fr 110px;gap:14px;align-items:center;padding:10px 0}
+  .plat .n{font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .plat .val{font-family:'EB Garamond',serif;font-size:22px;color:var(--gold-light);text-align:right;line-height:1.1}
+  .plat .val small{display:block;font-family:'Archivo';font-size:11px;color:var(--text-cream-mute)}
+
+  .math{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .math .card .big{color:var(--gold);font-size:48px;margin-bottom:10px}
+
+
+  /* toolbar */
+  .bar-top{position:fixed;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;gap:12px;pointer-events:none;z-index:10}
+  .chip{pointer-events:auto;background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:14px}
+  .chip .mark{font-family:'EB Garamond',serif;font-size:18px}
+  .chip .mark b{color:var(--gold);font-weight:500}
+  .chip .sep{width:1px;height:20px;background:var(--hair)}
+  .nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:4px;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.14);padding:6px;z-index:10;max-width:calc(100vw - 32px);overflow-x:auto}
+  .nav button,.zoom button{border:0;background:none;font:500 13px 'Archivo';padding:8px 11px;border-radius:8px;cursor:pointer;color:var(--text-dark);white-space:nowrap}
+  .nav button:hover,.zoom button:hover{background:var(--cream-deep)}
+  .nav button.on{background:var(--ink);color:var(--text-cream)}
+  .zoom{position:fixed;right:16px;bottom:76px;display:flex;flex-direction:column;background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:4px;z-index:10}
+  .zoom span{font-size:12px;text-align:center;padding:4px 0;color:var(--text-mute)}
+  @media(max-width:640px){.chip .hide-s{display:none}}
+</style>
+</head>
+<body>
+<div class="bar-top">
+  <div class="chip"><span class="mark">Maison <b>d'Élites</b></span><span class="sep"></span><span>Fuzzbucket distribution board</span></div>
+  <div class="chip hide-s"><span class="mute" style="color:var(--text-mute)">Drag to pan · scroll or pinch to zoom</span></div>
+</div>
+
+<div id="viewport"><div id="board">
+
+<!-- COVER -->
+<section class="frame dark" data-f="0" style="left:0;top:0;width:900px;height:640px;display:flex;flex-direction:column;justify-content:space-between">
+  <span class="flabel">Cover</span>
+  <div style="font-family:'EB Garamond',serif;font-size:22px">Maison <b style="color:var(--gold-light);font-weight:500">d'Élites</b></div>
+  <div>
+    <span class="eyebrow">Fuzzbucket × Maison d'Élites</span>
+    <h2 style="font-size:84px">Fuzzbucket<br><i>distribution plan</i></h2>
+    <p class="mute" style="font-size:20px;max-width:620px">Fuzzbucket is the shortest path from prompt to presence. This plan puts that presence in front of agency owners every day, and turns the attention into paying users and a real community.</p>
+  </div>
+  <div class="eyebrow" style="margin:0">Public beta · October 2026</div>
+</section>
+
+<!-- 01 -->
+<section class="frame" data-f="1" style="left:1040px;top:0;width:880px;height:640px">
+  <span class="flabel"><b>01</b>Where we left off</span>
+  <h2>Where we <i>left off</i></h2>
+  <div class="cards" style="grid-template-columns:1fr 1fr">
+    <div class="card strike"><h3>First call</h3>
+      <div class="row"><div class="k">Goal</div><div class="v">10K to 15K paid users in 3 to 6 months</div></div>
+      <div class="row"><div class="k">Focus</div><div class="v">The $49 Pro plan</div></div>
+      <div class="row"><div class="k">Next step</div><div class="v">A $2K test campaign</div></div>
+    </div>
+    <div class="card gold" style="background:var(--ink);color:var(--text-cream)"><h3 style="color:var(--gold-light)">Now</h3>
+      <div class="row" style="border-color:rgba(232,227,214,.16)"><div class="k">Goal</div><div class="v">1,000 users at $85 ARPU within 6 months, about $85K a month</div></div>
+      <div class="row" style="border-color:rgba(232,227,214,.16)"><div class="k">Budget</div><div class="v">$5K to $20K</div></div>
+      <div class="row" style="border-color:rgba(232,227,214,.16)"><div class="k">Start</div><div class="v">Within a month</div></div>
+    </div>
+  </div>
+  <p class="mute" style="margin-top:22px">The new goal is one we can work back from, step by step. That is what this board does.</p>
+</section>
+
+<!-- 02 -->
+<section class="frame" data-f="2" style="left:2060px;top:0;width:1060px;height:640px">
+  <span class="flabel"><b>02</b>What you told us</span>
+  <h2>What you <i>told us</i></h2>
+  <div class="stickies">
+    <div class="sticky" style="--r:-2deg">Paid users are the goal. Views and followers are not.</div>
+    <div class="sticky p" style="--r:1.5deg">A Discord full of real people, not bots.</div>
+    <div class="sticky g" style="--r:-1deg">Agencies first. They were the first to pay in private beta.</div>
+    <div class="sticky b" style="--r:2deg">Solo founders and startups come second.</div>
+    <div class="sticky b" style="--r:1deg">Get people talking about Fuzzbucket on X.</div>
+    <div class="sticky g" style="--r:-2deg">Put the money from what works back into bigger budgets.</div>
+    <div class="sticky" style="--r:1.5deg">Don't rebuild a system that already exists.</div>
+    <div class="sticky p" style="--r:-1.5deg">Maybe build distribution into the platform itself.</div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="frame dark" data-f="3" style="left:0;top:800px;width:900px;height:620px">
+  <span class="flabel"><b>03</b>What we will do</span>
+  <h2>What we <i>will do</i></h2>
+  <p class="mute" style="margin-bottom:28px;font-size:20px">Build a team of creators and clippers that works <i style="color:var(--gold-light)">only on Fuzzbucket.</i></p>
+  <div class="cards" style="grid-template-columns:repeat(3,1fr)">
+    <div class="card"><h4>Make</h4><p class="mute">Creators make short videos inside Fuzzbucket. Every video shows the product working, so each one is a demo and an ad at the same time.</p></div>
+    <div class="card"><h4>Spread</h4><p class="mute">Clippers post those videos every day on TikTok, Instagram, YouTube Shorts and X, aimed at agency owners first.</p></div>
+    <div class="card"><h4>Keep</h4><p class="mute">The people making the content use the tool every day. They are the first members of your Discord, so it starts with real users.</p></div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="frame" data-f="4" style="left:1040px;top:800px;width:2080px;height:620px">
+  <span class="flabel"><b>04</b>Where we plug in</span>
+  <h2>Where we <i>plug in</i></h2>
+  <p class="mute" style="max-width:820px;margin-bottom:34px">Fuzzbucket already runs the whole workflow, from brand to published post. What it can't do on its own is reach people who don't follow you yet. That is the step we add.</p>
+  <div class="flow">
+    <div class="node">Decode your brand</div><span class="arrow">→</span>
+    <div class="node">Think strategically</div><span class="arrow">→</span>
+    <div class="node">Create as one studio</div><span class="arrow">→</span>
+    <div class="node">Publish effortlessly</div><span class="arrow">→</span>
+    <div class="node">Learn, loop, evolve</div><span class="arrow">→</span>
+    <div class="node ours">Distribute<small>Our clippers carry it to new audiences</small></div>
+  </div>
+  <div class="cards" style="grid-template-columns:1fr 1fr;margin-top:34px;max-width:1200px">
+    <div class="card"><span class="eyebrow">Your publishing</span><p>Reaches the pages you own on Instagram, Facebook and Threads.</p></div>
+    <div class="card gold"><span class="eyebrow">Our distribution</span><p>Puts the same content on thousands of other pages across TikTok, Instagram, YouTube Shorts and X.</p></div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="frame dark" data-f="5" style="left:0;top:1580px;width:1500px;height:640px">
+  <span class="flabel"><b>05</b>How it runs</span>
+  <h2>How it <i>runs</i></h2>
+  <div class="cards" style="grid-template-columns:repeat(5,1fr)">
+    <div class="card"><span class="eyebrow">1</span><h4>Recruit</h4><p class="mute">We open a Fuzzbucket campaign and bring in creators and clippers for it, the same way we filled the EAT campaign.</p></div>
+    <div class="card"><span class="eyebrow">2</span><h4>Create</h4><p class="mute">Creators run real campaigns in Fuzzbucket, from Brand Brain to strategy to finished creative, so every video shows the product doing an agency's actual job.</p></div>
+    <div class="card"><span class="eyebrow">3</span><h4>Post</h4><p class="mute">Clippers post across four platforms. They only get paid once a clip passes 10K views, and pay stops at 250K views per clip. Every view after that is free.</p></div>
+    <div class="card"><span class="eyebrow">4</span><h4>Track</h4><p class="mute">Every clip, view and payout shows on a live dashboard you can open at any time.</p></div>
+    <div class="card"><span class="eyebrow">5</span><h4>Scale</h4><p class="mute">The clippers who bring signups move to pay tied to signups. More budget goes behind what works.</p></div>
+  </div>
+  <div class="cards" style="grid-template-columns:1fr 1fr;margin-top:18px">
+    <div class="card gold"><span class="eyebrow">We handle</span><p>Recruiting, briefs, posting, payouts and reporting.</p></div>
+    <div class="card"><span class="eyebrow">You handle</span><p>The product, the signup page and the step from trial to paid.</p></div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="frame" data-f="6" style="left:1640px;top:1580px;width:1480px;height:640px">
+  <span class="flabel"><b>06</b>Built around what you asked for</span>
+  <h2>Built around <i>what you asked for</i></h2>
+  <div class="stickies">
+    <div class="sticky" style="--r:-1.5deg"><span class="tag">Paid users</span>Clippers earn only past a view floor, and the best ones move to pay tied to signups.</div>
+    <div class="sticky p" style="--r:1deg"><span class="tag">Real Discord</span>The people making and posting the content are your users first.</div>
+    <div class="sticky g" style="--r:-1deg"><span class="tag">Agencies first</span>Every brief and hook speaks to agency owners and the cost of running many brands.</div>
+    <div class="sticky b" style="--r:2deg"><span class="tag">Noise on X</span>X is one of the four places every clip goes.</div>
+    <div class="sticky g" style="--r:1.5deg"><span class="tag">Reinvest</span>Start with a first round, then put more behind the clippers and angles that bring signups.</div>
+    <div class="sticky" style="--r:-2deg"><span class="tag">No rebuilding</span>The platform, the clipper network and the dashboard are already live.</div>
+    <div class="sticky p" style="--r:1deg"><span class="tag">Distribution in the product</span>Every clip is made in Fuzzbucket, so the product is in every post.</div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="frame dark" data-f="7" style="left:0;top:2380px;width:1500px;height:900px">
+  <span class="flabel"><b>07</b>Proof</span>
+  <h2>What we did for <i>EAT</i></h2>
+  <p class="mute" style="margin-bottom:26px">EAT is a payment card for creators and clippers. Like you, they needed signups, not just views.</p>
+  <div class="cards" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat"><div class="big">1,000</div><div class="lab">card signups</div></div>
+    <div class="stat"><div class="big">2,000</div><div class="lab">clippers on board</div></div>
+    <div class="stat"><div class="big">547K</div><div class="lab">views</div></div>
+    <div class="stat"><div class="big">$963</div><div class="lab">spent of a $10K budget</div></div>
+  </div>
+  <div class="cards" style="grid-template-columns:repeat(5,1fr);margin-top:14px">
+    <div class="stat s"><div class="big">166</div><div class="lab">posts</div></div>
+    <div class="stat s"><div class="big">12.8K</div><div class="lab">likes</div></div>
+    <div class="stat s"><div class="big">2.4%</div><div class="lab">engagement</div></div>
+    <div class="stat s"><div class="big">$1.62</div><div class="lab">per 1,000 views</div></div>
+    <div class="stat s"><div class="big">~$1</div><div class="lab">per signup</div></div>
+  </div>
+  <div class="cards" style="grid-template-columns:1.2fr 1fr;margin-top:18px">
+    <div class="card"><span class="eyebrow">Views by platform · live dashboard, as of 19 October</span>
+      <div class="plat"><span class="n">Instagram</span><div class="bar"><i style="width:100%"></i></div><span class="val">467K<small>91 posts</small></span></div>
+      <div class="plat"><span class="n">YouTube</span><div class="bar"><i style="width:12.1%"></i></div><span class="val">56.7K<small>51 posts</small></span></div>
+      <div class="plat"><span class="n">TikTok</span><div class="bar"><i style="width:5%"></i></div><span class="val">23.5K<small>24 posts</small></span></div>
+      <p class="mute" style="font-size:14px;margin-top:8px">547,015 views · 12,807 likes · $963 of $10,000 used. Instagram carried 85% of the reach.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><span class="eyebrow">How we did it</span><p class="mute">Our own content brought in the clippers, so the campaign had its own team from the start. That team posted EAT across every platform and the signups followed.</p></div>
+      <div class="card gold"><span class="eyebrow">What happens now</span><p class="mute">Creators are making a new batch of videos, and the clippers push those out next. We are scaling both sides: more creators and more clippers. <b style="color:var(--text-cream);font-weight:500">Fuzzbucket gets this full setup from day one.</b></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="frame" data-f="8" style="left:1640px;top:2380px;width:900px;height:900px">
+  <span class="flabel"><b>08</b>Your number</span>
+  <h2>Working back from <i>your goal</i></h2>
+  <div class="card gold" style="margin-bottom:18px;background:var(--ink);color:var(--text-cream)"><div class="big">1,000 users</div><p style="color:var(--text-cream-mute);margin-top:6px">at $85 ARPU</p></div>
+  <div class="math">
+    <div class="card"><div class="big">$963</div><p class="mute">What 1,000 signups cost on EAT in clipper spend.</p></div>
+    <div class="card"><div class="big">About $4,000</div><p class="mute">The same 1,000 at four times EAT's cost, because a paid tool asks more of people than a free card.</p></div>
+    <div class="card" style="grid-column:1/-1"><div class="big">$5K to $20K</div><p class="mute">Your budget. The goal fits inside it with room to scale.</p></div>
+    <div class="card gold"><span class="eyebrow">We control</span><p>Reach, signups and the team posting for you.</p></div>
+    <div class="card"><span class="eyebrow">You control</span><p>How many trials turn into paid plans.</p></div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="frame dark" data-f="9" style="left:2680px;top:2380px;width:440px;height:900px;display:flex;flex-direction:column;justify-content:center">
+  <span class="flabel"><b>09</b>Next</span>
+  <h2 style="font-size:52px"><i>Next</i></h2>
+  <div class="sticky" style="--r:-2deg;width:100%;margin-bottom:26px">On today's call we set the budget, the start date and the first brief.</div>
+  <p class="mute" style="font-size:20px">From there we can be live within a month, inside your timeline.</p>
+</section>
+</div></div>
+
+<div class="zoom"><button id="zin" aria-label="Zoom in">+</button><span id="zv">100%</span><button id="zout" aria-label="Zoom out">−</button></div>
+<nav class="nav" id="nav"></nav>
+
+<script>
+(function(){
+  const vp=document.getElementById('viewport'), board=document.getElementById('board'), zv=document.getElementById('zv');
+  const frames=[...document.querySelectorAll('.frame')];
+  const names=['Cover','01 Left off','02 Told us','03 Do','04 Plug in','05 Runs','06 Asked','07 Proof','08 Number','09 Next'];
+  let s=1,x=0,y=0,anim=null;
+  const apply=()=>{board.style.transform=`translate(${x}px,${y}px) scale(${s})`;zv.textContent=Math.round(s*100)+'%';
+    vp.style.backgroundSize=`${24*s}px ${24*s}px`;vp.style.backgroundPosition=`${x}px ${y}px`;};
+  const clamp=v=>Math.min(3,Math.max(0.08,v));
+  function zoomAt(f,cx,cy){const ns=clamp(s*f);x=cx-(cx-x)*ns/s;y=cy-(cy-y)*ns/s;s=ns;apply();}
+  function box(els){let a=1e9,b=1e9,c=-1e9,d=-1e9;els.forEach(e=>{a=Math.min(a,e.offsetLeft);b=Math.min(b,e.offsetTop-40);c=Math.max(c,e.offsetLeft+e.offsetWidth);d=Math.max(d,e.offsetTop+e.offsetHeight)});return[a,b,c,d];}
+  function fly(els){const[a,b,c,d]=box(els),W=innerWidth,H=innerHeight-150,pad=40;
+    const ts=clamp(Math.min((W-pad*2)/(c-a),(H-pad)/(d-b))),tx=(W-(c-a)*ts)/2-a*ts,ty=80+(H-(d-b)*ts)/2-b*ts;
+    const s0=s,x0=x,y0=y,t0=performance.now();cancelAnimationFrame(anim);
+    const step=t=>{let k=Math.min(1,(t-t0)/550);k=1-Math.pow(1-k,3);s=s0+(ts-s0)*k;x=x0+(tx-x0)*k;y=y0+(ty-y0)*k;apply();if(k<1)anim=requestAnimationFrame(step)};anim=requestAnimationFrame(step);}
+  const nav=document.getElementById('nav');
+  const mk=(label,fn)=>{const b=document.createElement('button');b.textContent=label;b.onclick=()=>{[...nav.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');fn()};nav.appendChild(b);return b;};
+  const whole=mk('Whole board',()=>fly(frames));
+  frames.forEach((f,i)=>mk(names[i],()=>fly([f])));
+  document.getElementById('zin').onclick=()=>zoomAt(1.25,innerWidth/2,innerHeight/2);
+  document.getElementById('zout').onclick=()=>zoomAt(0.8,innerWidth/2,innerHeight/2);
+  vp.addEventListener('wheel',e=>{e.preventDefault();cancelAnimationFrame(anim);
+    if(e.ctrlKey||e.metaKey||Math.abs(e.deltaY)>=50&&!e.deltaX)zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.0015)),e.clientX,e.clientY);
+    else{x-=e.deltaX;y-=e.deltaY;apply();}},{passive:false});
+  const pts=new Map();let last=null;
+  vp.addEventListener('pointerdown',e=>{cancelAnimationFrame(anim);vp.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);vp.classList.add('drag');last=null;});
+  vp.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);
+    if(pts.size===1){x+=e.clientX-p[0];y+=e.clientY-p[1];pts.set(e.pointerId,[e.clientX,e.clientY]);apply();return;}
+    pts.set(e.pointerId,[e.clientX,e.clientY]);const[a,b]=[...pts.values()];
+    const dist=Math.hypot(a[0]-b[0],a[1]-b[1]),cx=(a[0]+b[0])/2,cy=(a[1]+b[1])/2;
+    if(last){x+=cx-last.cx;y+=cy-last.cy;zoomAt(dist/last.dist,cx,cy);}last={dist,cx,cy};});
+  const up=e=>{pts.delete(e.pointerId);last=null;if(!pts.size)vp.classList.remove('drag');};
+  vp.addEventListener('pointerup',up);vp.addEventListener('pointercancel',up);
+  addEventListener('keydown',e=>{if(e.key==='+'||e.key==='=')zoomAt(1.2,innerWidth/2,innerHeight/2);if(e.key==='-')zoomAt(0.83,innerWidth/2,innerHeight/2);if(e.key==='0')whole.click();});
+  const go=()=>{s=0.2;apply();whole.click();};
+  document.fonts&&document.fonts.ready?document.fonts.ready.then(go):go();
+})();
+</script>
+</body>
+</html>
