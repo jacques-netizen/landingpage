@@ -20,7 +20,8 @@ export function ResultScene() {
   const path = pathOf(answers) ?? (f.lead?.path as ReturnType<typeof pathOf>);
   const asset = typeof answers.asset === "string" ? answers.asset : undefined;
   const text = resultText(path, asset, textAnswer(answers, "project"));
-  const film = videoSource(`result_${path ?? "creator"}`);
+  // Qualified leads get their own film; everyone else gets the one for their path.
+  const film = (f.lead?.qualified ? videoSource("result_qualified") : null) ?? videoSource(`result_${path ?? "creator"}`);
   const r = copy.result;
 
   useEffect(() => {

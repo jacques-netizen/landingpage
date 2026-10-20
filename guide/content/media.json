@@ -26,6 +26,15 @@
       "fit": "contain",
       "placeholder": false
     },
+    "result_qualified": {
+      "provider": "mux",
+      "id": "eTXTuXnphDaGzB5zZdKqHVIRf1IvjE63H51U1qqYkis",
+      "poster": null,
+      "captions": null,
+      "fit": "contain",
+      "placeholder": false,
+      "_note": "Shown on the result page to qualified leads only (creators and brands at or above BUDGET_QUALIFY_MIN). Everyone else gets their path's result film."
+    },
     "result_clipper": {
       "provider": "mux",
       "id": "biO02vJio5jGmXfPIlrhTrVQzt1g01AyMTvFYqEAe008i00",

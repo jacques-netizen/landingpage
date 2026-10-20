@@ -22,6 +22,8 @@ const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, de
 const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));
+const muxIds = [];
+page.on('request', (r) => { const m = r.url().match(/stream\.mux\.com\/([A-Za-z0-9]+)/); if (m && muxIds.at(-1) !== m[1]) muxIds.push(m[1]); });
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 let n = 0;
 const shot = async (name) => { await page.waitForTimeout(700); await page.screenshot({ path: `${out}/${String(++n).padStart(2, '0')}-${name}.png` }); };
@@ -148,6 +150,7 @@ await page.getByRole('link', { name: /Open your guide/ }).waitFor({ timeout: 900
 await page.locator('[aria-live="polite"]').first().scrollIntoViewIfNeeded().catch(() => {});
 await page.waitForTimeout(500);
 await page.screenshot({ path: `${out}/${String(++n).padStart(2, '0')}-result-ready.png` });
+const resultFilm = muxIds.at(-1) ?? null;
 const guideHref = await page.getByRole('link', { name: /Open your guide/ }).getAttribute('href').catch(() => null);
 let guide = null;
 if (guideHref) {
@@ -166,5 +169,5 @@ if (guideHref) {
   guide.tiles = await page.locator('.tile').count();
   guide.sections = await page.locator('.snum').count();
 }
-console.log(JSON.stringify({ path, url: page.url(), hasCalendarCopy: html.includes('Pick a time'), hasJoin: html.includes('Join the network'), hasSoft: html.includes('Want to talk numbers'), guide, errors }, null, 2));
+console.log(JSON.stringify({ path, resultFilm, url: page.url(), hasCalendarCopy: html.includes('Pick a time'), hasJoin: html.includes('Join the network'), hasSoft: html.includes('Want to talk numbers'), guide, errors }, null, 2));
 await browser.close();
