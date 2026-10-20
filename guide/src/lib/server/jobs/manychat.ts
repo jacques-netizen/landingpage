@@ -5,7 +5,7 @@ import "server-only";
 import { config } from "../config";
 import type { JobOutcome } from "../jobs";
 import { getLeadWithSession } from "../leads";
-import { guideUrl } from "../leadview";
+import { guideUrlFor } from "../leadview";
 
 const API = "https://api.manychat.com/fb";
 
@@ -31,7 +31,7 @@ export async function runManychat(leadId: string): Promise<JobOutcome> {
   const fields: Record<string, string> = {
     guide_path: row.lead.path,
     guide_qualified: row.lead.qualified ? "yes" : "no",
-    guide_url: guideUrl(row.lead.id),
+    guide_url: guideUrlFor(row.lead),
   };
   for (const [field_name, field_value] of Object.entries(fields)) {
     await mc("/subscriber/setCustomFieldByName", { subscriber_id: subscriberId, field_name, field_value }).catch((e) =>

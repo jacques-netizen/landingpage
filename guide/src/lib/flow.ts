@@ -91,7 +91,7 @@ export function budgetOf(answers: Answers): BudgetAnswer | undefined {
 }
 
 /** True for leads from the opt-in page, which asks its own questions. */
-export const isOptin = (answers: Answers): boolean => typeof answers.promo === "string";
+export const isOptin = (answers: Answers): boolean => answers.funnel === "optin" || typeof answers.promo === "string";
 
 /** The path an opt-in answer stands for: each promo option names a role. */
 export function roleForPromo(value: unknown): Path | undefined {

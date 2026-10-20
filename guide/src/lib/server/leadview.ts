@@ -1,7 +1,8 @@
 import "server-only";
 // Shared views of a lead for the CRM, email, alerts and the guide.
 import type { Answers } from "@/lib/flow";
-import { budgetOf, stageOf } from "@/lib/flow";
+import { budgetOf, isOptin, stageOf } from "@/lib/flow";
+import { optin } from "@/lib/content";
 import { config } from "./config";
 import type { LeadRow } from "./leads";
 import { guideToken } from "./sessions";
@@ -17,6 +18,9 @@ export function offersCall(lead: Pick<LeadRow, "path" | "qualified" | "variant">
 }
 
 export const guideUrl = (leadId: string) => `${config().siteUrl}/g/${guideToken(leadId)}`;
+
+/** Where this lead's guide lives: the Clipping Secrets page for opt-in leads, their written guide otherwise. */
+export const guideUrlFor = (lead: Pick<LeadRow, "id" | "answers">) => (isOptin(lead.answers) ? `${config().siteUrl}${optin.guide.url}` : guideUrl(lead.id));
 
 export function budgetBand(answers: Answers): string {
   const b = budgetOf(answers);
@@ -36,7 +40,7 @@ export function crmFields(lead: LeadRow, source: Record<string, string>) {
     stage: stageOf(a)?.name ?? "",
     qualified: lead.qualified ? "yes" : "no",
     human_priority: lead.humanPriority ? "yes" : "no",
-    guide_url: guideUrl(lead.id),
+    guide_url: guideUrlFor(lead),
     source: source.src || source.utm_source || "direct",
   };
 }

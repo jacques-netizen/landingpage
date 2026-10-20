@@ -110,3 +110,13 @@ describe("Discord alerts", () => {
     expect(JSON.stringify(discordMessage("priority", base))).toContain("HUMAN PRIORITY");
   });
 });
+
+describe("opt-in leads", () => {
+  it("get the Clipping Secrets guide and the call in their email", () => {
+    const m = buildDeliveryEmail(lead({ qualified: false, answers: { role: "creator", funnel: "optin" } }));
+    expect(m.subject).toBe("Your Clipping Secrets guide");
+    expect(m.text).toContain("/secrets");
+    expect(m.text).not.toContain("/g/");
+    expect(crmFields(lead({ answers: { role: "creator", funnel: "optin" } }), {}).guide_url).toMatch(/\/secrets$/);
+  });
+});

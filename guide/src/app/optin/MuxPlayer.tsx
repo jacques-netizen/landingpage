@@ -15,8 +15,8 @@ export function MuxPlayer({ id, portrait, label, className = "" }: Props) {
     const el = ref.current;
     if (!el) return;
     if (typeof IntersectionObserver === "undefined") {
-      setNear(true);
-      return;
+      const t = window.setTimeout(() => setNear(true), 0);
+      return () => window.clearTimeout(t);
     }
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {

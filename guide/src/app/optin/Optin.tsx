@@ -134,6 +134,7 @@ export function Optin({ config, showSlots, proof, filmId }: { config: PublicConf
         consentVersion: o.consentVersion,
         turnstileToken: turnstileToken ?? undefined,
         answers: { role: o.defaultRole },
+        funnel: "optin",
         fbp: readCookie("_fbp"),
         fbc: readCookie("_fbc"),
       },
@@ -156,7 +157,7 @@ export function Optin({ config, showSlots, proof, filmId }: { config: PublicConf
     }
   };
 
-  if (lead) return <Thanks lead={lead} config={config} showSlots={showSlots} proof={proof} filmId={filmId} />;
+  if (lead) return <Thanks lead={lead} config={config} showSlots={showSlots} filmId={filmId} />;
 
   const pct = `${Math.round((step / 2) * 100)}%`;
   const s = o.steps;
@@ -318,8 +319,24 @@ function Clients({ proof }: { proof: Proof }) {
   );
 }
 
+/** A YouTube video that plays right here: the poster first, YouTube's player on tap. */
+function YouTubeInline({ id, poster, label }: { id: string; poster: string; label: string }) {
+  const [on, setOn] = useState(false);
+  return (
+    <div className="op-yt">
+      {on ? (
+        <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`} title={label} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
+      ) : (
+        <button type="button" className="op-yt-poster" style={{ backgroundImage: `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg), url(${poster})` }} aria-label={`Play: ${label}`} onClick={() => { setOn(true); track("video_play", { media: `yt_${id}`, muted: false }); }}>
+          <span className="op-play" aria-hidden="true" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* The thanks page: the film, the call, the proof, the video FAQ. */
-function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; config: PublicConfig; showSlots: boolean; proof: Proof; filmId: string | null }) {
+function Thanks({ lead, config, showSlots, filmId }: { lead: LeadView; config: PublicConfig; showSlots: boolean; filmId: string | null }) {
   const b = optin.pageB;
   useEffect(() => {
     track("result_view", { path: lead.path, qualified: lead.qualified, page: "thanks" });
@@ -342,7 +359,7 @@ function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; co
           </div>
           <div className="op-b-cta">
             <button type="button" className="op-btn" onClick={goBooking}>{b.bookButton}</button>
-            <a className="op-quiet" href={`/g/${lead.guideToken}`}>{b.guideLink}</a>
+            <a className="op-quiet" href={b.guideUrl}>{b.guideLink}</a>
           </div>
         </section>
 
@@ -365,30 +382,24 @@ function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; co
           <div className="op-pill">{b.reviews.kicker}</div>
           <h2 className="op-h2 op-h2-lg">{b.reviews.headline}<em>{b.reviews.headlineAccent}</em></h2>
           <p className="op-body">{b.reviews.body}</p>
-          <div className="op-reviews">
-            {proof.testimonial && (
-              <a className="op-review op-review-video" href={proof.testimonial.url} target="_blank" rel="noopener noreferrer">
-                <div className="op-review-frame" style={proof.testimonial.poster ? { backgroundImage: `url(${proof.testimonial.poster})` } : undefined}>
-                  <span className="op-play" aria-hidden="true" />
-                  <span className="op-kicker op-kicker-gold">{b.reviews.testimonialLabel}</span>
-                </div>
-                <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <div className="op-review-who">{proof.testimonial.title}</div>
-              </a>
-            )}
-            {proof.cases.map((c) => (
-              <div key={c.id} className="op-review">
-                <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <div className="op-review-title">{c.title}</div>
-                <div className="op-kpis">{c.figures.map((f) => <div key={f.label}><b>{f.value}</b><span>{f.label}</span></div>)}</div>
-              </div>
-            ))}
+          <div className="op-featured">
+            <YouTubeInline id={b.reviews.featured.youtube} poster={b.reviews.featured.poster} label={b.reviews.featured.label} />
+            <figure className="op-featured-quote">
+              <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+              <blockquote>&ldquo;{b.reviews.featured.quote}&rdquo;</blockquote>
+              <figcaption><b>{b.reviews.featured.name}</b><span>{b.reviews.featured.who}</span></figcaption>
+            </figure>
+          </div>
+          <div className="op-masonry">
             {reviews.map((r, i) => (
-              <div key={i} className="op-review">
-                <div className="op-stars" aria-hidden="true">{"★".repeat(Math.max(1, Math.min(5, r.stars ?? 5)))}</div>
-                <div className="op-review-text">{r.text}</div>
-                <div className="op-review-who">{r.name} &middot; {r.who}</div>
-              </div>
+              <figure key={i} className="op-quote">
+                <div className="op-stars" aria-hidden="true">{"\u2605".repeat(Math.max(1, Math.min(5, r.stars ?? 5)))}</div>
+                <blockquote>{r.text}</blockquote>
+                <figcaption>
+                  <span className="op-avatar" aria-hidden="true">{r.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+                  <span><b>{r.name}</b><span>{r.who}</span></span>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </section>

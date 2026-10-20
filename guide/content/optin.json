@@ -70,18 +70,9 @@
     },
     "reviews": {
       "kicker": "Client reviews",
-      "headline": "Real campaigns. ",
-      "headlineAccent": "The same verdict.",
-      "body": "What clients said about working with us, plus the campaign numbers.",
-      "testimonial": "kojo_testimonial",
-      "testimonialLabel": "Video testimonial",
-      "cases": [
-        "walmart",
-        "wale_mannywellz",
-        "paul_case",
-        "kojo_case"
-      ],
-      "stats": [],
+      "headline": "Our clients. ",
+      "headlineAccent": "In their words.",
+      "body": "What artists, brands and teams said about working with us.",
       "items": [
         {
           "name": "Daniel Mensah",
@@ -144,7 +135,15 @@
           "stars": 5
         }
       ],
-      "_note": "Reviews supplied by the owner on 2026-10-20 with name, role and company. The owner confirms each person agreed to be quoted. Nothing here is written by the site."
+      "_note": "Reviews supplied by the owner on 2026-10-20 with name, role and company. The owner confirms each person agreed to be quoted. Nothing here is written by the site.",
+      "featured": {
+        "youtube": "j4dHabFOMJw",
+        "quote": "I recommend Maison d’Élites.",
+        "name": "Kojo Blak",
+        "who": "Artist",
+        "poster": "/brand/proof/poster-kojo-blak.webp",
+        "label": "Kojo Blak, video testimonial"
+      }
     },
     "headline": "Check Your Email for Your Customized Clipping Guide!",
     "sub": "While it lands, watch this.",
@@ -184,7 +183,8 @@
     "youtube": null,
     "file": "/media/films/vsl.mp4",
     "_videoNote": "The thanks page film, first match wins: youtube (a YouTube video id), file (an MP4 under /public), then video (the Mux media key). file is the Mux film's 4K rendition scaled to 1728x1080, H.264 High 4.1, 30 fps, CRF 19, AAC 160k, faststart.",
-    "filePoster": "/media/films/vsl.jpg"
+    "filePoster": "/media/films/vsl.jpg",
+    "guideUrl": "/secrets"
   },
   "defaultRole": "creator",
   "clients": {
@@ -212,5 +212,14 @@
     ],
     "testimonial": "kojo_testimonial",
     "testimonialLabel": "Watch the testimonial"
+  },
+  "guide": {
+    "_note": "Opt-in leads get the Clipping Secrets guide at /secrets, not the personalized written guide.",
+    "url": "/secrets",
+    "emailSubject": "Your Clipping Secrets guide",
+    "emailHeadline": "Your Clipping Secrets guide",
+    "emailIntro": "Here is your guide: the seven secrets behind the most-watched names online, and how to make them work for you.",
+    "emailButton": "Read Clipping Secrets",
+    "emailPreheader": "Your Clipping Secrets guide is ready."
   }
 }

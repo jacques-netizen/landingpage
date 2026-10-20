@@ -146,3 +146,27 @@
   .op-faq-videos { grid-template-columns: repeat(2, 1fr); }
   .op-testimonial { grid-template-columns: 1fr; }
 }
+
+/* Reviews: one featured video quote, then a masonry of written reviews */
+.op-featured { width: 100%; max-width: 1100px; margin-top: 20px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0; text-align: left; border: 1px solid var(--p-line); border-radius: 18px; overflow: hidden; background: var(--p-card); }
+.op-yt { position: relative; aspect-ratio: 16 / 9; background: var(--p-ink); }
+.op-yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.op-yt-poster { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; cursor: pointer; background-color: var(--p-ink); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+.op-yt-poster .op-play { width: 72px; height: 72px; transition: transform 0.2s; }
+.op-yt-poster .op-play::after { left: 29px; top: 23px; border-left-width: 20px; border-top-width: 13px; border-bottom-width: 13px; }
+.op-yt-poster:hover .op-play { transform: scale(1.06); }
+.op-featured-quote { margin: 0; padding: 32px; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+.op-featured-quote blockquote { margin: 0; font: 400 clamp(28px, 3.2vw, 40px)/1.15 var(--p-serif); color: var(--p-ink); text-wrap: balance; }
+.op-featured-quote figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--p-mid); }
+.op-featured-quote figcaption b { color: var(--p-ink); font-weight: 600; font-size: 15px; }
+.op-masonry { width: 100%; max-width: 1100px; margin-top: 18px; columns: 3 300px; column-gap: 16px; text-align: left; }
+.op-quote { break-inside: avoid; margin: 0 0 16px; padding: 24px; border: 1px solid var(--p-line); border-radius: 16px; background: var(--p-card); display: flex; flex-direction: column; gap: 14px; }
+.op-quote blockquote { margin: 0; font: 400 19px/1.45 var(--p-serif); color: var(--p-ink); }
+.op-quote figcaption { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--p-mid); }
+.op-quote figcaption > span:last-child { display: flex; flex-direction: column; gap: 1px; }
+.op-quote figcaption b { color: var(--p-ink); font-weight: 600; font-size: 14px; }
+.op-avatar { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--p-line-2); color: var(--p-ink); display: grid; place-items: center; font: 600 13px var(--p-sans); letter-spacing: 0.04em; }
+@media (max-width: 760px) {
+  .op-featured { grid-template-columns: 1fr; }
+  .op-featured-quote { padding: 24px; }
+}

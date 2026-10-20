@@ -4,12 +4,12 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import emailCopy from "../../../content/email.json";
-import { fill, resultText, textAnswer, type Path } from "@/lib/content";
-import { pathOf } from "@/lib/flow";
+import { fill, optin, resultText, textAnswer, type Path } from "@/lib/content";
+import { isOptin, pathOf } from "@/lib/flow";
 import { config } from "./config";
 import { dataDir } from "./datadir";
 import type { LeadRow } from "./leads";
-import { guideUrl, offersCall } from "./leadview";
+import { guideUrlFor, offersCall } from "./leadview";
 import { signToken } from "./tokens";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -30,25 +30,29 @@ export function buildDeliveryEmail(lead: LeadRow) {
   const e = emailCopy;
   const p = (pathOf(lead.answers) ?? lead.path) as Path;
   const asset = typeof lead.answers.asset === "string" ? lead.answers.asset : undefined;
-  const headline = resultText(p, asset, textAnswer(lead.answers, "project")).headline;
-  const guide = guideUrl(lead.id);
+  const fromOptin = isOptin(lead.answers);
+  const headline = fromOptin ? optin.guide.emailHeadline : resultText(p, asset, textAnswer(lead.answers, "project")).headline;
+  const guide = guideUrlFor(lead);
+  const intro = fromOptin ? optin.guide.emailIntro : e.intro;
+  const guideButton = fromOptin ? optin.guide.emailButton : e.guideButton;
   const unsub = unsubscribeUrl(lead.email);
 
   type Next = { text: string; button?: string; href?: string };
   let next: Next;
   if (p === "clipper") next = { ...e.next.join, href: c.whopJoinUrl || undefined };
-  else if (offersCall(lead) && c.calBookingUrl) next = { ...e.next.book, href: bookingUrl(lead) };
+  // Everyone on the opt-in page is offered the call, so their email offers it too.
+  else if ((offersCall(lead) || fromOptin) && c.calBookingUrl) next = { ...e.next.book, href: bookingUrl(lead) };
   else next = e.next.soft;
 
-  const subject = fill(e.subject, { headline });
+  const subject = fromOptin ? optin.guide.emailSubject : fill(e.subject, { headline });
   const greeting = fill(e.greeting, { firstName: lead.firstName });
 
   const text = [
     greeting,
     "",
-    e.intro,
+    intro,
     "",
-    `${e.guideButton}: ${guide}`,
+    `${guideButton}: ${guide}`,
     "",
     next.text,
     ...(next.href && next.button ? [`${next.button}: ${next.href}`] : []),
@@ -67,14 +71,14 @@ export function buildDeliveryEmail(lead: LeadRow) {
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(subject)}</title></head>
 <body style="margin:0;padding:0;background:#f2eee6">
-<span style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(e.preheader)}</span>
+<span style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(fromOptin ? optin.guide.emailPreheader : e.preheader)}</span>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2eee6"><tr><td align="center" style="padding:40px 20px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
 <tr><td style="font:400 13px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.08em;color:#1a1510;padding-bottom:36px">MAISON D&#8217;&#201;LITES</td></tr>
 <tr><td style="font:400 34px/1.1 Georgia,'Times New Roman',serif;color:#1a1510;padding-bottom:24px">${esc(headline)}</td></tr>
 <tr><td style="font:400 16px/1.6 Arial,Helvetica,sans-serif;color:#4f493f;padding-bottom:12px">${esc(greeting)}</td></tr>
-<tr><td style="font:400 16px/1.6 Arial,Helvetica,sans-serif;color:#4f493f;padding-bottom:28px">${esc(e.intro)}</td></tr>
-<tr><td style="padding-bottom:36px">${button(guide, e.guideButton)}</td></tr>
+<tr><td style="font:400 16px/1.6 Arial,Helvetica,sans-serif;color:#4f493f;padding-bottom:28px">${esc(intro)}</td></tr>
+<tr><td style="padding-bottom:36px">${button(guide, guideButton)}</td></tr>
 <tr><td style="border-top:1px solid #d8cdb9;padding-top:28px;font:400 16px/1.6 Arial,Helvetica,sans-serif;color:#4f493f;padding-bottom:${next.href ? "20px" : "28px"}">${esc(next.text)}</td></tr>
 ${next.href && next.button ? `<tr><td style="padding-bottom:36px">${button(next.href, next.button)}</td></tr>` : ""}
 <tr><td style="font:400 16px/1.6 Georgia,'Times New Roman',serif;color:#1a1510;padding-bottom:40px">${esc(c.emailSignature)}</td></tr>

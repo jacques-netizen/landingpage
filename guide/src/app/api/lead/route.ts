@@ -25,6 +25,8 @@ const Body = z.object({
   consent: z.literal(true),
   // The opt-in page carries its own consent wording; the film funnel uses the gate's.
   consentVersion: z.string().max(40).optional(),
+  // The opt-in page: its leads get the Clipping Secrets guide, not a written one.
+  funnel: z.literal("optin").optional(),
   turnstileToken: z.string().max(4096).optional(),
   answers: z.record(z.string(), z.unknown()).optional(),
   fbp: z.string().max(200).optional(),
@@ -81,6 +83,8 @@ export async function POST(req: Request) {
     }
   }
 
+  if (b.funnel === "optin") answers = { ...answers, funnel: "optin" };
+
   const company = cleanText(b.company);
   if (answers.deciding === "yes" && !company) return json({ error: "company", field: "company" }, 400);
 
@@ -121,7 +125,8 @@ export async function POST(req: Request) {
   if (inserted[0]) {
     await db.insert(schema.guides).values({ leadId: lead.id }).onConflictDoNothing();
     await db.insert(schema.events).values({ sessionId: session.id, name: "gate_submit", props: { path: score.path, qualified: score.qualified, variant: session.variant } });
-    await enqueue(lead.id, JOB_KINDS);
+    // Opt-in leads read the Clipping Secrets guide: no written guide, no PDF.
+    await enqueue(lead.id, b.funnel === "optin" ? JOB_KINDS.filter((k) => k !== "write" && k !== "pdf") : JOB_KINDS);
     after(() => runJobsForLead(lead.id));
   }
 
