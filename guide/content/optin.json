@@ -183,7 +183,7 @@
     },
     "youtube": null,
     "file": "/media/films/vsl.mp4",
-    "_videoNote": "The thanks page film, first match wins: youtube (a YouTube video id), file (an MP4 under /public), then video (the Mux media key). file is the Mux film re-encoded to H.264 Main 720p30 with faststart, which every phone plays.",
+    "_videoNote": "The thanks page film, first match wins: youtube (a YouTube video id), file (an MP4 under /public), then video (the Mux media key). file is the Mux film's 4K rendition scaled to 1728x1080, H.264 High 4.1, 30 fps, CRF 19, AAC 160k, faststart.",
     "filePoster": "/media/films/vsl.jpg"
   },
   "defaultRole": "creator",
