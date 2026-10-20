@@ -119,7 +119,10 @@
           "video": null
         }
       ]
-    }
+    },
+    "youtube": null,
+    "file": null,
+    "_videoNote": "The thanks page film, first match wins: youtube (a YouTube video id, unlisted is fine), file (an MP4 under /public, for example /media/films/vsl.mp4), then video (the Mux media key)."
   },
   "defaultRole": "creator",
   "clients": {

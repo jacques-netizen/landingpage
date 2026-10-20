@@ -134,6 +134,7 @@
 /* Players */
 .op-player { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--p-ink); }
 .op-player.portrait { aspect-ratio: 9 / 16; border-radius: 16px; overflow: hidden; }
+.op-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .op-player video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--p-ink); }
 .op-player-fallback { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); background: var(--p-gold); color: var(--p-ink); border-radius: 999px; padding: 10px 16px; font: 600 13px var(--p-sans); text-decoration: none; }
 .op-faq-videos { width: 100%; max-width: 1000px; margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; text-align: left; }

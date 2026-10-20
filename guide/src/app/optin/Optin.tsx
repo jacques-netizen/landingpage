@@ -334,7 +334,11 @@ function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; co
           <h1 className="op-h1 op-h1-sm">{b.headline}</h1>
           <p className="op-body">{b.sub}</p>
           <div className="op-film">
-            {filmId ? <MuxPlayer id={filmId} label={b.videoLabel} /> : showSlots ? <div className="op-slot">[VIDEO]</div> : null}
+            {b.youtube ? (
+              <div className="op-player"><iframe src={`https://www.youtube-nocookie.com/embed/${b.youtube}?rel=0&modestbranding=1&playsinline=1`} title={b.videoLabel} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /></div>
+            ) : b.file ? (
+              <div className="op-player"><video controls playsInline preload="metadata" src={b.file} aria-label={b.videoLabel} /></div>
+            ) : filmId ? <MuxPlayer id={filmId} label={b.videoLabel} /> : showSlots ? <div className="op-slot">[VIDEO]</div> : null}
           </div>
           <div className="op-b-cta">
             <button type="button" className="op-btn" onClick={goBooking}>{b.bookButton}</button>
