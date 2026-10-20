@@ -337,7 +337,7 @@ function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; co
             {b.youtube ? (
               <div className="op-player"><iframe src={`https://www.youtube-nocookie.com/embed/${b.youtube}?rel=0&modestbranding=1&playsinline=1`} title={b.videoLabel} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /></div>
             ) : b.file ? (
-              <div className="op-player"><video controls playsInline preload="metadata" src={b.file} aria-label={b.videoLabel} /></div>
+              <div className="op-player"><video controls playsInline preload="metadata" src={b.file} poster={b.filePoster ?? undefined} aria-label={b.videoLabel} onPlay={() => track("video_play", { media: "vsl_file", muted: false })} onError={(e) => track("video_error", { media: "vsl_file", code: e.currentTarget.error?.code ?? 0, src: "file", ua: navigator.userAgent.slice(0, 80) })} /></div>
             ) : filmId ? <MuxPlayer id={filmId} label={b.videoLabel} /> : showSlots ? <div className="op-slot">[VIDEO]</div> : null}
           </div>
           <div className="op-b-cta">
