@@ -183,18 +183,18 @@
           "mux": "NPJu3d2tUQzx8yT1EHnIVTMgK02KjmQLdCc39KLgznEI"
         },
         {
-          "q": "Are these views even real?",
+          "q": "Will the views turn into sales, streams or followers?",
           "video": null,
-          "file": null,
-          "poster": null,
-          "mux": null
+          "file": "/media/faq/views-to-sales.mp4",
+          "poster": "/media/faq/views-to-sales.jpg",
+          "mux": "h00xGEG6Rp8zlOcBz86naxOzNpYUedH9hB00fEO4kN6gw"
         },
         {
-          "q": "Why not just run ads?",
+          "q": "How do I know that the views are real?",
           "video": null,
-          "file": null,
-          "poster": null,
-          "mux": null
+          "file": "/media/faq/views-real.mp4",
+          "poster": "/media/faq/views-real.jpg",
+          "mux": "Fjs4TImEarHvkgChL1TnzssNszF6uo0000NvcgR6bHcoc"
         }
       ],
       "_note": "Six portrait answers. file is an MP4 hosted with the site (encoded from the Mux upload named in mux); video is a Mux playback id played in Mux's player. file wins."
