@@ -19,6 +19,8 @@ export function config() {
     isProd: e.NODE_ENV === "production",
     qualifyMin: num(e.BUDGET_QUALIFY_MIN, 3000),
     priorityMin: num(e.BUDGET_PRIORITY_MIN, 10000),
+    // The opt-in page qualifies at a higher line than the film funnel: its own budget bands.
+    optinQualifyMin: num(e.OPTIN_QUALIFY_MIN, 10000),
     // The guide is written from the answers, so everyone gets the questions
     // unless an experiment share is set. The plain arm stays reachable with ?_v=plain.
     variantSplit: share(e.VARIANT_SPLIT, 1),
@@ -89,6 +91,7 @@ export function publicConfig() {
   return {
     qualifyMin: c.qualifyMin,
     priorityMin: c.priorityMin,
+    optinQualifyMin: c.optinQualifyMin,
     whopJoinUrl: c.whopJoinUrl,
     calBookingUrl: c.calBookingUrl,
     calBookedRedirectUrl: c.calBookedRedirectUrl,

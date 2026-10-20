@@ -1,7 +1,7 @@
 import "server-only";
 // Shared views of a lead for the CRM, email, alerts and the guide.
 import type { Answers } from "@/lib/flow";
-import { budgetOf } from "@/lib/flow";
+import { budgetOf, stageOf } from "@/lib/flow";
 import { config } from "./config";
 import type { LeadRow } from "./leads";
 import { guideToken } from "./sessions";
@@ -33,6 +33,7 @@ export function crmFields(lead: LeadRow, source: Record<string, string>) {
     goal: typeof a.goal === "string" ? a.goal : "",
     timing: typeof a.timing === "string" ? a.timing : "",
     budget_band: budgetBand(a),
+    stage: stageOf(a)?.name ?? "",
     qualified: lead.qualified ? "yes" : "no",
     human_priority: lead.humanPriority ? "yes" : "no",
     guide_url: guideUrl(lead.id),

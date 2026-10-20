@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, EB_Garamond } from "next/font/google";
+import { Archivo, EB_Garamond, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const garamond = EB_Garamond({
@@ -14,6 +14,13 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const mono = Geist_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -32,7 +39,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${garamond.variable} ${archivo.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${garamond.variable} ${archivo.variable} ${mono.variable}`} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

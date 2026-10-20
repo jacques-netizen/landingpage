@@ -31,6 +31,8 @@ export const leads = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     sessionId: uuid("session_id").notNull().references(() => sessions.id, { onDelete: "cascade" }),
     firstName: text("first_name").notNull(),
+    // Asked on the opt-in page only. Null for leads from the film funnel.
+    lastName: text("last_name"),
     email: text("email").notNull(),
     igHandle: text("ig_handle"),
     // Digits with a leading plus. Required from creators and brands, never asked of clippers.

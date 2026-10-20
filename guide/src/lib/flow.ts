@@ -85,14 +85,41 @@ export function budgetOf(answers: Answers): BudgetAnswer | undefined {
   const b = answers.budget;
   if (b && typeof b === "object" && typeof (b as BudgetAnswer).band === "string") return b as BudgetAnswer;
   if (typeof b === "string") return { band: b };
+  // The opt-in page asks its own budget bands.
+  if (typeof answers.budget_v2 === "string") return { band: answers.budget_v2 };
   return undefined;
+}
+
+/** True for leads from the opt-in page, which asks its own questions. */
+export const isOptin = (answers: Answers): boolean => typeof answers.promo === "string";
+
+/** The path an opt-in answer stands for: each promo option names a role. */
+export function roleForPromo(value: unknown): Path | undefined {
+  const opt = questionFor("promo", undefined)?.options.find((o) => o.value === value);
+  const r = opt?.role;
+  return r === "clipper" || r === "creator" || r === "brand" ? r : undefined;
+}
+
+export type Stage = { n: number; name: string };
+const STAGE_NAMES = ["Starting", "Building", "Growing", "Established", "Scaling", "Leading"];
+
+/** The opt-in stage: the floor of the average score of audience size, revenue and team, 0 to 5. */
+export function stageOf(answers: Answers): Stage | null {
+  const scores: number[] = [];
+  for (const id of ["audience_size", "revenue", "team"]) {
+    const opt = questionFor(id, undefined)?.options.find((o) => o.value === answers[id]);
+    if (!opt || typeof opt.score !== "number") return null;
+    scores.push(opt.score);
+  }
+  const n = Math.max(0, Math.min(STAGE_NAMES.length - 1, Math.floor(scores.reduce((a, b) => a + b, 0) / scores.length)));
+  return { n, name: STAGE_NAMES[n] };
 }
 
 /** Lowest dollar amount the budget answer stands for, or null when unknown. */
 export function budgetFloor(answers: Answers, path: Path | undefined): number | null {
   const b = budgetOf(answers);
   if (!b) return null;
-  const opt = questionFor("budget", path)?.options.find((o) => o.value === b.band);
+  const opt = (typeof answers.budget_v2 === "string" && !answers.budget ? questionFor("budget_v2", path) : questionFor("budget", path))?.options.find((o) => o.value === b.band);
   if (opt && typeof opt.min === "number") return opt.min;
   if (typeof b.amount === "number" && Number.isFinite(b.amount) && b.amount > 0) return b.amount;
   return null;

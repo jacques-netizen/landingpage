@@ -45,7 +45,7 @@ const finishFilm = async (name) => {
 };
 
 const q = plain ? '?_v=plain&_p=none' : `?fn=Jacques&src=ig-distribution&mc=123456&_v=full&_p=front_loaded`;
-await page.goto(base + '/' + q, { waitUntil: 'domcontentloaded' });
+await page.goto(base + '/film' + q, { waitUntil: 'domcontentloaded' });
 
 if (plain) {
   await finishFilm('plain-film');

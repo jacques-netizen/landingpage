@@ -52,7 +52,8 @@ describe("content", () => {
     // Every figure that appears anywhere in an approved proof item is allowed.
     const approved = new Set(items.filter((i) => i.status === "approved").flatMap((i) => JSON.stringify(i).match(figure) ?? []));
     // secrets.json carries owner supplied figures for the interactive guide; outside figures there carry a source url field.
-    const allowedFiles = new Set(["proof.json", "questions.json", "secrets.json"]);
+    // optin.json carries the owner's own copy from the Guide Funnel v2 design (budget bands, network size, FAQ).
+    const allowedFiles = new Set(["proof.json", "questions.json", "secrets.json", "optin.json"]);
     for (const { f, text } of all) {
       if (allowedFiles.has(f)) continue;
       // A guide block may list worked example figures (pay or pricing maths) in its front matter.

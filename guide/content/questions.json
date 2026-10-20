@@ -642,6 +642,289 @@
           ]
         }
       ]
+    },
+    {
+      "id": "promo",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "*"
+          ],
+          "prompt": "What are you promoting?",
+          "options": [
+            {
+              "value": "brand_product",
+              "label": "A brand or product",
+              "role": "brand"
+            },
+            {
+              "value": "startup_app",
+              "label": "A startup or app",
+              "role": "brand"
+            },
+            {
+              "value": "music_label",
+              "label": "Music (label or management)",
+              "role": "brand"
+            },
+            {
+              "value": "music_indie",
+              "label": "Music (independent artist)",
+              "role": "creator"
+            },
+            {
+              "value": "creator_brand",
+              "label": "A creator or personal brand",
+              "role": "creator"
+            },
+            {
+              "value": "other",
+              "label": "Other",
+              "role": "brand"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "audience_size",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Audience size across your main platforms",
+          "options": [
+            {
+              "value": "under_1k",
+              "label": "Under 1K",
+              "score": 0
+            },
+            {
+              "value": "1k_10k",
+              "label": "1K to 10K",
+              "score": 1
+            },
+            {
+              "value": "10k_50k",
+              "label": "10K to 50K",
+              "score": 2
+            },
+            {
+              "value": "50k_250k",
+              "label": "50K to 250K",
+              "score": 3
+            },
+            {
+              "value": "250k_1m",
+              "label": "250K to 1M",
+              "score": 4
+            },
+            {
+              "value": "1m_plus",
+              "label": "1M+",
+              "score": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "revenue",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Monthly revenue (or streams, for music)",
+          "options": [
+            {
+              "value": "none",
+              "label": "Nothing yet",
+              "score": 0
+            },
+            {
+              "value": "under_1k",
+              "label": "Under $1K",
+              "score": 1
+            },
+            {
+              "value": "1k_10k",
+              "label": "$1K to $10K",
+              "score": 2
+            },
+            {
+              "value": "10k_50k",
+              "label": "$10K to $50K",
+              "score": 3
+            },
+            {
+              "value": "50k_250k",
+              "label": "$50K to $250K",
+              "score": 4
+            },
+            {
+              "value": "250k_plus",
+              "label": "$250K+",
+              "score": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "team",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Team size",
+          "options": [
+            {
+              "value": "solo",
+              "label": "Just me",
+              "score": 0
+            },
+            {
+              "value": "freelancers",
+              "label": "Me plus freelancers",
+              "score": 1
+            },
+            {
+              "value": "2_5",
+              "label": "2 to 5",
+              "score": 2
+            },
+            {
+              "value": "6_20",
+              "label": "6 to 20",
+              "score": 3
+            },
+            {
+              "value": "21_50",
+              "label": "21 to 50",
+              "score": 4
+            },
+            {
+              "value": "51_plus",
+              "label": "51+",
+              "score": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "budget_v2",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Monthly marketing budget",
+          "options": [
+            {
+              "value": "under_1k",
+              "label": "Under $1K",
+              "min": 0
+            },
+            {
+              "value": "1k_3k",
+              "label": "$1K to $3K",
+              "min": 1000
+            },
+            {
+              "value": "3k_10k",
+              "label": "$3K to $10K",
+              "min": 3000
+            },
+            {
+              "value": "10k_25k",
+              "label": "$10K to $25K",
+              "min": 10000
+            },
+            {
+              "value": "25k_100k",
+              "label": "$25K to $100K",
+              "min": 25000
+            },
+            {
+              "value": "100k_plus",
+              "label": "$100K+",
+              "min": 100000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "decider",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "Who decides on marketing spend?",
+          "options": [
+            {
+              "value": "me",
+              "label": "Just me"
+            },
+            {
+              "value": "partner",
+              "label": "Me and a partner"
+            },
+            {
+              "value": "team",
+              "label": "A team, label or management"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heard",
+      "type": "single",
+      "variants": [
+        {
+          "paths": [
+            "creator",
+            "brand"
+          ],
+          "prompt": "How long ago did you first hear of Jacques and/or Maison d’Élites?",
+          "options": [
+            {
+              "value": "just_now",
+              "label": "Just now"
+            },
+            {
+              "value": "under_3m",
+              "label": "Under 3 months"
+            },
+            {
+              "value": "3_12m",
+              "label": "3 to 12 months"
+            },
+            {
+              "value": "over_1y",
+              "label": "Over a year"
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "_note_optin": "The questions from promo to heard belong to the opt-in page at /. promo maps to a path through each option's role. audience_size, revenue and team carry a score 0 to 5; the stage is the floor of their average. budget_v2 carries the floor of each band in dollars."
 }

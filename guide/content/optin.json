@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "_note": "The opt-in page at /. Three steps, then page A (under the qualify line) or page B (at or above it). Figures here are owner supplied copy from the Guide Funnel v2 design. Video ids are Mux playback ids; null hides the slot (?slots=1 shows it).",
+  "consentVersion": "2026-10-optin-1",
+  "meta": {
+    "title": "Your free Clipping Secrets guide | Maison d’Élites",
+    "description": "A personalized clipping guide, built from a few answers, in under 30 seconds."
+  },
+  "hero": {
+    "headlineLead": "Get Your Free Personalized ",
+    "headlineAccent": "Clipping Secrets Guide",
+    "headlineTail": "... in under 30 seconds.",
+    "image": "/brand/guide-fan.png",
+    "imageAlt": "Pages of the Clipping Secrets guide fanned out"
+  },
+  "steps": {
+    "label": "Step {n} of {total}",
+    "name": {
+      "title": "What's your ",
+      "accent": "name?",
+      "first": "First name",
+      "last": "Last name",
+      "button": "Let's start",
+      "note": "Receive it via email."
+    },
+    "contact": {
+      "title": "Where should we ",
+      "accent": "send it?",
+      "email": "Email",
+      "cc": "+32",
+      "phone": "WhatsApp number",
+      "button": "Next"
+    },
+    "questions": {
+      "title": "Where are you with your ",
+      "accent": "distribution?",
+      "placeholder": "Select one",
+      "button": "Get my guide",
+      "sending": "Sending"
+    },
+    "back": "Back",
+    "errors": {
+      "name": "Please enter your first and last name.",
+      "email": "Please enter a valid email address.",
+      "phone": "Please enter your WhatsApp number.",
+      "questions": "Please complete every field.",
+      "bot": "We could not check that you are human. Please try again.",
+      "rateLimited": "Too many tries. Please wait a minute and try again.",
+      "network": "Something went wrong on our side. Please try again."
+    }
+  },
+  "trust": [
+    "Same playbook we use across our network of 3,000+ clippers.",
+    "Requested by 4,300+ brands, artists and creators."
+  ],
+  "legal": {
+    "consent": "By providing your information you consent to Maison d’Élites contacting you by phone, WhatsApp, text or email. We do not sell your personal information. By providing this information you agree to our {privacy} and {terms}.",
+    "privacy": "Privacy Policy",
+    "privacyUrl": "https://maisondelites.com/privacy",
+    "terms": "Terms of Service",
+    "termsUrl": "https://maisondelites.com/terms",
+    "copyright": "© Maison d’Élites",
+    "disclaimer": "Results shown are from specific campaigns and are not typical or a guarantee of your results. Views and outcomes depend on your content, niche, budget and platform. Copyright © 2026 Maison d’Élites LLC. All rights reserved."
+  },
+  "stages": {
+    "columns": ["Stage", "Who's here", "What's holding you back", "Next move"],
+    "items": [
+      { "n": 0, "name": "Starting", "looks": "Making things, but nothing is out yet, or what's out hasn't been seen. No audience, no sales, no streams.", "constraint": "Nobody knows you exist.", "up": "Get a first group of people to see the work and react." },
+      { "n": 1, "name": "Building", "looks": "A small audience. A few hundred or a few thousand followers. Some streams or sales. Doing everything yourself.", "constraint": "Growth only comes from your own posting, and your time runs out.", "up": "Get seen by people who don't follow you yet." },
+      { "n": 2, "name": "Growing", "looks": "A real audience. Consistent sales or streams. Maybe a first hire, a manager or a small team.", "constraint": "You've outgrown what your own page and your own hours can do.", "up": "Get your work in front of many more people than you can reach yourself." },
+      { "n": 3, "name": "Established", "looks": "Known in your niche or city. A team. Steady income. Launches that land with your existing audience.", "constraint": "New people don't find you unless you pay, and most of that spend doesn't come back.", "up": "Turn every launch into something far more people see than your own audience." },
+      { "n": 4, "name": "Scaling", "looks": "Big audience, real revenue, a team that runs things. Launches, releases or drops on a schedule.", "constraint": "Every launch is a fresh fight for attention. The results change month to month.", "up": "Make reach predictable, so every launch lands at the size you need." },
+      { "n": 5, "name": "Leading", "looks": "A household name in your category. Millions of followers, big numbers, a full team.", "constraint": "Staying everywhere, all the time, while the moments and content keep coming.", "up": "Keep the whole machine fed, every week, without it eating the team." }
+    ]
+  },
+  "pageA": {
+    "headline": "Check Your Email for Your Customized Clipping Guide!",
+    "stageLead": "Congratulations: You are at ",
+    "stageFormat": "Stage {n}: {name}",
+    "body": "In the meantime, you can start reading the interactive version of the guide below.",
+    "button": "Read Clipping Secrets now",
+    "buttonUrl": "/secrets"
+  },
+  "pageB": {
+    "headlineLead": "Congratulations, You're ",
+    "stageFormat": "Stage {n}: {name}",
+    "video": "result_qualified",
+    "videoKicker": "Stage {n} video",
+    "bookButton": "Book a call with our team",
+    "guideLink": "No thanks, just take me to the guide",
+    "booking": {
+      "kicker": "While you're waiting for your guide...",
+      "headlineLead": "Want to Talk Through ",
+      "headlineAccent": "Your Next Launch",
+      "headlineTail": " With Us?",
+      "note": "Note: This call is NOT required to receive your guide. Only schedule if you'd like to talk about running a campaign with us.",
+      "title": "Maison d’Élites Strategy Call",
+      "body": "Book a call below and we will go through your content, your audience and what a campaign on our network would look like.",
+      "fallback": "Open the calendar"
+    },
+    "reviews": {
+      "kicker": "Verified client reviews",
+      "headline": "Real campaigns. ",
+      "headlineAccent": "The same verdict.",
+      "body": "Every result below is from a real client campaign.",
+      "testimonial": "kojo_testimonial",
+      "testimonialLabel": "Video testimonial",
+      "cases": ["walmart", "wale_mannywellz", "paul_case", "kojo_case"],
+      "stats": [],
+      "items": []
+    },
+    "objections": {
+      "kicker": "The questions we get on every call",
+      "headlineLead": "If you were thinking it, ",
+      "headlineAccent": "someone else asked it.",
+      "body": "Six of the questions we hear most from brands on the fence. Each one answered straight, in under two minutes.",
+      "items": [
+        { "q": "Are these views even real?", "video": null },
+        { "q": "Will this reach our actual audience?", "video": null },
+        { "q": "Can we push this to after our launch?", "video": null },
+        { "q": "Why not just run ads?", "video": null },
+        { "q": "Do we own the pages?", "video": null },
+        { "q": "How fast can a campaign go live?", "video": null }
+      ]
+    },
+    "faq": {
+      "minimum": null,
+      "items": [
+        { "q": "What actually happens in a campaign?", "a": ["It's not a promo package. It's a real campaign. On our network.", "Expect zero fake views. Meaning, every view is checked.", "In week one, we set it up end to end. We pick the content with you, match it to pages in your niche and your countries, and brief our clippers.", "Then it goes live, and you watch every post and every view on your own dashboard."] },
+        { "q": "What do we walk away with?", "a": ["Real views on your own content, and a clear read on what worked.", "You spend time with our team. We go through which pages and countries responded, and what that means for your brand.", "It's hands-on help specific to your biggest reach problem.", "Plus, you keep every view."] },
+        { "q": "Is this right for our size or industry?", "a": ["Budget: if your marketing budget is under $10K a month, this is not a fit (yet).", "If you're spending $10K to $500K a month on marketing, then we can help. How is it possible to have such a wide range?", "Answer: every campaign is built around your budget, your niche and your countries."] },
+        { "q": "How much does a campaign cost?", "a": ["{minimum}", "That gives you access to our network (3,000+ clippers across TikTok, Reels and Shorts), a brief, view checks and payout rules.", "If you can't invest that, don't book. If you can, chances are we can help."], "minimumLine": "Campaigns start from {minimum}." }
+      ]
+    }
+  }
+}

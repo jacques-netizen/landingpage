@@ -32,6 +32,7 @@ export function sampleLead(name: string, over: Partial<LeadRow>): LeadRow {
     id: `00000000-0000-4000-8000-${name.replace(/[^a-z0-9]/g, "").padEnd(12, "0").slice(0, 12)}`,
     sessionId: "22222222-2222-2222-2222-222222222222",
     firstName: "Sam",
+    lastName: null,
     email: "sam@example.com",
     igHandle: null,
     phone: null,

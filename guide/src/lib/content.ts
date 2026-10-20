@@ -7,12 +7,13 @@ import resultsJson from "../../content/results.json";
 import mediaJson from "../../content/media.json";
 import proofJson from "../../content/proof.json";
 import strategyJson from "../../content/strategy.json";
+import optinJson from "../../content/optin.json";
 
 export type Path = "clipper" | "creator" | "brand";
 export type Variant = "full" | "plain";
 export type ProgressMode = "front_loaded" | "none";
 
-export type Option = { value: string; label: string; min?: number; amountField?: boolean; views?: number; clipsPerWeek?: number };
+export type Option = { value: string; label: string; min?: number; amountField?: boolean; views?: number; clipsPerWeek?: number; role?: string; score?: number };
 export type QuestionVariant = {
   paths: string[];
   prompt: string;
@@ -75,6 +76,7 @@ export const questions = questionsJson.questions as Question[];
 export const flow = flowJson.variants as Record<Variant, Step[]>;
 export const copy = copyJson;
 export const strategy = strategyJson;
+export const optin = optinJson;
 export type Objective = "visibility" | "conversions" | "both";
 export type Copy = typeof copyJson;
 export const results = resultsJson;

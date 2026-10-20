@@ -89,13 +89,14 @@ export function briefFor(lead: LeadRow): Brief {
 
   const facts: Fact[] = [];
   const ids = side === "buyer"
-    ? ["asset", "objective", "action", "library", "reach", "platforms", "timing", "budget", "deciding"]
+    ? ["asset", "objective", "action", "library", "reach", "platforms", "timing", "budget", "deciding", "promo", "audience_size", "revenue", "team", "budget_v2", "decider"]
     : ["asset", "accounts", "hours", "tools", "platforms", "goal", "timing"];
   for (const id of ids) {
     const v = questionFor(id, path);
     if (!v) continue;
     let answer: string | null;
     if (id === "budget") {
+      if (typeof a.budget_v2 === "string" && !a.budget) continue;
       const b = budgetOf(a);
       answer = b ? (b.band === "not_sure" && b.amount ? `About $${b.amount.toLocaleString("en-US")} a month` : label(id, path, b.band)) : null;
     } else answer = label(id, path, a[id]);

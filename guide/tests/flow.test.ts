@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanAnswer, cleanPhone, phoneMode, qualify, resumeStep, stepsFor, frontLoaded } from "@/lib/flow";
+import { cleanAnswer, cleanPhone, phoneMode, qualify, resumeStep, stepsFor, frontLoaded, isOptin, roleForPromo, stageOf } from "@/lib/flow";
 
 const t = { qualifyMin: 3000, priorityMin: 10000 };
 const questionCount = (answers: Record<string, unknown>) =>
@@ -116,5 +116,28 @@ describe("phone at the gate", () => {
     expect(cleanPhone("12345")).toBe("");
     expect(cleanPhone("call me")).toBe("");
     expect(cleanPhone(42)).toBe("");
+  });
+});
+
+describe("opt-in page", () => {
+  const base = { role: "brand", promo: "brand_product", audience_size: "10k_50k", revenue: "10k_50k", team: "2_5", decider: "team", heard: "just_now" };
+  it("maps each promo option to a path", () => {
+    expect(roleForPromo("music_indie")).toBe("creator");
+    expect(roleForPromo("music_label")).toBe("brand");
+    expect(roleForPromo("nope")).toBeUndefined();
+  });
+  it("puts the stage at the floor of the average score", () => {
+    expect(stageOf(base)).toEqual({ n: 2, name: "Growing" });
+    expect(stageOf({ ...base, audience_size: "1m_plus", revenue: "250k_plus", team: "51_plus" })).toEqual({ n: 5, name: "Leading" });
+    expect(stageOf({ ...base, audience_size: "under_1k", revenue: "none", team: "solo" })).toEqual({ n: 0, name: "Starting" });
+    expect(stageOf({ role: "brand" })).toBeNull();
+  });
+  it("qualifies at the opt-in line from its own budget bands", () => {
+    const t = { qualifyMin: 10000, priorityMin: 10000 };
+    expect(qualify({ ...base, budget_v2: "10k_25k" }, t).qualified).toBe(true);
+    expect(qualify({ ...base, budget_v2: "3k_10k" }, t).qualified).toBe(false);
+    expect(qualify({ ...base, budget_v2: "100k_plus" }, t).humanPriority).toBe(true);
+    expect(isOptin(base)).toBe(true);
+    expect(isOptin({ role: "brand" })).toBe(false);
   });
 });

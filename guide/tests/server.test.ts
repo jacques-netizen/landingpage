@@ -9,6 +9,7 @@ const lead = (over: Partial<LeadRow> = {}): LeadRow => ({
   id: "11111111-1111-1111-1111-111111111111",
   sessionId: "22222222-2222-2222-2222-222222222222",
   firstName: "Sam",
+  lastName: null,
   email: "sam@example.com",
   igHandle: null,
   phone: null,

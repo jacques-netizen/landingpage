@@ -1,31 +1,27 @@
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { Funnel } from "@/components/funnel/Funnel";
+import { optin, proof } from "@/lib/content";
 import { config, publicConfig } from "@/lib/server/config";
-import { assign } from "@/lib/server/sessions";
+import { Optin } from "./optin/Optin";
+import "./optin/optin.css";
 
-// Runs before first paint. A token means a returning visitor: hide the stage
-// until the session is restored, so they never see the cold open flash.
-const RESUME_SCRIPT = `try{if(/(^#|&)t=/.test(location.hash)||localStorage.getItem("mde_guide_session"))document.documentElement.dataset.resuming="1";setTimeout(function(){delete document.documentElement.dataset.resuming},7000)}catch(e){}`;
+export const metadata = { title: optin.meta.title, description: optin.meta.description, robots: { index: false, follow: false } };
 
-/** First name from the ManyChat link, letters only, never stored server side. */
-function cleanFirstName(v: unknown): string | null {
-  if (typeof v !== "string") return null;
-  const s = v.normalize("NFKC").replace(/[^\p{L}\s'\-]/gu, "").trim().slice(0, 30);
-  return s || null;
-}
-
+/** The opt-in page: three short steps, then the stage page for under the line or the call page for at or above it. */
 export default async function Home({ searchParams }: PageProps<"/">) {
   await connection();
   const c = config();
   // Rollback switch: send everyone to the old PDF.
   if (!c.funnelEnabled && c.oldGuideUrl) redirect(c.oldGuideUrl);
   const sp = await searchParams;
-  const arms = assign({ variant: sp._v, progress: sp._p });
+  const r = optin.pageB.reviews;
+  const cases = r.cases.map((id) => ({ id, item: proof(id) })).filter((x) => x.item);
+  const testimonial = proof(r.testimonial) ?? null;
   return (
-    <main>
-      <script dangerouslySetInnerHTML={{ __html: RESUME_SCRIPT }} />
-      <Funnel config={publicConfig()} initial={{ ...arms, firstName: cleanFirstName(sp.fn) }} />
-    </main>
+    <Optin
+      config={publicConfig()}
+      showSlots={sp.slots === "1"}
+      proof={{ cases: cases.map((x) => ({ id: x.id, title: x.item!.title ?? "", figures: x.item!.figures ?? [] })), testimonial: testimonial ? { title: testimonial.title ?? "", url: testimonial.url ?? "", poster: testimonial.poster ?? "" } : null }}
+    />
   );
 }

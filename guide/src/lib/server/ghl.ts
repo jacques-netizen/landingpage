@@ -14,6 +14,7 @@ export const GHL_FIELDS = [
   "goal",
   "timing",
   "budget_band",
+  "stage",
   "qualified",
   "human_priority",
   "guide_url",
@@ -97,6 +98,7 @@ export async function ensureFields(): Promise<Map<string, string>> {
 export async function upsertContact(input: {
   email: string;
   firstName: string;
+  lastName?: string | null;
   companyName?: string | null;
   igHandle?: string | null;
   phone?: string | null;
@@ -111,6 +113,7 @@ export async function upsertContact(input: {
     locationId: config().ghlLocationId,
     email: input.email,
     firstName: input.firstName,
+    ...(input.lastName ? { lastName: input.lastName } : {}),
     ...(input.companyName ? { companyName: input.companyName } : {}),
     ...(input.phone ? { phone: input.phone } : {}),
     source: "guide funnel",

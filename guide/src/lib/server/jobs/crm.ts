@@ -21,6 +21,7 @@ export async function runCrm(leadId: string): Promise<JobOutcome> {
   const contactId = await upsertContact({
     email: lead.email,
     firstName: lead.firstName,
+    lastName: lead.lastName,
     companyName: lead.company,
     phone: lead.phone,
     igHandle: lead.igHandle,

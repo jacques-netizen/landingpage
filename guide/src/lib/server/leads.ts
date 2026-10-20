@@ -2,7 +2,7 @@ import "server-only";
 import crypto from "node:crypto";
 import { eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
-import { pathOf, qualify, type Answers } from "@/lib/flow";
+import { isOptin, pathOf, qualify, type Answers } from "@/lib/flow";
 import { config } from "./config";
 
 export type LeadRow = typeof schema.leads.$inferSelect;
@@ -26,7 +26,8 @@ export async function getLeadWithSession(id: string) {
 
 export function scoreLead(answers: Answers) {
   const c = config();
-  return { path: pathOf(answers) ?? "creator", ...qualify(answers, { qualifyMin: c.qualifyMin, priorityMin: c.priorityMin }) };
+  const qualifyMin = isOptin(answers) ? c.optinQualifyMin : c.qualifyMin;
+  return { path: pathOf(answers) ?? "creator", ...qualify(answers, { qualifyMin, priorityMin: c.priorityMin }) };
 }
 
 export const newMetaEventId = () => crypto.randomUUID();
