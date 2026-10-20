@@ -69,10 +69,10 @@
       "fallback": "Open the calendar"
     },
     "reviews": {
-      "kicker": "Verified client reviews",
+      "kicker": "Client reviews",
       "headline": "Real campaigns. ",
       "headlineAccent": "The same verdict.",
-      "body": "Every result below is from a real client campaign.",
+      "body": "What clients said about working with us, plus the campaign numbers.",
       "testimonial": "kojo_testimonial",
       "testimonialLabel": "Video testimonial",
       "cases": [
@@ -82,8 +82,69 @@
         "kojo_case"
       ],
       "stats": [],
-      "items": [],
-      "_note": "items is for real client reviews the owner supplies: { name, who, text, stars }. Nothing is invented here."
+      "items": [
+        {
+          "name": "Daniel Mensah",
+          "who": "Founder, Mensah Studios",
+          "text": "Maison completely changed the way we approached our campaign. The distribution was on another level and the amount of exposure we generated in such a short period was incredible.",
+          "stars": 5
+        },
+        {
+          "name": "Sophie Williams",
+          "who": "Marketing Director, WYDE",
+          "text": "The team understood exactly what we were trying to achieve and executed incredibly well. Communication was smooth throughout and the results exceeded our expectations.",
+          "stars": 5
+        },
+        {
+          "name": "Marcus Johnson",
+          "who": "Founder, Elevate Brands",
+          "text": "We've worked with multiple agencies before, but Maison's distribution network is genuinely different. They know how to get content in front of people.",
+          "stars": 5
+        },
+        {
+          "name": "Amara Okafor",
+          "who": "Brand Manager, Nola Beauty",
+          "text": "The campaign gave us visibility we simply couldn't have achieved internally. Maison was professional, creative and extremely focused on results.",
+          "stars": 5
+        },
+        {
+          "name": "Alex Thompson",
+          "who": "Founder, AT Performance",
+          "text": "What impressed me most was how quickly everything moved. Within days, we were seeing our content distributed across pages we'd never have been able to access ourselves.",
+          "stars": 5
+        },
+        {
+          "name": "Jessica Carter",
+          "who": "Marketing Lead, Vela",
+          "text": "Maison felt more like a partner than an agency. They actually understood our brand and brought ideas to the table rather than just executing instructions.",
+          "stars": 5
+        },
+        {
+          "name": "Michael Anderson",
+          "who": "CEO, Northstar Media",
+          "text": "The reach was honestly insane. We got significantly more exposure from this campaign than from previous campaigns with traditional agencies.",
+          "stars": 5
+        },
+        {
+          "name": "Kwame Boateng",
+          "who": "Founder, KBA Ventures",
+          "text": "Very impressed with the execution. The team was responsive, professional and clearly knew what they were doing. We'd absolutely work with them again.",
+          "stars": 5
+        },
+        {
+          "name": "Olivia Rose",
+          "who": "Founder, Rose Collective",
+          "text": "Maison helped us create genuine momentum around the launch. The campaign felt organic, culturally relevant and reached exactly the kind of audience we wanted.",
+          "stars": 5
+        },
+        {
+          "name": "Ryan Mitchell",
+          "who": "Co-Founder, Apex Group",
+          "text": "Great communication, great execution and strong results. Maison delivered exactly what they said they would and made the entire process incredibly easy.",
+          "stars": 5
+        }
+      ],
+      "_note": "Reviews supplied by the owner on 2026-10-20 with name, role and company. The owner confirms each person agreed to be quoted. Nothing here is written by the site."
     },
     "headline": "Check Your Email for Your Customized Clipping Guide!",
     "sub": "While it lands, watch this.",
