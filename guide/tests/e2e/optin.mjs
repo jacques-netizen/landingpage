@@ -21,6 +21,7 @@ await p.waitForTimeout(800);
 const checks = {};
 checks.h1 = await p.locator('h1').innerText();
 checks.heroImage = await p.locator('.op-hero-img').evaluate((img) => img.naturalWidth > 0);
+const clients = { logos: await p.locator('.op-logos img').count(), cases: await p.locator('.op-case').count(), testimonial: await p.locator('.op-testimonial').count() };
 await shot('step1');
 // Empty submit shows the name error.
 await p.locator('.op-btn').click();
@@ -34,21 +35,18 @@ await p.fill('#op-email', `optin+${page.toLowerCase()}${Date.now()}@example.com`
 await p.fill('#op-phone', '470 12 34 56');
 await shot('step2');
 await p.locator('.op-btn').click();
-await p.waitForTimeout(300);
-checks.step3 = await p.locator('.op-steps span').first().innerText();
-const picks = page === 'B'
-  ? { promo: 'brand_product', audience_size: '50k_250k', revenue: '50k_250k', team: '6_20', budget_v2: '25k_100k', decider: 'team', heard: 'under_3m' }
-  : { promo: 'music_indie', audience_size: '1k_10k', revenue: 'under_1k', team: 'solo', budget_v2: '1k_3k', decider: 'me', heard: 'just_now' };
-for (const [id, value] of Object.entries(picks)) await p.selectOption(`#op-${id}`, value);
-await shot('step3');
-await p.locator('.op-btn').click();
-await p.locator('.op-h1').filter({ hasText: /Congratulations|Check Your Email/ }).waitFor({ timeout: 30000 });
+await p.locator('.op-h1').filter({ hasText: /Check Your Email/ }).waitFor({ timeout: 30000 });
 await p.waitForTimeout(1500);
 checks.result = await p.locator('.op-h1').first().innerText();
-checks.stage = await p.locator('.op-tr.on .op-name, .op-h1 .op-accent').first().innerText().catch(() => null);
+checks.faqSlots = await p.locator('.op-faq-video').count();
+checks.clientsOnStep1 = clients;
 checks.sections = await p.locator('section').count();
 checks.cases = await p.locator('.op-review').count();
 checks.calendar = await p.locator('#booking iframe, .op-slot-cal').count();
+checkPlayer: {
+  const v = p.locator('.op-film video');
+  checks.player = (await v.count()) ? await v.evaluate((el) => ({ controls: el.controls, poster: Boolean(el.poster), src: (el.currentSrc || el.src || '').slice(0, 60) })) : null;
+}
 checks.film = muxIds.at(-1) ?? null;
 await shot('result');
 // Refresh lands on the same page.

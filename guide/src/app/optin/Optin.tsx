@@ -1,30 +1,33 @@
 "use client";
-// The opt-in page from the Guide Funnel v2 design. Name, contact, seven
-// selects, then the stage page (A) or the call page (B). Leads go through the
-// same API, jobs and CRM as the film funnel; the questions are its own.
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+// The opt-in page from the Guide Funnel v2 design, cut to two steps. Name,
+// then email and WhatsApp number, then the thanks page: the film, the call,
+// the proof and the video FAQ. Leads go through the same API, jobs and CRM
+// as the film funnel.
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import dynamic from "next/dynamic";
-import { fill, optin, questionFor } from "@/lib/content";
-import { cleanPhone, isOptin, roleForPromo, stageOf, type Answers, type Stage } from "@/lib/flow";
+import { fill, optin } from "@/lib/content";
+import { cleanPhone, type Answers } from "@/lib/flow";
 import { postJson, setApiToken, track } from "@/lib/client/api";
 import { safeStorage } from "@/lib/client/storage";
 import { loadPixel, pixelEvent } from "@/lib/client/pixel";
-import { videoSource } from "@/lib/video/source";
 import type { PublicConfig } from "@/lib/server/config";
 import type { LeadView } from "@/components/funnel/context";
 import { Turnstile } from "@/components/funnel/Turnstile";
 import { Logo } from "@/components/funnel/ui";
+import { MuxPlayer } from "./MuxPlayer";
 
 const BookingEmbed = dynamic(() => import("@/components/funnel/scenes/BookingEmbed").then((x) => x.BookingEmbed), { ssr: false });
-const ResultFilm = dynamic(() => import("@/components/funnel/scenes/ResultFilm").then((x) => x.ResultFilm), { ssr: false });
 
 const STORE_KEY = "mde_guide_session";
-const QUESTION_IDS = ["promo", "audience_size", "revenue", "team", "budget_v2", "decider", "heard"] as const;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 type SessionResponse = { token: string; answers: Answers; lead: LeadView | null };
 type LeadResponse = { lead?: LeadView; error?: string; field?: string };
-type Proof = { cases: { id: string; title: string; figures: { value: string; label: string }[] }[]; testimonial: { title: string; url: string; poster: string } | null };
+export type Proof = {
+  logos: { name: string; src: string }[];
+  cases: { id: string; title: string; figures: { value: string; label: string }[]; clip: string; poster: string }[];
+  testimonial: { title: string; url: string; poster: string } | null;
+};
 
 function readParams() {
   const q = new URLSearchParams(window.location.search);
@@ -45,22 +48,18 @@ function readCookie(name: string): string | undefined {
   }
 }
 
-const stageText = (format: string, s: Stage) => fill(format, { n: String(s.n), name: s.name });
-
-export function Optin({ config, showSlots, proof }: { config: PublicConfig; showSlots: boolean; proof: Proof }) {
+export function Optin({ config, showSlots, proof, filmId }: { config: PublicConfig; showSlots: boolean; proof: Proof; filmId: string | null }) {
   const o = optin;
   const [step, setStep] = useState(0);
   const [v, setV] = useState({ first: "", last: "", email: "", cc: o.steps.contact.cc, phone: "" });
-  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const [lead, setLead] = useState<LeadView | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [resetKey, setResetKey] = useState(0);
   const token = useRef<string | null>(null);
-  const roleSent = useRef<string | null>(null);
 
-  // A returning visitor with a lead lands straight on their page.
+  // A returning visitor who already left their details lands on the thanks page.
   useEffect(() => {
     const saved = safeStorage.get(STORE_KEY);
     let cancelled = false;
@@ -70,7 +69,7 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
       token.current = res.data.token;
       setApiToken(res.data.token);
       safeStorage.set(STORE_KEY, res.data.token);
-      if (res.data.lead && isOptin(res.data.lead.answers)) {
+      if (res.data.lead) {
         setLead(res.data.lead);
         loadPixel(config.metaPixelId);
       }
@@ -86,31 +85,12 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
     setError("");
   };
 
-  // Each select is saved as it is answered, the role first so the server knows the path.
-  const setAnswer = (id: string, value: string) => {
-    const next = { ...answers, [id]: value };
-    setAnswers(next);
-    setError("");
-    track("question_answered", { question: id, value });
-    if (!token.current) return;
-    const role = roleForPromo(next.promo);
-    if (!role) return;
-    (async () => {
-      if (roleSent.current !== role) {
-        roleSent.current = role;
-        await postJson("/api/answer", { token: token.current, questionId: "role", value: role });
-      }
-      await postJson("/api/answer", { token: token.current, questionId: id, value });
-    })();
-  };
-
   const validate = (): string => {
     if (step === 0 && (!v.first.trim() || !v.last.trim())) return o.steps.errors.name;
     if (step === 1) {
       if (!EMAIL.test(v.email.trim())) return o.steps.errors.email;
       if (!cleanPhone(`${v.cc} ${v.phone}`) || v.phone.replace(/\D/g, "").length < 6) return o.steps.errors.phone;
     }
-    if (step === 2 && QUESTION_IDS.some((id) => !answers[id])) return o.steps.errors.questions;
     return "";
   };
 
@@ -123,12 +103,10 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
       track("gate_error", { fields: `optin_step_${step + 1}` });
       return;
     }
-    if (step < 2) {
-      const n = step + 1;
-      setStep(n);
-      track("scene_view", { scene: n === 1 ? "optin_contact" : "optin_questions", variant: "optin", path: "none" });
-      if (n === 1) track("gate_view", { variant: "optin", path: "none" });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (step === 0) {
+      setStep(1);
+      track("scene_view", { scene: "optin_contact", variant: "optin", path: "none" });
+      track("gate_view", { variant: "optin", path: "none" });
       return;
     }
     if (config.turnstileSiteKey && !turnstileToken) {
@@ -144,7 +122,6 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
         safeStorage.set(STORE_KEY, s.data.token);
       }
     }
-    const role = roleForPromo(answers.promo) ?? "brand";
     const res = await postJson<LeadResponse>(
       "/api/lead",
       {
@@ -156,7 +133,7 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
         consent: true,
         consentVersion: o.consentVersion,
         turnstileToken: turnstileToken ?? undefined,
-        answers: { role, ...answers },
+        answers: { role: o.defaultRole },
         fbp: readCookie("_fbp"),
         fbc: readCookie("_fbc"),
       },
@@ -179,11 +156,10 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
     }
   };
 
-  if (lead) return lead.qualified ? <PageB lead={lead} config={config} showSlots={showSlots} proof={proof} /> : <PageA lead={lead} />;
+  if (lead) return <Thanks lead={lead} config={config} showSlots={showSlots} proof={proof} filmId={filmId} />;
 
-  const pct = `${Math.round((step / 3) * 100)}%`;
+  const pct = `${Math.round((step / 2) * 100)}%`;
   const s = o.steps;
-  const buttons = [s.name.button, s.contact.button, s.questions.button];
   return (
     <div className="op">
       <Header />
@@ -198,12 +174,12 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
 
         <form className="op-card" onSubmit={submit} noValidate>
           <div className="op-steps">
-            <span>{fill(s.label, { n: String(step + 1), total: "3" })}</span>
+            <span>{fill(s.label, { n: String(step + 1), total: "2" })}</span>
             <span>{pct}</span>
           </div>
           <div className="op-bar"><div style={{ width: pct }} /></div>
 
-          {step === 0 && (
+          {step === 0 ? (
             <>
               <h2 className="op-h2">{s.name.title}<span className="op-accent">{s.name.accent}</span></h2>
               <div className="op-grid2">
@@ -211,8 +187,7 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
                 <input id="op-last" name="lastName" autoComplete="family-name" value={v.last} onChange={set("last")} placeholder={s.name.last} maxLength={60} />
               </div>
             </>
-          )}
-          {step === 1 && (
+          ) : (
             <>
               <h2 className="op-h2">{s.contact.title}<span className="op-accent">{s.contact.accent}</span></h2>
               <div className="op-col">
@@ -222,27 +197,6 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
                   <input id="op-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel-national" value={v.phone} onChange={set("phone")} placeholder={s.contact.phone} maxLength={24} />
                 </div>
               </div>
-            </>
-          )}
-          {step === 2 && (
-            <>
-              <h2 className="op-h2">{s.questions.title}<span className="op-accent">{s.questions.accent}</span></h2>
-              <div className="op-col op-qs">
-                {QUESTION_IDS.map((id) => {
-                  const q = questionFor(id, undefined);
-                  if (!q) return null;
-                  const missing = Boolean(error) && !answers[id];
-                  return (
-                    <label key={id} className="op-q">
-                      <span>{q.prompt}<i className="op-accent"> *</i></span>
-                      <select id={`op-${id}`} name={id} value={answers[id] ?? ""} onChange={(e) => setAnswer(id, e.target.value)} className={`${missing ? "op-missing" : ""} ${answers[id] ? "op-set" : ""}`}>
-                        <option value="">{s.questions.placeholder}</option>
-                        {q.options.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}
-                      </select>
-                    </label>
-                  );
-                })}
-              </div>
               {config.turnstileSiteKey && <Turnstile siteKey={config.turnstileSiteKey} onToken={setTurnstileToken} resetKey={resetKey} />}
             </>
           )}
@@ -251,12 +205,11 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
 
           <div className="op-actions">
             <button type="submit" className="op-btn" disabled={sending}>
-              {sending ? s.questions.sending : buttons[step]}
+              {sending ? s.sending : step === 0 ? s.name.button : s.contact.button}
               {sending && <span className="op-spin" aria-hidden="true" />}
             </button>
-            {step === 0 && <div className="op-note">{s.name.note}</div>}
             {step > 0 && !sending && (
-              <button type="button" className="op-back" onClick={() => { setStep(step - 1); setError(""); }}>{s.back}</button>
+              <button type="button" className="op-back" onClick={() => { setStep(0); setError(""); }}>{s.back}</button>
             )}
           </div>
         </form>
@@ -265,6 +218,7 @@ export function Optin({ config, showSlots, proof }: { config: PublicConfig; show
           {o.trust.map((t) => <div key={t}><span className="op-accent">&#10022;</span> {t}</div>)}
         </div>
         <Legal />
+        <Clients proof={proof} />
       </main>
       <Footer />
     </div>
@@ -304,70 +258,83 @@ function Footer({ disclaimer }: { disclaimer?: boolean }) {
   );
 }
 
-function StageTable({ stage }: { stage: Stage | null }) {
-  const st = optin.stages;
+/** A campaign clip that plays, muted, while it is on screen. */
+function Loop({ src, poster }: { src: string; poster: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => {
+      el.muted = true;
+      if (e.isIntersecting) {
+        if (!el.getAttribute("src")) el.src = src;
+        el.play().catch(() => {});
+      } else el.pause();
+    }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [src]);
+  return <video ref={ref} muted loop playsInline preload="none" poster={poster} aria-hidden="true" />;
+}
+
+/* Under the form: the logos, the campaign clips with their numbers, the testimonial. */
+function Clients({ proof }: { proof: Proof }) {
+  const c = optin.clients;
   return (
-    <div className="op-table-wrap">
-      <div className="op-table">
-        <div className="op-thead">{st.columns.map((c) => <div key={c}>{c}</div>)}</div>
-        {st.items.map((r) => (
-          <div key={r.n} className={`op-tr${stage && r.n === stage.n ? " on" : ""}`}>
-            <div className="op-td op-stage"><span className="op-n">{r.n}</span><span className="op-name">{r.name}</span></div>
-            <div className="op-td">{r.looks}</div>
-            <div className="op-td">{r.constraint}</div>
-            <div className="op-td">{r.up}</div>
+    <section className="op-clients">
+      <div className="op-kicker">{c.kicker}</div>
+      <h2 className="op-h2 op-h2-lg">{c.headline}</h2>
+      <p className="op-body">{c.body}</p>
+      {proof.logos.length > 0 && (
+        <div className="op-logos">
+          {proof.logos.map((l) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={l.name} src={l.src} alt={l.name} />
+          ))}
+        </div>
+      )}
+      <div className="op-cases">
+        {proof.cases.map((x) => (
+          <div key={x.id} className="op-case">
+            <div className="op-phone-frame"><Loop src={x.clip} poster={x.poster} /></div>
+            <div className="op-case-title">{x.title}</div>
+            <div className="op-kpis">{x.figures.map((f) => <div key={f.label}><b>{f.value}</b><span>{f.label}</span></div>)}</div>
           </div>
         ))}
       </div>
-    </div>
+      {proof.testimonial && (
+        <a className="op-testimonial" href={proof.testimonial.url} target="_blank" rel="noopener noreferrer">
+          <div className="op-review-frame" style={proof.testimonial.poster ? { backgroundImage: `url(${proof.testimonial.poster})` } : undefined}>
+            <span className="op-play" aria-hidden="true" />
+          </div>
+          <div>
+            <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <div className="op-review-title">{proof.testimonial.title}</div>
+            <div className="op-review-who">{c.testimonialLabel}</div>
+          </div>
+        </a>
+      )}
+    </section>
   );
 }
 
-/* Page A: under the line. Check your email, your stage, and the interactive guide. */
-function PageA({ lead }: { lead: LeadView }) {
-  const a = optin.pageA;
-  const stage = stageOf(lead.answers);
-  useEffect(() => {
-    track("result_view", { path: lead.path, qualified: false, page: "A" });
-  }, [lead.path]);
-  return (
-    <div className="op">
-      <Header />
-      <main className="op-main op-center">
-        <h1 className="op-h1 op-h1-sm">{a.headline}</h1>
-        {stage && <div className="op-stage-line">{a.stageLead}<b>{stageText(a.stageFormat, stage)}</b></div>}
-        <StageTable stage={stage} />
-        <p className="op-body">{a.body}</p>
-        <a className="op-btn op-btn-inline" href={a.buttonUrl}>{a.button}</a>
-      </main>
-      <Footer />
-    </div>
-  );
-}
-
-/* Page B: at or above the line. The stage film, the call, proof, the objections and the FAQ. */
-function PageB({ lead, config, showSlots, proof }: { lead: LeadView; config: PublicConfig; showSlots: boolean; proof: Proof }) {
+/* The thanks page: the film, the call, the proof, the video FAQ. */
+function Thanks({ lead, config, showSlots, proof, filmId }: { lead: LeadView; config: PublicConfig; showSlots: boolean; proof: Proof; filmId: string | null }) {
   const b = optin.pageB;
-  const stage = stageOf(lead.answers);
-  const film = useMemo(() => videoSource(b.video), [b.video]);
-  const [open, setOpen] = useState(0);
   useEffect(() => {
-    track("result_view", { path: lead.path, qualified: true, page: "B" });
-  }, [lead.path]);
+    track("result_view", { path: lead.path, qualified: lead.qualified, page: "thanks" });
+  }, [lead.path, lead.qualified]);
   const goBooking = () => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const objections = b.objections.items.filter((x) => x.video || showSlots);
-  const faq = b.faq;
+  const reviews = b.reviews.items as { name: string; who: string; text: string; stars?: number }[];
   return (
     <div className="op">
       <Header />
       <main className="op-b">
         <section className="op-section op-center">
-          <h1 className="op-h1 op-h1-sm">
-            {b.headlineLead}
-            {stage && <span className="op-accent">{stageText(b.stageFormat, stage)}</span>}
-          </h1>
+          <h1 className="op-h1 op-h1-sm">{b.headline}</h1>
+          <p className="op-body">{b.sub}</p>
           <div className="op-film">
-            {film ? <ResultFilm src={film} /> : showSlots ? <div className="op-slot">[VIDEO] {stage ? fill(b.videoKicker, { n: String(stage.n) }) : b.videoKicker}</div> : null}
+            {filmId ? <MuxPlayer id={filmId} label={b.videoLabel} /> : showSlots ? <div className="op-slot">[VIDEO]</div> : null}
           </div>
           <div className="op-b-cta">
             <button type="button" className="op-btn" onClick={goBooking}>{b.bookButton}</button>
@@ -409,49 +376,28 @@ function PageB({ lead, config, showSlots, proof }: { lead: LeadView; config: Pub
               <div key={c.id} className="op-review">
                 <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
                 <div className="op-review-title">{c.title}</div>
-                <div className="op-kpis">
-                  {c.figures.map((f) => <div key={f.label}><b>{f.value}</b><span>{f.label}</span></div>)}
-                </div>
+                <div className="op-kpis">{c.figures.map((f) => <div key={f.label}><b>{f.value}</b><span>{f.label}</span></div>)}</div>
+              </div>
+            ))}
+            {reviews.map((r, i) => (
+              <div key={i} className="op-review">
+                <div className="op-stars" aria-hidden="true">{"★".repeat(Math.max(1, Math.min(5, r.stars ?? 5)))}</div>
+                <div className="op-review-text">{r.text}</div>
+                <div className="op-review-who">{r.name} &middot; {r.who}</div>
               </div>
             ))}
           </div>
         </section>
 
-        {objections.length > 0 && (
-          <section className="op-section op-center">
-            <div className="op-kicker">{b.objections.kicker}</div>
-            <h2 className="op-h2 op-h2-lg">{b.objections.headlineLead}<span className="op-accent">{b.objections.headlineAccent}</span></h2>
-            <p className="op-body">{b.objections.body}</p>
-            <div className="op-objections">
-              {objections.map((x) => (
-                <div key={x.q} className="op-objection">
-                  {x.video ? (
-                    <video controls playsInline preload="none" poster={`https://image.mux.com/${x.video}/thumbnail.jpg?width=960`} src={`https://stream.mux.com/${x.video}/highest.mp4`} />
-                  ) : (
-                    <div className="op-slot">[VIDEO]</div>
-                  )}
-                  <div className="op-objection-q">&ldquo;{x.q}&rdquo;</div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="op-section op-faq-wrap">
-          <div className="op-faq">
-            {faq.items.map((f, i) => (
-              <div key={f.q} className="op-faq-item">
-                <button type="button" className="op-faq-q" aria-expanded={open === i} onClick={() => setOpen(open === i ? -1 : i)}>
-                  <span>{f.q}</span><span className="op-accent" aria-hidden="true">{open === i ? "−" : "+"}</span>
-                </button>
-                {open === i && (
-                  <div className="op-faq-a">
-                    {f.a.map((p, j) => {
-                      if (p === "{minimum}") return faq.minimum && "minimumLine" in f ? <div key={j}>{fill(f.minimumLine as string, { minimum: faq.minimum })}</div> : null;
-                      return <div key={j}>{p}</div>;
-                    })}
-                  </div>
-                )}
+        <section className="op-section op-center op-faq-wrap">
+          <div className="op-kicker">{b.faqVideos.kicker}</div>
+          <h2 className="op-h2 op-h2-lg">{b.faqVideos.headlineLead}<span className="op-accent">{b.faqVideos.headlineAccent}</span></h2>
+          <p className="op-body">{b.faqVideos.body}</p>
+          <div className="op-faq-videos">
+            {b.faqVideos.items.map((x) => (
+              <div key={x.q} className="op-faq-video">
+                {x.video ? <MuxPlayer id={x.video} portrait label={x.q} /> : <div className="op-phone-frame op-slot-portrait"><span className="op-play" aria-hidden="true" /><span>{showSlots ? "[VIDEO]" : "Soon"}</span></div>}
+                <div className="op-objection-q">&ldquo;{x.q}&rdquo;</div>
               </div>
             ))}
           </div>
