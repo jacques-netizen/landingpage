@@ -23,10 +23,19 @@ export default {
     if (path === '/api/img') return handleImageProxy(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
     if (path.startsWith('/api/runitbak/')) return handleRunItBakApi(request, env);
-    // Client onboarding form, its admin page and API all live under /onboarding,
-    // so one Cloudflare route (maisondelites.com/onboarding*) serves it on the
-    // main domain. Answered on every host, before the campaigns.* slug routing.
+    // Client onboarding form, its admin page and API all live under /onboarding.
+    // On onboarding.maisondelites.com the form sits at the root instead:
+    //   /<token> -> the form, /admin -> admin, / -> the main site.
+    // Answered on every host, before the campaigns.* slug routing.
     if (path === '/onboarding' || path.startsWith('/onboarding/')) return handleOnboarding(request, env, ctx);
+    if (url.hostname.startsWith('onboarding.')) {
+      if (path === '/') return Response.redirect('https://maisondelites.com', 302);
+      if (!path.slice(1).includes('.')) {
+        const inner = new URL(request.url);
+        inner.pathname = '/onboarding' + path;
+        return handleOnboarding(new Request(inner.toString(), request), env, ctx);
+      }
+    }
     if (path === '/runitbak' || path.startsWith('/runitbak/') || (path === '/' && url.hostname.startsWith('runitbak.'))) return handleRunItBakPage(request, env);
 
     // On the booking subdomain (book.*), the root IS the calendar.

@@ -134,7 +134,7 @@
   function slugify(v){ return String(v || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); }
   var STATUS = { sent:'Sent', opened:'Opened', in_progress:'In progress', submitted:'Submitted' };
   var CALL = { personal_branding:'Personal branding call', standard:'Standard onboarding call' };
-  var BASE = 'https://maisondelites.com';
+  var BASE = 'https://onboarding.maisondelites.com';
   var LINKS = [];
   var filters = { status:'', call:'' };
   var openNew = false;
@@ -149,7 +149,7 @@
   }
   function showGate(msg){ $('#app').hidden = true; $('#gate').hidden = false; $('#gateMsg').textContent = msg || ''; $('#pw').focus(); }
   function showApp(){ $('#gate').hidden = true; $('#app').hidden = false; }
-  function linkUrl(token){ return BASE + '/onboarding/' + token; }
+  function linkUrl(token){ return BASE + '/' + token; }
   function copy(text, btn){
     var done = function(){ var t = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(function(){ btn.textContent = t; }, 1400); };
     if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function(){ prompt('Copy this link:', text); });

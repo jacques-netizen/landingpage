@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<!-- Served at /onboarding/<token>, on maisondelites.com through a Cloudflare
-     route. Everything it loads is inline or an absolute URL, and every API call
+<!-- Served at onboarding.maisondelites.com/<token> (and /onboarding/<token> on
+     the Worker's other hosts). Everything it loads is inline or an absolute URL, and every API call
      goes to /onboarding/api/..., so it works on any host the Worker answers. -->
 <style>
   :root{
@@ -216,7 +216,8 @@
 (function(){
   "use strict";
 
-  var TOKEN = location.pathname.split('/').filter(Boolean)[1] || '';
+  // /<token> on onboarding.maisondelites.com, /onboarding/<token> elsewhere.
+  var TOKEN = location.pathname.split('/').filter(Boolean).pop() || '';
   var API = '/onboarding/api/s/' + encodeURIComponent(TOKEN);
   var CHUNK = 10 * 1024 * 1024;
   var MB = 1024 * 1024;
