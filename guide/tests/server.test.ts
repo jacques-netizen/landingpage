@@ -120,3 +120,14 @@ describe("opt-in leads", () => {
     expect(crmFields(lead({ answers: { role: "creator", funnel: "optin" } }), {}).guide_url).toMatch(/\/secrets$/);
   });
 });
+
+describe("submissions export", () => {
+  it("escapes commas, quotes and spreadsheet formulas", async () => {
+    const { leadCsv } = await import("@/lib/server/leadlist");
+    const csv = leadCsv([{ at: "2026-10-20T10:00:00.000Z", firstName: "=cmd", lastName: 'O"Neil, Jr', email: "a@b.co", phone: "+32470", funnel: "opt-in", path: "creator", qualified: false, booked: true, source: "ig", campaign: "" }]);
+    const line = csv.split("\n")[1];
+    expect(line).toContain("'=cmd");
+    expect(line).toContain('"O""Neil, Jr"');
+    expect(line).toContain("opt-in");
+  });
+});
