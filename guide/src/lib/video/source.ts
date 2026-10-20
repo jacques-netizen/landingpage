@@ -19,7 +19,8 @@ function fromItem(id: string, item: MediaItem): VideoSource {
   if (item.provider === "mux") {
     return {
       id,
-      src: `https://stream.mux.com/${item.id}.m3u8`,
+      // Capped at 1080p: a 4K rendition is more than a phone screen needs, and some Android decoders fail on it.
+      src: `https://stream.mux.com/${item.id}.m3u8?max_resolution=1080p`,
       kind: "hls",
       poster: item.poster || `https://image.mux.com/${item.id}/thumbnail.webp?width=720&time=0`,
       captions: item.captions,
