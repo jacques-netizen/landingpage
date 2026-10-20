@@ -152,33 +152,52 @@
       "kicker": "The questions we get on every call",
       "headlineLead": "If you were thinking it, ",
       "headlineAccent": "someone else asked it.",
-      "body": "Six questions we hear most, each answered in under two minutes.",
+      "body": "Six questions we hear most, each answered in under a minute.",
       "items": [
         {
+          "q": "How does clipping actually work?",
+          "video": null,
+          "file": "/media/faq/how-clipping-works.mp4",
+          "poster": "/media/faq/how-clipping-works.jpg",
+          "mux": "SjEmvQOaaJEaUyXTv13uCKMf01K4Ql4Qc9NC00v6xVk3U"
+        },
+        {
           "q": "Are these views even real?",
-          "video": null
+          "video": null,
+          "file": null,
+          "poster": null,
+          "mux": null
         },
         {
           "q": "Will this reach our actual audience?",
-          "video": null
+          "video": null,
+          "file": null,
+          "poster": null,
+          "mux": null
         },
         {
           "q": "Can we push this to after our launch?",
-          "video": null
+          "video": null,
+          "file": null,
+          "poster": null,
+          "mux": null
         },
         {
           "q": "Why not just run ads?",
-          "video": null
+          "video": null,
+          "file": null,
+          "poster": null,
+          "mux": null
         },
         {
           "q": "Do we own the pages?",
-          "video": null
-        },
-        {
-          "q": "How fast can a campaign go live?",
-          "video": null
+          "video": null,
+          "file": null,
+          "poster": null,
+          "mux": null
         }
-      ]
+      ],
+      "_note": "Six portrait answers. file is an MP4 hosted with the site (encoded from the Mux upload named in mux); video is a Mux playback id played in Mux's player. file wins."
     },
     "youtube": null,
     "file": "/media/films/vsl.mp4",

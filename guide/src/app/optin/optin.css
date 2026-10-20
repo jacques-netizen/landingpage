@@ -171,3 +171,4 @@
   .op-featured-quote { padding: 24px; }
 }
 .op-testimonial .op-yt { border-radius: 10px; overflow: hidden; }
+.op-player.portrait video { object-fit: cover; }

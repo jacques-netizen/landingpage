@@ -415,7 +415,9 @@ function Thanks({ lead, config, showSlots, filmId }: { lead: LeadView; config: P
           <div className="op-faq-videos">
             {b.faqVideos.items.map((x) => (
               <div key={x.q} className="op-faq-video">
-                {x.video ? <MuxPlayer id={x.video} portrait label={x.q} /> : <div className="op-phone-frame op-slot-portrait"><span className="op-play" aria-hidden="true" /><span>{showSlots ? "[VIDEO]" : "Soon"}</span></div>}
+                {x.file ? (
+                  <div className="op-player portrait"><video controls playsInline preload="metadata" src={x.file} poster={x.poster ?? undefined} aria-label={x.q} onPlay={() => track("video_play", { media: `faq_${x.file}`.slice(0, 60), muted: false })} /></div>
+                ) : x.video ? <MuxPlayer id={x.video} portrait label={x.q} /> : <div className="op-phone-frame op-slot-portrait"><span className="op-play" aria-hidden="true" /><span>{showSlots ? "[VIDEO]" : "Soon"}</span></div>}
                 <div className="op-objection-q">&ldquo;{x.q}&rdquo;</div>
               </div>
             ))}
