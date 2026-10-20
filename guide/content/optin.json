@@ -137,11 +137,11 @@
       ],
       "_note": "Reviews supplied by the owner on 2026-10-20 with name, role and company. The owner confirms each person agreed to be quoted. Nothing here is written by the site.",
       "featured": {
-        "youtube": "j4dHabFOMJw",
+        "youtube": "n140a7k9fQ4",
         "quote": "I recommend Maison d’Élites.",
         "name": "Kojo Blak",
         "who": "Artist",
-        "poster": "/brand/proof/poster-kojo-blak.webp",
+        "poster": "https://i.ytimg.com/vi/n140a7k9fQ4/hqdefault.jpg",
         "label": "Kojo Blak, video testimonial"
       }
     },
@@ -211,7 +211,7 @@
       }
     ],
     "testimonial": "kojo_testimonial",
-    "testimonialLabel": "Watch the testimonial"
+    "testimonialLabel": "Video testimonial"
   },
   "guide": {
     "_note": "Opt-in leads get the Clipping Secrets guide at /secrets, not the personalized written guide.",

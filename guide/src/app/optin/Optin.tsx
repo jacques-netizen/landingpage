@@ -303,20 +303,24 @@ function Clients({ proof }: { proof: Proof }) {
           </div>
         ))}
       </div>
-      {proof.testimonial && (
-        <a className="op-testimonial" href={proof.testimonial.url} target="_blank" rel="noopener noreferrer">
-          <div className="op-review-frame" style={proof.testimonial.poster ? { backgroundImage: `url(${proof.testimonial.poster})` } : undefined}>
-            <span className="op-play" aria-hidden="true" />
-          </div>
+      {proof.testimonial && youtubeId(proof.testimonial.url) && (
+        <div className="op-testimonial">
+          <YouTubeInline id={youtubeId(proof.testimonial.url)!} poster={proof.testimonial.poster} label={proof.testimonial.title} />
           <div>
             <div className="op-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <div className="op-review-title">{proof.testimonial.title}</div>
             <div className="op-review-who">{c.testimonialLabel}</div>
           </div>
-        </a>
+        </div>
       )}
     </section>
   );
+}
+
+/** The video id from a youtu.be or youtube.com link. */
+function youtubeId(url: string): string | null {
+  const m = /(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([A-Za-z0-9_-]{11})/.exec(url);
+  return m ? m[1] : null;
 }
 
 /** A YouTube video that plays right here: the poster first, YouTube's player on tap. */

@@ -170,3 +170,4 @@
   .op-featured { grid-template-columns: 1fr; }
   .op-featured-quote { padding: 24px; }
 }
+.op-testimonial .op-yt { border-radius: 10px; overflow: hidden; }
