@@ -329,7 +329,7 @@ function YouTubeInline({ id, poster, label }: { id: string; poster: string; labe
   return (
     <div className="op-yt">
       {on ? (
-        <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`} title={label} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
+        <iframe src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`} title={label} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
       ) : (
         <button type="button" className="op-yt-poster" style={{ backgroundImage: `url(https://i.ytimg.com/vi/${id}/hqdefault.jpg), url(${poster})` }} aria-label={`Play: ${label}`} onClick={() => { setOn(true); track("video_play", { media: `yt_${id}`, muted: false }); }}>
           <span className="op-play" aria-hidden="true" />
@@ -356,14 +356,13 @@ function Thanks({ lead, config, showSlots, filmId }: { lead: LeadView; config: P
           <p className="op-body">{b.sub}</p>
           <div className="op-film">
             {b.youtube ? (
-              <div className="op-player"><iframe src={`https://www.youtube-nocookie.com/embed/${b.youtube}?rel=0&modestbranding=1&playsinline=1`} title={b.videoLabel} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /></div>
+              <div className="op-player"><iframe src={`https://www.youtube.com/embed/${b.youtube}?rel=0&modestbranding=1&playsinline=1`} title={b.videoLabel} allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" /></div>
             ) : b.file ? (
               <div className="op-player"><video controls playsInline preload="metadata" src={b.file} poster={b.filePoster ?? undefined} aria-label={b.videoLabel} onPlay={() => track("video_play", { media: "vsl_file", muted: false })} onError={(e) => track("video_error", { media: "vsl_file", code: e.currentTarget.error?.code ?? 0, src: "file", ua: navigator.userAgent.slice(0, 80) })} /></div>
             ) : filmId ? <MuxPlayer id={filmId} label={b.videoLabel} /> : showSlots ? <div className="op-slot">[VIDEO]</div> : null}
           </div>
           <div className="op-b-cta">
             <button type="button" className="op-btn" onClick={goBooking}>{b.bookButton}</button>
-            <a className="op-quiet" href={b.guideUrl}>{b.guideLink}</a>
           </div>
         </section>
 
@@ -408,21 +407,6 @@ function Thanks({ lead, config, showSlots, filmId }: { lead: LeadView; config: P
           </div>
         </section>
 
-        <section className="op-section op-center op-faq-wrap">
-          <div className="op-kicker">{b.faqVideos.kicker}</div>
-          <h2 className="op-h2 op-h2-lg">{b.faqVideos.headlineLead}<span className="op-accent">{b.faqVideos.headlineAccent}</span></h2>
-          <p className="op-body">{b.faqVideos.body}</p>
-          <div className="op-faq-videos">
-            {b.faqVideos.items.map((x) => (
-              <div key={x.q} className="op-faq-video">
-                {x.file ? (
-                  <div className="op-player portrait"><video controls playsInline preload="metadata" src={x.file} poster={x.poster ?? undefined} aria-label={x.q} onPlay={() => track("video_play", { media: `faq_${x.file}`.slice(0, 60), muted: false })} /></div>
-                ) : x.video ? <MuxPlayer id={x.video} portrait label={x.q} /> : <div className="op-phone-frame op-slot-portrait"><span className="op-play" aria-hidden="true" /><span>{showSlots ? "[VIDEO]" : "Soon"}</span></div>}
-                <div className="op-objection-q">&ldquo;{x.q}&rdquo;</div>
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
       <Footer disclaimer />
     </div>
