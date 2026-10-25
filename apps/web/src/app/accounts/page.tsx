@@ -10,6 +10,7 @@ import { AppHeading, panel, StatusDot } from '@/components/app-ui'
 import { LocalDateTime } from '@/components/local-time'
 import { readThemeCookie, THEME_COOKIE } from '@/designed/themes'
 import { getViewer } from '@/server/viewer'
+import { googleCheck } from '@/server/google-check'
 import { youtubeLogin } from '@/server/youtube'
 import { AccountActions, AddAccount } from './account-forms'
 
@@ -42,7 +43,8 @@ export default async function AccountsPage({
   const [accounts, s] = await Promise.all([listAccounts(db(), viewer.id), getSettings(db())])
   const now = new Date()
   const full = accounts.length >= s.max_linked_accounts
-  const canUseYouTubeLogin = !!youtubeLogin()
+  // Hidden while Google rejects the app's YouTube address, so nobody lands on Google's error page.
+  const canUseYouTubeLogin = !!youtubeLogin() && (await googleCheck()).youtube !== false
   const notice = linked === 'youtube' ? 'Your YouTube channel is linked and verified.' : null
   const problem = error ? (LINK_MESSAGES[error] ?? LINK_MESSAGES.youtube_failed) : null
 

@@ -1,6 +1,7 @@
 import { db } from '@mde/db'
 import { sql } from 'drizzle-orm'
 import { NextResponse, type NextRequest } from 'next/server'
+import { googleCheck } from '@/server/google-check'
 import { providerStatus } from '@/server/providers'
 import { workerStatus } from '@/server/worker-status'
 
@@ -28,6 +29,8 @@ export async function GET(req: NextRequest) {
       ok: true,
       providers: providerStatus(),
       worker: await workerStatus(),
+      // Whether Google accepts the app's sign-in and YouTube addresses; rejected lists any it refuses.
+      google: await googleCheck(),
       ...(hosts ? { hosts } : {}),
     })
   } catch {

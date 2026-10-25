@@ -8,6 +8,7 @@ import { staffDashboard } from '@/server/dashboard'
 import { requireStaff } from '@/server/guard'
 import { platformsWithoutProvider } from '@/server/providers'
 import { workerStatus } from '@/server/worker-status'
+import { googleCheck } from '@/server/google-check'
 import { AdminPage, Notice } from './_components/ui'
 
 export const dynamic = 'force-dynamic'
@@ -36,11 +37,12 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
   const { show: showParam } = await searchParams
   const show = FILTERS.some(([k]) => k === showParam) ? showParam! : 'live'
   const now = new Date()
-  const [rows, d, unread, worker] = await Promise.all([
+  const [rows, d, unread, worker, google] = await Promise.all([
     homeCampaigns(now),
     staffDashboard(now),
     unreadCount(db(), viewer.id),
     workerStatus(),
+    googleCheck(),
   ])
   const missingProviders = platformsWithoutProvider()
   const campaigns = rows.filter((c) => show === 'all' || c.status === show)
@@ -71,6 +73,13 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
             checks). Its last answer: {c.lastProviderError ?? 'no detail'}. No views are counted until this is fixed.
           </Notice>
         ))}
+      {google.rejected.length ? (
+        <Notice kind="bad">
+          Google is refusing sign-ins from the app (redirect_uri_mismatch), so the Google buttons are hidden until it is
+          fixed. In Google Cloud Console, open APIs &amp; Services, Credentials, the OAuth client the app uses, and add
+          these under Authorised redirect URIs: {google.rejected.join(' and ')}.
+        </Notice>
+      ) : null}
       {missingProviders.length ? (
         <Notice kind="bad">
           No data provider is set up for {missingProviders.map((p) => PLATFORM_LABELS[p] ?? p).join(', ')}. Posts there
