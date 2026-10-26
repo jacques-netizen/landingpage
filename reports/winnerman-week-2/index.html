@@ -153,6 +153,34 @@
   .clip .go{justify-self:end;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;color:var(--gold-soft);border:1px solid var(--hair);padding:0.5rem 0.7rem;transition:.25s;white-space:nowrap}
   .clip .go:hover{background:var(--gold);color:var(--bg)}
 
+  .wall{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:0.9rem;margin-top:1.6rem}
+  .vtile{position:relative;min-width:0}
+  .vt-media{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;box-shadow:0 22px 44px -22px rgba(0,0,0,.85),0 0 0 1px rgba(212,178,106,.2);transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s}
+  .vtile:hover .vt-media{transform:translateY(-6px);box-shadow:0 34px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.4)}
+  .vt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media img{transform:scale(1.06)}
+  .vt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 22%,transparent 50%,rgba(10,8,5,.95) 100%)}
+  .vt-views{position:absolute;top:0.6rem;left:0.6rem;z-index:3;padding:0.32rem 0.55rem;border-radius:999px;background:rgba(15,12,8,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(235,214,158,.25);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;color:var(--gold-soft);transition:opacity .4s}
+  .vt-rank{position:absolute;top:0.6rem;right:0.6rem;z-index:3;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;color:var(--bg);background:var(--gold-light);border-radius:999px;padding:0.28rem 0.5rem;transition:opacity .4s}
+  .vt-play{position:absolute;left:50%;top:46%;z-index:3;width:54px;height:54px;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.4);transition:transform .45s,background .45s,opacity .4s}
+  .vt-play:before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(212,178,106,.55);animation:ring 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+  .vt-play > span{width:0;height:0;margin-left:5px;border-left:16px solid #fff;border-top:10px solid transparent;border-bottom:10px solid transparent}
+  .vtile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9)}
+  @keyframes ring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+  .vt-meta{position:absolute;left:0.7rem;right:0.7rem;bottom:0.7rem;z-index:3;transition:opacity .4s}
+  .vt-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.82rem;color:#fff}
+  .vt-s{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(239,231,213,.72);margin-top:0.2rem}
+  .vt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s}
+  .vtile.loading .vt-play > span{border:0;width:22px;height:22px;margin:0;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .vtile.playing iframe{opacity:1}
+  .vtile.playing .vt-play,.vtile.playing .vt-meta,.vtile.playing .vt-views,.vtile.playing .vt-rank{opacity:0;pointer-events:none}
+  .vtile.playing .vt-media:after{opacity:0}
+  .vt-open{display:inline-flex;margin-top:0.6rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);text-decoration:none}
+  .vt-open:hover{color:var(--gold-soft)}
+  @media(max-width:1020px){.wall{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:700px){.wall{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0.8rem;margin-left:calc(-1 * clamp(1.3rem,6vw,6.5rem));margin-right:calc(-1 * clamp(1.3rem,6vw,6.5rem));padding:0 clamp(1.3rem,6vw,6.5rem) 0.5rem;scrollbar-width:none}.wall::-webkit-scrollbar{display:none}.wall .vtile{flex:0 0 56%;scroll-snap-align:start}}
+
   /* ============ LEARNED ============ */
   .learn{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
   .ln{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.6rem 1.5rem;overflow:hidden;transition:.4s}
@@ -327,6 +355,7 @@
       <div class="donut"><svg viewBox="0 0 100 100"><circle class="bgc" cx="50" cy="50" r="40"/><circle class="fgc" cx="50" cy="50" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg><b>38%</b></div>
       <p>Both came from <b>@dk_baj</b>, with a like rate near 20%, about double the campaign average. <b>Together they make up 38% of all views.</b></p>
     </div>
+    <div class="wall" id="wall"></div>
     <div class="sortbar rv d2">
       <h3 class="sub" style="margin:0">The six biggest posts</h3>
       <div class="seg" id="sortSeg" role="tablist"><button class="on" data-m="views">By views</button><button data-m="rate">By like rate</button></div>
@@ -409,12 +438,12 @@
   /* top clips */
   const FOL={dk_baj:'513.1K',lirickoss22:'758.1K',ander_lyrics:'828.2K',felyrics38:'144.5K'};
   const CL=[
-    {p:'dk_baj',v:17379,l:3434,d:'16 Oct'},
-    {p:'dk_baj',v:16927,l:3274,d:'16 Oct'},
-    {p:'lirickoss22',v:4920,l:87,d:'18 Oct'},
-    {p:'ander_lyrics',v:3771,l:335,d:'16 Oct'},
-    {p:'lirickoss22',v:2998,l:41,d:'16 Oct'},
-    {p:'felyrics38',v:2772,l:138,d:'20 Oct'}
+    {p:'dk_baj',id:'7697296279830940944',v:17379,l:3434,d:'16 Oct'},
+    {p:'dk_baj',id:'7697383810723286290',v:16927,l:3274,d:'16 Oct'},
+    {p:'lirickoss22',id:'7697993527162129685',v:4920,l:87,d:'18 Oct'},
+    {p:'ander_lyrics',id:'7697284834724449558',v:3771,l:335,d:'16 Oct'},
+    {p:'lirickoss22',id:'7697310375837994261',v:2998,l:41,d:'16 Oct'},
+    {p:'felyrics38',id:'7698557012912672021',v:2772,l:138,d:'20 Oct'}
   ];
   const maxV=Math.max(...CL.map(c=>c.v));
   const clips=document.getElementById('clips');
@@ -427,10 +456,38 @@
       '<div class="who"><b>@'+esc(c.p)+'</b><small>'+FOL[c.p]+' followers &middot; '+c.d+'</small></div>'+
       '<div class="vb"><div class="vt"><b>'+c.v.toLocaleString('en-US')+' views</b><span>'+c.l.toLocaleString('en-US')+' likes</span></div><div class="tr"><div class="fl" data-w="'+(c.v/maxV*100).toFixed(1)+'"></div></div></div>'+
       '<div class="lr"><b>'+(c.r*100).toFixed(1)+'%</b><small>Like rate</small></div>'+
-      '<a class="go" href="https://www.tiktok.com/@'+c.p+'" target="_blank" rel="noopener">Watch &#8599;</a></div>').join('');
+      '<a class="go" href="https://www.tiktok.com/@'+c.p+'/video/'+c.id+'" target="_blank" rel="noopener">Watch &#8599;</a></div>').join('');
     if(shown) requestAnimationFrame(()=>clips.querySelectorAll('.fl').forEach(f=>f.style.width=f.dataset.w+'%'));
   }
   draw('views');
+
+  /* clip wall: tap to load TikTok's player */
+  const wall=document.getElementById('wall');
+  const short=n=>n>=1000?(n/1000).toFixed(n>=10000?1:1).replace(/\.0$/,'')+'K':String(n);
+  wall.innerHTML=CL.map((c,i)=>'<div class="vtile rv'+(i%3?' d'+(i%3):'')+'" data-id="'+c.id+'">'+
+    '<div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @'+c.p+'">'+
+    '<img src="img/clips/'+c.id+'.jpg" alt="Clip from @'+c.p+'" loading="lazy">'+
+    '<span class="vt-views">'+short(c.v)+' views</span><span class="vt-rank">#'+(i+1)+'</span>'+
+    '<span class="vt-play" aria-hidden="true"><span></span></span>'+
+    '<div class="vt-meta"><div class="vt-h">@'+esc(c.p)+'</div><div class="vt-s">'+c.d+' &middot; '+c.l.toLocaleString('en-US')+' likes</div></div></div>'+
+    '<a class="vt-open" href="https://www.tiktok.com/@'+c.p+'/video/'+c.id+'" target="_blank" rel="noopener">Open on TikTok &#8599;</a></div>').join('');
+  once(wall.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+  const TT='?autoplay=1&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=1&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0';
+  function playTile(t){
+    if(t.classList.contains('playing')||t.classList.contains('loading')) return;
+    t.classList.add('loading');
+    const f=document.createElement('iframe');
+    f.src='https://www.tiktok.com/player/v1/'+t.dataset.id+TT; f.title='TikTok clip';
+    f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture'; f.setAttribute('allowfullscreen','');
+    f.addEventListener('load',()=>{t.classList.remove('loading');t.classList.add('playing');});
+    t.querySelector('.vt-media').appendChild(f);
+    setTimeout(()=>{t.classList.remove('loading');t.classList.add('playing');},4000);
+  }
+  wall.querySelectorAll('.vtile').forEach(t=>{const m=t.querySelector('.vt-media');m.addEventListener('click',()=>playTile(t));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});});
+  window.addEventListener('message',e=>{
+    if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
+    try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
+  });
   once([clips],()=>{shown=true;clips.querySelectorAll('.fl').forEach(f=>f.style.width=f.dataset.w+'%');},0.3);
   const sb=[...document.querySelectorAll('#sortSeg button')];
   sb.forEach(b=>b.addEventListener('click',()=>{sb.forEach(x=>x.classList.toggle('on',x===b));draw(b.dataset.m);}));
