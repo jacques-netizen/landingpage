@@ -435,6 +435,48 @@ export async function closeCampaign(tx: DbOrTx, actorId: string | null, id: stri
 }
 
 /**
+ * Resume a closed campaign (owner request, 2026-10-26: one was closed before its last stats refresh, so
+ * clippers' views stopped short). Possible only until its earnings are released: final posts go back to
+ * approved and are checked at once, so views read from now on count again, up to the caps and the
+ * budget. An end date already passed is cleared so the campaign is not closed again straight away; staff
+ * close it themselves when the stats are in. Audited.
+ */
+export async function reopenCampaign(db: Db, actorId: string, id: string, now = new Date()) {
+  return db.transaction(async (tx) => {
+    const c = await load(tx, id, true)
+    if (c.status !== 'closed' || c.deletedAt)
+      throw new CampaignError('wrong_status', 'Only a closed campaign can be resumed.')
+    const [released] = await tx.execute<{ n: string }>(sql`
+      select (select count(*) from ledger_transactions where campaign_id = ${id} and kind = 'campaign_remainder_returned')
+        + (select count(*) from submissions where campaign_id = ${id} and state = 'paid_out') as n`)
+    if ((c.releaseAt && c.releaseAt <= now) || Number(released?.n ?? 0) > 0)
+      throw new CampaignError(
+        'wrong_status',
+        'Its earnings have already been released to clippers, so it cannot be resumed. Start a new campaign instead.',
+      )
+    const clearEnd = !!c.endAt && c.endAt <= now
+    await tx
+      .update(tables.campaigns)
+      .set({ status: 'live', closedAt: null, releaseAt: null, ...(clearEnd ? { endAt: null } : {}) })
+      .where(eq(tables.campaigns.id, id))
+    const reopened = await tx
+      .update(tables.submissions)
+      .set({ state: 'approved', nextCheckAt: now })
+      .where(and(eq(tables.submissions.campaignId, id), eq(tables.submissions.state, 'final')))
+      .returning({ id: tables.submissions.id })
+    await writeAudit(tx, {
+      actorId,
+      action: 'campaign.reopen',
+      entity: 'campaign',
+      entityId: id,
+      before: { status: c.status, closedAt: c.closedAt, releaseAt: c.releaseAt, endAt: c.endAt },
+      after: { status: 'live', posts: reopened.length, endAt: clearEnd ? null : c.endAt },
+    })
+    return { posts: reopened.length, endCleared: clearEnd }
+  })
+}
+
+/**
  * Delete a campaign (owner request, 2026-10-07). One that never moved money and has no posts is removed
  * completely. Otherwise the books and creators' earnings depend on it, so it is closed if it is still
  * running (its unspent budget goes back to the client when it releases, as for any closed campaign) and

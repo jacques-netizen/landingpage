@@ -12,6 +12,7 @@ import {
   fundCampaign,
   goLive,
   publishCampaign,
+  reopenCampaign,
   TEMPLATES,
   updateCampaign,
   type CampaignType,
@@ -138,6 +139,18 @@ export async function campaignAction(id: string, _prev: BuilderState, form: Form
       await db().transaction((tx) => closeCampaign(tx, viewer.id, id))
       revalidatePath(`/admin/campaigns/${id}`)
       return { ok: 'Closed. Earnings are released after the review window.' }
+    }
+    if (what === 'resume') {
+      const r = await reopenCampaign(db(), viewer.id, id)
+      revalidatePath(`/admin/campaigns/${id}`)
+      revalidatePath('/campaigns')
+      return {
+        ok: `Resumed. ${r.posts} ${r.posts === 1 ? 'post is' : 'posts are'} being checked now, and views read from here count again.${
+          r.endCleared
+            ? ' The end date had passed, so it was cleared: close the campaign yourself once the stats are in.'
+            : ''
+        }`,
+      }
     }
     if (what === 'delete') {
       // Deleting is for admins only, on top of the money access this action already needs.

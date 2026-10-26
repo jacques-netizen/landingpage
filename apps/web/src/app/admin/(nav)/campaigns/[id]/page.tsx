@@ -324,7 +324,7 @@ export default async function CampaignAdminPage({
       ) : null}
 
       {/* Ended campaigns keep the actions box so admins can still delete them. */}
-      {canMoney && (open || live || viewer.roles.includes('admin')) ? (
+      {canMoney && (open || live || c.status === 'closed' || viewer.roles.includes('admin')) ? (
         <section className="mt-4">
           <CampaignActions
             id={c.id}
@@ -352,6 +352,7 @@ export default async function CampaignAdminPage({
               close: live,
               cancel: open && !funded,
               delete: viewer.roles.includes('admin'),
+              resume: c.status === 'closed' && !c.deletedAt && !c.demo && !!c.releaseAt && c.releaseAt > new Date(),
             }}
             keepsRecords={funded || hasPosts}
           />

@@ -7,7 +7,16 @@ import { campaignAction, type BuilderState } from './actions'
 
 type Props = {
   id: string
-  can: { publish: boolean; fund: boolean; close: boolean; cancel: boolean; copy: boolean; delete?: boolean }
+  can: {
+    publish: boolean
+    fund: boolean
+    close: boolean
+    cancel: boolean
+    copy: boolean
+    delete?: boolean
+    /** A closed campaign whose earnings are not released yet can be resumed. */
+    resume?: boolean
+  }
   /** Whether deleting keeps the campaign's records (it has money or posts) or removes it. */
   keepsRecords?: boolean
   fundLabel: string
@@ -18,7 +27,7 @@ type Props = {
 // The actions a campaign allows in its current state. Close and cancel ask for confirmation.
 export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Props) {
   const [state, action, pending] = useActionState<BuilderState, FormData>(campaignAction.bind(null, id), {})
-  const [confirm, setConfirm] = useState<null | 'close' | 'cancel' | 'delete'>(null)
+  const [confirm, setConfirm] = useState<null | 'close' | 'cancel' | 'delete' | 'resume'>(null)
   const [reference, setReference] = useState('')
   const submit = (what: string) => {
     const f = new FormData()
@@ -86,6 +95,11 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
             Close campaign
           </Button>
         ) : null}
+        {can.resume ? (
+          <Button size="sm" onClick={() => setConfirm('resume')} disabled={pending}>
+            Resume campaign
+          </Button>
+        ) : null}
         {can.cancel ? (
           <Button size="sm" variant="destructive" onClick={() => setConfirm('cancel')} disabled={pending}>
             Cancel campaign
@@ -103,18 +117,22 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
         title={
           confirm === 'close'
             ? 'Close this campaign?'
-            : confirm === 'delete'
-              ? 'Delete this campaign?'
-              : 'Cancel this campaign?'
+            : confirm === 'resume'
+              ? 'Resume this campaign?'
+              : confirm === 'delete'
+                ? 'Delete this campaign?'
+                : 'Cancel this campaign?'
         }
         description={
           confirm === 'close'
-            ? 'No new earnings after this. Posts become final and earnings are released after the review window. This cannot be undone.'
-            : confirm === 'delete'
-              ? keepsRecords
-                ? 'It disappears from the admin and the campaigns screen. Money has moved or creators have posted, so it is closed first and its records are kept for the books: earnings are still paid and the unspent budget goes back to the client. This cannot be undone.'
-                : 'It is removed completely. This cannot be undone.'
-              : 'The campaign will not run. This cannot be undone.'
+            ? 'No new earnings after this. Posts become final and earnings are released after the review window. You can resume it until then.'
+            : confirm === 'resume'
+              ? 'It goes live again. Every post is checked now and the views read from here count, up to the caps and the budget. Close it again once the stats are in.'
+              : confirm === 'delete'
+                ? keepsRecords
+                  ? 'It disappears from the admin and the campaigns screen. Money has moved or creators have posted, so it is closed first and its records are kept for the books: earnings are still paid and the unspent budget goes back to the client. This cannot be undone.'
+                  : 'It is removed completely. This cannot be undone.'
+                : 'The campaign will not run. This cannot be undone.'
         }
         footer={
           <>
@@ -129,7 +147,13 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
                 submit(what)
               }}
             >
-              {confirm === 'close' ? 'Close campaign' : confirm === 'delete' ? 'Delete campaign' : 'Cancel campaign'}
+              {confirm === 'close'
+                ? 'Close campaign'
+                : confirm === 'resume'
+                  ? 'Resume campaign'
+                  : confirm === 'delete'
+                    ? 'Delete campaign'
+                    : 'Cancel campaign'}
             </Button>
           </>
         }
