@@ -253,6 +253,13 @@
       "when": 1792253523119,
       "tag": "0035_client_budget",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1793046247571,
+      "tag": "0036_campaign_reports",
+      "breakpoints": true
     }
   ]
 }

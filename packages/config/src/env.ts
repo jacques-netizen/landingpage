@@ -36,6 +36,8 @@ export const envSchema = z.object({
   TIKTOK_CLIENT_SECRET: optional,
   DATA_PROVIDER_API_KEY: optional,
   SENTRY_DSN: optional,
+  // Claude writes and edits the campaign reports (owner brief, 2026-10-26).
+  ANTHROPIC_API_KEY: optional,
   BRAND_NAME: z.string().default('BRAND_NAME'),
   LEGAL_ENTITY: z.string().default('LEGAL_ENTITY'),
   CONTACT_EMAIL: z.string().default('CONTACT_EMAIL'),

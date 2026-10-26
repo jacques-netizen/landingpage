@@ -29,13 +29,24 @@ import { CopyReportLink } from './copy-report-link'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { RefreshButton } from './refresh-button'
 import { ReportLink } from './report-link'
+import { CampaignReports } from './reports-tab'
 import { CampaignReview } from './review-cards'
 import { CampaignVerifications, type VerificationRow } from './verifications'
 import { CampaignBuilder } from '../builder'
 import { CampaignActions } from '../campaign-actions'
 import { valuesFrom } from '../values'
 
-const TABS = ['review', 'verifications', 'clips', 'clippers', 'payouts', 'pages', 'overview', 'settings'] as const
+const TABS = [
+  'review',
+  'verifications',
+  'clips',
+  'clippers',
+  'payouts',
+  'pages',
+  'overview',
+  'reports',
+  'settings',
+] as const
 type Tab = (typeof TABS)[number]
 /** Old tab names still land somewhere sensible. */
 const OLD_TABS: Record<string, Tab> = { creators: 'clippers', submissions: 'clips', edit: 'settings' }
@@ -367,7 +378,7 @@ export default async function CampaignAdminPage({
         />
       ) : null}
 
-      <nav aria-label="Campaign" className="mt-5 grid grid-cols-8 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
+      <nav aria-label="Campaign" className="mt-5 grid grid-cols-9 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
         {(
           [
             ['review', 'Review', head.waiting],
@@ -377,6 +388,7 @@ export default async function CampaignAdminPage({
             ['payouts', 'Payouts', 0],
             ['pages', 'Pages', 0],
             ['overview', 'Overview', 0],
+            ['reports', 'Reports', 0],
             ['settings', 'Settings', 0],
           ] as const
         ).map(([key, label, waiting]) => (
@@ -703,6 +715,8 @@ export default async function CampaignAdminPage({
               </div>
             )}
           </Card>
+        ) : tab === 'reports' ? (
+          <CampaignReports campaignId={c.id} title={c.title} canEdit={canMoney} />
         ) : tab === 'overview' && o ? (
           <>
             <dl className="m-0 grid grid-cols-4 gap-3 max-lg:grid-cols-2">

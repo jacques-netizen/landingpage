@@ -777,3 +777,57 @@ export const legalDocuments = pgTable(
     check('legal_documents_slug_check', inList('slug', LEGAL_SLUGS)),
   ],
 )
+
+// Campaign reports written for a client (owner brief, 2026-10-26): a weekly report frozen when it is
+// published, or a final report whose numbers are read again on every open. Every edit is a new version;
+// the report points at the version being edited and the version that is public.
+export const REPORT_KINDS = ['week', 'final'] as const
+export const REPORT_STATUSES = ['draft', 'published'] as const
+
+export const campaignReports = pgTable(
+  'campaign_reports',
+  {
+    id: id(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id),
+    kind: text('kind').notNull(),
+    weekNumber: integer('week_number'),
+    slug: text('slug').notNull().unique(),
+    status: text('status').notNull().default('draft'),
+    currentVersionId: uuid('current_version_id'),
+    publishedVersionId: uuid('published_version_id'),
+    publishedAt: tz('published_at'),
+    // A weekly report's figures as they were when it was published. Null for final reports.
+    publishedData: jsonb('published_data'),
+    // Clip pictures copied to our storage, by submission id: platform picture links expire.
+    covers: jsonb('covers').$type<Record<string, string>>().notNull().default({}),
+    createdBy: uuid('created_by').references(() => users.id),
+    ...timestamps,
+  },
+  (t) => [
+    index('campaign_reports_campaign').on(t.campaignId),
+    check('campaign_reports_kind_check', inList('kind', REPORT_KINDS)),
+    check('campaign_reports_status_check', inList('status', REPORT_STATUSES)),
+  ],
+)
+
+export const campaignReportVersions = pgTable(
+  'campaign_report_versions',
+  {
+    id: id(),
+    reportId: uuid('report_id')
+      .notNull()
+      .references(() => campaignReports.id),
+    number: integer('number').notNull(),
+    parentId: uuid('parent_id'),
+    spec: jsonb('spec').notNull(),
+    // The figures the text was written against, to tell when a refreshed number makes a sentence wrong.
+    data: jsonb('data').notNull(),
+    // What changed: the instruction typed, or a short note for toggles, reorders and restores.
+    note: text('note').notNull(),
+    createdBy: uuid('created_by').references(() => users.id),
+    ...timestamps,
+  },
+  (t) => [unique('campaign_report_versions_number').on(t.reportId, t.number)],
+)
