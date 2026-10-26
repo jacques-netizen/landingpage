@@ -325,7 +325,7 @@ counted_views = max(0, latest_views - baseline_views)   -- only while the submis
 if counted_views < campaign.min_views_to_earn then earnings = 0
 ```
 
-`baseline_views` is the first successful view check at or after submission. Views before submission never count. If a post is deleted or made private, no new views are counted and the submission moves to `removed` after the grace period in 03 section 3.4.
+Every view of a post counts, including the views it had when it was submitted (owner rule, 2026-10-26; this replaces the earlier rule that views before submission never count). `baseline_views` is kept at 0. If a post is deleted or made private, no new views are counted and the submission moves to `removed` after the grace period in 03 section 3.4.
 
 ### 5.2 Earnings for one post
 

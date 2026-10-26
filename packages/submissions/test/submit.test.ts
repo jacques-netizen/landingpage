@@ -158,7 +158,7 @@ describe('submitting a post', () => {
       platformPostId: p.pid,
       termsVersionId: camp!.currentTermsVersionId,
       rateCentsPer1000Locked: 200,
-      baselineViews: 420,
+      baselineViews: 0,
       latestViews: 420,
       countedViews: 0,
       creatorNote: 'first one',

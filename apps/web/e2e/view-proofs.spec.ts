@@ -62,7 +62,7 @@ test('a creator verifies views with an insights recording and staff approve it i
   await expect(card.getByText('2,500').first()).toBeVisible()
   await card.getByLabel('Different number of views').fill('2,000')
   await card.getByRole('button', { name: 'Approve with this number' }).click()
-  await expect(admin.getByText('2,000 views verified.', { exact: true })).toBeVisible()
+  await expect(admin.getByText(/^2,000 views verified\./)).toBeVisible()
   await expect(
     admin
       .getByRole('region', { name: 'Decided' })

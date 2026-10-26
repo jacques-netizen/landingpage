@@ -169,20 +169,20 @@ test('earnings from a view check show in the wallet', async ({ page }) => {
     router,
     now: new Date((s!.submitted_at as Date).getTime() + 3 * 3_600_000),
   })
-  // Sample music pays $1.25 per 1,000: (6,500 - 1,500 baseline) x 125 / 1,000 = 625 cents.
-  expect(r).toMatchObject({ ran: true, deltaCents: 625 })
+  // Sample music pays $1.25 per 1,000, on every view (owner rule, 2026-10-26): floor(6,500 x 125 / 1,000) = 812 cents.
+  expect(r).toMatchObject({ ran: true, deltaCents: 812 })
 
   await page.goto('/wallet')
-  await expect(page.getByText('+ $6.25 pending review')).toBeVisible()
-  await expect(page.getByText('5,000 views')).toBeVisible()
-  await expect(page.getByText('+$6.25')).toBeVisible()
+  await expect(page.getByText('+ $8.12 pending review')).toBeVisible()
+  await expect(page.getByText('6,500 views')).toBeVisible()
+  await expect(page.getByText('+$8.12')).toBeVisible()
   await expect(page.getByText('TODAY')).toBeVisible()
 
   // My campaigns shows the same post, views and earnings for the campaign.
   await page.goto('/my-campaigns')
   const row = page.getByRole('row', { name: /Sample music/ })
-  await expect(row).toContainText('5,000')
-  await expect(row).toContainText('$6.25')
+  await expect(row).toContainText('6,500')
+  await expect(row).toContainText('$8.12')
   await page.getByRole('link', { name: 'Closed' }).click()
   await expect(page.getByText('No closed campaigns yet.')).toBeVisible()
 })

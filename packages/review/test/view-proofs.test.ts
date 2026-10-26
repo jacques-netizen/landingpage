@@ -175,14 +175,14 @@ describe('view verification', () => {
       views: 3_500,
       note: 'Insights show 3,500.',
     })
-    // 3,500 - 500 baseline = 3,000 counted at $2.00 per 1,000 = $6.00.
-    expect(r.deltaCents).toBe(600)
+    // 3,500 counted at $2.00 per 1,000 = $7.00.
+    expect(r.deltaCents).toBe(700)
     const s = await t.sub()
     expect(s.verifiedViews).toBe(3_500)
     expect(s.latestViews).toBe(3_500)
-    expect(s.countedViews).toBe(3_000)
-    expect(s.earnedCents).toBe(600)
-    expect(await t.balance('creator_pending', t.creator)).toBe(600)
+    expect(s.countedViews).toBe(3_500)
+    expect(s.earnedCents).toBe(700)
+    expect(await t.balance('creator_pending', t.creator)).toBe(700)
     const snaps = await db.select().from(tables.viewSnapshots).where(eq(tables.viewSnapshots.submissionId, t.id))
     expect(snaps.some((x) => x.source === 'manual' && x.views === 3_500)).toBe(true)
     const p = (await latestViewProof(db, t.id))!
@@ -198,12 +198,12 @@ describe('view verification', () => {
     t.views(1_000)
     await t.check(2)
     expect((await t.sub()).latestViews).toBe(3_500)
-    expect((await t.sub()).countedViews).toBe(3_000)
+    expect((await t.sub()).countedViews).toBe(3_500)
     // A check reading more takes over.
     t.views(5_000)
     expect((await t.check(5)).ran).toBe(true)
     expect((await t.sub()).latestViews).toBe(5_000)
-    expect((await t.sub()).countedViews).toBe(4_500)
+    expect((await t.sub()).countedViews).toBe(5_000)
     // The next verification waits 72 hours after an approval.
     await expect(
       requestViewProof(db, { submissionId: t.id, creatorId: t.creator, now: new Date(t.now.getTime() + 2 * HOUR) }),
@@ -293,12 +293,12 @@ describe('view verification', () => {
       .orderBy(desc(tables.viewSnapshots.takenAt))
       .limit(1)
     expect(snap).toMatchObject({ source: 'manual', views: 6_500, likes: 25, comments: 80 })
-    // 6,500 - 500 baseline = 6,000 counted at $2.00 per 1,000 = $12.00.
-    expect(r.deltaCents).toBe(1_200)
+    // 6,500 counted at $2.00 per 1,000 = $13.00.
+    expect(r.deltaCents).toBe(1_300)
     const s = await t.sub()
     expect(s.verifiedViews).toBe(6_500)
     expect(s.latestViews).toBe(6_500)
-    expect(s.earnedCents).toBe(1_200)
+    expect(s.earnedCents).toBe(1_300)
     const p = (await latestViewProof(db, t.id))!
     expect(p.status).toBe('approved')
     expect(p.setViews).toBe(6_500)

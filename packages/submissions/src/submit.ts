@@ -124,7 +124,7 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
   // When the platform cannot be reached (an outage, or no data provider set up), the post is kept and
   // goes to a reviewer instead of being refused (owner request, 2026-10-10): clippers were being turned
   // away. The checks that need the post's data wait for the reviewer; the next view check fetches the
-  // post and sets its baseline, so nothing before that is counted.
+  // post and counts its views.
   let post: PostData | null = null
   let unreachable: ProviderUnavailable | null = null
   try {
@@ -250,9 +250,9 @@ export async function submitPost(db: Db, input: SubmitInput, deps: SubmitDeps): 
     rateCentsPer1000Locked: c.rateCentsPer1000,
     publishedAt: post?.publishedAt ?? null,
     submittedAt: now,
-    // The views at submission are the baseline and are never counted (02_DATA_AND_MONEY.md). Unknown
-    // here, the first view check that gets them sets it.
-    baselineViews: post?.views ?? 0,
+    // Every view counts, the ones the post had at submission too (owner rule, 2026-10-26), so there is
+    // no baseline to keep.
+    baselineViews: 0,
     latestViews: post?.views ?? 0,
     countedViews: 0,
     earnedCents: 0,

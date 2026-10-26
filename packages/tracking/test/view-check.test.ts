@@ -159,14 +159,15 @@ const t0Of = (t: { t0: Date }) => t.t0.getTime()
 describe('view checks and earnings', () => {
   it('grows pending earnings with rising views, matching a hand calculation', async () => {
     const t = await setup()
-    // Baseline 500 at submission. Rate $2.00 per 1,000, minimum 1,000 counted views, cap $300.00 a post.
+    // 500 views at submission, and they count too (owner rule, 2026-10-26: every view of the post counts,
+    // before and after it was submitted). Rate $2.00 per 1,000, minimum 1,000 counted views, cap $300.00 a post.
     const steps: [number, number, number][] = [
       // [views, counted, expected pending cents]
-      [1_400, 900, 0], // below the minimum: nothing yet
-      [1_500, 1_000, 200], // 1,000 x $2.00 / 1,000 = $2.00
-      [6_500, 6_000, 1_200], // $12.00
-      [61_234, 60_734, 12_146], // floor(60,734 x 200 / 1,000) = 12,146
-      [250_500, 250_000, 30_000], // $500.00 capped at $300.00
+      [900, 900, 0], // below the minimum: nothing yet
+      [1_000, 1_000, 200], // 1,000 x $2.00 / 1,000 = $2.00
+      [6_000, 6_000, 1_200], // $12.00
+      [60_734, 60_734, 12_146], // floor(60,734 x 200 / 1,000) = 12,146
+      [250_000, 250_000, 30_000], // $500.00 capped at $300.00
     ]
     let hours = 2
     for (const [views, counted, cents] of steps) {
@@ -181,20 +182,31 @@ describe('view checks and earnings', () => {
     expect((await t.sub()).state).toBe('earning')
   })
 
-  it('a post submitted while the platform was down gets its baseline from the first check that works', async () => {
+  it('counts the views a post already had when it was submitted (owner rule, 2026-10-26)', async () => {
+    const t = await setup()
+    // 12,000 views at submission, 17,000 now: all 17,000 count, $34.00 at $2.00 per 1,000.
+    t.post(17_000)
+    expect((await t.check(2)).deltaCents).toBe(3_400)
+    expect(await t.sub()).toMatchObject({
+      baselineViews: 0,
+      latestViews: 17_000,
+      countedViews: 17_000,
+      earnedCents: 3_400,
+    })
+  })
+
+  it('a post submitted while the platform was down counts every view from the first check that works', async () => {
     state = { ...state, down: true }
     const t = await setup()
     state = { ...state, down: false }
     expect(await t.sub()).toMatchObject({ baselineViews: 0, publishedAt: null })
-    // The first successful check: views at that moment are the baseline, nothing is counted.
     t.post(3_000)
     expect((await t.check(2)).result).toBe('checked')
-    expect(await t.sub()).toMatchObject({ baselineViews: 3_000, latestViews: 3_000, countedViews: 0 })
+    expect(await t.sub()).toMatchObject({ baselineViews: 0, latestViews: 3_000, countedViews: 3_000, earnedCents: 600 })
     expect((await t.sub()).publishedAt).not.toBeNull()
-    // Then views count from there: 2,000 at $2.00 per 1,000.
     t.post(5_000)
     expect((await t.check(4)).deltaCents).toBe(400)
-    expect(await t.sub()).toMatchObject({ countedViews: 2_000, earnedCents: 400 })
+    expect(await t.sub()).toMatchObject({ countedViews: 5_000, earnedCents: 1_000 })
   })
 
   it('a first check that comes days late counts every view, and corrects a baseline a late check set', async () => {
@@ -321,7 +333,7 @@ describe('view checks and earnings', () => {
 
   it('removes a post missing for the grace period and reverses its pending earnings', async () => {
     const t = await setup()
-    t.post(10_500)
+    t.post(10_000)
     await t.check(2)
     expect(await t.pending()).toBe(2_000)
     t.post(0, { exists: false })
@@ -385,7 +397,7 @@ describe('view checks and earnings', () => {
 
   it('releases final posts after the review window and returns unused budget; flagged posts wait', async () => {
     const t = await setup()
-    t.post(10_500)
+    t.post(10_000)
     await t.check(2) // earns $20.00
     const u = await setup()
     const closedAt = new Date()

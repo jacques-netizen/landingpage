@@ -260,6 +260,13 @@
       "when": 1793046247571,
       "tag": "0036_campaign_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1793057782740,
+      "tag": "0037_count_every_view",
+      "breakpoints": true
     }
   ]
 }

@@ -232,8 +232,8 @@ function Detail({ d, onAppealed }: { d: SubmissionDetail; onAppealed: () => void
           <p className="m-0 text-[13px] text-[var(--t-muted)]">No view checks yet.</p>
         )}
         <p className="mt-3 mb-0 text-[12px] text-[var(--t-muted)]">
-          Last updated {d.lastCheckedAt ? <LocalDateTime iso={d.lastCheckedAt} /> : 'not yet'}. The views at submission
-          are the starting point and are not counted.
+          Last updated {d.lastCheckedAt ? <LocalDateTime iso={d.lastCheckedAt} /> : 'not yet'}. Every view of your post
+          counts, including the ones it had when you submitted it.
         </p>
         <ProofPanel d={d} onChanged={onAppealed} />
       </DrawerSection>

@@ -37,9 +37,9 @@ describe('reviewer decisions', () => {
     await t.check(2) // counted views do not move while in review
     expect((await t.sub()).countedViews).toBe(0)
     const r = await approve(db, t.staffId, t.id)
-    // 3,000 - 500 baseline = 2,500 counted at $2.00 per 1,000 = 500 cents.
-    expect(r.deltaCents).toBe(500)
-    expect(await t.sub()).toMatchObject({ state: 'earning', countedViews: 2_500, earnedCents: 500 })
+    // Every view counts, the 500 at submission too: 3,000 at $2.00 per 1,000 = 600 cents.
+    expect(r.deltaCents).toBe(600)
+    expect(await t.sub()).toMatchObject({ state: 'earning', countedViews: 3_000, earnedCents: 600 })
     expect((await notes(t.creator))[0]).toMatchObject({ kind: 'submission_approved' })
     expect((await audits(t.id)).map((a) => a.action)).toContain('submission.approve')
   })
@@ -47,7 +47,7 @@ describe('reviewer decisions', () => {
   it('rejecting an approved post reverses its earnings exactly', async () => {
     const t = await postInReview()
     await approve(db, t.staffId, t.id)
-    t.views(61_234)
+    t.views(60_734)
     await t.check(2)
     const earned = (await t.sub()).earnedCents
     expect(earned).toBe(12_146) // floor(60,734 x 200 / 1,000)
@@ -142,7 +142,7 @@ describe('set to pending and delete', () => {
   it('putting an approved post back to pending reverses its earnings and returns it to review', async () => {
     const t = await postInReview()
     await approve(db, t.staffId, t.id)
-    t.views(10_500)
+    t.views(10_000)
     await t.check(2)
     expect((await t.sub()).earnedCents).toBe(2_000) // 10,000 counted at $2.00 per 1,000
     const budgetBefore = await t.balance('campaign_budget', t.campaignId)
@@ -175,7 +175,7 @@ describe('set to pending and delete', () => {
   it('deleting a post reverses its earnings, removes it and keeps the audit record', async () => {
     const t = await postInReview()
     await approve(db, t.staffId, t.id)
-    t.views(5_500)
+    t.views(5_000)
     await t.check(2)
     expect((await t.sub()).earnedCents).toBe(1_000)
     const budgetBefore = await t.balance('campaign_budget', t.campaignId)
@@ -240,8 +240,8 @@ describe('appeals', () => {
       body: 'You are right, the logo is visible.',
     })
 
-    // The next view check pays it from its counted views: (8,500 - 500) x $2.00 / 1,000 = $16.00.
-    t.views(8_500)
+    // The next view check pays it from its counted views: 8,000 x $2.00 / 1,000 = $16.00.
+    t.views(8_000)
     const c = await t.check(5)
     expect(c).toMatchObject({ ran: true, deltaCents: 1_600 })
     expect(await t.sub()).toMatchObject({ state: 'earning', earnedCents: 1_600 })

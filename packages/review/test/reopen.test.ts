@@ -16,8 +16,8 @@ describe('resuming a closed campaign', () => {
     await approve(db, t.staffId, t.id)
     t.views(3_000)
     await t.check(1)
-    // 3,000 - 500 baseline = 2,500 counted at $2.00 per 1,000 = $5.00.
-    expect((await t.sub()).earnedCents).toBe(500)
+    // 3,000 counted at $2.00 per 1,000 = $6.00.
+    expect((await t.sub()).earnedCents).toBe(600)
     await db.transaction((tx) => closeCampaign(tx, t.staffId, t.campaignId))
     expect((await t.sub()).state).toBe('final')
     // Views read after the close do not count.
@@ -27,7 +27,7 @@ describe('resuming a closed campaign', () => {
       .set({ nextCheckAt: new Date(0) })
       .where(eq(tables.submissions.id, t.id))
     await t.check(3)
-    expect((await t.sub()).earnedCents).toBe(500)
+    expect((await t.sub()).earnedCents).toBe(600)
 
     await reopenCampaign(db, t.staffId, t.campaignId)
     const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, t.campaignId))
@@ -35,9 +35,9 @@ describe('resuming a closed campaign', () => {
     const s = await t.sub()
     expect(s.state).toBe('approved')
     expect(s.nextCheckAt!.getTime()).toBeLessThanOrEqual(Date.now())
-    // The next check counts the views: 6,000 - 500 = 5,500 at $2.00 per 1,000 = $11.00.
+    // The next check counts the views: 6,000 at $2.00 per 1,000 = $12.00.
     await t.check(4)
-    expect((await t.sub()).earnedCents).toBe(1_100)
+    expect((await t.sub()).earnedCents).toBe(1_200)
     expect((await t.sub()).state).toBe('earning')
     const audit = await db.select().from(tables.auditLog).where(eq(tables.auditLog.entityId, t.campaignId))
     expect(audit.some((a) => a.action === 'campaign.reopen')).toBe(true)
