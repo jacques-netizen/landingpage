@@ -43,6 +43,28 @@ export default {
       return Response.redirect(new URL('/book', request.url).toString(), 302);
     }
 
+    // Client reports on reports.maisondelites.com:
+    //   /<report>/  -> /reports/<report>/ in the repo (e.g. reports/winnerman-week-2/)
+    //   /           -> the main site (no public list of reports)
+    // Site-wide root files (favicons, robots.txt) fall through to the assets.
+    if (url.hostname.startsWith('reports.')) {
+      const ROOT_FILES = new Set(['/favicon.ico', '/favicon-32.png', '/apple-touch-icon.png', '/robots.txt']);
+      if (path === '/') return Response.redirect('https://maisondelites.com', 302);
+      if (!ROOT_FILES.has(path)) {
+        const last = path.split('/').pop();
+        // Folder pages need the trailing slash so their relative img/ paths resolve.
+        if (!path.endsWith('/') && !last.includes('.')) {
+          return Response.redirect(new URL(path + '/' + url.search, url).toString(), 301);
+        }
+        const target = path.startsWith('/reports/') ? path : '/reports' + path;
+        let res = await env.ASSETS.fetch(new Request(new URL(target, url).toString(), request));
+        if (res.status >= 300 && res.status < 400 && res.headers.get('location')) {
+          res = await env.ASSETS.fetch(new Request(new URL(res.headers.get('location'), url).toString(), request));
+        }
+        return res;
+      }
+    }
+
     // Per-client campaign dashboards on campaigns.maisondelites.com:
     //   /<slug>        -> that client's dashboard
     //   /<slug>/admin  -> that client's editor

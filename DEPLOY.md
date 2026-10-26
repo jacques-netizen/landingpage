@@ -43,6 +43,7 @@ One Worker serves the whole funnel across two subdomains of `maisondelites.com`
 | `hello.maisondelites.com/` | Clean **landing page** (`index.html`) |
 | `book.maisondelites.com/`  | **Booking calendar** — the Worker rewrites `/` → `/book` on any `book.*` host (see `worker.js`) |
 | `book.maisondelites.com/booked` | "You're booked" **confirmation** (where the calendar redirects after a booking) |
+| `reports.maisondelites.com/<report>` | **Client reports**, served from `reports/<report>/` in the repo (e.g. `reports/winnerman-week-2/`). The root redirects to maisondelites.com. |
 
 To connect a subdomain: Worker → **Settings → Domains & Routes** → **Add →
 Custom Domain** → e.g. `hello.maisondelites.com`. Cloudflare creates the DNS
