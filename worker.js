@@ -44,7 +44,7 @@ export default {
     }
 
     // Client reports on reports.maisondelites.com:
-    //   /<report>/  -> /reports/<report>/ in the repo (e.g. reports/winnerman-week-2/)
+    //   /<report>/  -> /reports/<report>/ in the repo (e.g. reports/winnerman-week-1/)
     //   /           -> the main site (no public list of reports)
     // Site-wide root files (favicons, robots.txt) fall through to the assets.
     if (url.hostname.startsWith('reports.')) {
