@@ -45,7 +45,8 @@
   .gateMsg{color:var(--danger); font-size:12.5px; min-height:16px; margin-top:10px}
 
   .newbox{background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; padding:18px; margin-bottom:22px}
-  .newrow{display:grid; grid-template-columns:1fr 1fr auto auto; gap:10px; align-items:end}
+  .newrow{display:grid; grid-template-columns:1fr 1fr 1fr 1fr auto auto; gap:10px; align-items:end}
+  @media (max-width:980px){ .newrow{grid-template-columns:1fr 1fr} }
   @media (max-width:700px){ .newrow{grid-template-columns:1fr} }
   .created{margin-top:14px; padding:12px 14px; border-radius:9px; background:color-mix(in srgb,var(--ok) 10%, transparent); border:1px solid color-mix(in srgb,var(--ok) 30%, transparent); font-size:13.5px; word-break:break-all}
   .created b{color:var(--ok); font-weight:600}
@@ -97,6 +98,42 @@
   .file .fn{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13.5px}
   .file .fs{font-size:12px; color:var(--muted); white-space:nowrap}
   .status{font-size:12.5px; color:var(--muted); margin-top:14px}
+  textarea{padding:11px 13px; border-radius:9px; border:1px solid var(--line-strong); background:#0e0b07; color:var(--cream); font-size:15px; font-family:var(--sans); width:100%; min-height:84px; resize:vertical}
+  textarea:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 20%, transparent)}
+  .nx{font-size:12px; color:var(--muted); white-space:nowrap}
+  .nx.due{color:var(--gold-bright); font-weight:600}
+  .nx.done{color:var(--ok)}
+  /* client emails */
+  .seq{background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; padding:18px 18px 8px; margin:0 0 18px}
+  .seq-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px}
+  .seq-top .note{font-size:12px; color:var(--muted)}
+  .stp{border-top:1px solid var(--line)}
+  .stp:first-of-type{border-top:0}
+  .stp-h{display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center; padding:12px 2px; cursor:pointer; background:none; border:0; width:100%; text-align:left; color:inherit; font:inherit}
+  .stp-n{width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:12.5px; color:var(--muted)}
+  .stp.done .stp-n{background:var(--ok); border-color:var(--ok); color:#0e1a12}
+  .stp.ready .stp-n{border-color:var(--gold); color:var(--gold-bright)}
+  .stp-t{font-family:var(--serif); font-size:1.12rem; line-height:1.2}
+  .stp-s{font-size:11.5px; color:var(--muted); margin-top:2px}
+  .stp-st{font-size:12px; color:var(--muted); text-align:right; white-space:nowrap}
+  .stp.done .stp-st{color:var(--ok)}
+  .stp.ready .stp-st{color:var(--gold-bright); font-weight:600}
+  .stp-b{padding:4px 2px 18px 46px}
+  @media (max-width:700px){ .stp-b{padding-left:2px} .stp-h{grid-template-columns:34px 1fr} .stp-st{grid-column:2; text-align:left} }
+  .fgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .fgrid .wide{grid-column:1/-1}
+  @media (max-width:700px){ .fgrid{grid-template-columns:1fr} }
+  .hint{font-size:11.5px; color:var(--muted); margin-top:5px}
+  .row-btns{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; align-items:center}
+  .msg{font-size:13px; margin-top:10px}
+  .msg.bad{color:var(--danger)} .msg.good{color:var(--ok)}
+  .blk{font-size:13px; color:var(--muted); padding:8px 0}
+  .wlog{font-size:12px; color:var(--muted); margin-top:10px}
+  .modal{position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:50; display:flex; align-items:flex-start; justify-content:center; padding:4vh 12px; overflow:auto}
+  .modal-c{background:var(--surface); border:1px solid var(--line-strong); border-radius:14px; width:min(720px,100%); padding:18px}
+  .modal-c .meta{font-size:12.5px; color:var(--muted); margin:6px 0 12px; word-break:break-word}
+  .modal-c iframe{width:100%; height:62vh; border:1px solid var(--line); border-radius:10px; background:#f4eee2}
+  .short{margin-top:14px; background:#0e0b07; border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.55; white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -176,6 +213,8 @@
       + '<div class="newrow">'
       + '<div><label class="mini" for="nClient">Client name</label><input id="nClient" type="text" placeholder="e.g. Acme Records"></div>'
       + '<div><label class="mini" for="nCampaign">Campaign name</label><input id="nCampaign" type="text" placeholder="e.g. Summer single launch"></div>'
+      + '<div><label class="mini" for="nFirst">Client first name</label><input id="nFirst" type="text" placeholder="For the welcome email"></div>'
+      + '<div><label class="mini" for="nEmail">Client email</label><input id="nEmail" type="text" placeholder="name@example.com"></div>'
       + '<button class="btn" id="createBtn" type="button">Create link</button>'
       + '<button class="btn ghost" id="cancelBtn" type="button">Cancel</button>'
       + '</div><div class="err" id="newErr"></div></div>'
@@ -187,10 +226,11 @@
     if (!LINKS.length) html += '<div class="empty">No onboarding links yet.<br>Click <b>New onboarding link</b> to create the first one.</div>';
     else if (!rows.length) html += '<div class="empty">Nothing matches these filters.</div>';
     else {
-      html += '<table><thead><tr><th>Client · campaign</th><th>Status</th><th>Call type</th><th>Created</th><th>Submitted</th><th></th></tr></thead><tbody>'
+      html += '<table><thead><tr><th>Client · campaign</th><th>Status</th><th>Emails</th><th>Call type</th><th>Created</th><th>Submitted</th><th></th></tr></thead><tbody>'
         + rows.map(function(l){
           return '<tr><td><div class="nm">' + esc(l.client_name) + '</div><div class="sub">' + esc(l.campaign_name) + '</div></td>'
             + '<td data-l="Status"><span class="pill ' + esc(l.status) + '">' + esc(STATUS[l.status] || l.status) + '</span></td>'
+            + '<td data-l="Emails"><span class="nx' + (l.next && l.next.done ? ' done' : l.next && l.next.due ? ' due' : '') + '">' + esc((l.next && l.next.label) || '') + '</span></td>'
             + '<td data-l="Call" class="dt">' + esc(CALL[l.call_type] || '—') + '</td>'
             + '<td data-l="Created" class="dt">' + esc(fmt(l.created_at)) + '</td>'
             + '<td data-l="Submitted" class="dt">' + esc(fmt(l.submitted_at)) + '</td>'
@@ -212,7 +252,7 @@
     $('#fCall').onchange = function(){ filters.call = this.value; renderList(); };
     $('#cancelBtn').onclick = function(){ $('#newBox').hidden = true; };
     $('#createBtn').onclick = create;
-    ['#nClient', '#nCampaign'].forEach(function(s){ $(s).addEventListener('keydown', function(e){ if (e.key === 'Enter') create(); }); });
+    ['#nClient', '#nCampaign', '#nFirst', '#nEmail'].forEach(function(s){ $(s).addEventListener('keydown', function(e){ if (e.key === 'Enter') create(); }); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function(b){ b.onclick = function(){ copy(linkUrl(b.getAttribute('data-copy')), b); }; });
     Array.prototype.forEach.call(document.querySelectorAll('[data-view]'), function(b){ b.onclick = function(){ location.hash = b.getAttribute('data-view'); }; });
     Array.prototype.forEach.call(document.querySelectorAll('[data-reopen]'), function(b){ b.onclick = function(){ reopen(b.getAttribute('data-reopen')); }; });
@@ -226,7 +266,7 @@
     var c = $('#nClient').value.trim(), k = $('#nCampaign').value.trim();
     if (!c || !k) { $('#newErr').textContent = 'Enter both the client name and the campaign name.'; return; }
     $('#createBtn').disabled = true;
-    req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k }) })
+    req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k, first_name:$('#nFirst').value.trim(), email:$('#nEmail').value.trim() }) })
       .then(function(j){ LINKS.unshift(j.link); renderList(j.url); })
       .catch(function(e){ $('#newErr').textContent = e.message; $('#createBtn').disabled = false; });
   }
@@ -320,13 +360,181 @@
       + '<button class="btn ghost" id="copyOne" type="button">Copy link</button>'
       + (l.status === 'submitted' ? '<button class="btn ghost" id="reopenOne" type="button">Reopen</button>' : '')
       + '<button class="btn danger" id="delOne" type="button">Delete</button>'
-      + '</div></div>' + body;
+      + '</div></div><div class="seq" id="seq"><div class="status">Loading the client emails…</div></div>' + body;
     $('#back').onclick = function(){ location.hash = ''; };
+    loadSeq(l, a);
     $('#copyOne').onclick = function(){ copy(linkUrl(l.token), this); };
     $('#delOne').onclick = function(){ del(l.token); };
     var r = $('#reopenOne'); if (r) r.onclick = function(){ reopen(l.token); };
     var m = $('#mkCampaign'); if (m) m.onclick = function(){ makeCampaign(l, a); };
     window.scrollTo(0, 0);
+  }
+
+  // ---------- client emails (the seven-email onboarding sequence) ----------
+  var SEQ = null, SEQ_OPEN = '', SEQ_LINK = null, SEQ_ANS = {};
+  var STEP_FIELDS = {
+    welcome:  [['first_name'], ['email'], ['campaign','wide'], ['focus','wide','textarea','The specific result, e.g. putting the new single in front of millions of the right people across TikTok, Reels and Shorts']],
+    invoice:  [['invoice_number','','','e.g. MDE-2610-01'], ['amount','','','e.g. USD 2,000'], ['due','','','e.g. 3 November 2026'], ['invoice_pdf','','file']],
+    reminder: [],
+    payment:  [['invoice_number'], ['call_when','','','e.g. Thursday 30 October, 3pm UK. Leave empty if not booked: the booking link goes in instead.']],
+    live:     [['campaign'], ['report_url','','','The client’s live report link'], ['first_clips','','','Shown as “within … days”']],
+    weekly:   [['views'], ['clips'], ['best_url'], ['best_views'], ['working','wide','textarea','One or two lines on what is working, e.g. clips that open on the hook line are pulling the most views, so we’re pushing clippers toward that style.'], ['report_url','wide']],
+    complete: [['final_views'], ['final_clips'], ['top_url'], ['top_views'], ['worked','wide','textarea','What worked, e.g. the behind-the-scenes clips carried this campaign.'], ['report_url','wide']]
+  };
+  function seqReq(token, body){
+    return req('sequence?token=' + encodeURIComponent(token), body ? { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify(body) } : undefined);
+  }
+  function loadSeq(l, a){
+    SEQ_LINK = l; SEQ_ANS = a || {};
+    seqReq(l.token).then(function(j){ SEQ = j.sequence; if (!SEQ_OPEN) SEQ_OPEN = firstOpen(); renderSeq(); })
+      .catch(function(e){ var el = $('#seq'); if (el && e.message !== 'unauthorized') el.innerHTML = '<div class="status">' + esc(e.message) + '</div>'; });
+  }
+  function firstOpen(){
+    var s = (SEQ.steps || []).find(function(x){ return !x.sent_at && !x.blocked && x.id !== 'reminder'; });
+    return s ? s.id : '';
+  }
+  function stepState(st){
+    if (st.id === 'weekly') {
+      var n = (SEQ.weekly || []).length;
+      if (SEQ.sent.complete) return ['done', n ? n + ' sent' : 'Not used'];
+      if (st.blocked) return ['', 'After the live email'];
+      var due = SEQ.weekly_due && new Date(SEQ.weekly_due) <= new Date();
+      return [due ? 'ready' : (n ? 'done' : ''), (n ? n + ' sent · ' : '') + (due ? 'Week ' + (n + 1) + ' due now' : 'Next due ' + fmt(SEQ.weekly_due))];
+    }
+    if (st.sent_at) return ['done', 'Sent ' + fmt(st.sent_at)];
+    if (st.id === 'reminder') {
+      if (st.blocked) return ['', st.blocked === 'The client has submitted the form.' ? 'Not needed, form submitted' : 'After the welcome'];
+      return ['', 'Sends by itself ' + fmt(SEQ.auto_reminder_at)];
+    }
+    if (st.blocked) return ['', 'Waiting'];
+    return ['ready', 'Ready to send'];
+  }
+  function fieldHtml(def){
+    var k = def[0], cls = def[1] || '', kind = def[2] || '', hint = def[3] || '';
+    if (kind === 'file') {
+      var cur = SEQ.invoice_file;
+      return '<div class="' + cls + '"><label class="mini">Invoice PDF</label><input type="file" accept="application/pdf,.pdf" data-pdf>'
+        + '<div class="hint">' + (cur ? 'Attached: ' + esc(cur.name) + ' (' + size(cur.size) + '). Choose a file to replace it.' : 'Attached to the email. Required.') + '</div></div>';
+    }
+    var label = (SEQ.labels && SEQ.labels[k]) || k, v = (SEQ.fields || {})[k] || '';
+    var input = kind === 'textarea'
+      ? '<textarea data-f="' + k + '">' + esc(v) + '</textarea>'
+      : '<input type="text" data-f="' + k + '" value="' + esc(v) + '">';
+    return '<div class="' + cls + '"><label class="mini">' + esc(label) + '</label>' + input + (hint ? '<div class="hint">' + esc(hint) + '</div>' : '') + '</div>';
+  }
+  function renderSeq(){
+    var el = $('#seq'); if (!el || !SEQ) return;
+    var html = '<div class="seq-top"><div class="sec-h" style="margin:0">Client emails</div><div class="note">Seven emails from contract to the next booking. Each one waits for the one before it.</div></div>';
+    html += (SEQ.steps || []).map(function(st){
+      var ss = stepState(st), open = SEQ_OPEN === st.id;
+      var b = '';
+      if (open) {
+        var fields = STEP_FIELDS[st.id] || [];
+        b = '<div class="stp-b">';
+        if (st.blocked && !(st.id === 'reminder' && !SEQ.sent.reminder && st.blocked !== 'The client has submitted the form.')) b += '<div class="blk">' + esc(st.blocked) + '</div>';
+        if (st.id === 'reminder' && !st.blocked && !st.sent_at) b += '<div class="blk">This one sends by itself if the onboarding form is still empty 24 hours after the welcome. You can also send it now.</div>';
+        if (fields.length) b += '<div class="fgrid">' + fields.map(fieldHtml).join('') + '</div>';
+        if ((st.id === 'weekly' || st.id === 'complete') && SEQ.numbers) b += '<div class="row-btns"><button class="btn sm ghost" data-nums="' + st.id + '" type="button">Use the dashboard numbers</button><span class="hint">' + esc(Number(SEQ.numbers.views).toLocaleString()) + ' views, ' + esc(SEQ.numbers.clips) + ' clips</span></div>';
+        if (st.id === 'weekly' && (SEQ.weekly || []).length) b += '<div class="wlog">' + SEQ.weekly.map(function(w){ return 'Week ' + w.n + ' sent ' + fmt(w.at) + (w.views ? ', ' + esc(w.views) + ' views' : ''); }).join('<br>') + '</div>';
+        var canSend = !(st.blocked) || (st.id === 'reminder' && !SEQ.sent.reminder && st.blocked !== 'The client has submitted the form.' && !!SEQ.sent.welcome);
+        if (st.id !== 'weekly' && st.sent_at) canSend = false;
+        if (st.id === 'weekly' && SEQ.sent.complete) canSend = false;
+        b += '<div class="row-btns">'
+          + '<button class="btn ghost" data-prev="' + st.id + '" type="button">Preview</button>'
+          + (canSend ? '<button class="btn" data-send="' + st.id + '" type="button">Send email' + (st.id === 'weekly' ? ' (week ' + ((SEQ.weekly || []).length + 1) + ')' : '') + '</button>' : '')
+          + (canSend && st.id !== 'weekly' ? '<button class="btn sm ghost" data-mark="' + st.id + '" type="button">Sent another way</button>' : '')
+          + '</div><div class="msg" id="msg-' + st.id + '"></div></div>';
+      }
+      return '<div class="stp ' + ss[0] + '"><button class="stp-h" data-open="' + st.id + '" type="button"><span class="stp-n">' + (ss[0] === 'done' && st.id !== 'weekly' ? '✓' : st.n) + '</span>'
+        + '<span><div class="stp-t">' + esc(st.name) + '</div><div class="stp-s">' + esc(st.trigger) + ' · ' + esc(st.timing) + '</div></span>'
+        + '<span class="stp-st">' + esc(ss[1]) + '</span></button>' + b + '</div>';
+    }).join('');
+    el.innerHTML = html;
+    Array.prototype.forEach.call(el.querySelectorAll('[data-open]'), function(btn){ btn.onclick = function(){ var id = btn.getAttribute('data-open'); SEQ_OPEN = SEQ_OPEN === id ? '' : id; renderSeq(); }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-prev]'), function(btn){ btn.onclick = function(){ seqAction(btn.getAttribute('data-prev'), 'preview', btn); }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-send]'), function(btn){ btn.onclick = function(){ seqAction(btn.getAttribute('data-send'), 'preview', btn, true); }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-mark]'), function(btn){ btn.onclick = function(){
+      if (!confirm('Mark this email as sent? Nothing is emailed; the sequence just moves on.')) return;
+      seqAction(btn.getAttribute('data-mark'), 'mark', btn);
+    }; });
+    Array.prototype.forEach.call(el.querySelectorAll('[data-nums]'), function(btn){ btn.onclick = function(){
+      var n = SEQ.numbers || {}, w = btn.getAttribute('data-nums') === 'weekly';
+      var set = function(k, v){ var i = el.querySelector('[data-f="' + k + '"]'); if (i && v) i.value = v; };
+      set(w ? 'views' : 'final_views', String(n.views || '')); set(w ? 'clips' : 'final_clips', String(n.clips || ''));
+      set(w ? 'best_url' : 'top_url', n.best_url || ''); set(w ? 'best_views' : 'top_views', String(n.best_views || ''));
+    }; });
+  }
+  function collect(){
+    var f = {};
+    Array.prototype.forEach.call($('#seq').querySelectorAll('[data-f]'), function(i){ f[i.getAttribute('data-f')] = i.value.trim(); });
+    return f;
+  }
+  function readPdf(){
+    var i = $('#seq').querySelector('[data-pdf]');
+    var file = i && i.files && i.files[0];
+    if (!file) return Promise.resolve(null);
+    if (file.size > 8 * 1048576) return Promise.reject(new Error('The invoice PDF must be under 8 MB.'));
+    return new Promise(function(res, rej){
+      var r = new FileReader();
+      r.onload = function(){ res({ name: file.name, data: String(r.result).split(',')[1] || '' }); };
+      r.onerror = function(){ rej(new Error('Could not read the PDF.')); };
+      r.readAsDataURL(file);
+    });
+  }
+  function seqAction(step, action, btn, thenSend){
+    var msg = $('#msg-' + step);
+    if (msg) { msg.className = 'msg'; msg.textContent = ''; }
+    btn.disabled = true;
+    readPdf().then(function(pdf){
+      var body = { step: step, action: action, fields: collect() };
+      if (pdf) body.invoice_pdf = pdf;
+      return seqReq(SEQ_LINK.token, body);
+    }).then(function(j){
+      SEQ = j.sequence || SEQ;
+      if (action === 'preview') { renderSeq(); showPreview(j.preview, !!thenSend); }
+      else { renderSeq(); var m = $('#msg-' + step); if (m) { m.className = 'msg good'; m.textContent = 'Marked as sent.'; } }
+    }).catch(function(e){
+      btn.disabled = false;
+      var m = $('#msg-' + step); if (m) { m.className = 'msg bad'; m.textContent = e.message; }
+    });
+  }
+  function waLink(text){
+    if (SEQ_ANS.q3 !== 'whatsapp' || !SEQ_ANS.q3b) return '';
+    return 'https://wa.me/' + String(SEQ_ANS.q3b).replace(/[^0-9]/g, '') + '?text=' + encodeURIComponent(text);
+  }
+  function showPreview(p, sending){
+    if (!p) return;
+    var problems = [].concat(p.blocked ? [p.blocked] : [], p.missing && p.missing.length ? ['Fill in: ' + p.missing.join(', ') + '.'] : [], p.invalid && p.invalid.length ? ['Check: ' + p.invalid.join(', ') + '.'] : [], p.needs_file && !SEQ.invoice_file ? ['Attach the invoice PDF.'] : []);
+    var wa = waLink(p.short);
+    var m = document.createElement('div');
+    m.className = 'modal';
+    m.innerHTML = '<div class="modal-c"><div class="sec-h" style="margin:0">' + (sending ? 'Check, then send' : 'Preview') + '</div>'
+      + '<div style="font-family:var(--serif);font-size:1.35rem;margin-top:6px">' + esc(p.subject) + '</div>'
+      + '<div class="meta">To: ' + esc((p.to || []).join(', ') || 'no address yet') + (p.needs_file && SEQ.invoice_file ? ' · Attachment: ' + esc(SEQ.invoice_file.name) : '') + '</div>'
+      + (problems.length ? '<div class="msg bad" style="margin:0 0 12px">' + esc(problems.join(' ')) + '</div>' : '')
+      + '<iframe sandbox="" title="Email preview"></iframe>'
+      + '<div class="sec-h" style="margin:16px 0 0">Short version for WhatsApp or DMs</div><div class="short">' + esc(p.short) + '</div>'
+      + '<div class="row-btns"><button class="btn sm ghost" id="pvCopy" type="button">Copy short version</button>'
+      + (wa ? '<a class="btn sm ghost" href="' + esc(wa) + '" target="_blank" rel="noopener">Open in WhatsApp</a>' : '')
+      + '<span style="flex:1"></span><button class="btn ghost" id="pvClose" type="button">Close</button>'
+      + (sending && !problems.length ? '<button class="btn" id="pvSend" type="button">Send to ' + esc((p.to || []).length) + (p.to && p.to.length === 1 ? ' person' : ' people') + '</button>' : '')
+      + '</div><div class="msg" id="pvMsg"></div></div>';
+    document.body.appendChild(m);
+    m.querySelector('iframe').srcdoc = p.html;
+    var close = function(){ m.remove(); renderSeq(); };
+    m.addEventListener('click', function(e){ if (e.target === m) close(); });
+    m.querySelector('#pvClose').onclick = close;
+    m.querySelector('#pvCopy').onclick = function(){ copy(p.short, this); };
+    var sb = m.querySelector('#pvSend');
+    if (sb) sb.onclick = function(){
+      sb.disabled = true; sb.textContent = 'Sending…';
+      seqReq(SEQ_LINK.token, { step: p.step, action: 'send' }).then(function(j){
+        SEQ = j.sequence || SEQ;
+        var nx = firstOpen(); SEQ_OPEN = nx || '';
+        m.remove(); renderSeq();
+        var mm = $('#msg-' + (nx || p.step)); if (mm) { mm.className = 'msg good'; mm.textContent = 'Sent: ' + p.subject; }
+      }).catch(function(e){ sb.disabled = false; sb.textContent = 'Try again'; var pm = m.querySelector('#pvMsg'); pm.className = 'msg bad'; pm.textContent = e.message; });
+    };
   }
 
   // Campaign dashboards live on campaigns.maisondelites.com/<slug>; the editor

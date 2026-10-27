@@ -2,6 +2,7 @@
 // (index.html, /admin, /talent, images) is served from static assets.
 import { handleRunItBakApi, handleRunItBakPage } from './lib/runitbak.js';
 import { handleOnboarding } from './lib/onboarding.js';
+import { runSequence } from './lib/sequence.js';
 import { handleUpload, handleList, handleMedia, handleNotify, handleBrandSheet, handleCampaign, handleCampaignList, handleCampaignImport, handleCampaignBanner, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
 export default {
@@ -111,6 +112,8 @@ export default {
     ctx.waitUntil((async () => {
       await pullCampaignCSV(env);
       await resolveStoredThumbnails(env);
+      // Client email sequence: form reminders and weekly check-in alerts.
+      try { await runSequence(env); } catch (e) { console.error('sequence', e); }
     })());
   },
 };

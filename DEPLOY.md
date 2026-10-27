@@ -259,3 +259,29 @@ Resend (until then Resend only delivers to your own account address).
 - **Wrong-password loop** → `ADMIN_PASSWORD` secret not set / not deployed.
 - **`/admin` unreachable** → no URL enabled yet (step 5), or build failed
   (check the deployment logs).
+
+## Client email sequence (onboarding admin)
+
+The seven emails from the "Client Onboarding Sequence" doc run from each client's page in
+`onboarding.maisondelites.com/admin` (code: `lib/sequence.js`). Each email waits for the one before it,
+nothing goes live before payment, and an email never sends while a field it needs is empty.
+
+| # | Email | How it goes out |
+|---|-------|-----------------|
+| 1 | Welcome | Admin clicks Send (first name, email, focus line) |
+| 2 | Invoice | Admin clicks Send (number, amount, due date, PDF attached) |
+| 3 | Form reminder | Sends by itself 24 hours after email 1 if the form is still empty |
+| 4 | Payment received | Admin clicks Send (call date, or the booking link goes in) |
+| 5 | Campaign live | Admin clicks Send (live report link). Starts the weekly clock |
+| 6 | Weekly check-in | Cron pings the team every 7 days; numbers prefill from the campaign dashboard; admin adds what's working and sends |
+| 7 | Campaign complete | Admin clicks Send (final numbers, what worked). Stops the weekly emails |
+
+Every step shows the short version for WhatsApp or DMs (with an Open in WhatsApp button when the
+client picked WhatsApp). "Sent another way" moves the sequence on without emailing.
+
+Settings (Worker → Settings → Variables and Secrets):
+- `RESEND_API_KEY`: already used by the onboarding form.
+- `ONBOARDING_FROM`: the sender, e.g. `Jacques at Maison d'Élites <jacques@maisondelites.com>`. The domain must
+  be verified in Resend; the default `onboarding@resend.dev` only delivers to the Resend account owner.
+- `ONBOARDING_REPLY_TO`: where client replies go (falls back to `ONBOARDING_NOTIFY_EMAIL`).
+- `ONBOARDING_NOTIFY_EMAIL` / `ONBOARDING_DISCORD_WEBHOOK`: where the weekly check-in alerts go.
