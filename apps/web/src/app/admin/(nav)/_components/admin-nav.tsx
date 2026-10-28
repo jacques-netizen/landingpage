@@ -46,6 +46,7 @@ const SECTIONS: { title?: string; links: [string, string, keyof typeof I][] }[] 
     title: 'Admin',
     links: [
       ['Team', '/admin/team', 'team'],
+      ['Developers', '/admin/developers', 'settings'],
       ['Settings', '/admin/settings', 'settings'],
       ['Demo campaigns', '/admin/demo', 'campaigns'],
       ['Audit log', '/admin/audit-log', 'audit'],
