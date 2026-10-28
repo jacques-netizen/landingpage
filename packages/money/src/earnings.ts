@@ -1,7 +1,7 @@
 // Earnings rules from 02_DATA_AND_MONEY.md section 5. Pure functions, no database.
 import { assertNonNegative, mulDivFloor } from './math'
 
-/** Views after submission. Views from before submission never count. */
+/** The views that pay. The baseline is 0 since 2026-10-26: every view counts, before and after submission. */
 export function countedViews(latestViews: number, baselineViews: number): number {
   assertNonNegative(latestViews, 'Views')
   assertNonNegative(baselineViews, 'Baseline views')
