@@ -250,6 +250,15 @@ Two kinds:
    reports freeze their figures at publish; final reports read figures live and flag sentences a new
    number made wrong. PDFs are printed by headless Chromium (`server/reports/pdf.ts`).
 
+## 11b. Partner API and developer docs
+
+A read-only API for partners staff approve (owner decision, 2026-10-28). Code: `packages/partners`
+(keys, the data shown, webhooks), routes in `apps/web/src/app/api/v1/`, docs in
+`apps/web/src/app/developers/` and `apps/web/src/developers/` (the OpenAPI file `openapi.ts` builds the
+reference). Admins make and revoke keys at `/admin/developers`. The worker's `partner-webhooks` job (every
+minute) finds new events and delivers them. Public docs: `/developers`; OpenAPI: `/api/v1/openapi.json`.
+The API never returns money amounts or clippers' personal details: keep it that way when adding fields.
+
 ## 12. Design rules
 
 The screens in `docs/design/handoff/` are locked: build them pixel for pixel and never change layout,

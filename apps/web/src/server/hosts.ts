@@ -2,7 +2,8 @@
 // app with staff admin on its own subdomain (app.maisondelites.com). The main domain shows the brand
 // site at "/" and sends everything that belongs to the app across; the app sends "/brands" back.
 // With no BRAND_HOST set (previews, tests) nothing is routed and every page is served everywhere, except
-// that Railway's own address always moves to the app address.
+// that Railway's own address always moves to the app address. developers.<main domain> shows the
+// developer docs.
 
 export type HostRoute = { kind: 'next' } | { kind: 'rewrite'; path: string } | { kind: 'redirect'; url: string }
 
@@ -28,7 +29,12 @@ export function pickHost(
   headers: { get(name: string): string | null },
   cfg: { brandHost?: string; appHost?: string },
 ): string | null {
-  const known = [cfg.brandHost, cfg.brandHost && `www.${cfg.brandHost}`, cfg.appHost]
+  const known = [
+    cfg.brandHost,
+    cfg.brandHost && `www.${cfg.brandHost}`,
+    cfg.brandHost && `developers.${cfg.brandHost}`,
+    cfg.appHost,
+  ]
     .filter(Boolean)
     .map((h) => h!.toLowerCase())
   const forwarded = headers.get('forwarded')?.match(/host="?([^;,"]+)/i)?.[1]
@@ -65,6 +71,13 @@ export function routeForHost(
   }
   if (!brand || brand === app) return { kind: 'next' }
   if (h === `www.${brand}`) return { kind: 'redirect', url: `https://${brand}${path}${search}` }
+  // developers.<brand> shows the developer docs (owner decision, 2026-10-28); the API answers there too.
+  if (h === `developers.${brand}`) {
+    if (path === '/') return { kind: 'rewrite', path: '/developers' }
+    if (/^\/(developers|api\/v1)(\/|$)/.test(path) || SHARED_PATHS.some((r) => r.test(path)) || ASSET.test(path))
+      return { kind: 'next' }
+    return { kind: 'redirect', url: `https://${app}${path}${search}` }
+  }
   if (h === brand) {
     if (SHARED_PATHS.some((r) => r.test(path)) || ASSET.test(path)) return { kind: 'next' }
     if (path === '/') return { kind: 'rewrite', path: '/brands' }

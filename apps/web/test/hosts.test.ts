@@ -21,6 +21,19 @@ describe('two addresses, one deployment', () => {
       expect(r('maisondelites.com', p).kind, p).toBe('redirect')
   })
 
+  it('shows the developer docs and the API on developers.<main domain>', () => {
+    expect(r('developers.maisondelites.com', '/')).toEqual({ kind: 'rewrite', path: '/developers' })
+    for (const p of ['/developers/quickstart', '/api/v1/campaigns', '/api/v1/openapi.json', '/_next/static/x.js'])
+      expect(r('developers.maisondelites.com', p), p).toEqual({ kind: 'next' })
+    expect(r('developers.maisondelites.com', '/admin')).toEqual({
+      kind: 'redirect',
+      url: 'https://app.maisondelites.com/admin',
+    })
+    expect(pickHost({ get: (n) => (n === 'host' ? 'developers.maisondelites.com' : null) }, cfg)).toBe(
+      'developers.maisondelites.com',
+    )
+  })
+
   it('serves shared files and assets on both', () => {
     for (const p of ['/_next/static/x.js', '/designed/logo.png', '/files/abc/a.png', '/favicon.ico', '/api/health'])
       expect(r('maisondelites.com', p), p).toEqual({ kind: 'next' })
