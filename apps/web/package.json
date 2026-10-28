@@ -18,6 +18,7 @@
     "@mde/db": "workspace:*",
     "@mde/money": "workspace:*",
     "@mde/notifications": "workspace:*",
+    "@mde/partners": "workspace:*",
     "@mde/platforms": "workspace:*",
     "@mde/review": "workspace:*",
     "@mde/submissions": "workspace:*",

@@ -5,6 +5,7 @@ import { writeAudit, type Db } from '@mde/db'
 import { ledgerCheck } from '@mde/money'
 import { deliverPendingEmails, notifyAppealDeadlines } from '@mde/notifications'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
+import { deliverWebhooks, queueWebhookEvents } from '@mde/partners'
 import { expireStrikes } from '@mde/review'
 import { runAccountRechecks, runDueViewChecks, runReleases, staleCampaigns } from '@mde/tracking'
 
@@ -61,6 +62,11 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
       }
       return { errors: problems.length }
     },
+  },
+  // Partner webhooks (owner decision, 2026-10-28): new events since the last run, then due deliveries.
+  'partner-webhooks': {
+    every: MINUTE,
+    run: async ({ db, now }) => ({ ...(await queueWebhookEvents(db, now)), ...(await deliverWebhooks(db, { now })) }),
   },
   // Notification emails go out from the notification rows, with retries (03_SYSTEMS.md section 9).
   'email-send': { every: MINUTE, run: ({ db, now }) => deliverPendingEmails(db, { now }) },

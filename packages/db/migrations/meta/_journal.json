@@ -267,6 +267,13 @@
       "when": 1793057782740,
       "tag": "0037_count_every_view",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1793215355606,
+      "tag": "0038_partner_api",
+      "breakpoints": true
     }
   ]
 }

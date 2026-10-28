@@ -47,6 +47,9 @@ importers:
       '@mde/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
+      '@mde/partners':
+        specifier: workspace:*
+        version: link:../../packages/partners
       '@mde/platforms':
         specifier: workspace:*
         version: link:../../packages/platforms
@@ -153,6 +156,9 @@ importers:
       '@mde/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
+      '@mde/partners':
+        specifier: workspace:*
+        version: link:../../packages/partners
       '@mde/platforms':
         specifier: workspace:*
         version: link:../../packages/platforms
@@ -297,6 +303,31 @@ importers:
         specifier: ^0.45.3
         version: 0.45.3(@opentelemetry/api@1.10.0)(postgres@3.4.9)
     devDependencies:
+      '@types/node':
+        specifier: ^22.10.0
+        version: 22.20.5
+      postgres:
+        specifier: ^3.4.9
+        version: 3.4.9
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^5.0.3
+        version: 5.0.3(@opentelemetry/api@1.10.0)(@types/node@22.20.5)(vite@8.3.2(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
+  packages/partners:
+    dependencies:
+      '@mde/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.3
+        version: 0.45.3(@opentelemetry/api@1.10.0)(postgres@3.4.9)
+    devDependencies:
+      '@mde/campaigns':
+        specifier: workspace:*
+        version: link:../campaigns
       '@types/node':
         specifier: ^22.10.0
         version: 22.20.5

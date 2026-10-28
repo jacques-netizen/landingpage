@@ -831,3 +831,76 @@ export const campaignReportVersions = pgTable(
   },
   (t) => [unique('campaign_report_versions_number').on(t.reportId, t.number)],
 )
+
+// ---------- Partner API (owner decision, 2026-10-28) ----------
+// Read-only API for partners staff approve by hand. A key sees live campaigns (or, in sandbox mode, demo
+// campaigns only), all of them or those of chosen clients. Only the key's hash is stored.
+export const PARTNER_KEY_MODES = ['live', 'sandbox'] as const
+export const WEBHOOK_EVENTS = ['campaign.started', 'campaign.ended', 'clip.approved', 'clip.views_updated'] as const
+
+export const partnerKeys = pgTable(
+  'partner_keys',
+  {
+    id: id(),
+    partner: text('partner').notNull(),
+    mode: text('mode').notNull(),
+    /** The first characters of the key, shown so staff and the partner can tell keys apart. */
+    prefix: text('prefix').notNull(),
+    keyHash: text('key_hash').notNull().unique(),
+    /** Clients whose campaigns the key sees; null sees every campaign. */
+    clientIds: uuid('client_ids').array(),
+    createdBy: uuid('created_by').references(() => users.id),
+    lastUsedAt: tz('last_used_at'),
+    revokedAt: tz('revoked_at'),
+    ...timestamps,
+  },
+  () => [check('partner_keys_mode_check', inList('mode', PARTNER_KEY_MODES))],
+)
+
+export const partnerWebhooks = pgTable(
+  'partner_webhooks',
+  {
+    id: id(),
+    keyId: uuid('key_id')
+      .notNull()
+      .references(() => partnerKeys.id),
+    url: text('url').notNull(),
+    /** Signs every delivery (HMAC-SHA256); shown to the partner once. */
+    secret: text('secret').notNull(),
+    events: text('events').array().notNull(),
+    disabledAt: tz('disabled_at'),
+    ...timestamps,
+  },
+  (t) => [index('partner_webhooks_key').on(t.keyId)],
+)
+
+export const webhookDeliveries = pgTable(
+  'webhook_deliveries',
+  {
+    id: id(),
+    webhookId: uuid('webhook_id')
+      .notNull()
+      .references(() => partnerWebhooks.id),
+    /** The event's id, the same for every webhook it goes to; a retry never makes a second one. */
+    eventId: text('event_id').notNull(),
+    event: text('event').notNull(),
+    payload: jsonb('payload').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    nextAttemptAt: tz('next_attempt_at'),
+    lastStatus: integer('last_status'),
+    lastError: text('last_error'),
+    deliveredAt: tz('delivered_at'),
+    failedAt: tz('failed_at'),
+    ...timestamps,
+  },
+  (t) => [
+    unique('webhook_deliveries_event').on(t.webhookId, t.eventId),
+    index('webhook_deliveries_due').on(t.nextAttemptAt),
+  ],
+)
+
+/** How far the webhook job has looked for new events, per event kind. */
+export const webhookCursors = pgTable('webhook_cursors', {
+  name: text('name').primaryKey(),
+  at: tz('at').notNull(),
+})
