@@ -82,7 +82,14 @@ export function parseDestination(destination: string | null | undefined) {
   return w ? { option: w, address: parts[2]! } : null
 }
 
-export type BankDetails = { country: string; bankName: string; accountNumber: string; name: string }
+export type BankDetails = {
+  country: string
+  bankName: string
+  accountNumber: string
+  name: string
+  /** UK accounts only: the 6-digit sort code (owner request, 2026-10-29). */
+  sortCode?: string
+}
 
 const clean = (s: string) =>
   s
@@ -92,7 +99,8 @@ const clean = (s: string) =>
 
 /**
  * "BANK|<country>|<bank>|<account>|<name>" from the creator's bank details, or the field that is wrong.
- * The account number keeps letters and digits only (an IBAN or a local account number).
+ * The account number keeps letters and digits only (an IBAN or a local account number). A UK account
+ * also needs its sort code, kept as 6 digits at the end: "BANK|GB|<bank>|<account>|<name>|<sort code>".
  */
 export function bankDestination(
   b: BankDetails,
@@ -101,18 +109,28 @@ export function bankDestination(
   if (!(COUNTRY_CODES as readonly string[]).includes(country)) return { ok: false, field: 'country' }
   const bankName = clean(b.bankName)
   if (bankName.length < 2 || bankName.length > 100) return { ok: false, field: 'bankName' }
+  const uk = country === 'GB'
+  const sortCode = (b.sortCode ?? '').replace(/[\s-]/g, '')
+  if (uk && !/^\d{6}$/.test(sortCode)) return { ok: false, field: 'sortCode' }
   const accountNumber = b.accountNumber.replace(/[\s-]/g, '').toUpperCase()
-  if (!/^[A-Z0-9]{4,34}$/.test(accountNumber)) return { ok: false, field: 'accountNumber' }
+  // A UK account number is 8 digits; an IBAN (GB...) is accepted too, as before.
+  if (uk ? !/^(\d{8}|GB\d{2}[A-Z]{4}\d{14})$/.test(accountNumber) : !/^[A-Z0-9]{4,34}$/.test(accountNumber))
+    return { ok: false, field: 'accountNumber' }
   const name = clean(b.name)
   if (name.length < 2 || name.length > 120) return { ok: false, field: 'name' }
-  return { ok: true, destination: ['BANK', country, bankName, accountNumber, name].join('|') }
+  const parts = ['BANK', country, bankName, accountNumber, name]
+  return { ok: true, destination: (uk ? [...parts, sortCode] : parts).join('|') }
 }
 
 export function parseBank(destination: string | null | undefined): BankDetails | null {
   const parts = (destination ?? '').split('|')
-  if (parts[0] !== 'BANK' || parts.length !== 5) return null
-  return { country: parts[1]!, bankName: parts[2]!, accountNumber: parts[3]!, name: parts[4]! }
+  if (parts[0] !== 'BANK' || (parts.length !== 5 && parts.length !== 6)) return null
+  const b: BankDetails = { country: parts[1]!, bankName: parts[2]!, accountNumber: parts[3]!, name: parts[4]! }
+  return parts[5] ? { ...b, sortCode: parts[5] } : b
 }
+
+/** "20-82-93" */
+export const formatSortCode = (s: string) => s.replace(/^(\d{2})(\d{2})(\d{2})$/, '$1-$2-$3')
 
 /** Which withdrawal method a saved destination pays with. */
 export function methodOf(destination: string | null | undefined): 'crypto' | 'bank_transfer' | null {
@@ -151,6 +169,7 @@ export function fullDestination(destination: string) {
   const d = parseDestination(destination)
   if (d) return `${d.option.label}, ${d.address}`
   const b = parseBank(destination)
-  if (b) return `Bank transfer in ${countryName(b.country)}: ${b.bankName}, account ${b.accountNumber}, name ${b.name}`
+  if (b)
+    return `Bank transfer in ${countryName(b.country)}: ${b.bankName}, ${b.sortCode ? `sort code ${formatSortCode(b.sortCode)}, ` : ''}account ${b.accountNumber}, name ${b.name}`
   return 'none yet'
 }

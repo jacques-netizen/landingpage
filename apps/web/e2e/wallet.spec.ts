@@ -110,7 +110,16 @@ test('a creator withdraws to a bank account; staff pay it with the bank referenc
   await dialog.getByLabel('Name on account').fill('Kymen Carter')
   await dialog.getByRole('button', { name: 'Save payout method' }).click()
   await expect(dialog.getByText('Choose the country your bank is in.')).toBeVisible()
+  // A UK account asks for its sort code and an 8-digit account number (owner request, 2026-10-29).
+  await expect(dialog.getByLabel('Sort code')).toHaveCount(0)
+  await dialog.getByLabel('Location').selectOption('GB')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(dialog.getByText('A UK sort code is 6 digits, like 20-82-93.')).toBeVisible()
+  await dialog.getByLabel('Sort code').fill('20-82-93')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(dialog.getByText('A UK account number is 8 digits, like 12345678.')).toBeVisible()
   await dialog.getByLabel('Location').selectOption('US')
+  await expect(dialog.getByLabel('Sort code')).toHaveCount(0)
   await dialog.getByRole('button', { name: 'Save payout method' }).click()
   await expect(page.getByText('Bank transfer, Chase Bank, ending 6789 (United States)').first()).toBeVisible()
 

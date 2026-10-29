@@ -88,7 +88,7 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
                     : (describeDestination(w.destination) ?? w.method))
                 }
                 address={dest?.address ?? bank?.accountNumber ?? ''}
-                bank={bank ? { bankName: bank.bankName, name: bank.name } : null}
+                bank={bank ? { bankName: bank.bankName, name: bank.name, sortCode: bank.sortCode } : null}
                 requested={w.createdAt.toISOString()}
                 hash={w.partnerReference}
                 explorer={explorerLink(w.destination, w.partnerReference)}

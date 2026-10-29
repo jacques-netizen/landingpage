@@ -9,16 +9,25 @@ import { bankDestination, methodOf, walletDestination } from '@/lib/crypto-walle
 import { rateLimit } from '@/server/rate-limit'
 import { getViewer } from '@/server/viewer'
 
-export type PayoutField = 'coin' | 'network' | 'address' | 'country' | 'bankName' | 'accountNumber' | 'name'
+export type PayoutField =
+  'coin' | 'network' | 'address' | 'country' | 'bankName' | 'sortCode' | 'accountNumber' | 'name'
 export type PayoutMethodResult = { ok: true } | { ok: false; error: string; field?: PayoutField }
 
 export type PayoutMethodInput =
   | { method: 'crypto'; coin?: string; network?: string; address?: string }
-  | { method: 'bank'; country?: string; bankName?: string; accountNumber?: string; name?: string }
+  | {
+      method: 'bank'
+      country?: string
+      bankName?: string
+      sortCode?: string
+      accountNumber?: string
+      name?: string
+    }
 
 const BANK_ERRORS: Record<string, string> = {
   country: 'Choose the country your bank is in.',
   bankName: 'Enter the name of your bank.',
+  sortCode: 'A UK sort code is 6 digits, like 20-82-93.',
   accountNumber: 'Enter your account number or IBAN, letters and digits only.',
   name: 'Enter the name on the account, as the bank has it.',
 }
@@ -53,8 +62,17 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
       bankName: raw.bankName ?? '',
       accountNumber: raw.accountNumber ?? '',
       name: raw.name ?? '',
+      sortCode: raw.sortCode ?? '',
     })
-    if (!b.ok) return { ok: false, field: b.field, error: BANK_ERRORS[b.field]! }
+    if (!b.ok)
+      return {
+        ok: false,
+        field: b.field,
+        error:
+          b.field === 'accountNumber' && (raw.country ?? '').toUpperCase() === 'GB'
+            ? 'A UK account number is 8 digits, like 12345678.'
+            : BANK_ERRORS[b.field]!,
+      }
     destination = b.destination
     provider = 'bank_transfer'
   }

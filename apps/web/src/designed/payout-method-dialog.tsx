@@ -26,7 +26,7 @@ export function PayoutMethodDialog({
   const [coin, setCoin] = useState('')
   const [network, setNetwork] = useState('')
   const [address, setAddress] = useState('')
-  const [bank, setBank] = useState({ country: '', bankName: '', accountNumber: '', name: '' })
+  const [bank, setBank] = useState({ country: '', bankName: '', sortCode: '', accountNumber: '', name: '' })
   const [errors, setErrors] = useState<Partial<Record<PayoutField | 'form', string>>>({})
   const [busy, start] = useTransition()
   const networks = coin ? networksFor(coin) : []
@@ -210,6 +210,16 @@ export function PayoutMethodDialog({
               )}
             </Field>
             {field('Bank name', 'bankName', { autoComplete: 'off' })}
+            {/* UK accounts are paid by sort code and account number (owner request, 2026-10-29). */}
+            {bank.country === 'GB'
+              ? field('Sort code', 'sortCode', {
+                  autoComplete: 'off',
+                  inputMode: 'numeric',
+                  placeholder: '20-82-93',
+                  spellCheck: false,
+                  className: 'font-mono text-[14px]',
+                })
+              : null}
             {field('Bank account number', 'accountNumber', {
               autoComplete: 'off',
               inputMode: 'text',

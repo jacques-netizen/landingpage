@@ -60,4 +60,34 @@ describe('bank details', () => {
     expect(validTransaction(dest, 'WIRE-2026-001')).toBe(true)
     expect(validTransaction(dest, '')).toBe(false)
   })
+
+  it('needs a 6-digit sort code and an 8-digit account number for a UK account (owner request, 2026-10-29)', async () => {
+    const { bankDestination, parseBank, fullDestination, methodOf } = await import('../src/lib/crypto-wallets')
+    const uk = { country: 'gb', bankName: 'Monzo', accountNumber: '1234 5678', name: 'Kymen Carter' }
+    expect(bankDestination(uk)).toEqual({ ok: false, field: 'sortCode' })
+    expect(bankDestination({ ...uk, sortCode: '20-82-9' })).toEqual({ ok: false, field: 'sortCode' })
+    expect(bankDestination({ ...uk, sortCode: '20-82-93', accountNumber: '1234567' })).toEqual({
+      ok: false,
+      field: 'accountNumber',
+    })
+    const r = bankDestination({ ...uk, sortCode: '20-82-93' })
+    expect(r).toEqual({ ok: true, destination: 'BANK|GB|Monzo|12345678|Kymen Carter|208293' })
+    const dest = (r as { destination: string }).destination
+    expect(parseBank(dest)).toEqual({
+      country: 'GB',
+      bankName: 'Monzo',
+      accountNumber: '12345678',
+      name: 'Kymen Carter',
+      sortCode: '208293',
+    })
+    expect(methodOf(dest)).toBe('bank_transfer')
+    expect(fullDestination(dest)).toBe(
+      'Bank transfer in United Kingdom: Monzo, sort code 20-82-93, account 12345678, name Kymen Carter',
+    )
+    // A sort code is only asked for, and only kept, on UK accounts.
+    expect(bankDestination({ ...ok, sortCode: '208293' })).toEqual({
+      ok: true,
+      destination: 'BANK|US|Chase Bank|123456789|Kymen Carter',
+    })
+  })
 })
