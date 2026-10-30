@@ -55,7 +55,10 @@ test('a creator verifies views with an insights recording and staff approve it i
   await signInAs(admin, 'reviewer@seed.invalid')
   await admin.goto(`/admin/campaigns/${s!.campaign_id}?tab=verifications`)
   // Oldest first: pick this one from the waiting list.
-  await admin.getByRole('complementary', { name: 'Waiting' }).getByRole('button', { name: `@${handle}` }).click()
+  await admin
+    .getByRole('complementary', { name: 'Waiting' })
+    .getByRole('button', { name: `@${handle}` })
+    .click()
   const card = admin.getByRole('article', { name: 'Verification' })
   await expect(card.getByRole('heading', { name: `@${handle}` })).toBeVisible()
   await expect(card.locator('video').last()).toHaveAttribute('src', /\/files\//)

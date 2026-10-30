@@ -4,6 +4,7 @@
 import fs from 'node:fs'
 import http from 'node:http'
 import path from 'node:path'
+import { URL } from 'node:url'
 
 const dir = path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures', 'scrape-creators')
 const load = (n) => JSON.parse(fs.readFileSync(path.join(dir, `${n}.json`), 'utf8'))
