@@ -2,7 +2,7 @@ import { db, tables } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { desc, eq, inArray, sql } from 'drizzle-orm'
 import { countryName } from '@/lib/countries'
-import { describeDestination, explorerLink, parseBank, parseDestination } from '@/lib/crypto-wallets'
+import { bankAddress, describeDestination, explorerLink, parseBank, parseDestination } from '@/lib/crypto-wallets'
 import { requireStaff } from '@/server/guard'
 import { AdminPage } from '../_components/ui'
 import { PayoutRow } from './row'
@@ -88,7 +88,11 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
                     : (describeDestination(w.destination) ?? w.method))
                 }
                 address={dest?.address ?? bank?.accountNumber ?? ''}
-                bank={bank ? { bankName: bank.bankName, name: bank.name, sortCode: bank.sortCode } : null}
+                bank={
+                  bank
+                    ? { bankName: bank.bankName, name: bank.name, sortCode: bank.sortCode, address: bankAddress(bank) }
+                    : null
+                }
                 requested={w.createdAt.toISOString()}
                 hash={w.partnerReference}
                 explorer={explorerLink(w.destination, w.partnerReference)}

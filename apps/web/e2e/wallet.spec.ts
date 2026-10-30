@@ -120,6 +120,16 @@ test('a creator withdraws to a bank account; staff pay it with the bank referenc
   await expect(dialog.getByText('A UK account number is 8 digits, like 12345678.')).toBeVisible()
   await dialog.getByLabel('Location').selectOption('US')
   await expect(dialog.getByLabel('Sort code')).toHaveCount(0)
+  // In the US, the UK and other tier 1 countries the account holder's address is asked for (2026-10-30).
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(dialog.getByText('Enter the street address on your bank account.')).toBeVisible()
+  await dialog.getByLabel('Address').fill('1 Main St')
+  await dialog.getByLabel('City').fill('New York')
+  await dialog.getByLabel('ZIP code').fill('1000')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(dialog.getByText('A US ZIP code is 5 digits, like 10001.')).toBeVisible()
+  await dialog.getByLabel('ZIP code').fill('10001')
+  await dialog.getByLabel('State (optional)').fill('NY')
   await dialog.getByRole('button', { name: 'Save payout method' }).click()
   await expect(page.getByText('Bank transfer, Chase Bank, ending 6789 (United States)').first()).toBeVisible()
 
@@ -127,7 +137,10 @@ test('a creator withdraws to a bank account; staff pay it with the bank referenc
   await page.getByRole('dialog', { name: 'Withdraw' }).getByRole('button', { name: 'Request withdrawal' }).click()
   await expect(page.getByText('Verifying').first()).toBeVisible()
   const [req] = await sql`select id, method, destination from withdrawals where creator_id = ${me.id}`
-  expect(req).toMatchObject({ method: 'bank_transfer', destination: 'BANK|US|Chase Bank|123456789|Kymen Carter' })
+  expect(req).toMatchObject({
+    method: 'bank_transfer',
+    destination: 'BANK|US|Chase Bank|123456789|Kymen Carter||1 Main St|New York|10001|NY',
+  })
 
   await signInAs(page, 'finance@seed.invalid')
   await page.goto('/admin/payouts')

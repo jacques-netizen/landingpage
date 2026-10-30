@@ -4,7 +4,7 @@ import { Button, Dialog, Field, Input } from '@mde/ui'
 import { useState, useTransition, type ReactNode } from 'react'
 import { savePayoutMethodAction, type PayoutField } from '@/app/wallet/actions'
 import { COUNTRIES } from '@/lib/countries'
-import { COINS, networksFor } from '@/lib/crypto-wallets'
+import { COINS, needsAddress, networksFor } from '@/lib/crypto-wallets'
 
 type Method = 'crypto' | 'bank'
 
@@ -26,7 +26,17 @@ export function PayoutMethodDialog({
   const [coin, setCoin] = useState('')
   const [network, setNetwork] = useState('')
   const [address, setAddress] = useState('')
-  const [bank, setBank] = useState({ country: '', bankName: '', sortCode: '', accountNumber: '', name: '' })
+  const [bank, setBank] = useState({
+    country: '',
+    bankName: '',
+    sortCode: '',
+    accountNumber: '',
+    name: '',
+    address: '',
+    city: '',
+    postalCode: '',
+    state: '',
+  })
   const [errors, setErrors] = useState<Partial<Record<PayoutField | 'form', string>>>({})
   const [busy, start] = useTransition()
   const networks = coin ? networksFor(coin) : []
@@ -227,6 +237,17 @@ export function PayoutMethodDialog({
               className: 'font-mono text-[14px]',
             })}
             {field('Name on account', 'name', { autoComplete: 'name' })}
+            {/* The account holder's address, in the US, the UK and other tier 1 countries (owner request, 2026-10-30). */}
+            {needsAddress(bank.country) ? (
+              <>
+                {field('Address', 'address', { autoComplete: 'street-address' })}
+                {field('City', 'city', { autoComplete: 'address-level2' })}
+                {field(bank.country === 'US' ? 'ZIP code' : 'Postal code', 'postalCode', { autoComplete: 'postal-code' })}
+                {field(bank.country === 'US' ? 'State (optional)' : 'State or region (optional)', 'state', {
+                  autoComplete: 'address-level1',
+                })}
+              </>
+            ) : null}
           </>
         )}
 

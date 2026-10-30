@@ -10,7 +10,17 @@ import { rateLimit } from '@/server/rate-limit'
 import { getViewer } from '@/server/viewer'
 
 export type PayoutField =
-  'coin' | 'network' | 'address' | 'country' | 'bankName' | 'sortCode' | 'accountNumber' | 'name'
+  | 'coin'
+  | 'network'
+  | 'address'
+  | 'country'
+  | 'bankName'
+  | 'sortCode'
+  | 'accountNumber'
+  | 'name'
+  | 'city'
+  | 'postalCode'
+  | 'state'
 export type PayoutMethodResult = { ok: true } | { ok: false; error: string; field?: PayoutField }
 
 export type PayoutMethodInput =
@@ -22,12 +32,19 @@ export type PayoutMethodInput =
       sortCode?: string
       accountNumber?: string
       name?: string
+      address?: string
+      city?: string
+      postalCode?: string
+      state?: string
     }
 
 const BANK_ERRORS: Record<string, string> = {
   country: 'Choose the country your bank is in.',
   bankName: 'Enter the name of your bank.',
   sortCode: 'A UK sort code is 6 digits, like 20-82-93.',
+  address: 'Enter the street address on your bank account.',
+  city: 'Enter your town or city.',
+  postalCode: 'Enter your postal code as it appears on your address.',
   accountNumber: 'Enter your account number or IBAN, letters and digits only.',
   name: 'Enter the name on the account, as the bank has it.',
 }
@@ -63,6 +80,10 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
       accountNumber: raw.accountNumber ?? '',
       name: raw.name ?? '',
       sortCode: raw.sortCode ?? '',
+      address: raw.address ?? '',
+      city: raw.city ?? '',
+      postalCode: raw.postalCode ?? '',
+      state: raw.state ?? '',
     })
     if (!b.ok)
       return {
@@ -71,7 +92,11 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
         error:
           b.field === 'accountNumber' && (raw.country ?? '').toUpperCase() === 'GB'
             ? 'A UK account number is 8 digits, like 12345678.'
-            : BANK_ERRORS[b.field]!,
+            : b.field === 'postalCode' && (raw.country ?? '').toUpperCase() === 'US'
+              ? 'A US ZIP code is 5 digits, like 10001.'
+              : b.field === 'postalCode' && (raw.country ?? '').toUpperCase() === 'GB'
+                ? 'Enter a UK postcode, like SW1A 1AA.'
+                : BANK_ERRORS[b.field]!,
       }
     destination = b.destination
     provider = 'bank_transfer'

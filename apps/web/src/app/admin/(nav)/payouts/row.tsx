@@ -27,7 +27,7 @@ export function PayoutRow(p: {
   kind: 'crypto' | 'bank'
   coin: string
   address: string
-  bank: { bankName: string; name: string; sortCode?: string } | null
+  bank: { bankName: string; name: string; sortCode?: string; address?: string | null } | null
   requested: string
   hash: string | null
   explorer: string | null
@@ -69,6 +69,12 @@ export function PayoutRow(p: {
             <dd className="m-0">{p.bank.bankName}</dd>
             <dt className="text-muted-2">Name on account</dt>
             <dd className="m-0">{p.bank.name}</dd>
+            {p.bank.address ? (
+              <>
+                <dt className="text-muted-2">Address</dt>
+                <dd className="m-0">{p.bank.address}</dd>
+              </>
+            ) : null}
             {p.bank.sortCode ? (
               <>
                 <dt className="text-muted-2">Sort code</dt>
