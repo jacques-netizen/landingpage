@@ -28,6 +28,7 @@ import { ClipsGrid } from './clips-grid'
 import { CopyReportLink } from './copy-report-link'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { RefreshButton } from './refresh-button'
+import { ImportCsv } from './import-csv'
 import { ReportLink } from './report-link'
 import { CampaignReports } from './reports-tab'
 import { CampaignReview } from './review-cards'
@@ -418,98 +419,103 @@ export default async function CampaignAdminPage({
             decided={verificationRows(decidedProofs)}
           />
         ) : tab === 'clips' ? (
-          <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <form action={base} className="flex gap-2">
-                <input type="hidden" name="tab" value="clips" />
-                {clipFilters.status !== 'all' ? <input type="hidden" name="status" value={clipFilters.status} /> : null}
-                <input
-                  type="search"
-                  name="q"
-                  defaultValue={clipFilters.q ?? ''}
-                  aria-label="Search clips"
-                  placeholder="Search clipper, handle or link"
-                  className="h-9 w-[240px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+          <>
+            {canMoney && live ? <ImportCsv campaignId={c.id} /> : null}
+            <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <form action={base} className="flex gap-2">
+                  <input type="hidden" name="tab" value="clips" />
+                  {clipFilters.status !== 'all' ? (
+                    <input type="hidden" name="status" value={clipFilters.status} />
+                  ) : null}
+                  <input
+                    type="search"
+                    name="q"
+                    defaultValue={clipFilters.q ?? ''}
+                    aria-label="Search clips"
+                    placeholder="Search clipper, handle or link"
+                    className="h-9 w-[240px] rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+                  />
+                  <select
+                    name="clipper"
+                    defaultValue={clipFilters.clipper ?? ''}
+                    aria-label="Clipper"
+                    className="h-9 max-w-[200px] rounded-[10px] border border-solid border-line bg-field px-2 text-[13px] text-ink"
+                  >
+                    <option value="">Every clipper</option>
+                    {clippers.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="submit"
+                    className="h-9 cursor-pointer rounded-[10px] border border-solid border-line bg-field-2 px-4 text-[13px] text-ink"
+                  >
+                    Filter
+                  </button>
+                </form>
+              </div>
+              <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <nav aria-label="Clips by status" className="flex gap-2">
+                  {pill(clipFilters.status === 'all', clipHref({ status: 'all' }), 'All')}
+                  {(Object.keys(BUCKETS) as Bucket[]).map((b) =>
+                    pill(clipFilters.status === b, clipHref({ status: b }), BUCKETS[b].label, b),
+                  )}
+                </nav>
+                <nav aria-label="Clips by platform" className="flex gap-2">
+                  {pill(!clipFilters.platform, clipHref({ platform: undefined }), 'Every platform')}
+                  {c.platforms.map((p) =>
+                    pill(clipFilters.platform === p, clipHref({ platform: p }), platformLabel(p), p),
+                  )}
+                </nav>
+                {c.platforms.includes('instagram')
+                  ? pill(
+                      clipFilters.needs === 'verification',
+                      clipHref({ needs: clipFilters.needs ? undefined : 'verification' }),
+                      'Instagram posts needing verification',
+                    )
+                  : null}
+                <nav aria-label="Sort clips" className="ml-auto flex gap-2">
+                  {pill(clipFilters.sort === 'newest', clipHref({ sort: 'newest' }), 'Newest')}
+                  {pill(clipFilters.sort === 'most', clipHref({ sort: 'most' }), 'Most views')}
+                  {pill(clipFilters.sort === 'least', clipHref({ sort: 'least' }), 'Least views')}
+                </nav>
+              </div>
+              {clips.length === 0 ? (
+                <EmptyState body="No clips match these filters." />
+              ) : (
+                <ClipsGrid
+                  campaignId={c.id}
+                  reasons={head.reasons}
+                  canDelete={hasAccess(viewer, 'admin')}
+                  clips={clips.map((p) => ({
+                    id: p.id,
+                    platform: p.platform,
+                    platformPostId: p.platformPostId,
+                    postUrl: p.postUrl,
+                    handle: p.handle,
+                    creator: p.creator,
+                    creatorId: p.creatorId,
+                    hasVideo: p.hasVideo,
+                    hasThumbnail: p.hasThumbnail,
+                    views: p.views,
+                    verified: p.verified,
+                    likes: p.likes,
+                    comments: p.comments,
+                    checkedAt: p.checkedAt?.toISOString() ?? null,
+                    earnedCents: p.earnedCents,
+                    state: p.state,
+                    stateLabel: CREATOR_STATE[p.state]?.label ?? p.state,
+                    bucket: p.bucket,
+                    needsVerification: p.needsVerification,
+                    submittedAt: p.submittedAt.toISOString(),
+                  }))}
                 />
-                <select
-                  name="clipper"
-                  defaultValue={clipFilters.clipper ?? ''}
-                  aria-label="Clipper"
-                  className="h-9 max-w-[200px] rounded-[10px] border border-solid border-line bg-field px-2 text-[13px] text-ink"
-                >
-                  <option value="">Every clipper</option>
-                  {clippers.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="submit"
-                  className="h-9 cursor-pointer rounded-[10px] border border-solid border-line bg-field-2 px-4 text-[13px] text-ink"
-                >
-                  Filter
-                </button>
-              </form>
-            </div>
-            <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-              <nav aria-label="Clips by status" className="flex gap-2">
-                {pill(clipFilters.status === 'all', clipHref({ status: 'all' }), 'All')}
-                {(Object.keys(BUCKETS) as Bucket[]).map((b) =>
-                  pill(clipFilters.status === b, clipHref({ status: b }), BUCKETS[b].label, b),
-                )}
-              </nav>
-              <nav aria-label="Clips by platform" className="flex gap-2">
-                {pill(!clipFilters.platform, clipHref({ platform: undefined }), 'Every platform')}
-                {c.platforms.map((p) =>
-                  pill(clipFilters.platform === p, clipHref({ platform: p }), platformLabel(p), p),
-                )}
-              </nav>
-              {c.platforms.includes('instagram')
-                ? pill(
-                    clipFilters.needs === 'verification',
-                    clipHref({ needs: clipFilters.needs ? undefined : 'verification' }),
-                    'Instagram posts needing verification',
-                  )
-                : null}
-              <nav aria-label="Sort clips" className="ml-auto flex gap-2">
-                {pill(clipFilters.sort === 'newest', clipHref({ sort: 'newest' }), 'Newest')}
-                {pill(clipFilters.sort === 'most', clipHref({ sort: 'most' }), 'Most views')}
-                {pill(clipFilters.sort === 'least', clipHref({ sort: 'least' }), 'Least views')}
-              </nav>
-            </div>
-            {clips.length === 0 ? (
-              <EmptyState body="No clips match these filters." />
-            ) : (
-              <ClipsGrid
-                campaignId={c.id}
-                reasons={head.reasons}
-                canDelete={hasAccess(viewer, 'admin')}
-                clips={clips.map((p) => ({
-                  id: p.id,
-                  platform: p.platform,
-                  platformPostId: p.platformPostId,
-                  postUrl: p.postUrl,
-                  handle: p.handle,
-                  creator: p.creator,
-                  creatorId: p.creatorId,
-                  hasVideo: p.hasVideo,
-                  hasThumbnail: p.hasThumbnail,
-                  views: p.views,
-                  verified: p.verified,
-                  likes: p.likes,
-                  comments: p.comments,
-                  checkedAt: p.checkedAt?.toISOString() ?? null,
-                  earnedCents: p.earnedCents,
-                  state: p.state,
-                  stateLabel: CREATOR_STATE[p.state]?.label ?? p.state,
-                  bucket: p.bucket,
-                  needsVerification: p.needsVerification,
-                  submittedAt: p.submittedAt.toISOString(),
-                }))}
-              />
-            )}
-          </Card>
+              )}
+            </Card>
+          </>
         ) : tab === 'clippers' ? (
           <Card title="Clippers" note="Everyone who joined this campaign. Click a clipper to see their clips.">
             {clippers.length === 0 ? (
