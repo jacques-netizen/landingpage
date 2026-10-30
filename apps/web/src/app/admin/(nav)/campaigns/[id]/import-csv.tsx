@@ -11,7 +11,7 @@ const TEMPLATE =
   'url,clipper,status\nhttps://www.tiktok.com/@page/video/7697296279830940944,clipperusername,approved\nhttps://www.instagram.com/reel/DeZUhxLiDww/,clipper@example.com,\n'
 const TONE: Record<string, string> = { added: '#4FB286', approved: '#4FB286', skipped: '#9A958C', error: '#F08A80' }
 
-export function ImportCsv({ campaignId }: { campaignId: string }) {
+export function ImportCsv({ campaignId, live }: { campaignId: string; live: boolean }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
@@ -25,6 +25,9 @@ export function ImportCsv({ campaignId }: { campaignId: string }) {
           <p className="mt-1 mb-0 text-[12px] text-muted">
             One post per row: its link and the clipper&apos;s username, email or handle. Add &quot;approved&quot; in a
             status column to approve it at once; otherwise it waits in Review.
+            {live
+              ? ''
+              : ' This campaign has ended: the posts show in the campaign and its report, and earn only if you resume it.'}
           </p>
         </div>
         <button

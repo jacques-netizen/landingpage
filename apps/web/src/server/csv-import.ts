@@ -26,8 +26,10 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
   const d = db()
   const [c] = await d.select().from(tables.campaigns).where(eq(tables.campaigns.id, campaignId))
   if (!c || c.deletedAt) return { ok: false, error: 'That campaign is gone.' }
-  if (!['live', 'closing'].includes(c.status) || !c.currentTermsVersionId)
-    return { ok: false, error: 'Posts can only be added to a live campaign. Resume it first if it has ended.' }
+  // Live or ended campaigns (owner request, 2026-10-30): on an ended one the posts count in the report
+  // and earn only if the campaign is resumed, as approval adds earnings only while a campaign is live.
+  if (!['live', 'closing', 'closed'].includes(c.status) || !c.currentTermsVersionId)
+    return { ok: false, error: 'Posts can only be added to a campaign that has gone live.' }
   const { header, records } = csvRecords(text)
   if (!URL_COLUMNS.some((h) => header.includes(h)))
     return { ok: false, error: 'The file needs a "url" column with the post links.' }

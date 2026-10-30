@@ -420,7 +420,7 @@ export default async function CampaignAdminPage({
           />
         ) : tab === 'clips' ? (
           <>
-            {canMoney && live ? <ImportCsv campaignId={c.id} /> : null}
+            {canMoney && !open ? <ImportCsv campaignId={c.id} live={live} /> : null}
             <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <form action={base} className="flex gap-2">
