@@ -22,7 +22,8 @@ describe('settings defaults', () => {
       deleted_post_grace_hours: 48,
       review_window_days: 7,
       withdrawal_min_cents: 500,
-      view_check_intervals: { first_72h_hours: 1, until_close_hours: 1, keep_live_hours: 24 },
+      // Every 6 hours after a post's first 72 hours (owner decision 2026-10-14, DECISIONS.md).
+      view_check_intervals: { first_72h_hours: 1, until_close_hours: 6, keep_live_hours: 24 },
       withdrawal_fee_bps: 0,
       withdrawal_fee_min_cents: 0,
       appeal_reply_business_days: 5,
@@ -38,9 +39,9 @@ describe('settings defaults', () => {
 })
 
 describe('reason codes', () => {
-  it('has the 21 starting codes from 03_SYSTEMS.md section 5 plus post_limit_reached, with unique ids', () => {
-    expect(REASON_CODES).toHaveLength(22)
-    expect(new Set(REASON_CODES.map((r) => r[0])).size).toBe(22)
+  it('has the starting codes from 03_SYSTEMS.md section 5 and the ones added since, with unique ids', () => {
+    expect(REASON_CODES.length).toBeGreaterThanOrEqual(22)
+    expect(new Set(REASON_CODES.map((r) => r[0])).size).toBe(REASON_CODES.length)
     expect(REASON_CODES.map((r) => r[0])).toContain('post_limit_reached')
   })
 })

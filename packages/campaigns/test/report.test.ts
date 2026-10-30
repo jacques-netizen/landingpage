@@ -84,7 +84,8 @@ async function reportCampaign() {
   const ben = await user('ben', `ben${n}`)
   await joinCampaign(db, maya, c.id)
   await joinCampaign(db, ben, c.id)
-  const now = Date.now()
+  // Midday UTC today, so the posts fall on the same UTC days whatever time the tests run.
+  const now = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), 12)
   const post = async (
     creatorId: string,
     platform: string,
