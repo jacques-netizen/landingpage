@@ -23,8 +23,9 @@ export function ImportCsv({ campaignId, live }: { campaignId: string; live: bool
         <div>
           <h2 className="m-0 font-app text-[15px] font-semibold">Add posts from a CSV</h2>
           <p className="mt-1 mb-0 text-[12px] text-muted">
-            One post per row: its link and the clipper&apos;s username, email or handle. Add &quot;approved&quot; in a
-            status column to approve it at once; otherwise it waits in Review.
+            Any CSV with post links works, whatever its columns. A clipper column is optional; without one, each post
+            goes to the clipper who linked that page. Add &quot;approved&quot; in a status column to approve it at once;
+            otherwise it waits in Review.
             {live
               ? ''
               : ' This campaign has ended: the posts show in the campaign and its report, and earn only if you resume it.'}

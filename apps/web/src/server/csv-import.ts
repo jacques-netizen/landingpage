@@ -5,15 +5,16 @@ import { approve, ReviewError } from '@mde/review'
 import { and, eq, ilike, or, sql } from 'drizzle-orm'
 import { csvRecords } from '@/lib/csv'
 
-// Add posts to a campaign from a CSV (owner request, 2026-10-30): staff upload a file of post links and
-// the clipper each belongs to. Each post goes in as if the clipper had submitted it, at the campaign's
+// Add posts to a campaign from a CSV (owner request, 2026-10-30): staff upload any file with post links,
+// whatever its columns are called. A clipper column is optional; without one, or for a name nobody has,
+// the post goes to the clipper who linked the page in the link, else to a stand-in clipper for that page. Each post goes in as if the clipper had submitted it, at the campaign's
 // rate, and waits for review; with "approved" in the status column it is approved at once through the
 // same review step as the Review tab, so earnings, notifications and the audit log work as usual. Its
 // views are read by the next check, like any new post. Nothing is changed for a row that fails.
 
 export const MAX_ROWS = 2000
 const URL_COLUMNS = ['url', 'post_url', 'link', 'post', 'post_link']
-const CLIPPER_COLUMNS = ['clipper', 'username', 'email', 'creator', 'handle', 'user']
+const CLIPPER_COLUMNS = ['clipper', 'username', 'email', 'creator', 'handle', 'user', 'account']
 
 export type ImportRow = { row: number; url: string; result: 'added' | 'approved' | 'skipped' | 'error'; detail: string }
 export type ImportResult =
@@ -21,6 +22,32 @@ export type ImportResult =
   | { ok: false; error: string }
 
 const pick = (r: Record<string, string>, names: string[]) => names.map((n) => r[n]).find((v) => v && v.trim()) ?? ''
+
+// The row's post link: a named link column first, else any cell that holds one.
+function linkIn(r: Record<string, string>) {
+  const named = pick(r, URL_COLUMNS).trim()
+  if (named && parsePostUrl(named)) return named
+  return (
+    Object.values(r)
+      .map((v) => v.trim())
+      .find((v) => parsePostUrl(v)) ?? named
+  )
+}
+
+// A stand-in clipper for a page nobody on the platform has claimed: no password and an address that
+// takes no mail, so nobody can sign in as it or be paid as it.
+async function standIn(d: ReturnType<typeof db>, name: string) {
+  const slug =
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9._-]+/g, '-')
+      .replace(/^-|-$/g, '') || 'unknown'
+  const email = `csv-import+${slug}@clippers.invalid`
+  await d.insert(tables.users).values({ email, name }).onConflictDoNothing()
+  const [u] = await d.select({ id: tables.users.id }).from(tables.users).where(eq(tables.users.email, email))
+  await d.insert(tables.creatorProfiles).values({ userId: u!.id }).onConflictDoNothing()
+  return u!.id
+}
 
 export async function importSubmissionsCsv(campaignId: string, staffId: string, text: string): Promise<ImportResult> {
   const d = db()
@@ -30,19 +57,17 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
   // and earn only if the campaign is resumed, as approval adds earnings only while a campaign is live.
   if (!['live', 'closing', 'closed'].includes(c.status) || !c.currentTermsVersionId)
     return { ok: false, error: 'Posts can only be added to a campaign that has gone live.' }
-  const { header, records } = csvRecords(text)
-  if (!URL_COLUMNS.some((h) => header.includes(h)))
-    return { ok: false, error: 'The file needs a "url" column with the post links.' }
-  if (!CLIPPER_COLUMNS.some((h) => header.includes(h)))
-    return { ok: false, error: 'The file needs a "clipper" column with each clipper’s username or email.' }
+  const { records } = csvRecords(text)
   if (!records.length) return { ok: false, error: 'The file has no rows under its header.' }
+  if (!records.some((r) => parsePostUrl(linkIn(r))))
+    return { ok: false, error: 'No TikTok, Instagram, YouTube or X post links were found in the file.' }
   if (records.length > MAX_ROWS) return { ok: false, error: `Up to ${MAX_ROWS.toLocaleString('en-US')} rows a file.` }
 
   const rows: ImportRow[] = []
   const seen = new Set<string>()
   for (const [i, r] of records.entries()) {
     const n = i + 2 // the spreadsheet's row number, after the header
-    const url = pick(r, URL_COLUMNS).trim()
+    const url = linkIn(r)
     const who = pick(r, CLIPPER_COLUMNS).trim().replace(/^@/, '')
     // Matched as typed, case aside: no wildcards.
     const like = who.replace(/[\\%_]/g, '\\$&')
@@ -50,7 +75,9 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
     const fail = (detail: string) => rows.push({ row: n, url, result: 'error', detail })
     const post = parsePostUrl(url)
     if (!post) {
-      fail('Not a TikTok, Instagram, YouTube or X post link.')
+      // A row with no link at all (a total, a note) is passed over.
+      if (url) fail('Not a TikTok, Instagram, YouTube or X post link.')
+      else rows.push({ row: n, url, result: 'skipped', detail: 'No post link in this row.' })
       continue
     }
     if (!c.platforms.includes(post.platform)) {
@@ -63,17 +90,17 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
       continue
     }
     seen.add(key)
-    if (!who) {
-      fail('No clipper given.')
-      continue
-    }
-    // The clipper: by username or email, else by a linked account with that handle.
-    const [user] = await d
-      .select({ id: tables.users.id })
-      .from(tables.users)
-      .where(or(ilike(tables.users.username, like), ilike(tables.users.email, like)))
-      .limit(2)
+    // The clipper: by username or email, else the clipper who linked that page, else a stand-in.
+    const [user] = who
+      ? await d
+          .select({ id: tables.users.id })
+          .from(tables.users)
+          .where(or(ilike(tables.users.username, like), ilike(tables.users.email, like)))
+          .limit(2)
+      : []
     let creatorId = user?.id ?? null
+    const page = (post.handle ?? who).replace(/^@/, '')
+    const pageLike = page.replace(/[\\%_]/g, '\\$&')
     const accounts = await d
       .select()
       .from(tables.linkedAccounts)
@@ -81,17 +108,18 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
         and(
           eq(tables.linkedAccounts.platform, post.platform),
           sql`${tables.linkedAccounts.status} <> 'removed'`,
-          creatorId ? eq(tables.linkedAccounts.creatorId, creatorId) : ilike(tables.linkedAccounts.handle, like),
+          creatorId
+            ? eq(tables.linkedAccounts.creatorId, creatorId)
+            : or(ilike(tables.linkedAccounts.handle, pageLike), ilike(tables.linkedAccounts.handle, like)),
         ),
       )
     if (!creatorId && accounts.length) creatorId = accounts[0]!.creatorId
-    if (!creatorId) {
-      fail(`No clipper with the username, email or ${post.platform} handle "${who}".`)
-      continue
-    }
+    const standing = !creatorId
+    if (!creatorId) creatorId = await standIn(d, page ? `@${page}` : 'Imported from a CSV')
     const account =
       accounts.find((a) => post.handle && a.handle.toLowerCase() === post.handle.toLowerCase()) ??
       (accounts.length === 1 ? accounts[0] : undefined)
+    const note = `@${page || 'this page'} has no account here yet.`
     const now = new Date()
     await d.insert(tables.campaignMembers).values({ campaignId, creatorId }).onConflictDoNothing()
     const [s] = await d
@@ -119,12 +147,24 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
       continue
     }
     if (!wantApproved) {
-      rows.push({ row: n, url, result: 'added', detail: 'Waiting for review.' })
+      rows.push({
+        row: n,
+        url,
+        result: 'added',
+        detail: standing ? `Waiting for review. ${note}` : 'Waiting for review.',
+      })
       continue
     }
     try {
       await approve(d, staffId, s.id, { note: 'Approved on import from a CSV.' })
-      rows.push({ row: n, url, result: 'approved', detail: 'Approved; views are read at the next check.' })
+      rows.push({
+        row: n,
+        url,
+        result: 'approved',
+        detail: standing
+          ? `Approved; views are read at the next check. ${note}`
+          : 'Approved; views are read at the next check.',
+      })
     } catch (err) {
       rows.push({
         row: n,
