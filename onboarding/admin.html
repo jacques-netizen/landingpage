@@ -45,7 +45,8 @@
   .gateMsg{color:var(--danger); font-size:12.5px; min-height:16px; margin-top:10px}
 
   .newbox{background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; padding:18px; margin-bottom:22px}
-  .newrow{display:grid; grid-template-columns:1fr 1fr 1fr 1fr auto auto; gap:10px; align-items:end}
+  .newrow{display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr auto auto; gap:10px; align-items:end}
+  .newrow select{width:100%; font-size:15px; padding:11px 13px}
   @media (max-width:980px){ .newrow{grid-template-columns:1fr 1fr} }
   @media (max-width:700px){ .newrow{grid-template-columns:1fr} }
   .created{margin-top:14px; padding:12px 14px; border-radius:9px; background:color-mix(in srgb,var(--ok) 10%, transparent); border:1px solid color-mix(in srgb,var(--ok) 30%, transparent); font-size:13.5px; word-break:break-all}
@@ -103,6 +104,17 @@
   .nx{font-size:12px; color:var(--muted); white-space:nowrap}
   .nx.due{color:var(--gold-bright); font-weight:600}
   .nx.done{color:var(--ok)}
+  .nx.err{color:var(--danger); font-weight:600}
+  .nx-r{display:block; font-size:11.5px; color:var(--danger); white-space:normal; max-width:260px; margin-top:2px}
+  .stp.err .stp-st{color:var(--danger); font-weight:600; white-space:normal}
+  .health{background:color-mix(in srgb,var(--danger) 9%, transparent); border:1px solid color-mix(in srgb,var(--danger) 35%, transparent); border-radius:12px; padding:14px 16px; margin-bottom:18px; font-size:13.5px}
+  .health b{color:var(--danger); font-weight:600}
+  .health ul{margin:8px 0 0; padding-left:18px}
+  .health li{margin:3px 0}
+  details.setup{margin-bottom:18px}
+  details.setup summary{cursor:pointer; font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gold)}
+  .setup .newbox{margin:12px 0 0}
+  .warnline{margin-top:10px; font-size:13px; color:var(--danger)}
   /* client emails */
   .seq{background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; padding:18px 18px 8px; margin:0 0 18px}
   .seq-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:6px}
@@ -155,6 +167,7 @@
         <button class="btn ghost" id="lock" type="button">Lock</button>
       </div>
     </header>
+    <div id="health"></div>
     <div id="view"></div>
   </div>
 </div>
@@ -200,11 +213,12 @@
       showApp();
       BASE = j.base || BASE;
       LINKS = j.links || [];
+      loadHealth();
       if (location.hash.length > 1) { loadOne(location.hash.slice(1)); return; }
       renderList();
     }).catch(function(e){ if (e.message !== 'unauthorized') showGate(e.message); });
   }
-  function renderList(newUrl){
+  function renderList(newUrl, welcome){
     var view = $('#view');
     var rows = LINKS.filter(function(l){
       return (!filters.status || l.status === filters.status) && (!filters.call || l.call_type === filters.call);
@@ -215,10 +229,12 @@
       + '<div><label class="mini" for="nCampaign">Campaign name</label><input id="nCampaign" type="text" placeholder="e.g. Summer single launch"></div>'
       + '<div><label class="mini" for="nFirst">Client first name</label><input id="nFirst" type="text" placeholder="For the welcome email"></div>'
       + '<div><label class="mini" for="nEmail">Client email</label><input id="nEmail" type="text" placeholder="name@example.com"></div>'
+      + '<div><label class="mini" for="nCall">Call type</label><select id="nCall"><option value="standard">Standard onboarding call</option><option value="personal_branding">Personal branding call</option></select></div>'
       + '<button class="btn" id="createBtn" type="button">Create link</button>'
       + '<button class="btn ghost" id="cancelBtn" type="button">Cancel</button>'
       + '</div><div class="err" id="newErr"></div></div>'
-      + (newUrl ? '<div class="created" id="created"><b>Link created.</b> Send this to the client: <span id="newUrl">' + esc(newUrl) + '</span> <button class="btn sm ghost" id="copyNew" type="button">Copy link</button></div><div style="height:18px"></div>' : '')
+      + (newUrl ? '<div class="created" id="created"><b>Link created.</b> ' + welcomeNote(welcome) + ' Link: <span id="newUrl">' + esc(newUrl) + '</span> <button class="btn sm ghost" id="copyNew" type="button">Copy link</button>'
+        + (welcome && welcome.error ? '<div class="warnline">Welcome email failed: ' + esc(welcome.error) + '</div>' : '') + '</div><div style="height:18px"></div>' : '')
       + '<div class="filters">Filter'
       + '<select id="fStatus"><option value="">All statuses</option>' + Object.keys(STATUS).map(function(k){ return '<option value="' + k + '"' + (filters.status === k ? ' selected' : '') + '>' + STATUS[k] + '</option>'; }).join('') + '</select>'
       + '<select id="fCall"><option value="">All call types</option>' + Object.keys(CALL).map(function(k){ return '<option value="' + k + '"' + (filters.call === k ? ' selected' : '') + '>' + CALL[k] + '</option>'; }).join('') + '</select>'
@@ -230,7 +246,8 @@
         + rows.map(function(l){
           return '<tr><td><div class="nm">' + esc(l.client_name) + '</div><div class="sub">' + esc(l.campaign_name) + '</div></td>'
             + '<td data-l="Status"><span class="pill ' + esc(l.status) + '">' + esc(STATUS[l.status] || l.status) + '</span></td>'
-            + '<td data-l="Emails"><span class="nx' + (l.next && l.next.done ? ' done' : l.next && l.next.due ? ' due' : '') + '">' + esc((l.next && l.next.label) || '') + '</span></td>'
+            + '<td data-l="Emails"><span class="nx' + (l.next && l.next.error ? ' err' : l.next && l.next.done ? ' done' : l.next && l.next.due ? ' due' : '') + '">' + esc((l.next && l.next.label) || '') + '</span>'
+            + (l.next && l.next.reason ? '<span class="nx-r">' + esc(l.next.reason) + '</span>' : '') + '</td>'
             + '<td data-l="Call" class="dt">' + esc(CALL[l.call_type] || '—') + '</td>'
             + '<td data-l="Created" class="dt">' + esc(fmt(l.created_at)) + '</td>'
             + '<td data-l="Submitted" class="dt">' + esc(fmt(l.submitted_at)) + '</td>'
@@ -258,6 +275,12 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-reopen]'), function(b){ b.onclick = function(){ reopen(b.getAttribute('data-reopen')); }; });
     Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function(b){ b.onclick = function(){ del(b.getAttribute('data-del')); }; });
   }
+  function welcomeNote(w){
+    if (!w) return 'Send this to the client.';
+    if (w.sent) return 'Welcome email with the form link sent to ' + esc((w.to || []).join(', ')) + '.';
+    if (w.skipped) return 'No welcome email sent (no first name or email). Send the link yourself, or add them on the client’s page.';
+    return 'Send this to the client.';
+  }
   function openNewBox(){
     var c = $('#created'); if (c) c.remove();
     $('#newBox').hidden = false; $('#nClient').focus();
@@ -266,8 +289,8 @@
     var c = $('#nClient').value.trim(), k = $('#nCampaign').value.trim();
     if (!c || !k) { $('#newErr').textContent = 'Enter both the client name and the campaign name.'; return; }
     $('#createBtn').disabled = true;
-    req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k, first_name:$('#nFirst').value.trim(), email:$('#nEmail').value.trim() }) })
-      .then(function(j){ LINKS.unshift(j.link); renderList(j.url); })
+    req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k, first_name:$('#nFirst').value.trim(), email:$('#nEmail').value.trim(), call_type:$('#nCall').value }) })
+      .then(function(j){ LINKS.unshift(j.link); renderList(j.url, j.welcome); })
       .catch(function(e){ $('#newErr').textContent = e.message; $('#createBtn').disabled = false; });
   }
   function reopen(token){
@@ -282,6 +305,29 @@
     req('link?token=' + encodeURIComponent(token), { method:'DELETE' })
       .then(function(){ LINKS = LINKS.filter(function(x){ return x.token !== token; }); if (location.hash.length > 1) location.hash = ''; else renderList(); })
       .catch(function(e){ alert(e.message); });
+  }
+
+  // ---------- setup check (booking links, email sender) ----------
+  var HEALTH = null;
+  function loadHealth(){ req('health').then(function(h){ HEALTH = h; renderHealth(); }).catch(function(){}); }
+  function renderHealth(open){
+    var h = HEALTH, el = $('#health'); if (!h || !el) return;
+    var st = h.settings || {};
+    var src = function(v){ return v === 'admin' ? 'set here' : v === 'variable' ? 'from the Worker variable' : v === 'default' ? 'Resend test default' : 'not set'; };
+    el.innerHTML = (h.problems && h.problems.length ? '<div class="health"><b>Setup problems</b><ul>' + h.problems.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>' : '')
+      + '<details class="setup"' + (open || (h.problems && h.problems.length) ? ' open' : '') + '><summary>Booking links and email sender</summary><div class="newbox">'
+      + '<div class="fgrid">'
+      + '<div class="wide"><label class="mini" for="sStd">Standard onboarding call booking link</label><input id="sStd" type="text" placeholder="https://cal.com/your-name/onboarding" value="' + esc(st.cal_standard) + '"><div class="hint">' + src(st.cal_standard_from) + '</div></div>'
+      + '<div class="wide"><label class="mini" for="sPb">Personal branding call booking link</label><input id="sPb" type="text" placeholder="https://cal.com/your-name/personal-branding" value="' + esc(st.cal_personal) + '"><div class="hint">' + src(st.cal_personal_from) + '</div></div>'
+      + '<div class="wide"><label class="mini" for="sFrom">Email sender</label><input id="sFrom" type="text" placeholder="Jacques at Maison d’Élites &lt;jacques@maisondelites.com&gt;" value="' + esc(st.from_source === 'default' ? '' : st.from) + '"><div class="hint">' + (st.from_source === 'default' ? 'Not set: using Resend’s test sender, which only reaches the Resend account owner.' : src(st.from_source) + '. The domain must be verified in Resend.') + '</div></div>'
+      + '</div><div class="row-btns"><button class="btn" id="sSave" type="button">Save</button><span class="hint">Resend API key: ' + (h.resend_key ? 'set' : '<b style="color:var(--danger)">not set</b>') + ' · Team email: ' + (h.notify_email ? 'set' : 'not set') + ' · Discord: ' + (h.discord ? 'set' : 'not set') + '</span></div>'
+      + '<div class="msg" id="sMsg"></div></div></details>';
+    $('#sSave').onclick = function(){
+      var b = this; b.disabled = true;
+      req('settings', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ cal_standard: $('#sStd').value.trim(), cal_personal: $('#sPb').value.trim(), from: $('#sFrom').value.trim() }) })
+        .then(function(nh){ HEALTH = nh; renderHealth(true); var m = $('#sMsg'); m.className = 'msg good'; m.textContent = 'Saved.'; })
+        .catch(function(e){ b.disabled = false; var m = $('#sMsg'); m.className = 'msg bad'; m.textContent = e.message; });
+    };
   }
 
   // ---------- answer view ----------
@@ -314,7 +360,6 @@
       ]],
       ['What we’re promoting', [
         qa('Campaign is for', esc(a.q6 === 'other' ? 'Something else: ' + (a.q6_other || '') : lab('promo', a.q6))),
-        qa('Package includes personal branding', a.q7 ? (a.q7 === 'yes' ? 'Yes' : 'No') : ''),
         qa('Main link', link(a.q8)),
         qa('Key date', esc(q9.none ? 'No set date' : [q9.date, q9.what].filter(Boolean).join(' · '))),
         qa('What makes it a win', esc((a.q10 || []).map(function(x){ return x === 'other' ? 'Something else: ' + (a.q10_other || '') : lab('wins', x); }).join('\n')))
@@ -347,7 +392,9 @@
     var dash = l.campaign_id ? campaignsBase() + '/' + encodeURIComponent(l.campaign_id) : '';
     $('#view').innerHTML = '<button class="back" id="back">‹ All onboarding links</button>'
       + '<div class="det-head"><div class="nm">' + esc(l.client_name) + ' <span>· ' + esc(l.campaign_name) + '</span></div>'
-      + (l.call_type ? '<div class="call">' + esc(CALL[l.call_type]) + '</div>' : '')
+      + '<div class="call">Call type <select id="callType" style="margin-left:8px">' + Object.keys(CALL).map(function(k){ return '<option value="' + k + '"' + ((l.call_type || 'standard') === k ? ' selected' : '') + '>' + CALL[k] + '</option>'; }).join('') + '</select></div>'
+      + (l.booking_error ? '<div class="warnline">' + esc(l.booking_error) + '</div>' : '')
+      + (!j.booking_url && l.status === 'submitted' && !l.booking_error ? '<div class="warnline">No booking link is set for this call type.</div>' : '')
       + '<div class="meta"><span class="pill ' + esc(l.status) + '">' + esc(STATUS[l.status]) + '</span>'
       + '<span>Created ' + esc(fmt(l.created_at)) + '</span>'
       + (l.opened_at ? '<span>Opened ' + esc(fmt(l.opened_at)) + '</span>' : '')
@@ -367,6 +414,12 @@
     $('#delOne').onclick = function(){ del(l.token); };
     var r = $('#reopenOne'); if (r) r.onclick = function(){ reopen(l.token); };
     var m = $('#mkCampaign'); if (m) m.onclick = function(){ makeCampaign(l, a); };
+    $('#callType').onchange = function(){
+      var sel = this; sel.disabled = true;
+      req('link?token=' + encodeURIComponent(l.token), { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ action:'set_call_type', call_type: sel.value }) })
+        .then(function(){ return loadOne(l.token); })
+        .catch(function(e){ alert(e.message); sel.disabled = false; });
+    };
     window.scrollTo(0, 0);
   }
 
@@ -402,6 +455,8 @@
       return [due ? 'ready' : (n ? 'done' : ''), (n ? n + ' sent · ' : '') + (due ? 'Week ' + (n + 1) + ' due now' : 'Next due ' + fmt(SEQ.weekly_due))];
     }
     if (st.sent_at) return ['done', 'Sent ' + fmt(st.sent_at)];
+    var er = (SEQ.errors || {})[st.id];
+    if (er) return ['err', 'Failed ' + fmt(er.at) + ': ' + er.reason];
     if (st.id === 'reminder') {
       if (st.blocked) return ['', st.blocked === 'The client has submitted the form.' ? 'Not needed, form submitted' : 'After the welcome'];
       return ['', 'Sends by itself ' + fmt(SEQ.auto_reminder_at)];

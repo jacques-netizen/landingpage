@@ -213,6 +213,13 @@ record and certificate. On that host `/` redirects to `maisondelites.com`. The
 same pages also answer as `/onboarding/<token>` and `/onboarding/admin` on the
 Worker's other hosts (e.g. proposals.*), which is handy for testing.
 
+**Booking links and sender, from the admin page.** At the top of
+`/admin`, **Booking links and email sender** sets the two booking links
+(Cal.com or Calendly) and the email sender without touching the Worker. Values
+saved there win over the variables below. The panel also lists setup problems
+(no Resend key, Resend's test sender, an unverified sender domain, a missing
+booking link) so nothing fails silently.
+
 **Variables** (Settings → Variables and Secrets):
 
 | Name | What |
@@ -229,9 +236,12 @@ client and every report recipient, so the sending domain must be verified in
 Resend (until then Resend only delivers to your own account address).
 
 **How it behaves**
-- Question 7 (personal branding) picks the calendar: Yes shows
-  `CAL_PERSONAL_BRANDING_URL`, No shows `CAL_ONBOARDING_URL`. Name and email
-  are prefilled. "Book later" skips to the confirmation; the booking link is
+- The call type is set by admin when creating the link (Standard onboarding
+  call / Personal branding call) and can be changed on the client's page. It
+  picks the calendar after Submit. Name and email are prefilled.
+- Admin's first name and email prefill the form's name and email questions.
+- The goal options ("What would make this campaign a win") follow the answer
+  to "What is this campaign for?". "Book later" skips to the confirmation; the booking link is
   also in the confirmation email.
 - On submit, the team email, Discord ping and client email go out once per link
   (a reopened and resubmitted form does not send them again).
@@ -268,7 +278,7 @@ nothing goes live before payment, and an email never sends while a field it need
 
 | # | Email | How it goes out |
 |---|-------|-----------------|
-| 1 | Welcome | Admin clicks Send (first name, email, focus line) |
+| 1 | Welcome | Sends by itself when the link is created with a first name and email. Failures show in the list with Resend's reason; Send retries it |
 | 2 | Invoice | Admin clicks Send (number, amount, due date, PDF attached) |
 | 3 | Form reminder | Sends by itself 24 hours after email 1 if the form is still empty |
 | 4 | Payment received | Admin clicks Send (call date, or the booking link goes in) |

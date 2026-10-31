@@ -228,11 +228,22 @@
   var L = {
     contact: [['whatsapp','WhatsApp'],['instagram','Instagram DM'],['email','Email']],
     promo: [['song','A song or album'],['product','A product'],['show','A show or podcast'],['person','A person or personal brand'],['other','Something else']],
-    yesno: [['yes','Yes'],['no','No']],
-    wins: [['streams','More streams'],['followers','More followers'],['sales','More sales'],['signups','More sign-ups'],['awareness','More people knowing the name'],['other','Something else']],
+    wins: [['streams','More streams'],['listeners','More listeners or viewers'],['followers','More followers'],['sales','More sales'],['signups','More sign-ups'],['sales_signups','More sales or sign-ups'],['awareness','More people knowing the name'],['other','Something else']],
     sources: [['youtube','YouTube channel'],['podcast','Podcast episodes'],['stream','Twitch or Kick streams'],['drive','A Google Drive or Dropbox folder'],['upload','I’ll upload files here']],
     platforms: [['tiktok','TikTok'],['reels','Instagram Reels'],['shorts','YouTube Shorts'],['x','X']]
   };
+  // Goal options for each answer to "What is this campaign for?" (same as lib/onboarding.js WINS_FOR).
+  var WINS_FOR = {
+    song: ['streams','followers','awareness','other'],
+    product: ['sales','signups','awareness','other'],
+    show: ['listeners','followers','awareness','other'],
+    person: ['followers','awareness','sales_signups','other'],
+    other: ['streams','listeners','followers','sales','signups','awareness','other']
+  };
+  function winOpts(){
+    var keys = WINS_FOR[A.q6] || WINS_FOR.other;
+    return keys.map(function(k){ return [k, label(L.wins, k)]; });
+  }
   var SRC_FIELD = {
     youtube: ['YouTube channel link', 'https://youtube.com/@yourchannel'],
     podcast: ['Podcast link', 'https://open.spotify.com/show/…'],
@@ -244,6 +255,7 @@
   var FILES = [];        // uploaded files from the server [{id,qid,name,size}]
   var UP = [];           // uploads in progress [{qid,name,size,pct,failed,xhr}]
   var S = {};            // server state
+  var KNOWN = {};        // first name and email admin typed when creating the link
   var cur = 'welcome';   // current screen id
   var fromReview = false;
   var saveFailed = false;
@@ -292,13 +304,11 @@
       check:function(){ var bad = arr(A.q5).some(function(p){ return (p.name || p.email) && !isEmail(p.email); }); return bad ? 'Please add a valid email for each person' : ''; } },
     { id:'q6', sec:1, req:true, q:'What is this campaign for?', type:'single', opts:L.promo, other:'q6_other',
       check:function(){ if (!A.q6) return 'Please pick one'; if (A.q6 === 'other' && !String(A.q6_other||'').trim()) return 'Please tell us what it is'; return ''; } },
-    { id:'q7', sec:1, req:true, q:'Does your package include personal branding?', type:'single', opts:L.yesno,
-      check:function(){ return A.q7 ? '' : 'Please pick one'; } },
-    { id:'q8', sec:1, req:true, q:'Paste the main link we’re sending people to', help:'Your track, product page, channel or profile.', type:'url', ph:'https://',
+    { id:'q8', sec:1, req:true, q:'Paste the main link we’re sending people to', help:'Your product page, track, channel or profile.', type:'url', ph:'https://',
       check:function(){ return isUrl(A.q8) ? '' : 'Please add a link starting with https://'; } },
     { id:'q9', sec:1, q:'Is there a key date we should build toward?', type:'date',
       check:function(){ var v = obj(A.q9); if (v.none) return ''; if (v.what && !v.date) return 'Please pick the date, or tick “No set date”'; return ''; } },
-    { id:'q10', sec:1, req:true, q:'What would make this campaign a win for you?', help:'Pick as many as you like.', type:'multi', opts:L.wins, other:'q10_other',
+    { id:'q10', sec:1, req:true, q:'What would make this campaign a win for you?', help:'Pick as many as you like.', type:'multi', opts:winOpts, other:'q10_other',
       check:function(){ var v = arr(A.q10); if (!v.length) return 'Please pick at least one'; if (v.indexOf('other') >= 0 && !String(A.q10_other||'').trim()) return 'Please tell us what a win looks like'; return ''; } },
     { id:'q11', sec:2, req:true, q:'Where should clippers get footage from?', help:'Pick every source that applies.', type:'multi', opts:L.sources,
       check:function(){ return arr(A.q11).length ? '' : 'Please pick at least one source'; } },
@@ -327,6 +337,7 @@
   function prune(){
     if (A.q3 === 'email') delete A.q4;
     if (A.q6 !== 'other') delete A.q6_other;
+    if (A.q10) { var okWins = WINS_FOR[A.q6] || WINS_FOR.other; A.q10 = arr(A.q10).filter(function(k){ return okWins.indexOf(k) >= 0; }); }
     if (arr(A.q10).indexOf('other') < 0) delete A.q10_other;
     var b = obj(A.q11b), nb = {};
     arr(A.q11).forEach(function(s){ if (s !== 'upload' && b[s]) nb[s] = b[s]; });
@@ -342,7 +353,8 @@
     var i = vis.findIndex(function(s){ return s.id === cur; });
     var pct = cur === 'welcome' ? 0 : cur === 'review' ? 100 : Math.round((i / vis.length) * 100);
     $('#pfill').style.width = pct + '%';
-    $('#stepcount').textContent = i >= 0 ? (i + 1) + ' / ' + vis.length : '';
+    // The section name, not "X / Y": the total changes as follow-up questions appear.
+    $('#stepcount').textContent = cur === 'review' ? 'Review' : i >= 0 ? SECTIONS[vis[i].sec] : '';
   }
   function nav(show){
     $('#navbar').hidden = !show;
@@ -405,7 +417,7 @@
   function choice(s, body, multi){
     var wrap = el('div', { 'class':'opts', role: multi ? 'group' : 'radiogroup' });
     var otherBox = null;
-    s.opts.forEach(function(o){
+    (typeof s.opts === 'function' ? s.opts() : s.opts).forEach(function(o){
       var b = el('button', { type:'button', 'class':'opt' + (multi ? ' multi' : ''), 'aria-pressed':'false' }, '<span class="box">✓</span><span>' + esc(o[1]) + '</span>');
       function sync(){
         var on = multi ? arr(A[s.id]).indexOf(o[0]) >= 0 : A[s.id] === o[0];
@@ -554,7 +566,7 @@
 
   var BUILD = {
     text: function(s, body){ body.appendChild(input('text', A[s.id], s.ph, function(v){ A[s.id] = v; })); },
-    email: function(s, body){ body.appendChild(input('email', A[s.id], 'you@company.com', function(v){ A[s.id] = v.trim(); }, { inputmode:'email', autocomplete:'email' })); },
+    email: function(s, body){ if (!A[s.id] && KNOWN.email) A[s.id] = KNOWN.email; body.appendChild(input('email', A[s.id], 'you@company.com', function(v){ A[s.id] = v.trim(); }, { inputmode:'email', autocomplete:'email' })); },
     url: function(s, body){
       var i = input('url', A[s.id], s.ph, function(v){ A[s.id] = v.trim(); }, { inputmode:'url' });
       i.addEventListener('blur', function(){ i.value = fixUrl(i.value); A[s.id] = i.value; });
@@ -577,7 +589,10 @@
     contact: function(s, body){
       if (A.q3 === 'whatsapp') body.appendChild(input('tel', A.q3b, '+44 7700 900123', function(v){ A.q3b = v; }, { inputmode:'tel', autocomplete:'tel' }));
       else if (A.q3 === 'instagram') body.appendChild(input('text', A.q3b, '@yourhandle', function(v){ A.q3b = v.trim(); }, { autocapitalize:'off' }));
-      else body.appendChild(input('email', A.q3b, 'you@company.com', function(v){ A.q3b = v.trim(); }, { inputmode:'email', autocomplete:'email' }));
+      else {
+        if (!A.q3b && KNOWN.email) A.q3b = KNOWN.email;
+        body.appendChild(input('email', A.q3b, 'you@company.com', function(v){ A.q3b = v.trim(); }, { inputmode:'email', autocomplete:'email' }));
+      }
     },
     people: function(s, body){
       A.q5 = arr(A.q5);
@@ -660,7 +675,6 @@
       case 'q3': return label(L.contact, v);
       case 'q5': return arr(v).map(function(p){ return [p.name, p.email].filter(Boolean).join(' · '); }).join('\n');
       case 'q6': return v === 'other' ? 'Something else: ' + (A.q6_other || '') : label(L.promo, v);
-      case 'q7': return label(L.yesno, v);
       case 'q9': v = obj(v); return v.none ? 'No set date' : [v.date, v.what].filter(Boolean).join(' · ');
       case 'q10': return arr(v).map(function(x){ return x === 'other' ? 'Something else: ' + (A.q10_other || '') : label(L.wins, x); }).join('\n');
       case 'q11': return arr(v).map(function(x){ return label(L.sources, x); }).join('\n');
@@ -789,6 +803,7 @@
       renderDone();
     };
     if (!b.url) return;
+    if (/(^|\.)calendly\.com$/i.test((function(){ try { return new URL(b.url).hostname; } catch (e) { return ''; } })())) return calendly(b);
     try {
       var u = new URL(b.url);
       var calLink = u.pathname.replace(/^\/+|\/+$/g, '');
@@ -810,6 +825,24 @@
       $('#cal').outerHTML = '<div class="notice">Trouble loading the calendar? <a href="' + esc(b.url) + '" target="_blank" rel="noopener">Open it here</a>.</div>';
     }
   }
+  // Calendly links work too: its inline widget, prefilled the same way.
+  function calendly(b){
+    var u = new URL(b.url);
+    u.searchParams.set('hide_gdpr_banner', '1');
+    if (b.name) u.searchParams.set('name', b.name);
+    if (b.email) u.searchParams.set('email', b.email);
+    var w = el('div', { 'class':'calendly-inline-widget', 'data-url': u.toString(), style:'min-width:320px;height:700px' });
+    $('#cal').appendChild(w);
+    var sc = document.createElement('script'); sc.src = 'https://assets.calendly.com/assets/external/widget.js'; sc.async = true;
+    document.head.appendChild(sc);
+    window.addEventListener('message', function(e){
+      if (e.origin === 'https://calendly.com' && e.data && e.data.event === 'calendly.event_scheduled') {
+        S.booking_state = 'booked';
+        post('/state', { action:'booked' });
+        var l = $('#laterBtn'); if (l) { l.textContent = 'Continue'; l.onclick = renderDone; }
+      }
+    });
+  }
   function renderDone(){
     nav(false);
     $('#pfill').style.width = '100%'; $('#stepcount').textContent = '';
@@ -818,7 +851,7 @@
     stage.innerHTML = '<div class="done"><div class="seal">✓</div><h1>You’re all set</h1>'
       + '<p>We have everything we need. Our team will review your answers before your onboarding call. You’ll receive your live campaign report link once the campaign is running.</p>'
       + (S.booking_state !== 'booked' && b.url ? '<div class="notice">You haven’t booked your onboarding call yet.<br><button class="btn btn-primary" id="bookBtn" type="button">Book your call</button></div>' : '')
-      + '<details class="answers"><summary>Your answers</summary><div style="margin-top:14px">' + reviewHtml(false) + '</div></details></div>';
+      + '<details class="answers" open><summary>Your answers</summary><div style="margin-top:14px">' + reviewHtml(false) + '</div></details></div>';
     var bb = $('#bookBtn'); if (bb) bb.onclick = renderBooking;
   }
 
@@ -826,6 +859,8 @@
     S = j;
     A = obj(j.answers);
     FILES = arr(j.files);
+    KNOWN = obj(j.known);
+    if (KNOWN.first_name && !obj(A.q2).name) A.q2 = Object.assign(obj(A.q2), { name: KNOWN.first_name });
     if (j.campaign_name) $('#brandName').textContent = j.campaign_name;
     if (j.submitted) {
       if (j.booking_state) renderDone(); else renderBooking();
