@@ -423,6 +423,9 @@ export const submissions = pgTable(
     // It shows on the campaign and the client report with the figures staff typed; it is never checked
     // and never earns.
     archived: boolean('archived').notNull().default(false),
+    // What the clipper was paid for this post outside the platform (owner, 2026-11-02: the Billboard posts
+    // were $10 each). Never in the ledger; the client report counts it as spent and paid out.
+    outsidePaidCents: cents('outside_paid_cents').notNull().default(0),
     ...timestamps,
   },
   (t) => [

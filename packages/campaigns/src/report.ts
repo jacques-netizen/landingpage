@@ -130,7 +130,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     and s.state not in (${list(REJECTED)})`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
-    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents, s.creator_id,
+    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents + s.outside_paid_cents as earned_cents, s.outside_paid_cents, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
@@ -156,6 +156,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     submitted_at: Date
     state: string
     earned_cents: string
+    outside_paid_cents: string
     handle: string | null
     username: string | null
     views: string
@@ -180,7 +181,12 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     comments: n(r.comments),
     shares: n(r.shares),
     payoutCents: n(r.earned_cents),
-    payout: r.state === 'paid_out' ? 'paid' : APPROVED.includes(r.state) && n(r.earned_cents) > 0 ? 'pending' : 'none',
+    payout:
+      r.state === 'paid_out' || n(r.outside_paid_cents) > 0
+        ? 'paid'
+        : APPROVED.includes(r.state) && n(r.earned_cents) > 0
+          ? 'pending'
+          : 'none',
     verified: n(r.verified_views) > 0 && n(r.verified_views) >= n(r.latest_views),
   })
 
@@ -233,19 +239,27 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
           ? sql`
         select day, sum(spend)::bigint as spend from (
           select v.day, (v.views - lag(v.views, 1, 0::bigint) over (partition by v.submission_id order by v.day))
-            * s.earned_cents / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
+            * (s.earned_cents + s.outside_paid_cents) / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
           from view_snapshot_days v join submissions s on s.id = v.submission_id
           where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})
             and v.day >= ${fromDay}::date and v.day <= ${toDay}::date
         ) x group by day`
           : sql`
-        select (t.created_at at time zone 'UTC')::date as day, -sum(e.amount_cents) as spend
-        from ledger_transactions t
-        join ledger_entries e on e.transaction_id = t.id
-        join ledger_accounts a on a.id = e.account_id and a.kind = 'campaign_budget'
-        where t.campaign_id = ${campaignId} and t.kind in ('earning_accrued', 'earning_reversed')
-          and t.created_at >= ${fromTs}::timestamptz and t.created_at <= ${toTs}::timestamptz
-        group by 1`
+        select day, sum(spend)::bigint as spend from (
+          select (t.created_at at time zone 'UTC')::date as day, -sum(e.amount_cents) as spend
+          from ledger_transactions t
+          join ledger_entries e on e.transaction_id = t.id
+          join ledger_accounts a on a.id = e.account_id and a.kind = 'campaign_budget'
+          where t.campaign_id = ${campaignId} and t.kind in ('earning_accrued', 'earning_reversed')
+            and t.created_at >= ${fromTs}::timestamptz and t.created_at <= ${toTs}::timestamptz
+          group by 1
+          union all
+          -- Pay outside the platform (owner, 2026-11-02) counts on the day the post went up.
+          select (s.submitted_at at time zone 'UTC')::date as day, sum(s.outside_paid_cents) as spend
+          from submissions s
+          where ${inRange} and s.state in (${list(APPROVED)}) and s.outside_paid_cents > 0
+          group by 1
+        ) z group by day`
       }
       ), submitted as (
         select (s.submitted_at at time zone 'UTC')::date as day, count(*) as clips from submissions s
@@ -257,8 +271,9 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       db.execute<{ spent: string; paid: string; hold: string; views: string }>(sql`
       with l as (${latest} where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)}))
       select coalesce(sum(earned_cents), 0) as spent,
-        coalesce(sum(earned_cents) filter (where state = 'paid_out'), 0) as paid,
-        coalesce(sum(earned_cents) filter (where state <> 'paid_out'), 0) as hold,
+        coalesce(sum(earned_cents - outside_paid_cents) filter (where state = 'paid_out'), 0)
+          + coalesce(sum(outside_paid_cents), 0) as paid,
+        coalesce(sum(earned_cents - outside_paid_cents) filter (where state <> 'paid_out'), 0) as hold,
         coalesce(sum(views), 0) as views from l`),
       db.execute<ClipRow>(sql`
       with l as (${latest} where ${inRange}

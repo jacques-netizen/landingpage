@@ -1,0 +1,1 @@
+ALTER TABLE "submissions" ADD COLUMN "outside_paid_cents" bigint DEFAULT 0 NOT NULL;

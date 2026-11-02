@@ -20,6 +20,7 @@ const DATA = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data
 const PREFIX = 'archived:'
 // The owner's rule for this campaign (2026-11-02): every post was paid $10 flat, outside the platform.
 // Kept on each post so staff see it; nothing here moves money.
+export const BILLBOARD_FEE_CENTS = 1000
 export const BILLBOARD_FEE_NOTE = 'Paid $10 per post, flat, outside the platform (owner, 2026-11-02).'
 const CLIP_NOTE = `Added by staff from the video file; the post is no longer online. ${BILLBOARD_FEE_NOTE}`
 const POST_NOTE = `Added by staff from the campaign's report file of 2026-08-27, with its figures. ${BILLBOARD_FEE_NOTE}`
@@ -157,6 +158,18 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
       ),
     )
   await importReportPosts(d, c, log)
+  // Every one of these posts was paid $10 outside the platform; the client report counts it as spent.
+  await d
+    .update(tables.submissions)
+    .set({ outsidePaidCents: BILLBOARD_FEE_CENTS })
+    .where(
+      and(
+        eq(tables.submissions.campaignId, c.id),
+        eq(tables.submissions.archived, true),
+        ilike(tables.submissions.creatorNote, `%${BILLBOARD_FEE_NOTE}%`),
+        sql`${tables.submissions.outsidePaidCents} <> ${BILLBOARD_FEE_CENTS}`,
+      ),
+    )
 }
 
 /**
