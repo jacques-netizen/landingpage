@@ -232,6 +232,7 @@ async function importReportPosts(d: DbOrTx, c: typeof tables.campaigns.$inferSel
   const asOf = new Date('2026-08-27T12:00:00Z')
   let added = 0
   for (const p of posts) {
+    const postedAt = new Date(`${p.postedOn}T12:00:00Z`)
     const [have] = await d
       .select({ id: tables.submissions.id })
       .from(tables.submissions)
@@ -242,9 +243,22 @@ async function importReportPosts(d: DbOrTx, c: typeof tables.campaigns.$inferSel
           eq(tables.submissions.platformPostId, p.postId),
         ),
       )
-    if (have) continue
+    if (have) {
+      // Posts uploaded from the CSV through the Clips tab were dated the day of the upload, after the
+      // campaign ended, so the report left them out of its list while the budget counted them. Date them
+      // the day they were posted, from the file.
+      await d
+        .update(tables.submissions)
+        .set({ submittedAt: postedAt, publishedAt: postedAt })
+        .where(
+          and(
+            eq(tables.submissions.id, have.id),
+            sql`${tables.submissions.submittedAt} > ${postedAt.toISOString()}::timestamptz + interval '1 day'`,
+          ),
+        )
+      continue
+    }
     const { creatorId, accountId } = await clipperOf(d, p)
-    const postedAt = new Date(`${p.postedOn}T12:00:00Z`)
     await d.insert(tables.campaignMembers).values({ campaignId: c.id, creatorId }).onConflictDoNothing()
     const [s] = await d
       .insert(tables.submissions)

@@ -32,6 +32,16 @@ export type ImportResult =
   | { ok: true; added: number; approved: number; skipped: number; errors: number; rows: ImportRow[] }
   | { ok: false; error: string }
 
+const DATE_COLUMNS = ['posted_date', 'posted_on', 'post_date', 'posted', 'published', 'published_at', 'date']
+
+/** A date like 2026-08-14 (or any the browser can read), not in the future; null when there is none. */
+function postedOn(v: string, now: Date) {
+  const t = v.trim()
+  if (!t) return null
+  const at = /^\d{4}-\d{2}-\d{2}$/.test(t) ? new Date(`${t}T12:00:00Z`) : new Date(t)
+  return Number.isNaN(at.getTime()) || at > now ? null : at
+}
+
 const pick = (r: Record<string, string>, names: string[]) => names.map((n) => r[n]).find((v) => v && v.trim()) ?? ''
 
 // A post link, or an app share link (vt.tiktok.com/...) that leads to one.
@@ -141,6 +151,9 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
       (accounts.length === 1 ? accounts[0] : undefined)
     const note = `${label} has no account here yet.`
     const now = new Date()
+    // The day it was posted, when the file says (a "Posted date" column): an upload after the campaign
+    // ended would otherwise date the post outside the report's range (owner's Billboard file, 2026-11-02).
+    const posted = postedOn(pick(r, DATE_COLUMNS), now)
     await d.insert(tables.campaignMembers).values({ campaignId, creatorId }).onConflictDoNothing()
     const [s] = await d
       .insert(tables.submissions)
@@ -154,7 +167,8 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
         state: 'needs_review',
         termsVersionId: c.currentTermsVersionId,
         rateCentsPer1000Locked: c.rateCentsPer1000,
-        submittedAt: now,
+        submittedAt: posted ?? now,
+        publishedAt: posted,
         baselineViews: 0,
         checkResults: [],
         creatorNote: 'Added by staff from a CSV.',

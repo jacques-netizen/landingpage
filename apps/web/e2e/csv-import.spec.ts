@@ -64,15 +64,17 @@ test('staff add posts to a campaign from a CSV', async ({ page }) => {
   await sql`update users set display_name = ${`Clip ${tag}`} where id = ${u!.id}`
   const e = `https://www.instagram.com/reel/C${tag}x/?igsh=abc==`
   const named = [
-    '"Creator name","Platform","Post URL","Views"',
-    `"Clip ${tag}","instagram","${e}","7097"`,
-    '"TOTAL","","","7097"',
+    '"Creator name","Platform","Post URL","Posted date","Views"',
+    `"Clip ${tag}","instagram","${e}","2026-08-14","7097"`,
+    '"TOTAL","","","","7097"',
   ].join('\n')
   await page
     .getByLabel('CSV file')
     .setInputFiles({ name: 'named.csv', mimeType: 'text/csv', buffer: Buffer.from(named) })
   await page.getByRole('button', { name: 'Add posts' }).click()
   await expect(page.getByText('1 added, 1 skipped.')).toBeVisible()
-  const [byName] = await sql`select creator_id from submissions where post_url = ${e}`
+  const [byName] = await sql`select creator_id, submitted_at from submissions where post_url = ${e}`
   expect(byName!.creator_id).toBe(u!.id)
+  // Dated the day it was posted, from the file, not the day of the upload.
+  expect(new Date(byName!.submitted_at).toISOString().slice(0, 10)).toBe('2026-08-14')
 })
