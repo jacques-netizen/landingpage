@@ -9,7 +9,7 @@ import { SideNav } from './side-nav'
 // Rendered per request: the pages read APP_URL and CONTACT_EMAIL, which only exist at runtime, so
 // prerendering them during the Docker build fails the env check.
 export const dynamic = 'force-dynamic'
-  
+
 export const metadata: Metadata = {
   title: { default: "Developers | Maison d'Élites", template: "%s | Maison d'Élites Developers" },
   description: "Build on Maison d'Élites: read campaign results, clip stats and reports, and get webhooks.",
