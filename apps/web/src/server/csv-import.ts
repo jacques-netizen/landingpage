@@ -1,6 +1,6 @@
 import 'server-only'
 import { db, tables, writeAudit } from '@mde/db'
-import { parsePostUrl } from '@mde/platforms'
+import { isShortPostLink, parsePostUrl, resolvePostUrl } from '@mde/platforms'
 import { approve, ReviewError } from '@mde/review'
 import { and, eq, ilike, or, sql } from 'drizzle-orm'
 import { csvRecords } from '@/lib/csv'
@@ -14,7 +14,18 @@ import { csvRecords } from '@/lib/csv'
 
 export const MAX_ROWS = 2000
 const URL_COLUMNS = ['url', 'post_url', 'link', 'post', 'post_link']
-const CLIPPER_COLUMNS = ['clipper', 'username', 'email', 'creator', 'handle', 'user', 'account']
+const CLIPPER_COLUMNS = [
+  'clipper',
+  'clipper_name',
+  'creator',
+  'creator_name',
+  'username',
+  'email',
+  'handle',
+  'user',
+  'account',
+  'name',
+]
 
 export type ImportRow = { row: number; url: string; result: 'added' | 'approved' | 'skipped' | 'error'; detail: string }
 export type ImportResult =
@@ -23,14 +34,17 @@ export type ImportResult =
 
 const pick = (r: Record<string, string>, names: string[]) => names.map((n) => r[n]).find((v) => v && v.trim()) ?? ''
 
+// A post link, or an app share link (vt.tiktok.com/...) that leads to one.
+const isLink = (v: string) => !!parsePostUrl(v) || isShortPostLink(v)
+
 // The row's post link: a named link column first, else any cell that holds one.
 function linkIn(r: Record<string, string>) {
   const named = pick(r, URL_COLUMNS).trim()
-  if (named && parsePostUrl(named)) return named
+  if (named && isLink(named)) return named
   return (
     Object.values(r)
       .map((v) => v.trim())
-      .find((v) => parsePostUrl(v)) ?? named
+      .find(isLink) ?? named
   )
 }
 
@@ -59,7 +73,7 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
     return { ok: false, error: 'Posts can only be added to a campaign that has gone live.' }
   const { records } = csvRecords(text)
   if (!records.length) return { ok: false, error: 'The file has no rows under its header.' }
-  if (!records.some((r) => parsePostUrl(linkIn(r))))
+  if (!records.some((r) => isLink(linkIn(r))))
     return { ok: false, error: 'No TikTok, Instagram, YouTube or X post links were found in the file.' }
   if (records.length > MAX_ROWS) return { ok: false, error: `Up to ${MAX_ROWS.toLocaleString('en-US')} rows a file.` }
 
@@ -67,7 +81,9 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
   const seen = new Set<string>()
   for (const [i, r] of records.entries()) {
     const n = i + 2 // the spreadsheet's row number, after the header
-    const url = linkIn(r)
+    const given = linkIn(r)
+    // Share links are followed to the post, as on the submit form.
+    const url = isShortPostLink(given) ? await resolvePostUrl(given) : given
     const who = pick(r, CLIPPER_COLUMNS).trim().replace(/^@/, '')
     // Matched as typed, case aside: no wildcards.
     const like = who.replace(/[\\%_]/g, '\\$&')
@@ -90,12 +106,14 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
       continue
     }
     seen.add(key)
-    // The clipper: by username or email, else the clipper who linked that page, else a stand-in.
+    // The clipper: by username, email or name, else the clipper who linked that page, else a stand-in.
     const [user] = who
       ? await d
           .select({ id: tables.users.id })
           .from(tables.users)
-          .where(or(ilike(tables.users.username, like), ilike(tables.users.email, like)))
+          .where(
+            or(ilike(tables.users.username, like), ilike(tables.users.email, like), ilike(tables.users.name, like)),
+          )
           .limit(2)
       : []
     let creatorId = user?.id ?? null
@@ -115,11 +133,13 @@ export async function importSubmissionsCsv(campaignId: string, staffId: string, 
       )
     if (!creatorId && accounts.length) creatorId = accounts[0]!.creatorId
     const standing = !creatorId
-    if (!creatorId) creatorId = await standIn(d, page ? `@${page}` : 'Imported from a CSV')
+    // A stand-in is named after the clipper the file names, else the page.
+    const label = who || (page ? `@${page}` : 'Imported from a CSV')
+    if (!creatorId) creatorId = await standIn(d, label)
     const account =
       accounts.find((a) => post.handle && a.handle.toLowerCase() === post.handle.toLowerCase()) ??
       (accounts.length === 1 ? accounts[0] : undefined)
-    const note = `@${page || 'this page'} has no account here yet.`
+    const note = `${label} has no account here yet.`
     const now = new Date()
     await d.insert(tables.campaignMembers).values({ campaignId, creatorId }).onConflictDoNothing()
     const [s] = await d

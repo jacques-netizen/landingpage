@@ -44,7 +44,7 @@ test('staff add posts to a campaign from a CSV', async ({ page }) => {
   ])
   const [stand] =
     await sql`select u.display_name, u.password_hash from submissions s join users u on u.id = s.creator_id where s.post_url like ${`https://www.tiktok.com/@x/%`} order by s.created_at desc limit 1`
-  expect(stand).toMatchObject({ display_name: '@x', password_hash: null })
+  expect(stand).toMatchObject({ display_name: `nobody-${tag}`, password_hash: null })
   const [audit] =
     await sql`select after from audit_log where action = 'submissions.csv_import' and entity_id = ${c!.id} order by id desc limit 1`
   expect(audit!.after).toMatchObject({ added: 3, approved: 1, skipped: 1, errors: 1 })
@@ -59,4 +59,20 @@ test('staff add posts to a campaign from a CSV', async ({ page }) => {
   await expect(page.getByText('1 added, 1 skipped.')).toBeVisible()
   const [mine] = await sql`select creator_id from submissions where post_url = ${d}`
   expect(mine!.creator_id).toBe(u!.id)
+
+  // A report export that names clippers by their display name, as in the owner's file.
+  await sql`update users set display_name = ${`Clip ${tag}`} where id = ${u!.id}`
+  const e = `https://www.instagram.com/reel/C${tag}x/?igsh=abc==`
+  const named = [
+    '"Creator name","Platform","Post URL","Views"',
+    `"Clip ${tag}","instagram","${e}","7097"`,
+    '"TOTAL","","","7097"',
+  ].join('\n')
+  await page
+    .getByLabel('CSV file')
+    .setInputFiles({ name: 'named.csv', mimeType: 'text/csv', buffer: Buffer.from(named) })
+  await page.getByRole('button', { name: 'Add posts' }).click()
+  await expect(page.getByText('1 added, 1 skipped.')).toBeVisible()
+  const [byName] = await sql`select creator_id from submissions where post_url = ${e}`
+  expect(byName!.creator_id).toBe(u!.id)
 })
