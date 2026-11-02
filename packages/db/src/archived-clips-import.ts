@@ -22,6 +22,7 @@ const PREFIX = 'archived:'
 // Kept on each post so staff see it; nothing here moves money.
 // $10 a post plus $3 per 1,000 views (owner, 2026-11-02), rounded down to the cent like all money here.
 export const BILLBOARD_FEE_CENTS = 1000
+export const BILLBOARD_CLIENT_BUDGET_CENTS = 200_000
 export const BILLBOARD_CPM_CENTS = 300
 export const BILLBOARD_FEE_NOTE = 'Paid $10 per post plus $3 per 1,000 views, outside the platform (owner, 2026-11-02).'
 // The first wording, still on posts an earlier deploy added; replaced below.
@@ -175,6 +176,17 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
       ),
     )
   await importReportPosts(d, c, log)
+  // The client report shows a $2,000 budget for this campaign (owner, 2026-11-02). Display only, like the
+  // "Budget shown to the client" setting on the campaign's Settings tab; the ledger budget is unchanged.
+  await d
+    .update(tables.campaigns)
+    .set({ clientBudgetCents: BILLBOARD_CLIENT_BUDGET_CENTS })
+    .where(
+      and(
+        eq(tables.campaigns.id, c.id),
+        sql`${tables.campaigns.clientBudgetCents} is distinct from ${BILLBOARD_CLIENT_BUDGET_CENTS}`,
+      ),
+    )
   await d
     .update(tables.submissions)
     .set({ creatorNote: sql`replace(${tables.submissions.creatorNote}, ${OLD_FEE_NOTE}, ${BILLBOARD_FEE_NOTE})` })
