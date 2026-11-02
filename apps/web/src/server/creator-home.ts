@@ -79,8 +79,9 @@ export async function creatorHome(creatorId: string): Promise<CreatorHome> {
 export type LeaderRow = { rank: number; creatorId: string; name: string; views: number; posts: number }
 
 /**
- * Creators ranked by counted views on approved posts, all time. A creator with a private profile is
- * listed without a name. Only creators with at least one approved post appear.
+ * Creators ranked by counted views on approved posts, all time. Posts staff added that are never checked
+ * (archived) are left out: people who never signed up would be named in public. A creator with a private
+ * profile is listed without a name. Only creators with at least one approved post appear.
  */
 export async function leaderboard(limit = 50): Promise<LeaderRow[]> {
   const rows = await db().execute<{
@@ -94,7 +95,7 @@ export async function leaderboard(limit = 50): Promise<LeaderRow[]> {
       sum(s.counted_views)::bigint as views, count(*) as posts
     from submissions s join users u on u.id = s.creator_id
     join campaigns c on c.id = s.campaign_id
-    where s.state in ${APPROVED} and u.status = 'active' and not c.demo
+    where s.state in ${APPROVED} and u.status = 'active' and not c.demo and not s.archived
     group by u.id
     having sum(s.counted_views) > 0
     order by views desc, min(s.submitted_at) asc
