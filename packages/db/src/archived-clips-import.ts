@@ -54,11 +54,24 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
         inArray(tables.campaigns.status, ['live', 'closing', 'closed']),
       ),
     )
-  if (found.length !== 1) {
-    if (found.length > 1) log(`Archived clips not added: ${found.length} campaigns match "${manifest.campaignTitle}"`)
-    return
+  if (!found.length) return
+  // More than one match: the one holding the most posts (the live one the CSV posts went into).
+  let c = found[0]!
+  if (found.length > 1) {
+    const counts = await d
+      .select({ id: tables.submissions.campaignId, n: sql<number>`count(*)::int` })
+      .from(tables.submissions)
+      .where(
+        inArray(
+          tables.submissions.campaignId,
+          found.map((x) => x.id),
+        ),
+      )
+      .groupBy(tables.submissions.campaignId)
+    const best = counts.sort((a, b) => b.n - a.n)[0]
+    c = found.find((x) => x.id === best?.id) ?? c
+    log(`${found.length} campaigns match "${manifest.campaignTitle}"; using "${c.title}"`)
   }
-  const c = found[0]!
   if (!c.currentTermsVersionId) return
 
   let added = 0
@@ -172,9 +185,16 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
         sql`strpos(${tables.submissions.creatorNote}, ${OLD_FEE_NOTE}) > 0`,
       ),
     )
-  // What each post was paid outside the platform, which the client report counts as spent: $10 plus $3
-  // per 1,000 of its views, in whole cents, rounded down.
-  const fee = sql`${BILLBOARD_FEE_CENTS}::bigint + (${tables.submissions.countedViews} * ${BILLBOARD_CPM_CENTS}) / 1000`
+  // The $10 a post is the campaign's flat fee per approved post, which the client report adds to every
+  // post's spend, whether it came in through the app, a CSV or this step.
+  await d
+    .update(tables.campaigns)
+    .set({ postFeeCents: BILLBOARD_FEE_CENTS })
+    .where(and(eq(tables.campaigns.id, c.id), sql`${tables.campaigns.postFeeCents} <> ${BILLBOARD_FEE_CENTS}`))
+  // Posts added here never earn on the platform, so their $3 per 1,000 views is recorded as paid outside
+  // it too, in whole cents, rounded down. Posts that came in through the app or a CSV earn that rate
+  // through the ledger already.
+  const fee = sql`(${tables.submissions.countedViews} * ${BILLBOARD_CPM_CENTS}) / 1000`
   await d
     .update(tables.submissions)
     .set({ outsidePaidCents: fee })

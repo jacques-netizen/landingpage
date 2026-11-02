@@ -128,9 +128,11 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // Rejected and removed posts never appear on the client's report (owner request, 2026-10-17).
   const inRange = sql`s.campaign_id = ${campaignId} and s.submitted_at >= ${fromTs}::timestamptz and s.submitted_at <= ${toTs}::timestamptz
     and s.state not in (${list(REJECTED)})`
+  // What a post was paid outside the platform: its own amount plus the campaign's flat fee per approved post.
+  const outside = sql`(s.outside_paid_cents + case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint else 0 end)`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
-    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents + s.outside_paid_cents as earned_cents, s.outside_paid_cents, s.creator_id,
+    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents + ${outside} as earned_cents, ${outside} as outside_paid_cents, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
@@ -239,7 +241,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
           ? sql`
         select day, sum(spend)::bigint as spend from (
           select v.day, (v.views - lag(v.views, 1, 0::bigint) over (partition by v.submission_id order by v.day))
-            * (s.earned_cents + s.outside_paid_cents) / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
+            * (s.earned_cents + ${outside}) / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
           from view_snapshot_days v join submissions s on s.id = v.submission_id
           where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})
             and v.day >= ${fromDay}::date and v.day <= ${toDay}::date
@@ -255,9 +257,9 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
           group by 1
           union all
           -- Pay outside the platform (owner, 2026-11-02) counts on the day the post went up.
-          select (s.submitted_at at time zone 'UTC')::date as day, sum(s.outside_paid_cents) as spend
+          select (s.submitted_at at time zone 'UTC')::date as day, sum(${outside}) as spend
           from submissions s
-          where ${inRange} and s.state in (${list(APPROVED)}) and s.outside_paid_cents > 0
+          where ${inRange} and s.state in (${list(APPROVED)}) and ${outside} > 0
           group by 1
         ) z group by day`
       }

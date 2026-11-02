@@ -283,6 +283,9 @@ export const campaigns = pgTable(
     // The budget the client report shows, in cents, when it differs from the clippers' budget (owner
     // request, 2026-10-17: Davido X Winnerman-Audio shows $2,000). Null shows the campaign's budget.
     clientBudgetCents: cents('client_budget_cents'),
+    // A flat amount paid per approved post outside the platform (owner, 2026-11-02: the Billboard campaign
+    // paid $10 a post on top of the per-view rate). Never in the ledger; the client report adds it to spend.
+    postFeeCents: cents('post_fee_cents').notNull().default(0),
     // Set when staff delete a campaign that has money or posts: hidden everywhere, kept for the books.
     deletedAt: tz('deleted_at'),
     briefMarkdown: text('brief_markdown'),

@@ -1,0 +1,1 @@
+ALTER TABLE "campaigns" ADD COLUMN "post_fee_cents" bigint DEFAULT 0 NOT NULL;
