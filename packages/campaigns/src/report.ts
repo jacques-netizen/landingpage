@@ -114,14 +114,17 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const counted = q.mode === 'paid' ? ['paid_out'] : APPROVED
 
   // The range in whole UTC days: from the first post (or the campaign's start) to today unless given.
-  const [first] = await db.execute<{ first: Date | null; last_snapshot: Date | null }>(sql`
-    select min(s.submitted_at) as first,
+  const [first] = await db.execute<{ first: Date | null; last: Date | null; last_snapshot: Date | null }>(sql`
+    select min(s.submitted_at) as first, max(s.submitted_at) as last,
       (select max(v.taken_at) from view_snapshot_days v join submissions x on x.id = v.submission_id where x.campaign_id = ${campaignId}) as last_snapshot
     from submissions s where s.campaign_id = ${campaignId}`)
   const today = new Date()
   const fromDay = day(q.from ?? first?.first ?? c.startAt ?? c.createdAt)
-  // A closed campaign's report ends on the day it closed.
-  const toDay = day(q.to ?? (c.status === 'closed' && c.closedAt && c.closedAt < today ? c.closedAt : today))
+  // A closed campaign's report ends on the day it closed, or on the day of the last post staff added
+  // after that (owner, 2026-11-02: posts added to an ended campaign must show).
+  const lastPost = first?.last ? new Date(first.last) : null
+  const closedEnd = c.closedAt && lastPost && lastPost > c.closedAt ? (lastPost < today ? lastPost : today) : c.closedAt
+  const toDay = day(q.to ?? (c.status === 'closed' && closedEnd && closedEnd < today ? closedEnd : today))
   const fromTs = `${fromDay}T00:00:00Z`
   const toTs = `${toDay}T23:59:59.999Z`
 
