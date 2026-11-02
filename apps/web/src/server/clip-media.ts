@@ -4,6 +4,7 @@ import { db, tables } from '@mde/db'
 import type { Platform } from '@mde/platforms'
 import { eq } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
+import { ARCHIVED_PREFIX } from './archived-clips-id'
 import { providers } from './providers'
 
 // A clip's video file or picture, streamed through the app (owner request, 2026-10-12: the report shows
@@ -53,7 +54,9 @@ export async function streamClipMedia(
       res = null
     }
   }
-  if (!demo && (!res || !(res.status === 200 || res.status === 206))) {
+  // A clip added from its video file after the post went offline has no post to ask for again.
+  const offline = s.platformPostId.startsWith(ARCHIVED_PREFIX)
+  if (!demo && !offline && (!res || !(res.status === 200 || res.status === 206))) {
     // The stored link has stopped working (or there was none): ask the platform for the post again.
     try {
       const post = await providers().fetchPost('bio_code', {

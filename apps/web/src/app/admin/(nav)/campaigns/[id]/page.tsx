@@ -28,6 +28,7 @@ import { ClipsGrid } from './clips-grid'
 import { CopyReportLink } from './copy-report-link'
 import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { RefreshButton } from './refresh-button'
+import { ArchivedClips } from './archived-clips'
 import { ImportCsv } from './import-csv'
 import { ReportLink } from './report-link'
 import { CampaignReports } from './reports-tab'
@@ -421,6 +422,7 @@ export default async function CampaignAdminPage({
         ) : tab === 'clips' ? (
           <>
             {canMoney && !open ? <ImportCsv campaignId={c.id} live={live} /> : null}
+            {canMoney && !open ? <ArchivedClips campaignId={c.id} /> : null}
             <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 <form action={base} className="flex gap-2">

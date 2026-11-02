@@ -42,7 +42,7 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
   const [s] = await db
     .update(submissions)
     .set({ nextCheckAt: new Date(now.getTime() + LEASE_MS) })
-    .where(and(eq(submissions.id, submissionId), lte(submissions.nextCheckAt, now)))
+    .where(and(eq(submissions.id, submissionId), lte(submissions.nextCheckAt, now), eq(submissions.archived, false)))
     .returning()
   if (!s) return { ran: false }
 
@@ -245,7 +245,7 @@ export async function reviveUnscheduled(db: Db, now = new Date()) {
   const rows = await db.execute<{ id: string }>(sql`
     update submissions s set next_check_at = ${now.toISOString()}::timestamptz
     from campaigns c
-    where c.id = s.campaign_id and s.next_check_at is null and s.state in (${trackedList()})
+    where c.id = s.campaign_id and s.next_check_at is null and s.state in (${trackedList()}) and not s.archived
       and c.status in ('live', 'closing') and c.deleted_at is null and not c.demo
     returning s.id`)
   return rows.length
@@ -264,7 +264,7 @@ export async function runDueViewChecks(
   const due = await db
     .select({ id: submissions.id })
     .from(submissions)
-    .where(lte(submissions.nextCheckAt, now))
+    .where(and(lte(submissions.nextCheckAt, now), eq(submissions.archived, false)))
     .orderBy(asc(submissions.nextCheckAt))
     .limit(limit)
   const totals = { due: due.length, revived, checked: 0, removed: 0, flagged: 0, unavailable: 0, failed: 0 }
@@ -332,7 +332,7 @@ export async function trackingStatus(db: Db) {
   }>(sql`
     select c.id, c.title,
       count(s.id) filter (where s.state in (${trackedList()})) as tracked,
-      count(s.id) filter (where s.state in (${trackedList()}) and s.next_check_at is null) as unscheduled,
+      count(s.id) filter (where s.state in (${trackedList()}) and s.next_check_at is null and not s.archived) as unscheduled,
       min(s.next_check_at) as next_due,
       (select max(v.taken_at) from view_snapshots v join submissions x on x.id = v.submission_id where x.campaign_id = c.id) as last_snapshot,
       (select count(*) from view_snapshots v join submissions x on x.id = v.submission_id

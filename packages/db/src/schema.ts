@@ -419,6 +419,10 @@ export const submissions = pgTable(
     // The views the newest approved verification showed (owner brief, 2026-10-15). The post's views are
     // the higher of the scraped count and this, so a verified count stands until the scraper passes it.
     verifiedViews: bigint('verified_views', { mode: 'number' }).notNull().default(0),
+    // A clip staff added from its video file after the post went offline (owner decision, 2026-11-02).
+    // It shows on the campaign and the client report with the figures staff typed; it is never checked
+    // and never earns.
+    archived: boolean('archived').notNull().default(false),
     ...timestamps,
   },
   (t) => [
