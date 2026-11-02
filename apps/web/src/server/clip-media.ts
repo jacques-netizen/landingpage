@@ -55,7 +55,16 @@ export async function streamClipMedia(
     }
   }
   // A clip added from its video file after the post went offline has no post to ask for again.
-  const offline = s.platformPostId.startsWith(ARCHIVED_PREFIX)
+  // Nor does any post staff added that is never checked (archived): asking would spend provider credits.
+  const offline =
+    s.platformPostId.startsWith(ARCHIVED_PREFIX) ||
+    ((!res || !(res.status === 200 || res.status === 206)) &&
+      !!(
+        await d
+          .select({ archived: tables.submissions.archived })
+          .from(tables.submissions)
+          .where(eq(tables.submissions.id, s.id))
+      )[0]?.archived)
   if (!demo && !offline && (!res || !(res.status === 200 || res.status === 206))) {
     // The stored link has stopped working (or there was none): ask the platform for the post again.
     try {
