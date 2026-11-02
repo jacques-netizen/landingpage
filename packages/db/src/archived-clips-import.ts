@@ -20,8 +20,12 @@ const DATA = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data
 const PREFIX = 'archived:'
 // The owner's rule for this campaign (2026-11-02): every post was paid $10 flat, outside the platform.
 // Kept on each post so staff see it; nothing here moves money.
+// $10 a post plus $3 per 1,000 views (owner, 2026-11-02), rounded down to the cent like all money here.
 export const BILLBOARD_FEE_CENTS = 1000
-export const BILLBOARD_FEE_NOTE = 'Paid $10 per post, flat, outside the platform (owner, 2026-11-02).'
+export const BILLBOARD_CPM_CENTS = 300
+export const BILLBOARD_FEE_NOTE = 'Paid $10 per post plus $3 per 1,000 views, outside the platform (owner, 2026-11-02).'
+// The first wording, still on posts an earlier deploy added; replaced below.
+const OLD_FEE_NOTE = 'Paid $10 per post, flat, outside the platform (owner, 2026-11-02).'
 const CLIP_NOTE = `Added by staff from the video file; the post is no longer online. ${BILLBOARD_FEE_NOTE}`
 const POST_NOTE = `Added by staff from the campaign's report file of 2026-08-27, with its figures. ${BILLBOARD_FEE_NOTE}`
 
@@ -158,16 +162,28 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
       ),
     )
   await importReportPosts(d, c, log)
-  // Every one of these posts was paid $10 outside the platform; the client report counts it as spent.
   await d
     .update(tables.submissions)
-    .set({ outsidePaidCents: BILLBOARD_FEE_CENTS })
+    .set({ creatorNote: sql`replace(${tables.submissions.creatorNote}, ${OLD_FEE_NOTE}, ${BILLBOARD_FEE_NOTE})` })
     .where(
       and(
         eq(tables.submissions.campaignId, c.id),
         eq(tables.submissions.archived, true),
-        ilike(tables.submissions.creatorNote, `%${BILLBOARD_FEE_NOTE}%`),
-        sql`${tables.submissions.outsidePaidCents} <> ${BILLBOARD_FEE_CENTS}`,
+        sql`strpos(${tables.submissions.creatorNote}, ${OLD_FEE_NOTE}) > 0`,
+      ),
+    )
+  // What each post was paid outside the platform, which the client report counts as spent: $10 plus $3
+  // per 1,000 of its views, in whole cents, rounded down.
+  const fee = sql`${BILLBOARD_FEE_CENTS}::bigint + (${tables.submissions.countedViews} * ${BILLBOARD_CPM_CENTS}) / 1000`
+  await d
+    .update(tables.submissions)
+    .set({ outsidePaidCents: fee })
+    .where(
+      and(
+        eq(tables.submissions.campaignId, c.id),
+        eq(tables.submissions.archived, true),
+        sql`strpos(${tables.submissions.creatorNote}, ${BILLBOARD_FEE_NOTE}) > 0`,
+        sql`${tables.submissions.outsidePaidCents} <> ${fee}`,
       ),
     )
 }
