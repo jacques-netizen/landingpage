@@ -130,9 +130,18 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     and s.state not in (${list(REJECTED)})`
   // What a post was paid outside the platform: its own amount plus the campaign's flat fee per approved post.
   const outside = sql`(s.outside_paid_cents + case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint else 0 end)`
+  // A campaign paid per post outside the platform (owner, 2026-11-02: the Billboard campaign, "$10 a post
+  // plus $3 CPM") reports each approved post at exactly that: the fee plus the campaign's rate on the
+  // views the report shows for it, rounded down. It does not depend on how the post came in, and the
+  // clips add up to the budget box.
+  const flatFee = c.postFeeCents > 0
+  const flat = sql`(case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint + (coalesce(v.views, 0) * ${c.rateCentsPer1000}::bigint) / 1000 else 0 end)`
+  const paidCols = flatFee
+    ? sql`${flat} as earned_cents, ${flat} as outside_paid_cents`
+    : sql`s.earned_cents + ${outside} as earned_cents, ${outside} as outside_paid_cents`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
-    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, s.earned_cents + ${outside} as earned_cents, ${outside} as outside_paid_cents, s.creator_id,
+    select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, ${paidCols}, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
@@ -237,8 +246,12 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       // the days each post gained its views instead (owner request, 2026-10-14).
       db.execute<{ day: string; spend: string; clips: string }>(sql`
       with moves as (${
-        c.demo
+        flatFee
           ? sql`
+        select (l.submitted_at at time zone 'UTC')::date as day, sum(l.earned_cents)::bigint as spend
+        from (${latest} where ${inRange} and s.state in (${list(APPROVED)})) l group by 1`
+          : c.demo
+            ? sql`
         select day, sum(spend)::bigint as spend from (
           select v.day, (v.views - lag(v.views, 1, 0::bigint) over (partition by v.submission_id order by v.day))
             * (s.earned_cents + ${outside}) / nullif(max(v.views) over (partition by v.submission_id), 0) as spend
@@ -246,7 +259,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
           where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})
             and v.day >= ${fromDay}::date and v.day <= ${toDay}::date
         ) x group by day`
-          : sql`
+            : sql`
         select day, sum(spend)::bigint as spend from (
           select (t.created_at at time zone 'UTC')::date as day, -sum(e.amount_cents) as spend
           from ledger_transactions t

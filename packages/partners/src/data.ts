@@ -157,7 +157,9 @@ async function campaigns(db: DbOrTx, key: PartnerKey, where: SQL, limit: number)
       count(s.id) filter (where s.state in (${list(IN_REVIEW)})) as in_review,
       count(distinct coalesce(s.linked_account_id::text, s.creator_id::text))
         filter (where s.state in (${list([...APPROVED, ...IN_REVIEW])})) as pages,
-      coalesce(sum(s.earned_cents + s.outside_paid_cents + c.post_fee_cents) filter (where s.state in (${list(APPROVED)})), 0) as spent,
+      coalesce(sum(case when c.post_fee_cents > 0
+          then c.post_fee_cents + (coalesce(v.views, 0) * c.rate_cents_per_1000) / 1000
+          else s.earned_cents + s.outside_paid_cents end) filter (where s.state in (${list(APPROVED)})), 0) as spent,
       max(v.taken_at) as updated
     from campaigns c
     left join submissions s on s.campaign_id = c.id
