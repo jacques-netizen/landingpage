@@ -1,6 +1,7 @@
 import { env } from '@mde/config'
 import { db } from '@mde/db'
 import { accessTokenFor, buildProviderRouter, type LinkedAccount } from '@mde/platforms'
+import { runOneOffs } from './one-offs'
 import { startWorker } from './worker'
 
 const e = env()
@@ -44,6 +45,7 @@ const running = await startWorker({
   tokenFor,
 })
 console.log(JSON.stringify({ level: 'info', msg: 'worker started' }))
+await runOneOffs(db())
 
 for (const signal of ['SIGTERM', 'SIGINT'] as const)
   process.on(signal, () => {
