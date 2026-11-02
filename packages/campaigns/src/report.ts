@@ -98,11 +98,13 @@ const day = (d: Date | string) => new Date(d).toISOString().slice(0, 10)
 const n = (v: unknown) => Number(v ?? 0)
 
 /** The handle shown for a post: the linked account, else the one in the link, else the creator's username. */
-export function handleFor(p: { handle: string | null; url: string; username: string | null }) {
+export function handleFor(p: { handle: string | null; url: string; username: string | null; standIn?: string | null }) {
   if (p.handle) return `@${p.handle}`
   const m = p.url.match(/\/@([A-Za-z0-9._-]+)/) ?? p.url.match(/x\.com\/([A-Za-z0-9_]+)\/status/)
   if (m) return `@${m[1]}`
-  return p.username ? `@${p.username}` : 'Creator'
+  if (p.username) return `@${p.username}`
+  // A stand-in clipper staff added from a file (no account of their own) shows the name staff gave it.
+  return p.standIn?.trim() || 'Creator'
 }
 
 const statusOf = (state: string): ReportStatus =>
@@ -146,6 +148,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, ${paidCols}, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
+      case when u.email like '%@clippers.invalid' then u.display_name end as stand_in,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
@@ -173,6 +176,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     outside_paid_cents: string
     handle: string | null
     username: string | null
+    stand_in: string | null
     views: string
     likes: string
     comments: string
@@ -185,7 +189,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     thumbnail: r.thumbnail_url,
     video: r.video_url,
     countedViews: n(r.counted_views),
-    handle: handleFor({ handle: r.handle, url: r.post_url, username: r.username }),
+    handle: handleFor({ handle: r.handle, url: r.post_url, username: r.username, standIn: r.stand_in }),
     url: r.post_url,
     postedAt: r.published_at ? new Date(r.published_at).toISOString() : null,
     submittedAt: new Date(r.submitted_at).toISOString(),
@@ -312,11 +316,12 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
         handle: string | null
         post_url: string
         username: string | null
+        stand_in: string | null
         posts: string
         spent: string
       }>(sql`
       with l as (${latest} where ${inRange} and s.state in (${list(counted)}))
-      select max(handle) as handle, max(post_url) as post_url, max(username) as username,
+      select max(handle) as handle, max(post_url) as post_url, max(username) as username, max(stand_in) as stand_in,
         count(*) as posts, coalesce(sum(earned_cents), 0) as spent
       from l group by creator_id order by spent desc, posts desc limit 10`),
       db.execute<{ day: string; platform: string; clips: string }>(sql`
@@ -363,7 +368,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     accounts: (() => {
       const total = accounts.reduce((sum, a) => sum + n(a.spent), 0)
       return accounts.map((a) => ({
-        handle: handleFor({ handle: a.handle, url: a.post_url, username: a.username }),
+        handle: handleFor({ handle: a.handle, url: a.post_url, username: a.username, standIn: a.stand_in }),
         posts: n(a.posts),
         spentCents: n(a.spent),
         share: total > 0 ? Math.round((n(a.spent) / total) * 1000) / 10 : 0,

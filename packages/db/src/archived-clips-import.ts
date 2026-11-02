@@ -18,6 +18,8 @@ type Manifest = { campaignTitle: string; clips: Clip[] }
 
 const DATA = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data', 'archived-clips')
 const PREFIX = 'archived:'
+// The woman in the videos without a page (owner, 2026-11-02: "the batuhan and keira video").
+const KEIRA = 'Keira'
 // The owner's rule for this campaign (2026-11-02): every post was paid $10 flat, outside the platform.
 // Kept on each post so staff see it; nothing here moves money.
 // $10 a post plus $3 per 1,000 views (owner, 2026-11-02), rounded down to the cent like all money here.
@@ -162,6 +164,11 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
     added++
   }
   if (added) log(`Added ${added} clips that are no longer online to "${c.title}"`)
+  // Her stand-in was first named "Unknown page"; the report shows this name for her clips.
+  await d
+    .update(tables.users)
+    .set({ name: KEIRA })
+    .where(and(eq(tables.users.email, 'archived+unknown-page@clippers.invalid'), sql`${tables.users.name} <> ${KEIRA}`))
   // Clips added by an earlier deploy get the $10 note too.
   await d
     .update(tables.submissions)
@@ -387,7 +394,7 @@ async function pageOf(d: DbOrTx, clip: Clip): Promise<{ creatorId: string; accou
   const email = `archived+${slug}@clippers.invalid`
   await d
     .insert(tables.users)
-    .values({ email, name: clip.handle ? `@${clip.handle}` : 'Unknown page' })
+    .values({ email, name: clip.handle ? `@${clip.handle}` : KEIRA })
     .onConflictDoNothing()
   const [u] = await d.select({ id: tables.users.id }).from(tables.users).where(eq(tables.users.email, email))
   await d.insert(tables.creatorProfiles).values({ userId: u!.id }).onConflictDoNothing()
