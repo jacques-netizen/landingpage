@@ -49,31 +49,24 @@ test('a link that is not a post is turned away with nothing saved', async ({ pag
   expect(row!.n).toBe(0)
 })
 
-test('with account linking off, a creator submits without linking and a reviewer checks the post', async ({ page }) => {
+// Owner (2026-11-02): every account must be linked and verified again before a post can be submitted.
+test('a creator must link and verify an account before submitting', async ({ page }) => {
   await signUpNewCreator(page)
   const [c] = await sql`select id from campaigns where title = 'Sample music'`
   await page.goto(`/campaigns/${c!.id}`)
   await page.getByRole('button', { name: 'Join campaign' }).click()
-  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
-  await expect(page.getByText('Account you posted from')).toHaveCount(0)
-  await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Accounts' })).toHaveCount(0)
-  const link = scriptPost(`unlinked${Date.now() % 1e6}`, 'New sound #mde')
-  await page.getByLabel('Link to your post').fill(link)
-  await page.getByRole('button', { name: 'Submit post' }).click()
-  await expect(page.getByText('Submitted.', { exact: true })).toBeVisible()
-  const [s] = await sql`select state, linked_account_id from submissions where post_url = ${link}`
-  expect(s).toMatchObject({ state: 'needs_review', linked_account_id: null })
+  await expect(page.getByText('To submit a post, first link and verify the account you post from.')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Submit post' })).toHaveCount(0)
+  await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Accounts' })).toBeVisible()
+  await page.getByRole('link', { name: /Link an account/ }).click()
+  await expect(page).toHaveURL(/\/accounts/)
 })
 
 // Owner request (2026-10-10): clippers were turned away with "We could not reach the platform". Now the
 // post is kept for a reviewer, and its stats come with the next check.
 test('a post submitted while the platform is unreachable is kept for review, never refused', async ({ page }) => {
-  await signUpNewCreator(page)
-  const [c] = await sql`select id from campaigns where title = 'Sample music'`
-  await page.goto(`/campaigns/${c!.id}`)
-  await page.getByRole('button', { name: 'Join campaign' }).click()
-  await expect(page.getByRole('button', { name: 'Submit post' })).toBeVisible()
-  const link = scriptPost(`down${Date.now() % 1e6}`, 'New sound #mde')
+  const { handle } = await readyCreator(page, sql)
+  const link = scriptPost(handle, 'New sound #mde')
   writeMockState({ down: true })
   try {
     await page.getByLabel('Link to your post').fill(link)

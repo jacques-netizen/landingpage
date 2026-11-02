@@ -136,8 +136,9 @@ Grouped by area. Every item has a matching entry in `DECISIONS.md` with its reas
 - Sign up with username, email, password, optional Discord name; signed in at once. Email code for new
   devices; sessions last 90 days. Email link and Google sign-in also work. No age requirement.
 - Profile picture, username shown everywhere instead of the email.
-- Account linking (bio code or YouTube login) is built but **switched off** since 2026-10-08
-  (`apps/web/src/lib/features.ts`); reviewers check each post belongs to the clipper.
+- Account linking (bio code or YouTube login) is **on** (`apps/web/src/lib/features.ts`): clippers link
+  and verify each account with a code in their bio, and submit posts only from a verified account. It
+  was off from 2026-10-08 to 2026-11-02.
 
 **Campaigns**
 - Builder (essentials first, "More rules" for caps and requirements), uploads for the cover and assets,
@@ -191,7 +192,7 @@ All in `DECISIONS.md`; these come up most.
 - Checks run every 6 hours after a post's first 72 hours, to keep Scrape Creators costs down. Do not
   add needless refreshes or provider calls in loops; tests use the mock provider.
 - No ad disclosure rule; only the hashtags a campaign lists are required.
-- Account linking stays off until the owner says otherwise.
+- Every clipper must link and verify their accounts before submitting (back on 2026-11-02).
 - Client report: rejected and removed posts never appear; clippers appear by public handle only.
 - Marrz-Audio and Davido X Winnerman-Audio report spend at twice clipper earnings.
 - One Billion Dollar Billboard: each post was paid $10 plus $3 per 1,000 views **outside the platform**.
@@ -240,8 +241,7 @@ All in `DECISIONS.md`; these come up most.
   (likely the Git LFS screenshots not being fetched) and get CI fully green.
 - **Imported stand-in clippers:** posts added from a CSV or video files for people without an account
   go to stand-in clippers. There is no tool yet to move them to the real clipper once they sign up.
-- **On hold by the owner:** visible review queue filters and bulk approve; account linking; a designed
-  leaderboard.
+- **On hold by the owner:** visible review queue filters and bulk approve; a designed leaderboard.
 - **Owner to confirm:** the legal entity name used in the legal documents; destinations for the brand
   site's Careers link; remaining case study videos.
 
