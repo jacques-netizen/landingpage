@@ -183,6 +183,7 @@ export async function importArchivedClips(d: DbOrTx, log: (m: string) => void = 
       ),
     )
   await importReportPosts(d, c, log)
+  await nameInstagramPages(d, c.id)
   // The client report shows a $2,000 budget for this campaign (owner, 2026-11-02). Display only, like the
   // "Budget shown to the client" setting on the campaign's Settings tab; the ledger budget is unchanged.
   await d
@@ -416,4 +417,52 @@ async function pageOf(d: DbOrTx, clip: Clip): Promise<{ creatorId: string; accou
     })
     .returning()
   return { creatorId: u!.id, accountId: a!.id }
+}
+
+/**
+ * The Instagram account behind each Billboard reel, read from Instagram's own page for the reel (owner,
+ * 2026-11-03). The 42 reels came in through the first CSV upload without a page, so the report showed
+ * "Creator". Each gets an account with that handle on the clipper it already belongs to, marked removed
+ * so it never blocks a real link; the clipper, the post and any money stay exactly as they are.
+ */
+async function nameInstagramPages(d: DbOrTx, campaignId: string) {
+  const handles = JSON.parse(await readFile(path.join(DATA, 'instagram-handles.json'), 'utf8')) as Record<
+    string,
+    string
+  >
+  const posts = await d
+    .select({
+      id: tables.submissions.id,
+      postId: tables.submissions.platformPostId,
+      creatorId: tables.submissions.creatorId,
+    })
+    .from(tables.submissions)
+    .where(
+      and(
+        eq(tables.submissions.campaignId, campaignId),
+        eq(tables.submissions.platform, 'instagram'),
+        isNull(tables.submissions.linkedAccountId),
+        inArray(tables.submissions.platformPostId, Object.keys(handles)),
+      ),
+    )
+  for (const s of posts) {
+    const handle = handles[s.postId]!
+    let [a] = await d
+      .select({ id: tables.linkedAccounts.id })
+      .from(tables.linkedAccounts)
+      .where(
+        and(
+          eq(tables.linkedAccounts.creatorId, s.creatorId),
+          eq(tables.linkedAccounts.platform, 'instagram'),
+          eq(tables.linkedAccounts.handle, handle),
+        ),
+      )
+      .limit(1)
+    if (!a)
+      [a] = await d
+        .insert(tables.linkedAccounts)
+        .values({ creatorId: s.creatorId, platform: 'instagram', handle, linkMethod: 'bio_code', status: 'removed' })
+        .returning({ id: tables.linkedAccounts.id })
+    await d.update(tables.submissions).set({ linkedAccountId: a!.id }).where(eq(tables.submissions.id, s.id))
+  }
 }
