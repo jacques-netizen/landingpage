@@ -1,6 +1,6 @@
 {
   "campaignTitle": "%billion dollar billboard%",
-  "note": "One Billion Dollar Billboard clips that are no longer online, sent by the owner on 2026-11-02 as video files. The man's videos carry the TikTok watermark @batuangym; the woman's show no page, so they are filed under an unknown page. No view counts were given, so views are 0. Days are the days the videos were sent, from the file names. A second batch of 16 videos came on 2026-11-03: 7 were exact copies of the first 15 and were skipped; the 9 new ones (6 of Keira, 3 of Batuhan) were added.",
+  "note": "One Billion Dollar Billboard clips that are no longer online, sent by the owner on 2026-11-02 as video files. The man's videos carry the TikTok watermark @batuangym; the woman's show no page, so they are filed under an unknown page. No view counts were given, so views are 0. Days are the days the videos were sent, from the file names. A second batch of 16 videos came on 2026-11-03: 7 were exact copies of the first 15 and were skipped; the 9 new ones (6 of Keira, 3 of Batuhan) were added. A third batch of 13 came on 2026-11-03: 7 had the names and contents of videos already added, and VIDEO-2026-07-08-15-45-38 was the same video as VIDEO-2026-07-08-15-25-59 sent again (same length, frames match), so 8 were skipped; 5 new ones (2 of Keira, 3 of Batuhan) were added.",
   "clips": [
     {
       "file": "VIDEO-2026-06-26-20-47-54",
@@ -98,7 +98,22 @@
       "handle": "batuangym"
     },
     {
+      "file": "VIDEO-2026-07-06-14-55-36",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
       "file": "VIDEO-2026-07-06-15-31-31",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-07-13-28-33",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-07-13-28-39",
       "platform": "tiktok",
       "handle": "batuangym"
     },
@@ -111,6 +126,16 @@
       "file": "VIDEO-2026-07-08-15-25-59",
       "platform": "tiktok",
       "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-08-15-26-04",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-08-23-00-00",
+      "platform": "tiktok",
+      "handle": null
     },
     {
       "file": "VIDEO-2026-07-10-15-25-54",
