@@ -13,11 +13,11 @@ const MARK = 'oneoff.billboard_live_and_approve'
  * released), then approves every post waiting for review the same way as the Review tab. Posts that
  * were denied stay denied.
  */
-async function billboardLiveAndApprove(db: Db, log: (e: Record<string, unknown>) => void) {
+async function billboardLiveAndApprove(db: Db, log: (e: Record<string, unknown>) => void, mark = MARK) {
   const [done] = await db
     .select({ id: tables.auditLog.id })
     .from(tables.auditLog)
-    .where(eq(tables.auditLog.action, MARK))
+    .where(eq(tables.auditLog.action, mark))
     .limit(1)
   if (done) return
   const found = await db
@@ -47,8 +47,21 @@ async function billboardLiveAndApprove(db: Db, log: (e: Record<string, unknown>)
     .limit(1)
   if (!admin) return
 
+  // What closed it last (no person: the platform's own lifecycle job), and what its budget holds, so
+  // the audit log says why it ended and a campaign with an empty budget is not resumed only to close again.
+  const [lastClose] = await db
+    .select({ actorId: tables.auditLog.actorId, at: tables.auditLog.createdAt })
+    .from(tables.auditLog)
+    .where(and(eq(tables.auditLog.action, 'campaign.close'), eq(tables.auditLog.entityId, c.id)))
+    .orderBy(desc(tables.auditLog.id))
+    .limit(1)
+  const [budget] = await db.execute<{ cents: string }>(sql`
+    select coalesce(sum(e.amount_cents), 0)::bigint as cents from ledger_entries e
+    join ledger_accounts a on a.id = e.account_id where a.kind = 'campaign_budget' and a.owner_id = ${c.id}`)
+  const budgetLeft = Number(budget?.cents ?? 0)
   let reopened: string | null = null
-  if (c.status === 'closed') {
+  if (c.status === 'closed' && budgetLeft < 1) reopened = 'not resumed: its budget has nothing left'
+  else if (c.status === 'closed') {
     try {
       const r = await reopenCampaign(db, admin.id, c.id)
       reopened = `resumed, ${r.posts} posts back to approved`
@@ -77,10 +90,18 @@ async function billboardLiveAndApprove(db: Db, log: (e: Record<string, unknown>)
   }
   await writeAudit(db, {
     actorId: admin.id,
-    action: MARK,
+    action: mark,
     entity: 'campaign',
     entityId: c.id,
-    after: { title: c.title, statusBefore: c.status, reopened, approved, failed },
+    after: {
+      title: c.title,
+      statusBefore: c.status,
+      lastClose: lastClose ?? null,
+      budgetLeft,
+      reopened,
+      approved,
+      failed,
+    },
   })
   log({ level: 'info', msg: 'billboard live and approve', title: c.title, reopened, approved, failed: failed.length })
 }
@@ -91,6 +112,8 @@ export async function runOneOffs(
 ) {
   try {
     await billboardLiveAndApprove(db, log)
+    // Owner, 2026-11-03: the campaign had ended again after being resumed on 2026-11-02; resume it once more.
+    await billboardLiveAndApprove(db, log, `${MARK}.2`)
   } catch (err) {
     log({ level: 'error', msg: 'one-off failed', err: String(err) })
   }
