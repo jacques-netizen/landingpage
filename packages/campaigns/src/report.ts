@@ -148,7 +148,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, ${paidCols}, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
-      case when u.email like '%@clippers.invalid' then u.display_name end as stand_in,
+      case when u.email like '%@clippers.invalid' and u.display_name <> 'Imported from a CSV' then u.display_name end as stand_in,
       coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
