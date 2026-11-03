@@ -110,3 +110,27 @@ test('a made-up report link is not active', async ({ page }) => {
   await page.goto('/r/not-a-real-token.at-all')
   await expect(page.getByText('This report link is no longer active.')).toBeVisible()
 })
+
+// Owner, 2026-11-03: the report showed only the first 50 clips. "Show all" loads every clip, and the
+// report's own refresh keeps them all.
+test('Show all loads every clip and a refresh keeps them', async ({ page, browser }) => {
+  const [c] = await sql`select id from campaigns where title = 'Sample clipping'`
+  const [n] = await sql`select count(*)::int as n from submissions where campaign_id = ${c!.id}
+    and state not in ('rejected', 'rejected_auto', 'removed')`
+  expect(n!.n).toBeGreaterThan(50)
+  await signInAs(page, 'admin@seed.invalid')
+  await page.goto(`/admin/campaigns/${c!.id}`)
+  await page.getByRole('button', { name: 'Create report link' }).click()
+  const link = await page.getByRole('textbox', { name: 'Report link' }).inputValue()
+
+  const client = await (await browser.newContext()).newPage()
+  await client.goto(link)
+  const showAll = client.getByRole('button', { name: 'Show all →' })
+  await expect(showAll).toBeVisible()
+  await showAll.click()
+  await expect(showAll).toHaveCount(0)
+  // The report refreshes when the tab comes back; every clip stays.
+  await client.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
+  await client.waitForTimeout(3000)
+  await expect(showAll).toHaveCount(0)
+})

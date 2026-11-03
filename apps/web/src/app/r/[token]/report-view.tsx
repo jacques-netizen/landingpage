@@ -253,6 +253,7 @@ export function ReportView({
   const [report, setReport] = useState<CampaignReport>(initial)
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [extra, setExtra] = useState<ReportClip[]>([])
+  const all = useRef(false)
   const [spendView, setSpendView] = useState<'chart' | 'table'>('chart')
   const [clipPage, setClipPage] = useState(1)
   const [clipPageSize, setClipPageSize] = useState(10)
@@ -268,12 +269,23 @@ export function ReportView({
         const res = await fetch(`/api/r/${token}/report${qs ? `?${qs}` : ''}`, { cache: 'no-store' })
         if (!res.ok) throw new Error(String(res.status))
         const data = (await res.json()) as CampaignReport
+        // After "Show all", every page is loaded, on each refresh too (owner, 2026-11-03: the report showed
+        // only the first 50 clips, and the 2-minute refresh dropped the rest).
+        const more: ReportClip[] = []
+        if (f.page === 1 && all.current) {
+          const pages = Math.ceil(data.submissions.total / data.submissions.pageSize)
+          for (let p = 2; p <= pages; p++) {
+            const next = await fetch(`/api/r/${token}/report?${queryString({ ...f, page: p })}`, { cache: 'no-store' })
+            if (!next.ok) throw new Error(String(next.status))
+            more.push(...((await next.json()) as CampaignReport).submissions.rows)
+          }
+        }
         if (latest.current === qs) {
           if (f.page > 1) {
             setExtra((x) => [...x, ...data.submissions.rows])
             setReport((old) => ({ ...data, submissions: { ...data.submissions, rows: old.submissions.rows } }))
           } else {
-            setExtra([])
+            setExtra(more)
             setReport(data)
           }
           setState('idle')
@@ -654,7 +666,10 @@ export function ReportView({
               {shown.length < r.submissions.total ? (
                 <button
                   type="button"
-                  onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
+                  onClick={() => {
+                    all.current = true
+                    void load({ ...filters, page: 1 })
+                  }}
                   disabled={state === 'loading'}
                   className={`${smooth} cursor-pointer border-0 bg-transparent p-0 font-[inherit] hover:text-[#8A8378]`}
                   style={{ fontSize: 16, color: C.ink }}
