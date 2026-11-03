@@ -180,7 +180,7 @@ function Donut({
       <div style={{ padding: '18px 24px', borderBottom: `1px solid ${C.line}`, fontWeight: 600, fontSize: 16 }}>
         {title}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)' }}>
+      <div data-r="split" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)' }}>
         <div style={{ borderRight: `1px solid ${C.line}` }}>
           {rows.map((r) => (
             <div
@@ -415,8 +415,10 @@ export function ReportView({
       className="grid min-h-screen grid-cols-[260px_minmax(0,1fr)] max-lg:grid-cols-1"
       style={{ background: C.page, color: C.ink, fontFamily: 'Archivo, system-ui, sans-serif' }}
     >
+      <style>{MOBILE_CSS}</style>
       {/* Section nav */}
       <aside
+        data-r="aside"
         className="sticky top-0 box-border flex h-screen flex-col max-lg:static max-lg:h-auto max-lg:flex-row max-lg:items-center max-lg:gap-6 max-lg:overflow-x-auto"
         style={{ padding: '40px 36px', borderRight: `1px solid ${C.line}`, background: C.page }}
       >
@@ -583,6 +585,7 @@ export function ReportView({
               <span style={{ fontSize: 17, color: C.muted }}>Entire campaign</span>
             </div>
             <div
+              data-r="budget"
               style={{ padding: '22px 24px', display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 24 }}
             >
               {(
@@ -764,6 +767,7 @@ export function ReportView({
             </div>
             <div style={{ padding: '14px 24px 10px' }}>
               <div
+                data-r="cpm"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '150px minmax(0,1fr) 80px 80px',
@@ -780,6 +784,7 @@ export function ReportView({
               </div>
               {r.platforms.map((p) => (
                 <div
+                  data-r="cpm"
                   key={p.platform}
                   style={{
                     display: 'grid',
@@ -848,6 +853,7 @@ export function ReportView({
               </div>
               {r.accounts.map((a) => (
                 <div
+                  data-r="acct"
                   key={a.handle}
                   style={{
                     display: 'grid',
@@ -988,6 +994,7 @@ export function ReportView({
             </div>
             <div style={{ margin: 24, border: `1px solid ${C.hair}`, borderRadius: 10, overflow: 'hidden' }}>
               <div
+                data-r="set"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'minmax(0,1fr) 140px 160px',
@@ -1004,6 +1011,7 @@ export function ReportView({
               </div>
               {platformsSeen.map((p) => (
                 <div
+                  data-r="set"
                   key={p}
                   style={{
                     display: 'grid',
@@ -1092,8 +1100,9 @@ export function ReportView({
               </span>
             </div>
             <div style={{ overflowX: 'auto' }}>
-              <div style={{ minWidth: 960 }}>
+              <div data-r="cliptable" style={{ minWidth: 960 }}>
                 <div
+                  data-r="clip"
                   style={{
                     display: 'grid',
                     gridTemplateColumns: '170px 90px minmax(200px,1fr) 80px 70px 90px 70px 80px',
@@ -1115,6 +1124,7 @@ export function ReportView({
                 </div>
                 {clipRows.map((c) => (
                   <div
+                    data-r="clip"
                     key={c.id}
                     className={`${smooth} hover:bg-[#F4F0E7]`}
                     style={{
@@ -1204,7 +1214,7 @@ export function ReportView({
                 </b>{' '}
                 of {full(r.submissions.total)} clips
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <span data-r="pager" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                 <span
                   role="group"
                   aria-label="Clip pages"
@@ -1346,6 +1356,7 @@ export function ReportView({
 
       {/* Floating filters */}
       <div
+        data-r="filters"
         className="fixed bottom-7 left-1/2 z-20 flex -translate-x-1/2 items-center gap-[10px] rounded-full p-[10px] max-sm:bottom-3 max-sm:max-w-[calc(100vw-24px)] max-sm:flex-wrap max-sm:justify-center"
         style={{
           background: 'rgba(255,255,255,0.78)',
@@ -1437,6 +1448,36 @@ export function ReportView({
     </div>
   )
 }
+
+// Phone layout (owner, 2026-11-03: "ensure the mobile layout is perfect"). Wide screens are unchanged; on
+// a phone the two-part cards stack, the budget figures stack, narrow tables drop their bars, the clips
+// table keeps account, views and date (the cards above play each clip), the clip pager wraps, and the
+// floating filters become one slim bar across the bottom.
+const MOBILE_CSS = `@media (max-width: 640px) {
+  [data-r=aside] { padding: 16px 20px !important; gap: 20px !important; }
+  [data-r=split] { grid-template-columns: minmax(0, 1fr) !important; }
+  [data-r=split] > :first-child { border-right: 0 !important; border-bottom: 1px solid ${C.line}; }
+  [data-r=split] > :first-child > div { padding: 0 16px !important; height: 60px !important; }
+  [data-r=budget] { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; padding: 18px 16px !important; }
+  [data-r=cpm] { grid-template-columns: minmax(0, 1fr) 64px 64px !important; gap: 12px !important; }
+  [data-r=cpm] > :nth-child(2) { display: none !important; }
+  [data-r=acct] { grid-template-columns: minmax(0, 1fr) 40px 84px !important; gap: 10px !important; padding: 0 16px !important; }
+  [data-r=acct] > :nth-child(2) { display: none !important; }
+  [data-r=set] { grid-template-columns: minmax(0, 1fr) 72px 96px !important; gap: 10px !important; padding-left: 14px !important; padding-right: 14px !important; }
+  [data-r=pager] { flex-wrap: wrap !important; }
+  [data-r=filters] { left: 12px !important; right: 12px !important; bottom: 12px !important; transform: none !important; translate: none !important;
+    max-width: none !important; border-radius: 18px !important; flex-wrap: nowrap !important; justify-content: flex-start !important;
+    overflow-x: auto; gap: 8px !important; padding: 8px !important; }
+  [data-r=filters] > * { flex: none; }
+  [data-r=filters] select { height: 40px !important; font-size: 14px !important; padding: 0 30px 0 14px !important; background-position: right 12px center !important; }
+  [data-r=filters] button { width: 40px !important; height: 40px !important; }
+  [data-r=filters] > span { display: none !important; }
+  [data-r=filters] select { font-size: 13px !important; padding: 0 26px 0 12px !important; }
+  [data-r=cliptable] { min-width: 0 !important; }
+  [data-r=clip] { grid-template-columns: minmax(0, 1fr) 76px 64px !important; gap: 10px !important; padding-left: 16px !important; padding-right: 16px !important; }
+  [data-r=clip] > :nth-child(2), [data-r=clip] > :nth-child(3), [data-r=clip] > :nth-child(5),
+  [data-r=clip] > :nth-child(6), [data-r=clip] > :nth-child(7) { display: none !important; }
+}`
 
 /** The payout, or the short reason there is none yet. */
 function spendLabel(c: ReportClip, minViews: number) {
