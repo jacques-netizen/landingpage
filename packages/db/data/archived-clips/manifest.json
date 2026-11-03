@@ -1,21 +1,126 @@
 {
   "campaignTitle": "%billion dollar billboard%",
-  "note": "One Billion Dollar Billboard clips that are no longer online, sent by the owner on 2026-11-02 as video files. The man's videos carry the TikTok watermark @batuangym; the woman's show no page, so they are filed under an unknown page. No view counts were given, so views are 0. Days are the days the videos were sent, from the file names.",
+  "note": "One Billion Dollar Billboard clips that are no longer online, sent by the owner on 2026-11-02 as video files. The man's videos carry the TikTok watermark @batuangym; the woman's show no page, so they are filed under an unknown page. No view counts were given, so views are 0. Days are the days the videos were sent, from the file names. A second batch of 16 videos came on 2026-11-03: 7 were exact copies of the first 15 and were skipped; the 9 new ones (6 of Keira, 3 of Batuhan) were added.",
   "clips": [
-    { "file": "VIDEO-2026-06-26-20-47-54", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-06-28-11-08-42", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-06-28-13-11-56", "platform": "tiktok", "handle": null },
-    { "file": "VIDEO-2026-06-28-21-37-39", "platform": "tiktok", "handle": null },
-    { "file": "VIDEO-2026-07-02-16-32-55", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-03-16-17-20", "platform": "tiktok", "handle": null },
-    { "file": "VIDEO-2026-07-03-19-14-04", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-04-15-14-57", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-05-10-55-50", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-05-10-55-53", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-06-15-31-31", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-07-17-56-44", "platform": "tiktok", "handle": null },
-    { "file": "VIDEO-2026-07-08-15-25-59", "platform": "tiktok", "handle": "batuangym" },
-    { "file": "VIDEO-2026-07-10-15-25-54", "platform": "tiktok", "handle": null },
-    { "file": "VIDEO-2026-07-10-15-26-02", "platform": "tiktok", "handle": null }
+    {
+      "file": "VIDEO-2026-06-26-20-47-54",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-06-27-18-56-21",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-06-28-11-08-42",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-06-28-13-11-56",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-06-28-21-37-39",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-06-29-18-36-08",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-06-30-12-37-30",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-06-30-23-13-17",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-01-23-04-47",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-02-16-32-55",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-03-16-17-09",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-03-16-17-14",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-03-16-17-20",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-03-19-14-04",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-04-15-14-57",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-04-15-15-07",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-04-16-30-40",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-05-10-55-50",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-05-10-55-53",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-06-15-31-31",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-07-17-56-44",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-08-15-25-59",
+      "platform": "tiktok",
+      "handle": "batuangym"
+    },
+    {
+      "file": "VIDEO-2026-07-10-15-25-54",
+      "platform": "tiktok",
+      "handle": null
+    },
+    {
+      "file": "VIDEO-2026-07-10-15-26-02",
+      "platform": "tiktok",
+      "handle": null
+    }
   ]
 }
