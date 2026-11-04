@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Personal Brand &middot; Month 1 Recap and the Next 60 Days &middot; Maison d'&Eacute;lites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --ok:#7FC79B;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+  button{font:inherit;color:inherit}
+  a{color:inherit}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:27ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .section{padding:clamp(4.2rem,10vh,7rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3rem 0 1.2rem}
+  .alt{background:var(--panel)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%),var(--bg)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.1fr 0.9fr;gap:2.4rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3rem,8.2vw,7rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.34em;letter-spacing:0.02em;color:var(--gold-soft);margin-top:0.7rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.86;margin-top:1.8rem;max-width:46ch;line-height:1.5}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  /* 90-day dial */
+  .dial{position:relative;width:min(100%,380px);aspect-ratio:1;justify-self:center;isolation:isolate}
+  .dial:before{content:"";position:absolute;inset:-12%;z-index:-1;background:radial-gradient(circle,rgba(212,178,106,.28),transparent 62%);filter:blur(24px)}
+  .dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .dial circle{fill:none;stroke-width:9}
+  .dial .bgc{stroke:var(--panel-3)}
+  .dial .seg{stroke-linecap:butt;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)}
+  .dial .s1{stroke:var(--ok)}
+  .dial .s2{stroke:var(--gold-soft)}
+  .dial .s3{stroke:var(--gold)}
+  .dial .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .dial .mid b{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.6rem,6vw,3.8rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .dial .mid span{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
+  .dial-key{display:flex;justify-content:center;gap:1.1rem;flex-wrap:wrap;margin-top:1rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+  .dial-key i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:0.4rem;vertical-align:-1px}
+
+  /* ============ RECAP ============ */
+  .vids{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
+  .vid{background:var(--panel);border:1px solid var(--hair-soft);padding:1.5rem 1.4rem}
+  .vid .vk{display:flex;justify-content:space-between;align-items:baseline;gap:1rem}
+  .vid .vk b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.2rem}
+  .vid .vk span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .vid .vv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.6rem,6vw,3.8rem);line-height:0.95;letter-spacing:-0.04em;color:var(--gold-soft);margin-top:1rem}
+  .vid .vl{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.4rem}
+  .vm{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:1.2rem}
+  .vm div{background:var(--bg);padding:0.9rem 0.8rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem;color:var(--text);line-height:1}
+  .vm small{display:block;font-weight:600;font-size:0.54rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.45rem}
+  .vm .lead{color:var(--ok)}
+  .vm .na{color:var(--dim)}
+  .signals{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+  .sig{background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border:1px solid var(--hair);padding:1.4rem 1.3rem}
+  .sig .sv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.5rem);line-height:1;letter-spacing:-0.03em;color:var(--gold-soft)}
+  .sig .sl{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.45rem}
+  .sig p{font-size:0.98rem;color:var(--text);margin-top:0.8rem;line-height:1.5}
+  .leak{margin-top:2.4rem;background:var(--panel);border:1px solid var(--hair-soft);padding:clamp(1.4rem,3vw,2rem)}
+  .leak-k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .leak-row{display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;margin-top:1.2rem}
+  .lk{position:relative;padding:1rem 0.9rem;border:1px solid var(--hair-soft);background:var(--bg);min-height:118px}
+  .lk .lt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem}
+  .lk p{font-size:0.9rem;color:var(--mute);margin-top:0.3rem;line-height:1.4}
+  .lk .st{position:absolute;top:0.7rem;right:0.7rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.25rem 0.45rem;border-radius:999px}
+  .lk.yes{border-color:rgba(127,199,155,.45)}
+  .lk.yes .st{color:var(--ok);border:1px solid rgba(127,199,155,.5)}
+  .lk.no{border-style:dashed;border-color:var(--hair)}
+  .lk.no .lt{color:var(--mute)}
+  .lk.no .st{color:var(--gold-soft);border:1px solid var(--hair)}
+  .leak p.note{margin-top:1.2rem;font-size:1.04rem;color:var(--text);line-height:1.6}
+  .leak p.note b{color:var(--gold-soft);font-weight:500}
+
+  /* ============ GOAL ============ */
+  .goals{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:2.4rem}
+  .gl{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.4rem 1.2rem;overflow:hidden;transition:.4s}
+  .alt .gl{background:var(--bg)}
+  .gl:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .gl:hover{transform:translateY(-5px);border-color:var(--hair)}
+  .gl:hover:before{width:100%}
+  .gl .gn{font-family:'Archivo',sans-serif;font-weight:800;font-size:2rem;line-height:0.85;color:var(--panel-3);transition:color .4s}
+  .gl:hover .gn{color:var(--gold)}
+  .gl h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;margin-top:0.9rem;line-height:1.3}
+  .gl .gw{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light);margin-top:0.7rem}
+
+  /* ============ NEXT 30: GANTT ============ */
+  .gantt{margin-top:2.4rem;background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border:1px solid var(--hair);padding:clamp(1.2rem,3vw,2rem)}
+  .g-head,.g-row{display:grid;grid-template-columns:170px repeat(4,1fr);gap:6px;align-items:center}
+  .g-head div{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);text-align:center;line-height:1.4}
+  .g-head div:first-child{text-align:left}
+  .g-head div b{display:block;color:var(--text);font-size:0.72rem;letter-spacing:0.06em}
+  .g-row{margin-top:8px}
+  .g-row .gname{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;line-height:1.2}
+  .g-row .gname small{display:block;font-weight:600;font-size:0.54rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.2rem}
+  .g-cell{height:40px;background:rgba(21,18,13,.55);border-radius:4px}
+  .g-bar{height:40px;border-radius:8px;display:flex;align-items:center;padding:0 0.8rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.72rem;color:var(--bg);white-space:nowrap;overflow:hidden;cursor:pointer;border:0;transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+  .gantt.go .g-bar{transform:scaleX(1)}
+  .g-bar:hover,.g-bar.on{box-shadow:0 0 0 2px var(--gold-soft)}
+  .g-bar.b1{background:linear-gradient(90deg,var(--gold),var(--gold-light))}
+  .g-bar.b2{background:linear-gradient(90deg,var(--gold-light),var(--gold-soft))}
+  .g-bar.b3{background:linear-gradient(90deg,#c9a764,#e7cf96)}
+  .g-bar.b4{background:repeating-linear-gradient(90deg,var(--gold-soft) 0 14px,#d9c38e 14px 28px)}
+  .g-today{position:relative;height:0}
+  .g-detail{margin-top:1.3rem;background:var(--bg);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.3rem 1.4rem;min-height:120px}
+  .g-detail .anim{animation:fadeup .45s ease}
+  .g-detail .dk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold-light)}
+  .g-detail h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.3rem;margin-top:0.4rem;letter-spacing:-0.01em}
+  .g-detail p{font-size:1.02rem;color:var(--text);opacity:.9;margin-top:0.5rem;line-height:1.55}
+  .g-detail ol,.g-detail ul{margin:0.7rem 0 0 1.2rem;font-size:1rem;color:var(--text);line-height:1.6}
+  .g-detail li{padding:0.15rem 0}
+  .g-detail li b{color:var(--gold-soft);font-weight:500}
+  .g-detail .done{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ok)}
+
+  /* funnel */
+  .funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:1.2rem;position:relative}
+  .fs{position:relative;padding:1.2rem 1rem 1.2rem 1.3rem;background:var(--panel);border:1px solid var(--hair-soft);margin-right:-1px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%,14px 50%);transition:background .3s}
+  .fs:first-child{clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%)}
+  .fs:hover{background:var(--panel-2)}
+  .fs .fn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.14em;color:var(--gold-light)}
+  .fs h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem;margin-top:0.35rem}
+  .fs p{font-size:0.9rem;color:var(--mute);margin-top:0.3rem;line-height:1.4;padding-right:0.8rem}
+  .autos{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:1.2rem}
+  .au{background:var(--panel);border:1px solid var(--hair-soft);padding:1.3rem 1.2rem;transition:.35s}
+  .au:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .au svg{width:24px;height:24px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .au h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem;margin-top:0.8rem}
+  .au p{font-size:0.92rem;color:var(--mute);margin-top:0.35rem;line-height:1.45}
+  .dm{margin-top:1.2rem;display:grid;grid-template-columns:0.9fr 1.1fr;gap:1rem;align-items:center}
+  .phone{background:#0b0906;border:1px solid var(--hair);border-radius:26px;padding:1rem 0.9rem;max-width:340px;justify-self:center;width:100%;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
+  .phone .ph-h{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);text-align:center;padding-bottom:0.7rem;border-bottom:1px solid var(--hair-soft)}
+  .bub{max-width:82%;margin-top:0.6rem;padding:0.6rem 0.8rem;border-radius:14px;font-family:'Archivo',sans-serif;font-size:0.8rem;line-height:1.35;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+  .bub.show{opacity:1;transform:none}
+  .bub.them{background:var(--panel-3);color:var(--text);border-bottom-left-radius:4px}
+  .bub.us{background:var(--gold);color:var(--bg);margin-left:auto;border-bottom-right-radius:4px}
+  .bub.sys{max-width:100%;text-align:center;background:none;color:var(--mute);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase}
+  .dm-side p{font-size:1.02rem;color:var(--mute);line-height:1.6}
+  .dm-side p b{color:var(--text);font-weight:500}
+  .dm-side .btnr{margin-top:1rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold-soft);background:none;padding:0.75rem 1.1rem;cursor:pointer;transition:.3s}
+  .dm-side .btnr:hover{background:var(--gold);color:var(--bg)}
+  .content{display:grid;grid-template-columns:repeat(5,1fr);gap:0.6rem;margin-top:1.2rem}
+  .ct{background:var(--panel);border:1px solid var(--hair-soft);padding:1.2rem 1.1rem}
+  .alt .ct{background:var(--bg)}
+  .ct .cn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.14em;color:var(--gold-light);text-transform:uppercase}
+  .ct p{font-size:0.95rem;color:var(--text);margin-top:0.4rem;line-height:1.45}
+
+  /* ============ NEXT 60 ============ */
+  .weeks2{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:2.4rem}
+  .w2{background:var(--panel);border:1px solid var(--hair-soft);padding:1.2rem 1.1rem;position:relative}
+  .w2 .wd{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .w2 .wn{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.1rem;margin-top:0.3rem}
+  .w2 p{font-size:0.94rem;color:var(--mute);margin-top:0.4rem;line-height:1.45}
+  .w2.review{border-color:var(--gold)}
+  .w2.review .wn{color:var(--gold-soft)}
+  .diag{margin-top:1.2rem;display:grid;grid-template-columns:0.85fr 1.15fr;gap:1rem}
+  .diag-q{display:flex;flex-direction:column;gap:0.5rem}
+  .dq{display:grid;grid-template-columns:38px 1fr;gap:0.9rem;align-items:center;background:var(--panel);border:1px solid var(--hair-soft);padding:0.9rem 1rem;cursor:pointer;text-align:left;transition:.3s}
+  .dq:hover{border-color:var(--hair)}
+  .dq.on{border-color:var(--gold);background:var(--panel-2)}
+  .dq .qi{width:38px;height:38px;border-radius:50%;border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;color:var(--mute);transition:.3s}
+  .dq.on .qi{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+  .dq .qt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem}
+  .dq .qs{font-size:0.88rem;color:var(--mute);margin-top:0.15rem}
+  .diag-a{background:linear-gradient(160deg,var(--panel-3),var(--panel) 70%);border:1px solid var(--hair);border-left:3px solid var(--gold);padding:clamp(1.4rem,3vw,2rem);display:flex;flex-direction:column;justify-content:center}
+  .diag-a .anim{animation:fadeup .45s ease}
+  .diag-a .ak{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .diag-a h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.8rem);margin-top:0.5rem;letter-spacing:-0.015em}
+  .diag-a p{font-size:1.04rem;color:var(--text);opacity:.9;margin-top:0.6rem;line-height:1.6}
+  .day60{margin-top:1.2rem;background:var(--panel);border:1px solid var(--hair);padding:1.5rem 1.4rem}
+  .day60 .dk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .chk{list-style:none;margin-top:0.8rem;display:grid;grid-template-columns:1fr 1fr;gap:0.2rem 1.6rem}
+  .chk li{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;align-items:start;padding:0.55rem 0;border-top:1px solid var(--hair-soft);font-size:1rem;line-height:1.4}
+  .chk .bx{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--gold);margin-top:3px}
+
+  /* ============ FROM YOU ============ */
+  .need{display:grid;grid-template-columns:repeat(4,1fr);gap:0.8rem;margin-top:2.4rem}
+  .nd{background:var(--panel);border:1px solid var(--hair-soft);padding:1.3rem 1.2rem}
+  .alt .nd{background:var(--bg)}
+  .nd .bx{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--gold)}
+  .nd p{font-size:1rem;color:var(--text);margin-top:0.8rem;line-height:1.45}
+  .nd small{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-top:0.6rem}
+
+  /* ============ MODEL ============ */
+  .model{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 55%);border:1px solid var(--hair);padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--panel-3) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .o{background:var(--bg);padding:1.5rem 1.1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(2rem,5vw,3.2rem)}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--gold-soft);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:1.4rem}
+    .dial{width:min(76%,320px);margin:0 auto}
+    .goals,.autos,.need,.weeks2{grid-template-columns:1fr 1fr}
+    .leak-row{grid-template-columns:1fr 1fr 1fr}
+    .funnel{grid-template-columns:1fr;gap:0.5rem}
+    .fs,.fs:first-child{clip-path:none;margin-right:0}
+    .content{grid-template-columns:1fr 1fr}
+    .diag,.dm{grid-template-columns:1fr}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .vids,.signals,.goals,.autos,.need,.weeks2,.content,.chk{grid-template-columns:1fr}
+    .leak-row{grid-template-columns:1fr 1fr}
+    .vm{grid-template-columns:1fr 1fr}
+    .g-head,.g-row{grid-template-columns:96px repeat(4,1fr);gap:3px}
+    .g-head div{font-size:0.48rem;letter-spacing:0.04em}
+    .g-head div b{font-size:0.6rem}
+    .g-row .gname{font-size:0.72rem}
+    .g-row .gname small{display:none}
+    .g-bar{font-size:0;padding:0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue{animation:none}
+    .g-bar{transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>Month 1 recap</span></a>
+  <a href="#s2"><span>The 90-day goal</span></a>
+  <a href="#s3"><span>Next 30 days</span></a>
+  <a href="#s4"><span>Days 31 to 60</span></a>
+  <a href="#s5"><span>What we need from you</span></a>
+  <a href="#s6"><span>Project the month</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top">
+    <a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a>
+    <div class="label" style="color:var(--mute)">Personal Brand Growth &middot; 4 November 2026</div>
+  </div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Month 1 recap &middot; the next 60 days</span>
+      <h1 class="rv d1">Month 1<span>Recap and the next 60 days</span></h1>
+      <p class="hero-sub rv d2">The content is already working and already bringing in leads. The next 60 days build the system behind it, so attention turns into income.</p>
+    </div>
+    <div class="rv d2">
+      <div class="dial" id="dial">
+        <svg viewBox="0 0 100 100">
+          <circle class="bgc" cx="50" cy="50" r="42"/>
+          <circle class="seg s1" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          <circle class="seg s2" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          <circle class="seg s3" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+        </svg>
+        <div class="mid"><b>90</b><span>Days to turn attention into income</span></div>
+      </div>
+      <div class="dial-key"><span><i style="background:var(--ok)"></i>Month 1 done</span><span><i style="background:var(--gold-soft)"></i>Next 30 days</span><span><i style="background:var(--gold)"></i>Days 31 to 60</span></div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d3" style="color:var(--mute)">Prepared by Maison d'&Eacute;lites</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 01 RECAP ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; Month 1 recap</span>
+    <h2 class="statement rv d1">The content is already working, and it is already bringing in leads.</h2>
+    <div class="vids rv d2">
+      <div class="vid">
+        <div class="vk"><b>In Five Years</b><span>Best performer</span></div>
+        <div class="vv"><span class="cu" data-target="2.1" data-dec="1">2.1</span>K</div><div class="vl">Views</div>
+        <div class="vm"><div>60<small>Likes</small></div><div class="na">&ndash;<small>Shares</small></div><div>15<small>New follows</small></div><div class="lead">4<small>Commented the keyword</small></div></div>
+      </div>
+      <div class="vid">
+        <div class="vk"><b>Latest upload</b><span>20 shares</span></div>
+        <div class="vv"><span class="cu" data-target="1.4" data-dec="1">1.4</span>K</div><div class="vl">Views</div>
+        <div class="vm"><div>29<small>Likes</small></div><div>20<small>Shares</small></div><div>8<small>New follows</small></div><div class="na">&ndash;<small>Leads</small></div></div>
+      </div>
+    </div>
+    <div class="signals rv d2">
+      <div class="sig"><div class="sv">1 in ~140</div><div class="sl">Views that became a follower</div><p>A strong sign: people who see the videos want more.</p></div>
+      <div class="sig"><div class="sv"><span class="cu" data-target="4">4</span></div><div class="sl">Asked for the free resource</div><p>Without any system in place to catch them.</p></div>
+      <div class="sig"><div class="sv"><span class="cu" data-target="23">23</span></div><div class="sl">New follows across the two videos</div><p>From 3.5K views in total.</p></div>
+    </div>
+
+    <div class="leak rv d1">
+      <div class="leak-k">What is missing is the system behind the content</div>
+      <div class="leak-row">
+        <div class="lk yes"><span class="st">Working</span><div class="lt">Video</div><p>People watch and some follow.</p></div>
+        <div class="lk no"><span class="st">To build</span><div class="lt">Capture</div><p>Nothing catches them automatically.</p></div>
+        <div class="lk no"><span class="st">To build</span><div class="lt">Landing page</div><p>No page for them to land on.</p></div>
+        <div class="lk no"><span class="st">To build</span><div class="lt">Offer</div><p>Nothing for them to buy.</p></div>
+        <div class="lk no"><span class="st">To build</span><div class="lt">Follow-up</div><p>Right now they watch, maybe follow, and leave.</p></div>
+      </div>
+      <p class="note">The next 60 days fix that, <b>starting with an offer people can buy without a call.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 GOAL ============ -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The 90-day goal</span>
+    <h2 class="statement rv d1">Turn attention into income.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">By the end of the 90 days there should be four things in place. The first three are built in the next 30 days. The fourth runs the whole time.</p>
+    <div class="goals rv d2">
+      <div class="gl"><div class="gn">01</div><h5>A low-ticket offer live on Base44 that people can buy without a call</h5><div class="gw">Weeks 1 to 2</div></div>
+      <div class="gl"><div class="gn">02</div><h5>A funnel that takes a viewer from a video to a sale</h5><div class="gw">Weeks 2 to 4</div></div>
+      <div class="gl"><div class="gn">03</div><h5>Automations that capture every comment and DM and follow up for you</h5><div class="gw">Weeks 3 to 4</div></div>
+      <div class="gl"><div class="gn">04</div><h5>A steady flow of scripted and edited videos built on what already performs</h5><div class="gw">Every week</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 NEXT 30 ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; The next 30 days &middot; 4 November to 1 December</span>
+    <h2 class="statement rv d1">Build the offer, the funnel and the automations.</h2>
+    <div class="gantt rv d2" id="gantt">
+      <div class="g-head"><div>Weeks</div><div><b>Week 1</b>4 to 10 Nov</div><div><b>Week 2</b>11 to 17 Nov</div><div><b>Week 3</b>18 to 24 Nov</div><div><b>Week 4</b>25 Nov to 1 Dec</div></div>
+      <div id="gRows"></div>
+      <div class="g-detail"><div class="anim" id="gDetail"></div></div>
+    </div>
+
+    <h3 class="sub rv">The funnel: every step has one job</h3>
+    <div class="funnel rv d1">
+      <div class="fs"><div class="fn">01</div><h5>Video</h5><p>Gives value and ends with one clear action, such as commenting a keyword.</p></div>
+      <div class="fs"><div class="fn">02</div><h5>Lead capture</h5><p>A simple opt-in page gives away something useful for an email.</p></div>
+      <div class="fs"><div class="fn">03</div><h5>Thank-you page</h5><p>The next step is offered straight away: the low-ticket offer.</p></div>
+      <div class="fs"><div class="fn">04</div><h5>Follow-up</h5><p>Emails and DMs bring back people who did not buy the first time.</p></div>
+      <div class="fs"><div class="fn">05</div><h5>Upgrade</h5><p>Buyers who want more help are offered a call for the higher-priced service.</p></div>
+    </div>
+
+    <h3 class="sub rv">The automations: no interested person slips through</h3>
+    <div class="dm rv d1">
+      <div class="phone" id="phone"><div class="ph-h">Instagram &middot; DMs</div><div id="chat"></div></div>
+      <div class="dm-side">
+        <p>Someone comments a keyword on a post and <b>gets an instant DM with the free resource.</b> A few short questions find out what they need, then send the right link: the offer or a booking page.</p>
+        <p style="margin-top:0.8rem">Four viewers already did this on <b>In Five Years</b>. From week 3 every one of them is caught and followed up.</p>
+        <button class="btnr" id="replay" type="button">Play it again</button>
+      </div>
+    </div>
+    <div class="autos rv d1">
+      <div class="au"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><h5>Comment keyword trigger</h5><p>Someone comments a word on a post and gets an instant DM with the free resource.</p></div>
+      <div class="au"><svg viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.2 2.7c-.8.4-1.2 1-1.2 1.8V15M12 18.5v.5"/><circle cx="12" cy="12" r="9.5"/></svg><h5>DM flow</h5><p>A few short questions find out what they need, then send the right link.</p></div>
+      <div class="au"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="1.5"/><path d="M3.5 9h17M9 9v11"/></svg><h5>Lead tracking</h5><p>Every new lead lands in one sheet, so you can see where each one came from.</p></div>
+      <div class="au"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9 2.5h6"/></svg><h5>Follow-up reminders</h5><p>People who opened a link but did not buy get a nudge a day or two later.</p></div>
+    </div>
+
+    <h3 class="sub rv">The content engine, from week 1</h3>
+    <p class="body-lg rv d1">The rule for next month is simple: <b>do more of what already works.</b></p>
+    <div class="content rv d2">
+      <div class="ct"><div class="cn">Start from winners</div><p>The best-performing videos are reposted as trial reels with a small change, to reach new people.</p></div>
+      <div class="ct"><div class="cn">Scripts</div><p>Each new video is scripted from proven formats, with a hook in the first line and one clear action at the end.</p></div>
+      <div class="ct"><div class="cn">Editing</div><p>A dedicated editor turns raw footage into finished videos in a consistent style.</p></div>
+      <div class="ct"><div class="cn">Rhythm</div><p>Film in batches once or twice a week, so posting never stops.</p></div>
+      <div class="ct"><div class="cn">Review</div><p>Every week: views, shares, follows and leads per video. Keep the formats that convert.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 DAYS 31 TO 60 ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Days 31 to 60 &middot; 2 December to 29 December</span>
+    <h2 class="statement rv d1">Launch, track and fix the weakest step.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">Once everything is live, the work is to <b>watch the numbers and fix the weakest step</b>, one thing at a time, while the content keeps going out every week.</p>
+    <div class="weeks2 rv d2">
+      <div class="w2"><div class="wd">2 to 8 Dec</div><div class="wn">Week 5 &middot; Launch</div><p>Offer, funnel and automations all live. First full week of numbers: views, leads, offer sales and calls booked.</p></div>
+      <div class="w2"><div class="wd">9 to 15 Dec</div><div class="wn">Week 6 &middot; First fix</div><p>Find the weakest step from week 5 and fix that one thing.</p></div>
+      <div class="w2"><div class="wd">16 to 22 Dec</div><div class="wn">Week 7 &middot; Scale</div><p>More videos in the formats that bring buyers, beyond the ones that only bring views.</p></div>
+      <div class="w2 review"><div class="wd">23 to 29 Dec</div><div class="wn">Week 8 &middot; Monthly review</div><p>A call at the end of the month to set the focus for days 61 to 90.</p></div>
+    </div>
+
+    <h3 class="sub rv">Fix one thing at a time</h3>
+    <div class="diag rv d1">
+      <div class="diag-q" id="diagQ"></div>
+      <div class="diag-a"><div class="anim" id="diagA"></div></div>
+    </div>
+
+    <div class="day60 rv d1">
+      <div class="dk">By day 60, done when</div>
+      <ul class="chk">
+        <li><span class="bx"></span>The product is built and can be bought</li>
+        <li><span class="bx"></span>Opt-in page, thank-you page and follow-up are live</li>
+        <li><span class="bx"></span>Keyword DMs and lead tracking run on their own</li>
+        <li><span class="bx"></span>Scripted and edited videos go out every week</li>
+        <li><span class="bx"></span>Weekly numbers reviewed, weakest step fixed</li>
+        <li><span class="bx"></span>Month 2 review call held, focus set for days 61 to 90</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 FROM YOU ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; What we need from you</span>
+    <h2 class="statement rv d1">Four things to start this week.</h2>
+    <div class="need rv d2">
+      <div class="nd"><div class="bx"></div><p>The topic for the low-ticket offer and what you already know about it</p><small>For week 1</small></div>
+      <div class="nd"><div class="bx"></div><p>Access to your Base44 account and your Instagram for the automations</p><small>For weeks 1 and 3</small></div>
+      <div class="nd"><div class="bx"></div><p>Raw footage filmed in batches each week</p><small>Every week</small></div>
+      <div class="nd"><div class="bx"></div><p>Your top-performing videos so far</p><small>For week 1</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 PROJECT ============ -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Project the month</span>
+    <h2 class="statement rv d1">What the views bring in at today's rates.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Based on month 1: <b>one new follower for roughly every 140 views</b>, and four keyword comments from 2.1K views on In Five Years. The funnel and automations are built to raise both.</p>
+    <div class="model rv d2">
+      <div class="ctrl-head"><span class="cl">Views in a month</span><span class="cv" id="viewsVal">50,000</span></div>
+      <input type="range" id="views" min="5000" max="500000" step="5000" value="50000" aria-label="Views in a month">
+      <div class="range-ends"><span>5,000</span><span>500,000</span></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oFollows">357</div><div class="ol">New followers</div></div>
+        <div class="o"><div class="ov" id="oLeads">95</div><div class="ol">People asking for the free resource</div></div>
+        <div class="o"><div class="ov" id="oPerDay">12</div><div class="ol">New followers a day</div></div>
+      </div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=[...document.querySelectorAll('#dots a')];
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
+  once(document.querySelectorAll('.cu'),el=>{
+    const t=parseFloat(el.dataset.target);
+    if(reduce){el.textContent=fmt(t,el);return;}
+    const dur=1300,s=performance.now();
+    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
+  },0.5);
+
+  /* 90-day dial: month 1 done, next 30, days 31 to 60 */
+  (function(){
+    const C=263.9, segs=[...document.querySelectorAll('#dial .seg')], gap=1.2;
+    const parts=[[0,1/3],[1/3,2/3],[2/3,1]];
+    setTimeout(()=>segs.forEach((s,i)=>{
+      const [a,b]=parts[i], len=(b-a)*C-gap;
+      s.style.strokeDasharray=len+' '+(C-len);
+      s.style.strokeDashoffset=String(-(a*C));
+    }),500);
+    segs.forEach(s=>{s.style.strokeDasharray='0 '+C;});
+  })();
+
+  /* next 30 days: gantt */
+  const TR=[
+    {n:'Phase 1',s:'Offer on Base44',from:0,to:2,c:'b1',label:'Low-ticket offer',
+     d:'<div class="dk">Weeks 1 to 2 · 4 to 17 November</div><h4>The low-ticket offer on Base44</h4><p>A low-ticket offer lets people pay you without needing a sales call. It is the first thing a new viewer can buy.</p><ol><li>Pick the one problem your audience asks about most in comments and DMs</li><li>Turn your know-how on that problem into a short, step-by-step product</li><li>Build it on Base44 so buyers get instant access after paying</li><li>Set the price low enough that it is an easy yes</li><li>Write the sales page copy: the problem, what they get, proof from your own results</li></ol><div class="done">Done when the product is built and can be bought</div>'},
+    {n:'Phase 2',s:'Funnel',from:1,to:4,c:'b2',label:'Video to sale',
+     d:'<div class="dk">Weeks 2 to 4 · 11 November to 1 December</div><h4>The funnel</h4><p>The path from a video to a sale. Every step has one job: video, lead capture, thank-you page, follow-up, upgrade.</p><div class="done">Done when the opt-in page, thank-you page and follow-up are live</div>'},
+    {n:'Phase 3',s:'Automations',from:2,to:4,c:'b3',label:'Keyword DMs',
+     d:'<div class="dk">Weeks 3 to 4 · 18 November to 1 December</div><h4>Automations</h4><p>They make sure no interested person slips through, even when you are busy.</p><ul><li><b>Comment keyword trigger</b> with an instant DM and the free resource</li><li><b>DM flow</b> that sends the offer or a booking page</li><li><b>Lead tracking</b> in one sheet</li><li><b>Follow-up reminders</b> a day or two later</li></ul><div class="done">Done when keyword DMs and lead tracking run on their own</div>'},
+    {n:'Phase 4',s:'Content engine',from:0,to:4,c:'b4',label:'Scripted and edited videos every week',
+     d:'<div class="dk">Every week from week 1</div><h4>Content engine: scripts and editing</h4><p>Content keeps feeding the funnel. Winners reposted as trial reels, every new video scripted from proven formats, a dedicated editor, filming in batches once or twice a week, and a weekly review of what converts.</p><div class="done">Done when scripted and edited videos go out every week</div>'}
+  ];
+  const gRows=document.getElementById('gRows'), gDetail=document.getElementById('gDetail');
+  gRows.innerHTML=TR.map((t,i)=>'<div class="g-row"><div class="gname">'+esc(t.n)+'<small>'+esc(t.s)+'</small></div>'
+    +[0,1,2,3].map(w=>w===t.from?'<button class="g-bar '+t.c+'" data-i="'+i+'" style="grid-column:span '+(t.to-t.from)+';transition-delay:'+(i*150)+'ms" type="button">'+esc(t.label)+'</button>':(w>t.from&&w<t.to?'':'<div class="g-cell"></div>')).join('')+'</div>').join('');
+  const bars=[...gRows.querySelectorAll('.g-bar')];
+  function setG(i){
+    bars.forEach((b,j)=>b.classList.toggle('on',j===i));
+    gDetail.style.animation='none';void gDetail.offsetWidth;gDetail.style.animation='';
+    gDetail.innerHTML=TR[i].d;
+  }
+  bars.forEach(b=>b.addEventListener('click',()=>setG(+b.dataset.i)));
+  setG(0);
+  once([document.getElementById('gantt')],el=>el.classList.add('go'),0.05);
+
+  /* DM automation demo */
+  const CHAT=[
+    ['sys','A viewer comments the keyword on In Five Years'],
+    ['us','Here’s the free guide you asked for 👇'],
+    ['us','Quick one so I send you the right thing: what do you need help with most?'],
+    ['them','Where to start'],
+    ['us','This is the step-by-step version, with instant access:'],
+    ['sys','Offer link sent · lead added to the sheet'],
+    ['sys','No purchase after 2 days → reminder sent']
+  ];
+  const chat=document.getElementById('chat');
+  let timers=[];
+  function playChat(){
+    timers.forEach(clearTimeout); timers=[];
+    chat.innerHTML=CHAT.map(c=>'<div class="bub '+c[0]+'">'+esc(c[1])+'</div>').join('');
+    const b=[...chat.children];
+    if(reduce){b.forEach(x=>x.classList.add('show'));return;}
+    b.forEach((x,i)=>timers.push(setTimeout(()=>x.classList.add('show'),300+i*750)));
+  }
+  once([document.getElementById('phone')],playChat,0.4);
+  document.getElementById('replay').addEventListener('click',playChat);
+
+  /* fix one thing at a time */
+  const DG=[
+    ['Low leads','Views come in, but few people comment or opt in',"Work on the hooks and the call to action",'The video has to earn the click: a sharper hook in the first line, and one clear action at the end.'],
+    ['Leads but no sales','People opt in, but few buy the offer','Work on the offer page','The problem, what they get and the proof from your own results: tighten the page, and check the price is an easy yes.'],
+    ['Everything converts','Each step holds up','Scale what works','More videos in the formats that bring buyers, beyond the ones that only bring views.']
+  ];
+  const dq=document.getElementById('diagQ'), da=document.getElementById('diagA');
+  dq.innerHTML=DG.map((d,i)=>'<button class="dq'+(i===0?' on':'')+'" type="button"><span class="qi">'+(i+1)+'</span><span><span class="qt">'+esc(d[0])+'</span><div class="qs">'+esc(d[1])+'</div></span></button>').join('');
+  function setD(i){
+    [...dq.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+    da.style.animation='none';void da.offsetWidth;da.style.animation='';
+    da.innerHTML='<div class="ak">If the numbers show: '+esc(DG[i][0].toLowerCase())+'</div><h4>'+esc(DG[i][2])+'</h4><p>'+esc(DG[i][3])+'</p>';
+  }
+  [...dq.children].forEach((b,i)=>b.addEventListener('click',()=>setD(i)));
+  setD(0);
+
+  /* project the month at today's rates */
+  const vS=document.getElementById('views');
+  function calc(){
+    const v=+vS.value;
+    document.getElementById('viewsVal').textContent=v.toLocaleString('en-US');
+    document.getElementById('oFollows').textContent=Math.round(v/140).toLocaleString('en-US');
+    document.getElementById('oLeads').textContent=Math.round(v*4/2100).toLocaleString('en-US');
+    document.getElementById('oPerDay').textContent=Math.round(v/140/30).toLocaleString('en-US');
+    vS.style.setProperty('--p',((v-vS.min)/(vS.max-vS.min)*100)+'%');
+  }
+  vS.addEventListener('input',calc); calc();
+})();
+</script>
+</body>
+</html>
