@@ -9,6 +9,7 @@ import {
   campaignReport,
   createClient,
   createDraft,
+  forClient,
   fundCampaign,
   handleFor,
   joinCampaign,
@@ -213,6 +214,63 @@ describe('campaign report', () => {
   })
 })
 
+// Owner, 2026-11-03: spend on the client report never passes the budget the client sees. Posts take the
+// budget in the order they came in; later ones show nothing spent once it is used up.
+describe('the client report budget', () => {
+  it('caps spend at the budget shown to the client, oldest posts first, and the clips add up to it', async () => {
+    const { id } = await reportCampaign()
+    // Uncapped: A (older) 300 cents, B 400 cents.
+    await db.update(tables.campaigns).set({ clientBudgetCents: 500 }).where(eq(tables.campaigns.id, id))
+    const r = (await campaignReport(db, id, { mode: 'all', page: 1 }))!
+    expect(r.budget.spentCents).toBe(500)
+    expect(forClient(r, 1, 500).budget.remainingCents).toBe(0)
+    const byUrl = Object.fromEntries(r.submissions.rows.map((x) => [x.url, x]))
+    expect(byUrl['https://www.tiktok.com/@maya.clips/video/1']).toMatchObject({
+      payoutCents: 300,
+      budgetReached: false,
+    })
+    expect(byUrl['https://www.instagram.com/reel/ABC123/']).toMatchObject({ payoutCents: 200, budgetReached: true })
+    expect(r.submissions.rows.reduce((t, x) => t + x.payoutCents, 0)).toBe(500)
+    expect(r.spendByDay.reduce((t, x) => t + x.spendCents, 0)).toBe(500)
+    expect(r.platforms.reduce((t, x) => t + x.spentCents, 0)).toBe(500)
+  })
+
+  it('caps at the budget divided by the spend factor, so the client never sees more than the budget', async () => {
+    const { id } = await reportCampaign()
+    await db
+      .update(tables.campaigns)
+      .set({ clientBudgetCents: 501, clientSpendFactor: 2 })
+      .where(eq(tables.campaigns.id, id))
+    const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
+    const r = forClient(
+      (await campaignReport(db, id, { mode: 'all', page: 1 }))!,
+      c!.clientSpendFactor,
+      c!.clientBudgetCents,
+    )
+    expect(r.budget.spentCents).toBe(500)
+    expect(r.budget.spentCents).toBeLessThanOrEqual(501)
+  })
+
+  it('caps a per-post fee campaign too', async () => {
+    const { id } = await reportCampaign()
+    // $10 a post plus $2 per 1,000 views: A 1,300 cents, B 1,400 cents.
+    await db
+      .update(tables.campaigns)
+      .set({ postFeeCents: 1000, clientBudgetCents: 2_000 })
+      .where(eq(tables.campaigns.id, id))
+    const r = (await campaignReport(db, id, { mode: 'all', page: 1 }))!
+    expect(r.budget.spentCents).toBe(2_000)
+    expect(r.submissions.rows.map((x) => x.payoutCents).sort((a, b) => a - b)).toEqual([700, 1_300])
+  })
+
+  it('changes nothing while the budget is not reached', async () => {
+    const { id } = await reportCampaign()
+    const r = (await campaignReport(db, id, { mode: 'all', page: 1 }))!
+    expect(r.budget.spentCents).toBe(700)
+    expect(r.submissions.rows.every((x) => !x.budgetReached)).toBe(true)
+  })
+})
+
 describe('the client report rate', () => {
   it('doubles what was spent for the client and leaves the budget, views and counts alone', async () => {
     const { forClient } = await import('../src/report')
@@ -234,6 +292,7 @@ describe('the client report rate', () => {
       shares: 0,
       payoutCents: 500,
       payout: 'pending' as const,
+      budgetReached: false,
       verified: false,
     }
     const base: Parameters<typeof forClient>[0] = {

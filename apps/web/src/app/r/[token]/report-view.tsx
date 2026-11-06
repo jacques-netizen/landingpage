@@ -1482,6 +1482,8 @@ const MOBILE_CSS = `@media (max-width: 640px) {
 /** The payout, or the short reason there is none yet. */
 function spendLabel(c: ReportClip, minViews: number) {
   if (c.payoutCents > 0) return formatDollars(c.payoutCents)
+  // The budget was used up by earlier posts (owner, 2026-11-03: spend never passes the budget).
+  if (c.budgetReached) return 'Budget reached'
   if (c.status === 'rejected') return 'Not paid'
   if (c.status === 'pending') return 'In review'
   if (minViews > 0 && c.countedViews < minViews) return `Below ${compact(minViews)} min`

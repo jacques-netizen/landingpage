@@ -44,6 +44,8 @@ export type ReportClip = {
   /** What the post has earned, and whether that has been paid out. */
   payoutCents: number
   payout: 'paid' | 'pending' | 'none'
+  /** The budget was used up before this post's full spend (owner, 2026-11-03). */
+  budgetReached: boolean
   /** The views come from a verification the creator proved, not from the scraper (owner brief, 2026-10-15). */
   verified: boolean
 }
@@ -141,9 +143,28 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // clips add up to the budget box.
   const flatFee = c.postFeeCents > 0
   const flat = sql`(case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint + (coalesce(v.views, 0) * ${c.rateCentsPer1000}::bigint) / 1000 else 0 end)`
-  const paidCols = flatFee
-    ? sql`${flat} as earned_cents, ${flat} as outside_paid_cents`
-    : sql`s.earned_cents + ${outside} as earned_cents, ${outside} as outside_paid_cents`
+  const raw = flatFee ? flat : sql`(s.earned_cents + ${outside})`
+  const outsideRaw = flatFee ? flat : outside
+  // Spend never passes the budget the client sees (owner, 2026-11-03). Posts take the budget in the
+  // order they came in, as the platform's own budget does; once it is used up, later posts show nothing
+  // spent ("Budget reached"). The cap is in the report's own units: the client sees spend at the spend
+  // factor, so the budget is divided by it, rounded down, and every amount stays in whole cents.
+  const capRaw = Math.floor((c.clientBudgetCents ?? c.budgetCents) / Math.max(1, c.clientSpendFactor))
+  const snap = sql`left join lateral (
+      select views, likes, comments, shares from view_snapshot_days v
+      where v.submission_id = s.id order by v.day desc limit 1
+    ) v on true`
+  const rawRows = sql`select s.id, s.submitted_at, ${raw} as raw from submissions s ${snap}
+    where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})`
+  const capped = sql`left join (
+      select x.id, x.raw, least(x.raw, greatest(0, ${capRaw}::bigint - (sum(x.raw) over (order by x.submitted_at, x.id) - x.raw))) as cents
+      from (${rawRows}) x
+    ) cap on cap.id = s.id`
+  const [rawTotal] = await db.execute<{ total: string }>(sql`select coalesce(sum(raw), 0) as total from (${rawRows}) x`)
+  const budgetReached = Number(rawTotal?.total ?? 0) > capRaw
+  const paidCols = sql`coalesce(cap.cents, 0)::bigint as earned_cents,
+      least(${outsideRaw}, coalesce(cap.cents, 0))::bigint as outside_paid_cents,
+      (coalesce(cap.raw, 0) > coalesce(cap.cents, 0)) as budget_reached`
   // Each post with its latest figures (the newest day row).
   const latest = sql`
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, ${paidCols}, s.creator_id,
@@ -154,10 +175,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     from submissions s
     left join linked_accounts a on a.id = s.linked_account_id
     left join users u on u.id = s.creator_id
-    left join lateral (
-      select views, likes, comments, shares from view_snapshot_days v
-      where v.submission_id = s.id order by v.day desc limit 1
-    ) v on true`
+    ${snap}
+    ${capped}`
 
   type ClipRow = {
     id: string
@@ -174,6 +193,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     state: string
     earned_cents: string
     outside_paid_cents: string
+    budget_reached: boolean
     handle: string | null
     username: string | null
     stand_in: string | null
@@ -199,6 +219,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     comments: n(r.comments),
     shares: n(r.shares),
     payoutCents: n(r.earned_cents),
+    budgetReached: !!r.budget_reached,
     payout:
       r.state === 'paid_out' || n(r.outside_paid_cents) > 0
         ? 'paid'
@@ -253,7 +274,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       // the days each post gained its views instead (owner request, 2026-10-14).
       db.execute<{ day: string; spend: string; clips: string }>(sql`
       with moves as (${
-        flatFee
+        // Spend by day follows the posts when it is not the ledger's own: a per-post fee, or a budget cap.
+        flatFee || budgetReached
           ? sql`
         select (l.submitted_at at time zone 'UTC')::date as day, sum(l.earned_cents)::bigint as spend
         from (${latest} where ${inRange} and s.state in (${list(APPROVED)})) l group by 1`
