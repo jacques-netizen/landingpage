@@ -74,6 +74,10 @@ export type CampaignMoney = {
   capPerPostCents: number | null
   capPerCreatorCents: number | null
   minViewsToEarn: number
+  /** The budget shown to the client, when it differs from the campaign budget (null: the campaign budget). */
+  clientBudgetCents: number | null
+  /** The client sees spend at this multiple of what clippers earn (1 on most campaigns). */
+  clientSpendFactor: number
 }
 
 export type SubmissionMoney = {
@@ -126,6 +130,8 @@ export interface MoneyTx {
   submission(id: string, lock: boolean): Promise<SubmissionMoney | null>
   setSubmission(id: string, patch: { earnedCents?: number; state?: string }): Promise<void>
   creatorEarnedInCampaign(creatorId: string, campaignId: string, excludeSubmissionId: string): Promise<number>
+  /** What every post in the campaign has earned, in total. */
+  campaignEarned(campaignId: string): Promise<number>
   hasOpenFlagOrAppeal(submissionId: string): Promise<boolean>
 
   /** Lock the creator (serialises withdrawal requests) and read what withdrawals need. */

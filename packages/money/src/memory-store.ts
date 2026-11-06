@@ -122,6 +122,11 @@ export function createMemoryStore() {
           .filter((x) => x.creatorId === creatorId && x.campaignId === campaignId && x.id !== exclude)
           .reduce((n, x) => n + x.earnedCents, 0)
       },
+      async campaignEarned(campaignId) {
+        return Object.values(s.submissions)
+          .filter((x) => x.campaignId === campaignId)
+          .reduce((n, x) => n + x.earnedCents, 0)
+      },
       async hasOpenFlagOrAppeal(id) {
         return !!s.openHolds[id]
       },
@@ -188,9 +193,12 @@ export function createMemoryStore() {
         state.clients[id] = { ...c }
         return id
       },
-      campaign: (c: Omit<CampaignMoney, 'id'>) => {
+      campaign: (
+        c: Omit<CampaignMoney, 'id' | 'clientBudgetCents' | 'clientSpendFactor'> &
+          Partial<Pick<CampaignMoney, 'clientBudgetCents' | 'clientSpendFactor'>>,
+      ) => {
         const id = randomUUID()
-        state.campaigns[id] = { ...c, id }
+        state.campaigns[id] = { clientBudgetCents: null, clientSpendFactor: 1, ...c, id }
         return id
       },
       creator: (c: { payoutStatus: string; userStatus?: string }) => {

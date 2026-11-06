@@ -92,6 +92,8 @@ function pgTx(tx: Tx): MoneyTx {
         capPerPostCents: c.capPerPostCents,
         capPerCreatorCents: c.capPerCreatorCents,
         minViewsToEarn: c.minViewsToEarn,
+        clientBudgetCents: c.clientBudgetCents,
+        clientSpendFactor: c.clientSpendFactor,
       }
     },
 
@@ -136,6 +138,12 @@ function pgTx(tx: Tx): MoneyTx {
       const rows = await tx.execute<{ n: string }>(sql`
         select coalesce(sum(earned_cents), 0)::bigint as n from submissions
         where creator_id = ${creatorId} and campaign_id = ${campaignId} and id <> ${excludeSubmissionId}`)
+      return Number(rows[0]!.n)
+    },
+
+    async campaignEarned(campaignId) {
+      const rows = await tx.execute<{ n: string }>(sql`
+        select coalesce(sum(earned_cents), 0)::bigint as n from submissions where campaign_id = ${campaignId}`)
       return Number(rows[0]!.n)
     },
 

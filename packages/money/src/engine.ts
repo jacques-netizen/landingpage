@@ -204,6 +204,21 @@ export async function accrueEarnings(store: MoneyStore, i: { submissionId: strin
     const [pendingId] = await tx.lockAccounts([account.pending(s.creatorId)])
 
     const budgetBalance = await tx.balance(budgetId!)
+    // Clippers stop earning once the client's budget is used up (owner rule, 2026-11-06). A campaign that
+    // shows the client its own budget, or spend at a multiple of what clippers earn, lets clippers earn
+    // in total at most that budget divided by the factor, rounded down. Under the budget lock above, so
+    // parallel accruals cannot both take the last cents. Nothing already earned is taken back.
+    const clientCapped = c.clientBudgetCents !== null || c.clientSpendFactor > 1
+    const available = clientCapped
+      ? Math.min(
+          budgetBalance,
+          Math.max(
+            0,
+            Math.floor((c.clientBudgetCents ?? c.budgetCents) / Math.max(1, c.clientSpendFactor)) -
+              (await tx.campaignEarned(c.id)),
+          ),
+        )
+      : budgetBalance
     const r = postEarnings({
       countedViews: s.countedViews,
       rateCentsPer1000Locked: s.rateCentsPer1000Locked,
@@ -211,7 +226,7 @@ export async function accrueEarnings(store: MoneyStore, i: { submissionId: strin
       capPerPostCents: c.capPerPostCents,
       capPerCreatorCents: c.capPerCreatorCents,
       creatorEarnedElsewhereCents: await tx.creatorEarnedInCampaign(s.creatorId, c.id, s.id),
-      campaignBudgetBalanceCents: budgetBalance,
+      campaignBudgetBalanceCents: available,
       earnedCentsAlready: s.earnedCents,
     })
 
@@ -248,7 +263,7 @@ export async function accrueEarnings(store: MoneyStore, i: { submissionId: strin
     }
 
     // The campaign closes for new earnings once no further cent can be paid (section 5.3).
-    const after = budgetBalance - delta
+    const after = available - delta
     let campaignClosing = false
     if (c.status === 'live' && after < 1) {
       await tx.setCampaignStatus(c.id, 'closing')
