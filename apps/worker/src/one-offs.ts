@@ -1,5 +1,6 @@
 import { reopenCampaign } from '@mde/campaigns'
 import { and, desc, eq, ilike, inArray, isNull, sql, tables, writeAudit, type Db } from '@mde/db'
+import { accrueEarnings, createPgStore } from '@mde/money'
 import { approve } from '@mde/review'
 
 // One-time tasks the owner asked for that need the platform's own campaign and review code, run when the
@@ -106,6 +107,67 @@ async function billboardLiveAndApprove(db: Db, log: (e: Record<string, unknown>)
   log({ level: 'info', msg: 'billboard live and approve', title: c.title, reopened, approved, failed: failed.length })
 }
 
+/**
+ * Owner, 2026-11-06: "do the view check now" on Davido X Winnerman-Audio, so the new rule (clippers stop
+ * earning once the client's budget is used up) applies at once instead of at each post's next check.
+ * Earnings are recalculated from the views already read, so no data provider is called.
+ */
+async function davidoCapNow(db: Db, log: (e: Record<string, unknown>) => void) {
+  const mark = 'oneoff.davido_client_cap'
+  const [done] = await db
+    .select({ id: tables.auditLog.id })
+    .from(tables.auditLog)
+    .where(eq(tables.auditLog.action, mark))
+    .limit(1)
+  if (done) return
+  const found = await db
+    .select({ id: tables.campaigns.id, title: tables.campaigns.title, status: tables.campaigns.status })
+    .from(tables.campaigns)
+    .where(and(ilike(tables.campaigns.title, '%davido%winnerman%'), isNull(tables.campaigns.deletedAt)))
+  if (found.length !== 1) {
+    if (found.length) log({ level: 'warn', msg: 'davido cap: more than one campaign matches', n: found.length })
+    return
+  }
+  const c = found[0]!
+  const posts = await db
+    .select({ id: tables.submissions.id })
+    .from(tables.submissions)
+    .where(and(eq(tables.submissions.campaignId, c.id), inArray(tables.submissions.state, ['approved', 'earning'])))
+  const store = createPgStore(db)
+  let changed = 0
+  let closing = false
+  const failed: string[] = []
+  for (const s of posts) {
+    try {
+      const r = await accrueEarnings(store, { submissionId: s.id })
+      if (r.deltaCents !== 0) changed++
+      closing ||= r.campaignClosing
+    } catch (err) {
+      failed.push(`${s.id}: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+  const [after] = await db
+    .select({ status: tables.campaigns.status })
+    .from(tables.campaigns)
+    .where(eq(tables.campaigns.id, c.id))
+  await writeAudit(db, {
+    actorId: null,
+    action: mark,
+    entity: 'campaign',
+    entityId: c.id,
+    after: {
+      title: c.title,
+      statusBefore: c.status,
+      statusAfter: after?.status,
+      posts: posts.length,
+      changed,
+      closing,
+      failed,
+    },
+  })
+  log({ level: 'info', msg: 'davido cap applied', posts: posts.length, changed, status: after?.status })
+}
+
 export async function runOneOffs(
   db: Db,
   log: (e: Record<string, unknown>) => void = (e) => console.log(JSON.stringify(e)),
@@ -114,6 +176,7 @@ export async function runOneOffs(
     await billboardLiveAndApprove(db, log)
     // Owner, 2026-11-03: the campaign had ended again after being resumed on 2026-11-02; resume it once more.
     await billboardLiveAndApprove(db, log, `${MARK}.2`)
+    await davidoCapNow(db, log)
   } catch (err) {
     log({ level: 'error', msg: 'one-off failed', err: String(err) })
   }
