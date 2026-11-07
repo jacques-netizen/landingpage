@@ -197,66 +197,71 @@ read what they submit.
 
 ## Client onboarding form (`/onboarding`)
 
-The form a client fills in after signing and paying. Each client gets a private
-link, answers one question per screen (progress saves to the server), uploads
-footage and brand files, then books their onboarding call on Cal.com.
+The form a client fills in after paying. Each link is made for one offer
+(Clipping campaign, 1-on-1 coaching, Consulting) and only shows the shared
+questions plus that offer's questions, one per screen. Progress saves to the
+server; at the end the client books the onboarding call.
 
 | URL | Who | What |
 |-----|-----|------|
 | `onboarding.maisondelites.com/<token>` | The client | The form. No sign-in; the long random token is the key. Reopening it resumes where they stopped. |
-| `onboarding.maisondelites.com/admin` | You (password-gated) | Create links, track status (sent, opened, in progress, submitted), filter, read answers, download files, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
-| `/onboarding/api/...` | — | The form's API (same on every host). |
+| `onboarding.maisondelites.com/admin` | You (password-gated) | Create links (offer required), filter by offer and status, read answers, download files, copy as text, save as PDF, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
+| `/onboarding/api/...` | Code | The form's API (same on every host). |
+
+**Questions and client emails: `lib/questions.js`.** Every question (id,
+offer or shared, label, type, required, order, condition) and every client
+email template (welcome and confirmation, one per offer) lives in that one
+file. Edit wording, add or remove questions there; the form and the server
+checks are built from it. Never rename the id of a question that has
+answers: add a new one instead.
 
 **Connect the subdomain:** Worker → **Settings → Domains & Routes → Add →
-Custom Domain** → `onboarding.maisondelites.com`. Cloudflare creates the DNS
-record and certificate. On that host `/` redirects to `maisondelites.com`. The
-same pages also answer as `/onboarding/<token>` and `/onboarding/admin` on the
-Worker's other hosts (e.g. proposals.*), which is handy for testing.
+Custom Domain** → `onboarding.maisondelites.com`. On that host `/` redirects
+to `maisondelites.com`. The same pages also answer as `/onboarding/<token>`
+and `/onboarding/admin` on the Worker's other hosts.
 
-**Booking links and sender, from the admin page.** At the top of
-`/admin`, **Booking links and email sender** sets the two booking links
-(Cal.com or Calendly) and the email sender without touching the Worker. Values
-saved there win over the variables below. The panel also lists setup problems
-(no Resend key, Resend's test sender, an unverified sender domain, a missing
-booking link) so nothing fails silently.
+**Booking links and sender, from the admin page.** At the top of `/admin`,
+**Booking links and email sender** sets one booking link per offer and the
+email sender. Use Google Calendar booking pages (Google Calendar →
+Appointment schedule → Share): the page shows inside the form, and every call
+booked there gets a Google Meet link. Short `calendar.app.google` links are
+expanded when saved. An offer with no link tells the client we'll be in touch
+within 24 hours. The panel lists setup problems (no Resend key, Resend's test
+sender, an unverified sender domain, a missing booking link).
 
 **Variables** (Settings → Variables and Secrets):
 
 | Name | What |
 |------|------|
-| `CAL_ONBOARDING_URL` | Full Cal.com link for the standard onboarding call, e.g. `https://cal.com/maisondelites/onboarding` |
-| `CAL_PERSONAL_BRANDING_URL` | Full Cal.com link for the personal branding onboarding call |
 | `ONBOARDING_NOTIFY_EMAIL` | Inbox(es) for "Onboarding submitted" emails, comma-separated |
 | `ONBOARDING_DISCORD_WEBHOOK` | Discord webhook for team pings (skipped if unset) |
-| `ONBOARDING_FROM` | Optional sender, e.g. `Maison d'Élites <hello@maisondelites.com>` (falls back to `BRANDSHEET_FROM`) |
+| `ONBOARDING_FROM` | Optional sender, e.g. `Jacques at Maison d'Élites <jacques@maisondelites.com>` (the admin panel wins) |
+| `BOOKING_CLIPPING_URL`, `BOOKING_COACHING_URL`, `BOOKING_CONSULTING_URL` | Optional fallback booking links (the admin panel wins) |
 | `ONBOARDING_BASE_URL` | Optional. Base for links in emails and "Copy link". Defaults to `https://onboarding.maisondelites.com` |
 
-Email uses the existing `RESEND_API_KEY`. The client confirmation goes to the
-client and every report recipient, so the sending domain must be verified in
-Resend (until then Resend only delivers to your own account address).
+Email uses the existing `RESEND_API_KEY`. The sending domain must be verified
+in Resend (until then Resend only delivers to your own account address).
 
 **How it behaves**
-- The call type is set by admin when creating the link (Standard onboarding
-  call / Personal branding call) and can be changed on the client's page. It
-  picks the calendar after Submit. Name and email are prefilled.
 - Admin's first name and email prefill the form's name and email questions.
-- The goal options ("What would make this campaign a win") follow the answer
-  to "What is this campaign for?". "Book later" skips to the confirmation; the booking link is
-  also in the confirmation email.
-- On submit, the team email, Discord ping and client email go out once per link
-  (a reopened and resubmitted form does not send them again).
+- Conditional questions (the song-only Clipping questions) show and are
+  required only when "A song" is picked; answers to hidden questions are
+  dropped.
+- On submit: the client gets the offer's confirmation email with the booking
+  link, and the team gets an email (name, offer, link to the submission) and a
+  Discord ping. Once per link.
+- Records made before offers existed are Clipping. Ones not yet submitted move
+  to the new Clipping questions (name, business, email, WhatsApp, contact
+  method and off-limits carry over); submitted ones keep their original
+  answers and layout in admin.
 - Files go to the `MEDIA` R2 bucket under `onboarding/files/<token>/`, uploaded
   in 10 MB chunks. Video (MP4, MOV) up to 2 GB; images, PDF and ZIP up to
   50 MB, enforced on the server. Admin downloads use signed links that expire
   after 15 minutes. Records are in `onboarding/links/<token>.json`.
 - Public routes are rate-limited per IP (`ONBOARDING_LIMITER` in
   `wrangler.toml`, 300 requests a minute, using `CF-Connecting-IP`).
-- **Create campaign from this** (on a submitted form) opens
-  `campaigns.maisondelites.com/<slug>/admin?onboarding=<token>`. The editor
-  prefills the client name, campaign name and a new internal **Campaign brief**
-  card (main link, platforms, off limits, sound, hashtags, tags, call to action,
-  report recipients). Saving stores the campaign and links it back to the
-  onboarding record. The brief is never included in the public dashboard feed.
+- **Create campaign from this** (Clipping, once submitted) opens the campaign
+  editor prefilled from the answers.
 
 ## Notes
 - The code also works unchanged as a Cloudflare **Pages** project (via the
@@ -272,19 +277,18 @@ Resend (until then Resend only delivers to your own account address).
 
 ## Client email sequence (onboarding admin)
 
-The seven emails from the "Client Onboarding Sequence" doc run from each client's page in
-`onboarding.maisondelites.com/admin` (code: `lib/sequence.js`). Each email waits for the one before it,
-nothing goes live before payment, and an email never sends while a field it needs is empty.
+Clients pay before they get the onboarding link, so there are no invoice or
+payment emails. The emails run from each client's page in
+`onboarding.maisondelites.com/admin` (code: `lib/sequence.js`).
 
-| # | Email | How it goes out |
-|---|-------|-----------------|
-| 1 | Welcome | Sends by itself when the link is created with a first name and email. Failures show in the list with Resend's reason; Send retries it |
-| 2 | Invoice | Admin clicks Send (number, amount, due date, PDF attached) |
-| 3 | Form reminder | Sends by itself 24 hours after email 1 if the form is still empty |
-| 4 | Payment received | Admin clicks Send (call date, or the booking link goes in) |
-| 5 | Campaign live | Admin clicks Send (live report link). Starts the weekly clock |
-| 6 | Weekly check-in | Cron pings the team every 7 days; numbers prefill from the campaign dashboard; admin adds what's working and sends |
-| 7 | Campaign complete | Admin clicks Send (final numbers, what worked). Stops the weekly emails |
+| Email | Offers | How it goes out |
+|-------|--------|-----------------|
+| Welcome (form link) | All | Sends by itself when the link is created with a first name and email; template per offer in `lib/questions.js`. Failures show in the list with Resend's reason; Send retries it |
+| Form reminder | All | Sends by itself 24 hours after the welcome if the form isn't submitted |
+| Confirmation (booking link) | All | Sends on submit; template per offer in `lib/questions.js` |
+| Campaign live | Clipping | Admin clicks Send (live report link). Starts the weekly clock |
+| Weekly check-in | Clipping | Cron pings the team every 7 days; numbers prefill from the campaign dashboard |
+| Campaign complete | Clipping | Admin clicks Send. Stops the weekly emails |
 
 Every step shows the short version for WhatsApp or DMs (with an Open in WhatsApp button when the
 client picked WhatsApp). "Sent another way" moves the sequence on without emailing.

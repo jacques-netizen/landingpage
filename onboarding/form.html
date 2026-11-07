@@ -82,14 +82,15 @@
   .body{margin-top:30px; display:flex; flex-direction:column; gap:16px}
 
   label.mini{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; letter-spacing:.02em}
-  input[type=text], input[type=email], input[type=url], input[type=tel], input[type=date], textarea{
+  input[type=text], input[type=email], input[type=url], input[type=tel], input[type=date], textarea, select{
     width:100%; font-family:var(--sans); font-weight:300; font-size:16px; line-height:1.55;
     color:var(--text); background:var(--field-bg); border:1px solid var(--field-line); border-radius:8px; padding:13px 15px;
     transition:border-color .18s, box-shadow .18s; resize:vertical; -webkit-appearance:none; appearance:none}
   input[type=date]{min-height:50px}
   textarea{min-height:150px}
   input::placeholder, textarea::placeholder{color:color-mix(in srgb, var(--muted) 72%, transparent)}
-  input:focus, textarea:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent)}
+  select{min-height:50px; padding-right:40px; cursor:pointer; background-image:linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position:calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size:5px 5px; background-repeat:no-repeat}
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px color-mix(in srgb, var(--gold) 22%, transparent)}
   input:disabled{opacity:.45}
   .err{color:var(--danger); font-size:13px; margin-top:2px; min-height:0}
   .err:empty{display:none}
@@ -223,57 +224,34 @@
   var MB = 1024 * 1024;
   var TYPES = { png:50, jpg:50, jpeg:50, svg:50, webp:50, pdf:50, zip:50, mp4:2048, mov:2048 };
   var ACCEPT = '.png,.jpg,.jpeg,.svg,.webp,.pdf,.zip,.mp4,.mov';
+  var FILE_TYPES = ['file_or_link', 'text_or_file'];
 
-  var SECTIONS = ['About you', 'What we’re promoting', 'The content', 'Where it runs', 'Wrap-up'];
-  var L = {
-    contact: [['whatsapp','WhatsApp'],['instagram','Instagram DM'],['email','Email']],
-    promo: [['song','A song or album'],['product','A product'],['show','A show or podcast'],['person','A person or personal brand'],['other','Something else']],
-    wins: [['streams','More streams'],['listeners','More listeners or viewers'],['followers','More followers'],['sales','More sales'],['signups','More sign-ups'],['sales_signups','More sales or sign-ups'],['awareness','More people knowing the name'],['other','Something else']],
-    sources: [['youtube','YouTube channel'],['podcast','Podcast episodes'],['stream','Twitch or Kick streams'],['drive','A Google Drive or Dropbox folder'],['upload','I’ll upload files here']],
-    platforms: [['tiktok','TikTok'],['reels','Instagram Reels'],['shorts','YouTube Shorts'],['x','X']]
-  };
-  // Goal options for each answer to "What is this campaign for?" (same as lib/onboarding.js WINS_FOR).
-  var WINS_FOR = {
-    song: ['streams','followers','awareness','other'],
-    product: ['sales','signups','awareness','other'],
-    show: ['listeners','followers','awareness','other'],
-    person: ['followers','awareness','sales_signups','other'],
-    other: ['streams','listeners','followers','sales','signups','awareness','other']
-  };
-  function winOpts(){
-    var keys = WINS_FOR[A.q6] || WINS_FOR.other;
-    return keys.map(function(k){ return [k, label(L.wins, k)]; });
-  }
-  var SRC_FIELD = {
-    youtube: ['YouTube channel link', 'https://youtube.com/@yourchannel'],
-    podcast: ['Podcast link', 'https://open.spotify.com/show/…'],
-    stream: ['Twitch or Kick channel link', 'https://twitch.tv/yourchannel'],
-    drive: ['Google Drive or Dropbox folder link', 'https://drive.google.com/drive/folders/…']
-  };
-
+  // The questions come from the server (lib/questions.js), shared first, then
+  // the offer's own. Nothing about the questions is written in this page.
+  var Q = [];            // this link's questions, in order
+  var BY_ID = {};
   var A = {};            // answers, keyed by question id
   var FILES = [];        // uploaded files from the server [{id,qid,name,size}]
   var UP = [];           // uploads in progress [{qid,name,size,pct,failed,xhr}]
   var S = {};            // server state
-  var KNOWN = {};        // first name and email admin typed when creating the link
   var cur = 'welcome';   // current screen id
   var fromReview = false;
-  var saveFailed = false;
 
   // ---------- helpers ----------
   function $(s, r){ return (r || document).querySelector(s); }
   function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function el(tag, attrs, html){ var e = document.createElement(tag); if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]); if (html != null) e.innerHTML = html; return e; }
-  function label(list, v){ for (var i = 0; i < list.length; i++) if (list[i][0] === v) return list[i][1]; return v; }
   function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim()); }
   function isUrl(v){ return /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(String(v || '').trim()); }
   function isPhone(v){ return /^\+\d[\d\s().-]{6,}$/.test(String(v || '').trim()); }
+  function isNumber(v){ return /^\d+([.,]\d+)?$/.test(String(v || '').trim()); }
+  function empty(v){ return !String(v == null ? '' : v).trim(); }
   function fixUrl(v){ v = String(v || '').trim(); if (v && !/^https?:\/\//i.test(v) && /^[\w-]+(\.[\w-]+)+(\/|$)/.test(v)) v = 'https://' + v; return v; }
   function arr(v){ return Array.isArray(v) ? v : []; }
   function obj(v){ return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
   function size(n){ return n >= MB ? (n / MB).toFixed(n >= 100 * MB ? 0 : 1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
-  function clientEmail(){ return (A.q3 === 'email' ? A.q3b : A.q4) || ''; }
   function filesFor(q){ return FILES.filter(function(f){ return f.qid === q; }); }
+  function optLabel(q, v){ var o = (q.options || []).filter(function(x){ return x.value === v; })[0]; return o ? o.label : v; }
   function api(path, opts){
     return fetch(API + path, opts || {}).then(function(r){
       return r.json().catch(function(){ return {}; }).then(function(j){ j._status = r.status; return j; });
@@ -281,69 +259,47 @@
   }
   function post(path, body){ return api(path, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body) }); }
 
-  // ---------- screens ----------
-  // One question per screen. `show` hides conditional questions; `check`
-  // returns an error message (or '') and blocks Continue when required.
-  var SCREENS = [
-    { id:'q1', sec:0, req:true, q:'What name should this campaign run under?', help:'Company, artist or brand.', type:'text',
-      check:function(){ return String(A.q1 || '').trim() ? '' : 'Please add the campaign name'; } },
-    { id:'q2', sec:0, req:true, q:'What’s your name and role?', type:'namerole',
-      check:function(){ var v = obj(A.q2); return (String(v.name||'').trim() && String(v.role||'').trim()) ? '' : 'Please add your name and role'; } },
-    { id:'q3', sec:0, req:true, q:'What’s the best way to reach you day to day?', type:'single', opts:L.contact,
-      check:function(){ return A.q3 ? '' : 'Please pick one'; } },
-    { id:'q3b', sec:0, req:true, show:function(){ return !!A.q3; }, type:'contact',
-      check:function(){
-        var v = String(A.q3b || '').trim();
-        if (A.q3 === 'whatsapp') return isPhone(v) ? '' : 'Please add your number with country code, e.g. +44 7700 900123';
-        if (A.q3 === 'instagram') return v ? '' : 'Please add your Instagram handle';
-        return isEmail(v) ? '' : 'Please add a valid email address';
-      } },
-    { id:'q4', sec:0, req:true, show:function(){ return !!A.q3 && A.q3 !== 'email'; }, q:'What’s your email address?', help:'We’ll send your confirmation and booking details here.', type:'email',
-      check:function(){ return isEmail(A.q4) ? '' : 'Please add a valid email address'; } },
-    { id:'q5', sec:0, q:'Who else should get campaign updates?', help:'Add anyone on your team who should be kept in the loop. You can leave this empty.', type:'people',
-      check:function(){ var bad = arr(A.q5).some(function(p){ return (p.name || p.email) && !isEmail(p.email); }); return bad ? 'Please add a valid email for each person' : ''; } },
-    { id:'q6', sec:1, req:true, q:'What is this campaign for?', type:'single', opts:L.promo, other:'q6_other',
-      check:function(){ if (!A.q6) return 'Please pick one'; if (A.q6 === 'other' && !String(A.q6_other||'').trim()) return 'Please tell us what it is'; return ''; } },
-    { id:'q8', sec:1, req:true, q:'Paste the main link we’re sending people to', help:'Your product page, track, channel or profile.', type:'url', ph:'https://',
-      check:function(){ return isUrl(A.q8) ? '' : 'Please add a link starting with https://'; } },
-    { id:'q9', sec:1, q:'Is there a key date we should build toward?', type:'date',
-      check:function(){ var v = obj(A.q9); if (v.none) return ''; if (v.what && !v.date) return 'Please pick the date, or tick “No set date”'; return ''; } },
-    { id:'q10', sec:1, req:true, q:'What would make this campaign a win for you?', help:'Pick as many as you like.', type:'multi', opts:winOpts, other:'q10_other',
-      check:function(){ var v = arr(A.q10); if (!v.length) return 'Please pick at least one'; if (v.indexOf('other') >= 0 && !String(A.q10_other||'').trim()) return 'Please tell us what a win looks like'; return ''; } },
-    { id:'q11', sec:2, req:true, q:'Where should clippers get footage from?', help:'Pick every source that applies.', type:'multi', opts:L.sources,
-      check:function(){ return arr(A.q11).length ? '' : 'Please pick at least one source'; } },
-    { id:'q11b', sec:2, req:true, show:function(){ return arr(A.q11).length > 0; }, q:'Where can we find it?', help:'Add a link for each source you picked.', type:'sources',
-      check:function(){
-        var bad = arr(A.q11).filter(function(s){ return s !== 'upload' && !isUrl(obj(A.q11b)[s]); });
-        if (bad.length) return 'Please add a link starting with https:// for each source';
-        if (arr(A.q11).indexOf('upload') >= 0 && !filesFor('q11b').length) return 'Please upload at least one file';
-        return '';
-      } },
-    { id:'q12', sec:2, q:'Which moments, topics or videos should we clip the most?', type:'long', ph:'e.g. the live freestyle segments, anything about the new album…' },
-    { id:'q13', sec:2, q:'Is anything off limits?', help:'Topics, people, old content, language.', type:'long' },
-    { id:'q14', sec:2, q:'Does every post need to include something specific?', help:'Fill in only what applies.', type:'musts' },
-    { id:'q15', sec:2, q:'Upload any logos or brand guidelines', type:'files' },
-    { id:'q16', sec:3, req:true, q:'Which platforms should the campaign run on?', type:'multi', opts:L.platforms,
-      check:function(){ return arr(A.q16).length ? '' : 'Please pick at least one platform'; } },
-    { id:'q17', sec:3, q:'Which countries or audiences matter most?', type:'region' },
-    { id:'q18', sec:4, req:true, q:'Who should receive the live campaign report link?', type:'emails',
-      check:function(){ var v = arr(A.q18).filter(function(x){ return String(x).trim(); }); if (!v.length) return 'Please add at least one email'; return v.every(isEmail) ? '' : 'Please check the email addresses'; } },
-    { id:'q19', sec:4, q:'Anything else we should know before we launch?', type:'long' }
-  ];
-  var BY_ID = {}; SCREENS.forEach(function(s){ BY_ID[s.id] = s; });
-  function visible(){ return SCREENS.filter(function(s){ return !s.show || s.show(); }); }
+  function shown(q){ return !q.showIf || A[q.showIf.id] === q.showIf.equals; }
+  function visible(){ return Q.filter(shown); }
 
-  // Drop answers whose triggering question no longer shows them.
+  // Same checks as lib/forms.js problemWith, so the message shows by the field.
+  function check(q){
+    var v = A[q.id], o = obj(v), files = filesFor(q.id).length;
+    switch (q.type) {
+      case 'email': if (empty(v)) return q.required ? 'Please add your email address' : ''; return isEmail(v) ? '' : 'Please add a valid email address';
+      case 'phone': if (empty(v)) return q.required ? 'Please add your number with the country code, for example +44 7700 900123' : ''; return isPhone(v) ? '' : 'Please include the country code, for example +44 7700 900123';
+      case 'url': if (empty(v)) return q.required ? 'Please add a link starting with https://' : ''; return isUrl(v) ? '' : 'Please add a link starting with https://';
+      case 'number': if (empty(v)) return q.required ? 'Please add a number' : ''; return isNumber(v) ? '' : 'Please add a number, for example 10';
+      case 'country': return q.required && empty(v) ? 'Please pick your country' : '';
+      case 'timezone': return q.required && empty(v) ? 'Please pick your time zone' : '';
+      case 'single': return q.required && empty(v) ? 'Please pick one' : '';
+      case 'multi': return q.required && !arr(v).length ? 'Please pick at least one' : '';
+      case 'dates': return arr(v).some(function(d){ return obj(d).what && !obj(d).date; }) ? 'Please add the date for each item, or remove it' : (q.required && !arr(v).length ? 'Please add at least one date' : '');
+      case 'links':
+        var filled = (q.fields || []).filter(function(f){ return !empty(o[f.key]); });
+        if (filled.some(function(f){ return !isUrl(o[f.key]); })) return 'Please use full links starting with https://';
+        if ((q.atLeastOne || q.required) && !filled.length) return 'Please add at least one link';
+        return '';
+      case 'numbers':
+        var fs = q.fields || [];
+        if (fs.some(function(f){ return !empty(o[f.key]) && !isNumber(o[f.key]); })) return 'Please use numbers only, for example 40';
+        if (q.required && fs.some(function(f){ return empty(o[f.key]); })) return 'Please add all ' + fs.length + ' numbers';
+        return '';
+      case 'file_or_link':
+        if (!empty(o.link) && !isUrl(o.link)) return 'Please add a link starting with https://';
+        return q.required && empty(o.link) && !files ? 'Please upload the file or paste a link' : '';
+      case 'text_or_file': return q.required && empty(o.text) && !files ? 'Please type it in or upload a file' : '';
+      case 'text_and_link':
+        if (!empty(o.link) && !isUrl(o.link)) return 'Please add a link starting with https://';
+        return q.required && empty(o.text) && empty(o.link) ? 'Please tell us how to get access' : '';
+      default: return q.required && empty(v) ? 'Please fill this in' : '';
+    }
+  }
+
+  // Drop answers to questions that are no longer shown, and empty rows.
   function prune(){
-    if (A.q3 === 'email') delete A.q4;
-    if (A.q6 !== 'other') delete A.q6_other;
-    if (A.q10) { var okWins = WINS_FOR[A.q6] || WINS_FOR.other; A.q10 = arr(A.q10).filter(function(k){ return okWins.indexOf(k) >= 0; }); }
-    if (arr(A.q10).indexOf('other') < 0) delete A.q10_other;
-    var b = obj(A.q11b), nb = {};
-    arr(A.q11).forEach(function(s){ if (s !== 'upload' && b[s]) nb[s] = b[s]; });
-    A.q11b = nb;
-    if (A.q5) A.q5 = arr(A.q5).filter(function(p){ return p.name || p.email; });
-    if (A.q18) A.q18 = arr(A.q18).filter(function(x){ return String(x).trim(); });
+    Q.forEach(function(q){ if (!shown(q)) delete A[q.id]; });
+    Q.forEach(function(q){ if (q.type === 'dates' && A[q.id]) A[q.id] = arr(A[q.id]).filter(function(d){ return d.date || d.what; }); });
   }
 
   // ---------- rendering ----------
@@ -354,7 +310,7 @@
     var pct = cur === 'welcome' ? 0 : cur === 'review' ? 100 : Math.round((i / vis.length) * 100);
     $('#pfill').style.width = pct + '%';
     // The section name, not "X / Y": the total changes as follow-up questions appear.
-    $('#stepcount').textContent = cur === 'review' ? 'Review' : i >= 0 ? SECTIONS[vis[i].sec] : '';
+    $('#stepcount').textContent = cur === 'review' ? 'Review' : i >= 0 ? vis[i].section : '';
   }
   function nav(show){
     $('#navbar').hidden = !show;
@@ -378,29 +334,21 @@
     nav(false);
     stage.innerHTML = '<div class="hero"><div class="eyebrow"><span class="bar"></span>Onboarding<span class="bar"></span></div>'
       + '<h1>Welcome to <em>Maison d’Élites</em></h1>'
-      + '<p>This takes about 3 minutes. Your answers help us set up your campaign correctly the first time. Your progress saves automatically, so you can come back to this link anytime. At the end, you’ll book your onboarding call.</p>'
+      + '<p>This takes a few minutes. Your answers help us set everything up correctly the first time. Your progress saves automatically, so you can close this page and come back to the same link anytime. At the end, you’ll book your onboarding call.</p>'
       + '<button class="btn btn-primary" id="startBtn" type="button">Start</button></div>';
     $('#startBtn').onclick = function(){ go(visible()[0].id); };
     $('#startBtn').focus();
   }
 
-  function head(s){
-    var title = s.q, help = s.help || '';
-    if (s.type === 'contact') {
-      title = A.q3 === 'whatsapp' ? 'Your WhatsApp number' : A.q3 === 'instagram' ? 'Your Instagram handle' : 'Your email address';
-      help = A.q3 === 'whatsapp' ? 'Include the country code, e.g. +44 7700 900123.' : '';
-    }
-    return '<div class="eyebrow">' + esc(SECTIONS[s.sec]) + '<span class="bar"></span></div>'
-      + '<h1 class="q">' + esc(title) + (s.req ? '' : '<span class="opt-tag">Optional</span>') + '</h1>'
-      + (help ? '<p class="help">' + esc(help) + '</p>' : '');
-  }
-
-  function renderQuestion(s){
+  function renderQuestion(q){
     nav(true);
-    stage.innerHTML = head(s) + '<div class="body" id="body"></div><div class="err" id="err" role="alert"></div>';
+    stage.innerHTML = '<div class="eyebrow">' + esc(q.section) + '<span class="bar"></span></div>'
+      + '<h1 class="q">' + esc(q.label) + (q.required ? '' : '<span class="opt-tag">Optional</span>') + '</h1>'
+      + (q.help ? '<p class="help">' + esc(q.help) + '</p>' : '')
+      + '<div class="body" id="body"></div><div class="err" id="err" role="alert"></div>';
     var body = $('#body');
-    (BUILD[s.type] || BUILD.text)(s, body);
-    var first = body.querySelector('input:not([type=checkbox]):not([type=file]):not(:disabled), textarea, .opt');
+    (BUILD[q.type] || BUILD.text)(q, body);
+    var first = body.querySelector('input:not([type=checkbox]):not([type=file]):not(:disabled), textarea, select, .opt');
     if (first && window.matchMedia('(min-width: 700px)').matches) first.focus();
   }
 
@@ -411,60 +359,46 @@
     i.addEventListener('input', function(){ onInput(i.value); clearErr(); });
     return i;
   }
+  function urlInput(value, ph, onInput){
+    var i = input('url', value, ph || 'https://', onInput, { inputmode:'url', autocapitalize:'off' });
+    i.addEventListener('blur', function(){ i.value = fixUrl(i.value); onInput(i.value); });
+    return i;
+  }
+  function textarea(value, onInput, ph){
+    var t = el('textarea'); t.value = value || ''; if (ph) t.placeholder = ph;
+    t.addEventListener('input', function(){ onInput(t.value); clearErr(); });
+    return t;
+  }
+  function select(options, value, ph, onChange){
+    var s = el('select');
+    s.appendChild(el('option', { value:'' }, esc(ph)));
+    options.forEach(function(o){ var op = el('option', { value: o }, esc(o.replace(/_/g, ' '))); if (o === value) op.selected = true; s.appendChild(op); });
+    s.addEventListener('change', function(){ onChange(s.value); clearErr(); });
+    return s;
+  }
   function field(lbl, node){ var w = el('div'); if (lbl) w.appendChild(el('label', { 'class':'mini' }, esc(lbl))); w.appendChild(node); return w; }
   function clearErr(){ var e = $('#err'); if (e) e.textContent = ''; }
 
-  function choice(s, body, multi){
+  function choice(q, body, multi){
     var wrap = el('div', { 'class':'opts', role: multi ? 'group' : 'radiogroup' });
-    var otherBox = null;
-    (typeof s.opts === 'function' ? s.opts() : s.opts).forEach(function(o){
-      var b = el('button', { type:'button', 'class':'opt' + (multi ? ' multi' : ''), 'aria-pressed':'false' }, '<span class="box">✓</span><span>' + esc(o[1]) + '</span>');
-      function sync(){
-        var on = multi ? arr(A[s.id]).indexOf(o[0]) >= 0 : A[s.id] === o[0];
-        b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      }
+    (q.options || []).forEach(function(o){
+      var b = el('button', { type:'button', 'class':'opt' + (multi ? ' multi' : ''), 'aria-pressed':'false' }, '<span class="box">✓</span><span>' + esc(o.label) + '</span>');
+      b._sync = function(){ b.setAttribute('aria-pressed', (multi ? arr(A[q.id]).indexOf(o.value) >= 0 : A[q.id] === o.value) ? 'true' : 'false'); };
       b.onclick = function(){
         if (multi) {
-          var v = arr(A[s.id]).slice(), i = v.indexOf(o[0]);
-          if (i >= 0) v.splice(i, 1); else v.push(o[0]);
-          A[s.id] = v;
-        } else {
-          if (s.id === 'q3' && A.q3 !== o[0]) A.q3b = '';
-          A[s.id] = o[0];
-        }
-        Array.prototype.forEach.call(wrap.children, function(c){ if (c._sync) c._sync(); });
-        if (otherBox) otherBox.hidden = !otherOn();
+          var v = arr(A[q.id]).slice(), i = v.indexOf(o.value);
+          if (i >= 0) v.splice(i, 1); else v.push(o.value);
+          // "None yet" clears the others, and picking another clears "None yet".
+          if (q.none) v = o.value === q.none && i < 0 ? [q.none] : v.filter(function(x){ return x !== q.none || o.value === q.none; });
+          A[q.id] = v;
+        } else A[q.id] = o.value;
+        Array.prototype.forEach.call(wrap.children, function(c){ c._sync(); });
         clearErr();
       };
-      b._sync = sync; sync();
+      b._sync();
       wrap.appendChild(b);
     });
     body.appendChild(wrap);
-    function otherOn(){ return multi ? arr(A[s.id]).indexOf('other') >= 0 : A[s.id] === 'other'; }
-    if (s.other) {
-      otherBox = field('Tell us more', input('text', A[s.other], '', function(v){ A[s.other] = v; }));
-      otherBox.hidden = !otherOn();
-      body.appendChild(otherBox);
-    }
-  }
-
-  function rows(body, list, make, addLabel, blank){
-    var box = el('div', { 'class':'body', style:'margin-top:0' });
-    function draw(){
-      box.innerHTML = '';
-      list().forEach(function(item, i){
-        var r = make(item, i);
-        var x = el('button', { type:'button', 'class':'iconbtn', 'aria-label':'Remove' }, '×');
-        x.onclick = function(){ var l = list(); l.splice(i, 1); draw(); };
-        r.appendChild(x);
-        box.appendChild(r);
-      });
-      var add = el('button', { type:'button', 'class':'addbtn' }, esc(addLabel));
-      add.onclick = function(){ list().push(blank()); draw(); var rs = box.querySelectorAll('.row'); if (rs.length) rs[rs.length - 1].querySelector('input').focus(); };
-      box.appendChild(add);
-    }
-    draw();
-    body.appendChild(box);
   }
 
   function uploader(qid, body, hint){
@@ -541,7 +475,7 @@
         return new Promise(function(r){ setTimeout(r, 1500 * (tries + 1)); }).then(function(){ return part(i, tries + 1); });
       });
     }
-    api('/upload?action=create&q=' + qid + '&name=' + encodeURIComponent(file.name) + '&size=' + file.size, { method:'POST' })
+    api('/upload?action=create&q=' + encodeURIComponent(qid) + '&name=' + encodeURIComponent(file.name) + '&size=' + file.size, { method:'POST' })
       .then(function(j){
         if (!j.uploadId) throw new Error(j.error || 'Upload failed');
         key = j.key; uploadId = j.uploadId;
@@ -564,146 +498,111 @@
       });
   }
 
+  var UPLOAD_HINT = 'Video (MP4, MOV) up to 2 GB · images, PDF or ZIP up to 50 MB';
+  function timezones(){
+    try { if (Intl.supportedValuesOf) return Intl.supportedValuesOf('timeZone'); } catch (e) {}
+    return [];
+  }
+  function guessZone(){ try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } }
+
   var BUILD = {
-    text: function(s, body){ body.appendChild(input('text', A[s.id], s.ph, function(v){ A[s.id] = v; })); },
-    email: function(s, body){ if (!A[s.id] && KNOWN.email) A[s.id] = KNOWN.email; body.appendChild(input('email', A[s.id], 'you@company.com', function(v){ A[s.id] = v.trim(); }, { inputmode:'email', autocomplete:'email' })); },
-    url: function(s, body){
-      var i = input('url', A[s.id], s.ph, function(v){ A[s.id] = v.trim(); }, { inputmode:'url' });
-      i.addEventListener('blur', function(){ i.value = fixUrl(i.value); A[s.id] = i.value; });
-      body.appendChild(i);
+    text: function(q, body){ body.appendChild(input('text', A[q.id], q.placeholder, function(v){ A[q.id] = v; })); },
+    email: function(q, body){ body.appendChild(input('email', A[q.id], q.placeholder || 'you@company.com', function(v){ A[q.id] = v.trim(); }, { inputmode:'email', autocomplete:'email', autocapitalize:'off' })); },
+    phone: function(q, body){ body.appendChild(input('tel', A[q.id], q.placeholder || '+44 7700 900123', function(v){ A[q.id] = v; }, { inputmode:'tel', autocomplete:'tel' })); },
+    url: function(q, body){ body.appendChild(urlInput(A[q.id], q.placeholder, function(v){ A[q.id] = v.trim(); })); },
+    number: function(q, body){ body.appendChild(input('text', A[q.id], q.placeholder || 'For example 10', function(v){ A[q.id] = v.trim(); }, { inputmode:'decimal' })); },
+    long: function(q, body){ body.appendChild(textarea(A[q.id], function(v){ A[q.id] = v; }, q.placeholder)); },
+    country: function(q, body){ body.appendChild(select(arr(S.form && S.form.countries), A[q.id], 'Choose your country', function(v){ A[q.id] = v; })); },
+    timezone: function(q, body){
+      var zones = timezones();
+      if (!A[q.id] && guessZone()) A[q.id] = guessZone();
+      if (!zones.length) { body.appendChild(input('text', A[q.id], 'For example Europe/London', function(v){ A[q.id] = v.trim(); })); return; }
+      if (A[q.id] && zones.indexOf(A[q.id]) < 0) zones = [A[q.id]].concat(zones);
+      body.appendChild(select(zones, A[q.id], 'Choose your time zone', function(v){ A[q.id] = v; }));
     },
-    long: function(s, body){
-      var t = el('textarea'); t.value = A[s.id] || ''; if (s.ph) t.placeholder = s.ph;
-      t.addEventListener('input', function(){ A[s.id] = t.value; clearErr(); });
-      body.appendChild(t);
-    },
-    namerole: function(s, body){
-      var v = A.q2 = obj(A.q2);
-      var r = el('div', { 'class':'row stack' });
-      r.appendChild(field('Name', input('text', v.name, 'Your full name', function(x){ v.name = x; }, { autocomplete:'name' })));
-      r.appendChild(field('Role', input('text', v.role, 'e.g. Founder, Manager', function(x){ v.role = x; }, { autocomplete:'organization-title' })));
-      body.appendChild(r);
-    },
-    single: function(s, body){ choice(s, body, false); },
-    multi: function(s, body){ choice(s, body, true); },
-    contact: function(s, body){
-      if (A.q3 === 'whatsapp') body.appendChild(input('tel', A.q3b, '+44 7700 900123', function(v){ A.q3b = v; }, { inputmode:'tel', autocomplete:'tel' }));
-      else if (A.q3 === 'instagram') body.appendChild(input('text', A.q3b, '@yourhandle', function(v){ A.q3b = v.trim(); }, { autocapitalize:'off' }));
-      else {
-        if (!A.q3b && KNOWN.email) A.q3b = KNOWN.email;
-        body.appendChild(input('email', A.q3b, 'you@company.com', function(v){ A.q3b = v.trim(); }, { inputmode:'email', autocomplete:'email' }));
-      }
-    },
-    people: function(s, body){
-      A.q5 = arr(A.q5);
-      if (!A.q5.length) A.q5.push({ name:'', email:'' });
-      rows(body, function(){ return A.q5; }, function(p){
-        var r = el('div', { 'class':'row' });
-        r.appendChild(input('text', p.name, 'Name', function(v){ p.name = v; }));
-        r.appendChild(input('email', p.email, 'Email', function(v){ p.email = v.trim(); }, { inputmode:'email' }));
-        return r;
-      }, '+ Add another', function(){ return { name:'', email:'' }; });
-    },
-    date: function(s, body){
-      var v = A.q9 = obj(A.q9);
-      var d = input('date', v.date, '', function(x){ v.date = x; });
-      var w = input('text', v.what, 'e.g. Album release, product launch', function(x){ v.what = x; });
-      var c = el('label', { 'class':'check' }); var cb = el('input', { type:'checkbox' }); cb.checked = !!v.none; c.appendChild(cb); c.appendChild(document.createTextNode('No set date'));
-      function sync(){ d.disabled = w.disabled = cb.checked; }
-      cb.onchange = function(){ v.none = cb.checked; if (cb.checked) { v.date = ''; v.what = ''; d.value = ''; w.value = ''; } sync(); clearErr(); };
-      body.appendChild(field('Date', d)); body.appendChild(field('What’s happening on that date?', w)); body.appendChild(c);
-      sync();
-    },
-    sources: function(s, body){
-      var b = A.q11b = obj(A.q11b);
-      arr(A.q11).forEach(function(src){
-        var card = el('div', { 'class':'card' });
-        if (src === 'upload') {
-          card.appendChild(el('div', { 'class':'src-h' }, 'Upload files'));
-          uploader('q11b', card, 'Video (MP4, MOV) up to 2 GB · images, PDF or ZIP up to 50 MB');
-        } else {
-          card.appendChild(el('div', { 'class':'src-h' }, esc(SRC_FIELD[src][0])));
-          var i = input('url', b[src], SRC_FIELD[src][1], function(v){ b[src] = v.trim(); }, { inputmode:'url' });
-          i.addEventListener('blur', function(){ i.value = fixUrl(i.value); b[src] = i.value; });
-          card.appendChild(i);
-        }
-        body.appendChild(card);
-      });
-    },
-    musts: function(s, body){
-      var v = A.q14 = obj(A.q14);
-      [['sound','Sound or song to use',''],['hashtags','Hashtags','#example #another'],['tags','Accounts to tag','@account'],['cta','Caption or call to action','e.g. Stream now, link in bio']].forEach(function(f){
-        body.appendChild(field(f[1], input('text', v[f[0]], f[2], function(x){ v[f[0]] = x; })));
-      });
-    },
-    files: function(s, body){ uploader('q15', body, 'Images (PNG, JPG, SVG, WEBP), PDF or ZIP up to 50 MB'); },
-    region: function(s, body){
-      var v = A.q17 = obj(A.q17);
-      var t = input('text', v.text, 'e.g. UK and US, Gen Z, Spanish speakers', function(x){ v.text = x; });
-      var c = el('label', { 'class':'check' }); var cb = el('input', { type:'checkbox' }); cb.checked = !!v.worldwide; c.appendChild(cb); c.appendChild(document.createTextNode('Worldwide, no preference'));
-      cb.onchange = function(){ v.worldwide = cb.checked; if (cb.checked) { v.text = ''; t.value = ''; } t.disabled = cb.checked; };
-      t.disabled = cb.checked;
-      body.appendChild(t); body.appendChild(c);
-    },
-    emails: function(s, body){
-      A.q18 = arr(A.q18);
-      if (!A.q18.length) A.q18.push(clientEmail());
+    single: function(q, body){ choice(q, body, false); },
+    multi: function(q, body){ choice(q, body, true); },
+    dates: function(q, body){
+      A[q.id] = arr(A[q.id]);
+      if (!A[q.id].length) A[q.id].push({ date:'', what:'' });
       var box = el('div', { 'class':'body', style:'margin-top:0' });
       function draw(){
         box.innerHTML = '';
-        A.q18.forEach(function(v, i){
-          var r = el('div', { 'class':'row' });
-          r.appendChild(input('email', v, 'name@company.com', function(x){ A.q18[i] = x.trim(); }, { inputmode:'email' }));
-          var x = el('button', { type:'button', 'class':'iconbtn', 'aria-label':'Remove' }, '×');
-          x.onclick = function(){ A.q18.splice(i, 1); draw(); };
+        A[q.id].forEach(function(d, i){
+          var r = el('div', { 'class':'row stack' });
+          r.appendChild(field('Date', input('date', d.date, '', function(v){ d.date = v; })));
+          r.appendChild(field('What’s happening', input('text', d.what, 'For example single release', function(v){ d.what = v; })));
+          var x = el('button', { type:'button', 'class':'iconbtn', 'aria-label':'Remove', style:'align-self:flex-end' }, '×');
+          x.onclick = function(){ A[q.id].splice(i, 1); draw(); };
           r.appendChild(x); box.appendChild(r);
         });
-        var add = el('button', { type:'button', 'class':'addbtn' }, '+ Add another');
-        add.onclick = function(){ A.q18.push(''); draw(); var ins = box.querySelectorAll('input'); ins[ins.length - 1].focus(); };
+        var add = el('button', { type:'button', 'class':'addbtn' }, '+ Add a date');
+        add.onclick = function(){ A[q.id].push({ date:'', what:'' }); draw(); };
         box.appendChild(add);
       }
       draw();
       body.appendChild(box);
+    },
+    links: function(q, body){
+      var v = A[q.id] = obj(A[q.id]);
+      (q.fields || []).forEach(function(f){ body.appendChild(field(f.label, urlInput(v[f.key], f.placeholder, function(x){ v[f.key] = x.trim(); }))); });
+    },
+    numbers: function(q, body){
+      var v = A[q.id] = obj(A[q.id]);
+      var r = el('div', { 'class':'row stack' });
+      (q.fields || []).forEach(function(f){ r.appendChild(field(f.label, input('text', v[f.key], 'For example 40', function(x){ v[f.key] = x.trim(); }, { inputmode:'decimal' }))); });
+      body.appendChild(r);
+    },
+    file_or_link: function(q, body){
+      var v = A[q.id] = obj(A[q.id]);
+      uploader(q.id, body, UPLOAD_HINT);
+      body.appendChild(field('Or paste a link to it', urlInput(v.link, 'https://', function(x){ v.link = x.trim(); })));
+    },
+    text_or_file: function(q, body){
+      var v = A[q.id] = obj(A[q.id]);
+      body.appendChild(textarea(v.text, function(x){ v.text = x; }));
+      uploader(q.id, body, UPLOAD_HINT);
+    },
+    text_and_link: function(q, body){
+      var v = A[q.id] = obj(A[q.id]);
+      body.appendChild(textarea(v.text, function(x){ v.text = x; }));
+      body.appendChild(field('Link, if there is one', urlInput(v.link, 'https://', function(x){ v.link = x.trim(); })));
     }
   };
 
   // ---------- review ----------
-  function display(id){
-    var v = A[id];
-    switch (id) {
-      case 'q2': v = obj(v); return [v.name, v.role].filter(Boolean).join(', ');
-      case 'q3': return label(L.contact, v);
-      case 'q5': return arr(v).map(function(p){ return [p.name, p.email].filter(Boolean).join(' · '); }).join('\n');
-      case 'q6': return v === 'other' ? 'Something else: ' + (A.q6_other || '') : label(L.promo, v);
-      case 'q9': v = obj(v); return v.none ? 'No set date' : [v.date, v.what].filter(Boolean).join(' · ');
-      case 'q10': return arr(v).map(function(x){ return x === 'other' ? 'Something else: ' + (A.q10_other || '') : label(L.wins, x); }).join('\n');
-      case 'q11': return arr(v).map(function(x){ return label(L.sources, x); }).join('\n');
-      case 'q11b':
-        var lines = arr(A.q11).filter(function(s){ return s !== 'upload'; }).map(function(s){ return SRC_FIELD[s][0] + ': ' + (obj(v)[s] || ''); });
-        filesFor('q11b').forEach(function(f){ lines.push('File: ' + f.name); });
-        return lines.join('\n');
-      case 'q14': v = obj(v); return [['sound','Sound'],['hashtags','Hashtags'],['tags','Tag'],['cta','Call to action']].filter(function(k){ return v[k[0]]; }).map(function(k){ return k[1] + ': ' + v[k[0]]; }).join('\n');
-      case 'q15': return filesFor('q15').map(function(f){ return f.name; }).join('\n');
-      case 'q16': return arr(v).map(function(x){ return label(L.platforms, x); }).join(', ');
-      case 'q17': v = obj(v); return v.worldwide ? 'Worldwide, no preference' : (v.text || '');
-      case 'q18': return arr(v).join('\n');
+  function display(q){
+    var v = A[q.id], o = obj(v);
+    var fileLines = filesFor(q.id).map(function(f){ return 'File: ' + f.name; });
+    switch (q.type) {
+      case 'single': return v ? optLabel(q, v) : '';
+      case 'multi': return arr(v).map(function(x){ return optLabel(q, x); }).join(', ');
+      case 'dates': return arr(v).filter(function(d){ return d.date || d.what; }).map(function(d){ return [d.date, d.what].filter(Boolean).join(': '); }).join('\n');
+      case 'links': case 'numbers': return (q.fields || []).filter(function(f){ return o[f.key]; }).map(function(f){ return f.label + ': ' + o[f.key]; }).join('\n');
+      case 'file_or_link': return [o.link].filter(Boolean).concat(fileLines).join('\n');
+      case 'text_or_file': return [o.text].filter(Boolean).concat(fileLines).join('\n');
+      case 'text_and_link': return [o.text, o.link].filter(Boolean).join('\n');
+      case 'timezone': return v ? String(v).replace(/_/g, ' ') : '';
       default: return v == null ? '' : String(v);
     }
   }
-  function qTitle(s){ return s.type === 'contact' ? (A.q3 === 'whatsapp' ? 'WhatsApp number' : A.q3 === 'instagram' ? 'Instagram handle' : 'Email address') : s.q; }
-  function reviewHtml(editable){
-    var vis = visible(), html = '';
-    SECTIONS.forEach(function(name, si){
-      var items = vis.filter(function(s){ return s.sec === si; });
-      html += '<div class="rev-sec"><div class="rev-head"><h3>' + esc(name) + '</h3>'
-        + (editable ? '<button class="rev-edit" type="button" data-go="' + items[0].id + '">Edit</button>' : '') + '</div>';
-      items.forEach(function(s){
-        var v = display(s.id);
-        html += '<div class="rev-item"><div class="rl">' + esc(qTitle(s)) + '</div><div class="rv' + (v ? '' : ' empty') + '">' + (v ? esc(v) : 'Not answered') + '</div></div>';
-      });
-      html += '</div>';
+  function sections(){
+    var out = [], seen = {};
+    visible().forEach(function(q){
+      if (!seen[q.section]) { seen[q.section] = { name: q.section, items: [] }; out.push(seen[q.section]); }
+      seen[q.section].items.push(q);
     });
-    return html;
+    return out;
+  }
+  function reviewHtml(editable){
+    return sections().map(function(sec){
+      return '<div class="rev-sec"><div class="rev-head"><h3>' + esc(sec.name) + '</h3>'
+        + (editable ? '<button class="rev-edit" type="button" data-go="' + sec.items[0].id + '">Edit</button>' : '') + '</div>'
+        + sec.items.map(function(q){
+          var v = display(q);
+          return '<div class="rev-item"><div class="rl">' + esc(q.label) + '</div><div class="rv' + (v ? '' : ' empty') + '">' + (v ? esc(v) : 'Not answered') + '</div></div>';
+        }).join('') + '</div>';
+    }).join('');
   }
   function renderReview(){
     nav(true);
@@ -724,22 +623,15 @@
     return post('/save', { answers: A, last_question: nextId }).then(function(j){
       if (j._status === 409 && j.submitted) { load(); return; }
       if (!j.ok) throw new Error(j.error || 'save failed');
-      saveFailed = false; note('Saved');
-    }).catch(function(){ saveFailed = true; note('Not saved yet, will retry', true); });
+      note('Saved');
+    }).catch(function(){ note('Not saved yet, will retry', true); });
   }
   function next(){
     if (cur === 'review') return submit();
-    var s = BY_ID[cur];
-    if (UP.some(function(u){ return !u.failed && (u.qid === 'q11b' || u.qid === 'q15') && document.querySelector('[data-files="' + u.qid + '"]'); })) {
-      $('#err').textContent = 'Please wait for your uploads to finish'; return;
-    }
-    var e = s.check ? s.check() : '';
+    var q = BY_ID[cur];
+    if (UP.some(function(u){ return !u.failed && u.qid === q.id; })) { $('#err').textContent = 'Please wait for your uploads to finish'; return; }
+    var e = check(q);
     if (e) { $('#err').textContent = e; return; }
-    // Moving off "where footage comes from" without "upload" clears files uploaded there.
-    if (cur === 'q11' && arr(A.q11).indexOf('upload') < 0) {
-      filesFor('q11b').forEach(function(f){ api('/file?id=' + encodeURIComponent(f.id), { method:'DELETE' }); });
-      FILES = FILES.filter(function(f){ return f.qid !== 'q11b'; });
-    }
     prune();
     var vis = visible(), i = vis.findIndex(function(x){ return x.id === cur; });
     var to = i + 1 < vis.length ? vis[i + 1].id : 'review';
@@ -752,40 +644,49 @@
     go(i > 0 ? vis[i - 1].id : 'welcome');
   }
   function submit(){
+    // Every required answer, checked here first so the client lands on the field.
+    var bad = visible().filter(function(q){ return check(q); })[0];
+    if (bad) { fromReview = true; go(bad.id); $('#err').textContent = check(bad); return; }
     var btn = $('#nextBtn'); btn.disabled = true; btn.textContent = 'Submitting…';
     prune();
     post('/submit', { answers: A }).then(function(j){
       if (j._status === 422 && j.q) {
         fromReview = true;
-        go(BY_ID[j.q] && (!BY_ID[j.q].show || BY_ID[j.q].show()) ? j.q : 'review');
+        go(BY_ID[j.q] && shown(BY_ID[j.q]) ? j.q : 'review');
         $('#err').textContent = j.error;
         return;
       }
       if (!j.ok) throw new Error(j.error || 'Something went wrong');
       apply(j);
     }).catch(function(err){
-      $('#err').textContent = (err && err.message ? err.message : 'Something went wrong') + '. Please try again.';
+      var e = $('#err'); if (e) e.textContent = (err && err.message ? err.message : 'Something went wrong') + '. Please try again.';
     }).then(function(){ btn.disabled = false; btn.textContent = cur === 'review' ? 'Submit' : 'Continue'; });
   }
 
   $('#nextBtn').onclick = next;
   $('#backBtn').onclick = back;
   $('#reviewBtn').onclick = function(){
-    var s = BY_ID[cur], e = s && s.check ? s.check() : '';
+    var q = BY_ID[cur], e = q ? check(q) : '';
     if (e) { $('#err').textContent = e; return; }
     save('review'); go('review');
   };
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Enter' || e.shiftKey || e.isComposing || $('#navbar').hidden) return;
     var t = e.target;
-    if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'BUTTON' || t.tagName === 'A')) return;
+    if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'BUTTON' || t.tagName === 'A' || t.tagName === 'SELECT')) return;
     e.preventDefault();
     if (cur !== 'review') next();
   });
 
   // ---------- after submit: booking + confirmation ----------
+  var NO_BOOKING = 'We’ll be in touch within 24 hours to book your onboarding call.';
   function calLoaded(){
     (function (C, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = C.document; C.Cal = C.Cal || function () { var cal = C.Cal; var ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }; var namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  }
+  function booked(){
+    S.booking_state = 'booked';
+    post('/state', { action:'booked' });
+    renderDone();
   }
   function renderBooking(){
     nav(false);
@@ -794,15 +695,17 @@
     var b = S.booking || {};
     stage.innerHTML = '<div class="eyebrow">Last step<span class="bar"></span></div>'
       + '<h1 class="q">One last step: book your onboarding call</h1>'
-      + '<p class="help">Pick a time that works for you. On the call, we’ll go through your answers and plan your launch.</p>'
-      + (b.url ? '<div class="cal" id="cal"></div>' : '<div class="notice">Our booking calendar isn’t available right now. We’ll reach out to schedule your call.</div>')
-      + '<div class="later"><button type="button" id="laterBtn">' + (b.url ? 'Book later' : 'Continue') + '</button></div>';
+      + (b.url ? '<p class="help">Pick a time that works for you. On the call, we’ll go through your answers and plan the next steps.</p><div class="cal" id="cal"></div>'
+        : '<p class="help">Thank you, we have everything we need.</p><div class="notice">' + NO_BOOKING + '</div>')
+      + '<div class="later">' + (b.url && b.google ? '<button type="button" id="bookedBtn">I’ve booked my call</button> · ' : '') + '<button type="button" id="laterBtn">' + (b.url ? 'Book later' : 'Continue') + '</button></div>';
     $('#laterBtn').onclick = function(){
       S.booking_state = 'book_later';
       post('/state', { action:'book_later' });
       renderDone();
     };
+    var bb = $('#bookedBtn'); if (bb) bb.onclick = booked;
     if (!b.url) return;
+    if (b.google) return google(b);
     if (/(^|\.)calendly\.com$/i.test((function(){ try { return new URL(b.url).hostname; } catch (e) { return ''; } })())) return calendly(b);
     try {
       var u = new URL(b.url);
@@ -824,6 +727,15 @@
     } catch (e) {
       $('#cal').outerHTML = '<div class="notice">Trouble loading the calendar? <a href="' + esc(b.url) + '" target="_blank" rel="noopener">Open it here</a>.</div>';
     }
+  }
+  // A Google Calendar booking page, shown inside the page. Every call booked
+  // there gets a Google Meet link.
+  function google(b){
+    var src = b.url;
+    try { var u = new URL(b.url); if (/calendar\.google\.com$/i.test(u.hostname)) { u.searchParams.set('gv', 'true'); src = u.toString(); } } catch (e) {}
+    var f = el('iframe', { src: src, title: 'Book your onboarding call', style: 'border:0; width:100%; height:760px; display:block; background:#fff', loading: 'lazy' });
+    $('#cal').appendChild(f);
+    $('#cal').insertAdjacentHTML('afterend', '<p class="later" style="margin-top:10px">Calendar not showing? <a href="' + esc(b.url) + '" target="_blank" rel="noopener">Open it in a new tab</a>.</p>');
   }
   // Calendly links work too: its inline widget, prefilled the same way.
   function calendly(b){
@@ -849,18 +761,19 @@
     restart();
     var b = S.booking || {};
     stage.innerHTML = '<div class="done"><div class="seal">✓</div><h1>You’re all set</h1>'
-      + '<p>We have everything we need. Our team will review your answers before your onboarding call. You’ll receive your live campaign report link once the campaign is running.</p>'
+      + '<p>We have everything we need. We’ll go through your answers before your onboarding call.</p>'
       + (S.booking_state !== 'booked' && b.url ? '<div class="notice">You haven’t booked your onboarding call yet.<br><button class="btn btn-primary" id="bookBtn" type="button">Book your call</button></div>' : '')
-      + '<details class="answers" open><summary>Your answers</summary><div style="margin-top:14px">' + reviewHtml(false) + '</div></details></div>';
+      + (!b.url ? '<div class="notice">' + NO_BOOKING + '</div>' : '')
+      + (S.legacy ? '' : '<details class="answers" open><summary>Your answers</summary><div style="margin-top:14px">' + reviewHtml(false) + '</div></details>') + '</div>';
     var bb = $('#bookBtn'); if (bb) bb.onclick = renderBooking;
   }
 
   function apply(j){
     S = j;
+    Q = arr(j.form && j.form.questions);
+    BY_ID = {}; Q.forEach(function(q){ BY_ID[q.id] = q; });
     A = obj(j.answers);
     FILES = arr(j.files);
-    KNOWN = obj(j.known);
-    if (KNOWN.first_name && !obj(A.q2).name) A.q2 = Object.assign(obj(A.q2), { name: KNOWN.first_name });
     if (j.campaign_name) $('#brandName').textContent = j.campaign_name;
     if (j.submitted) {
       if (j.booking_state) renderDone(); else renderBooking();
