@@ -229,15 +229,17 @@
     var html = '<div class="newbox" id="newBox" hidden>'
       + '<div class="newrow">'
       + '<div><label class="mini" for="nOffer">Offer</label><select id="nOffer"><option value="">Choose the offer</option>' + Object.keys(OFFERS).map(function(k){ return '<option value="' + k + '">' + OFFERS[k] + '</option>'; }).join('') + '</select></div>'
-      + '<div><label class="mini" for="nClient">Client name</label><input id="nClient" type="text" placeholder="Business or artist"></div>'
-      + '<div><label class="mini" for="nFirst">Client first name</label><input id="nFirst" type="text" placeholder="For the welcome email"></div>'
-      + '<div><label class="mini" for="nEmail">Client email</label><input id="nEmail" type="text" placeholder="name@example.com"></div>'
+      + '<div><label class="mini" for="nClient">Client name (optional)</label><input id="nClient" type="text" placeholder="So you can spot them"></div>'
+      + '<div><label class="mini" for="nFirst">First name (optional)</label><input id="nFirst" type="text" placeholder="For the greeting"></div>'
+      + '<div><label class="mini" for="nEmail">Email (optional)</label><input id="nEmail" type="text" placeholder="Emails them the link"></div>'
       + '<div><label class="mini" for="nCampaign">Campaign name (optional)</label><input id="nCampaign" type="text" placeholder="Defaults to the client name"></div>'
       + '<button class="btn" id="createBtn" type="button">Create link</button>'
       + '<button class="btn ghost" id="cancelBtn" type="button">Cancel</button>'
       + '</div><div class="err" id="newErr"></div></div>'
       + (newUrl ? '<div class="created" id="created"><b>Link created.</b> ' + welcomeNote(welcome) + ' Link: <span id="newUrl">' + esc(newUrl) + '</span> <button class="btn sm ghost" id="copyNew" type="button">Copy link</button>'
-        + (welcome && welcome.error ? '<div class="warnline">Welcome email failed: ' + esc(welcome.error) + '</div>' : '') + '</div><div style="height:18px"></div>' : '')
+        + (welcome && welcome.error ? '<div class="warnline">Welcome email failed: ' + esc(welcome.error) + '</div>' : '')
+        + (welcome && !welcome.sent ? '<div style="margin-top:10px">Message for WhatsApp or DM: <span id="waMsg">' + esc(waMessage(newUrl)) + '</span> <button class="btn sm ghost" id="copyWa" type="button">Copy message</button></div>' : '')
+        + '</div><div style="height:18px"></div>' : '')
       + '<div class="filters">Filter'
       + '<select id="fOffer"><option value="">All offers</option>' + Object.keys(OFFERS).map(function(k){ return '<option value="' + k + '"' + (filters.offer === k ? ' selected' : '') + '>' + OFFERS[k] + '</option>'; }).join('') + '</select>'
       + '<select id="fStatus"><option value="">All statuses</option>' + Object.keys(STATUS_FILTER).map(function(k){ return '<option value="' + k + '"' + (filters.status === k ? ' selected' : '') + '>' + STATUS_FILTER[k] + '</option>'; }).join('') + '</select>'
@@ -266,6 +268,7 @@
     wireList();
     if (openNew) { openNew = false; openNewBox(); }
     if (newUrl) $('#copyNew').onclick = function(){ copy(newUrl, this); };
+    var cw = $('#copyWa'); if (cw) cw.onclick = function(){ copy(waMessage(newUrl), this); };
   }
   function wireList(){
     $('#fStatus').onchange = function(){ filters.status = this.value; renderList(); };
@@ -278,10 +281,15 @@
     Array.prototype.forEach.call(document.querySelectorAll('[data-reopen]'), function(b){ b.onclick = function(){ reopen(b.getAttribute('data-reopen')); }; });
     Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function(b){ b.onclick = function(){ del(b.getAttribute('data-del')); }; });
   }
+  function waMessage(url){
+    var first = (LAST_FIRST || '').trim();
+    return 'Hi' + (first ? ' ' + first : '') + ', here’s your onboarding form. It only takes a few minutes, and you can book your onboarding call at the end: ' + url;
+  }
+  var LAST_FIRST = '';
   function welcomeNote(w){
     if (!w) return 'Send this to the client.';
     if (w.sent) return 'Welcome email with the form link sent to ' + esc((w.to || []).join(', ')) + '.';
-    if (w.skipped) return 'No welcome email sent (no first name or email). Send the link yourself, or add them on the client’s page.';
+    if (w.skipped) return 'No email given, so send the link yourself. The client fills in their own details.';
     return 'Send this to the client.';
   }
   function openNewBox(){
@@ -291,9 +299,8 @@
   function create(){
     var o = $('#nOffer').value, c = $('#nClient').value.trim(), k = $('#nCampaign').value.trim();
     if (!o) { $('#newErr').textContent = 'Choose the offer.'; return; }
-    if (!c) { $('#newErr').textContent = 'Enter the client’s name.'; return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('#nEmail').value.trim())) { $('#newErr').textContent = 'Enter the client’s email: the welcome email with the form link goes to it.'; return; }
     $('#createBtn').disabled = true;
+    LAST_FIRST = $('#nFirst').value;
     req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k, first_name:$('#nFirst').value.trim(), email:$('#nEmail').value.trim(), offer:o }) })
       .then(function(j){ LINKS.unshift(j.link); renderList(j.url, j.welcome); })
       .catch(function(e){ $('#newErr').textContent = e.message; $('#createBtn').disabled = false; });
@@ -322,7 +329,7 @@
     el.innerHTML = (h.problems && h.problems.length ? '<div class="health"><b>Setup problems</b><ul>' + h.problems.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>' : '')
       + '<details class="setup"' + (open || (h.problems && h.problems.length) ? ' open' : '') + '><summary>Booking links and email sender</summary><div class="newbox">'
       + '<div class="fgrid">'
-      + Object.keys(OFFERS).map(function(k){ var b = (st.booking || {})[k] || {}; return '<div class="wide"><label class="mini" for="sB-' + k + '">' + OFFERS[k] + ' booking link</label><input id="sB-' + k + '" data-booking="' + k + '" type="text" placeholder="https://calendar.app.google/..." value="' + esc(b.url) + '"><div class="hint">' + src(b.from) + '. Paste a Google Calendar booking page (Google Calendar, Appointment schedule, Share) so every call gets a Google Meet link. Empty: clients are told we’ll be in touch within 24 hours.</div></div>'; }).join('')
+      + Object.keys(OFFERS).map(function(k){ var b = (st.booking || {})[k] || {}; return '<div class="wide"><label class="mini" for="sB-' + k + '">' + OFFERS[k] + ' booking link</label><input id="sB-' + k + '" data-booking="' + k + '" type="text" placeholder="https://cal.com/..." value="' + esc(b.url) + '"><div class="hint">' + src(b.from) + '. A Cal.com, Calendly or Google Calendar booking link. Set the event’s location to Google Meet so every call gets a Meet link. Empty: clients are told we’ll be in touch within 24 hours.</div></div>'; }).join('')
       + '<div class="wide"><label class="mini" for="sFrom">Email sender</label><input id="sFrom" type="text" placeholder="Jacques at Maison d’Élites &lt;jacques@maisondelites.com&gt;" value="' + esc(st.from_source === 'default' ? '' : st.from) + '"><div class="hint">' + (st.from_source === 'default' ? 'Not set: using Resend’s test sender, which only reaches the Resend account owner.' : src(st.from_source) + '. The domain must be verified in Resend.') + '</div></div>'
       + '</div><div class="row-btns"><button class="btn" id="sSave" type="button">Save</button><span class="hint">Resend API key: ' + (h.resend_key ? 'set' : '<b style="color:var(--danger)">not set</b>') + ' · Team email: ' + (h.notify_email ? 'set' : 'not set') + ' · Discord: ' + (h.discord ? 'set' : 'not set') + '</span></div>'
       + '<div class="msg" id="sMsg"></div></div></details>';

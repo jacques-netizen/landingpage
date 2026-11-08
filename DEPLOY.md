@@ -205,7 +205,7 @@ server; at the end the client books the onboarding call.
 | URL | Who | What |
 |-----|-----|------|
 | `onboarding.maisondelites.com/<token>` | The client | The form. No sign-in; the long random token is the key. Reopening it resumes where they stopped. |
-| `onboarding.maisondelites.com/admin` | You (password-gated) | Create links (offer required), filter by offer and status, read answers, download files, copy as text, save as PDF, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
+| `onboarding.maisondelites.com/admin` | You (password-gated) | Create links (only the offer is required; with an email the link is emailed to the client, otherwise copy it to WhatsApp), filter by offer and status, read answers, download files, copy as text, save as PDF, reopen, delete. Same `ADMIN_PASSWORD` as `/admin`. |
 | `/onboarding/api/...` | Code | The form's API (same on every host). |
 
 **Questions and client emails: `lib/questions.js`.** Every question (id,
@@ -222,11 +222,10 @@ and `/onboarding/admin` on the Worker's other hosts.
 
 **Booking links and sender, from the admin page.** At the top of `/admin`,
 **Booking links and email sender** sets one booking link per offer and the
-email sender. Use Google Calendar booking pages (Google Calendar →
-Appointment schedule → Share): the page shows inside the form, and every call
-booked there gets a Google Meet link. Short `calendar.app.google` links are
-expanded when saved. An offer with no link tells the client we'll be in touch
-within 24 hours. The panel lists setup problems (no Resend key, Resend's test
+email sender. Cal.com, Calendly and Google Calendar booking pages all show
+inside the form; set the event's location to Google Meet so every call gets a
+Meet link. An offer with no link tells the client we'll be in touch within 24
+hours. The panel lists setup problems (no Resend key, Resend's test
 sender, an unverified sender domain, a missing booking link).
 
 **Variables** (Settings → Variables and Secrets):
@@ -283,7 +282,7 @@ payment emails. The emails run from each client's page in
 
 | Email | Offers | How it goes out |
 |-------|--------|-----------------|
-| Welcome (form link) | All | Sends by itself when the link is created with a first name and email; template per offer in `lib/questions.js`. Failures show in the list with Resend's reason; Send retries it |
+| Welcome (form link) | All | Sends by itself when the link is created with an email ("Hi there" without a first name); template per offer in `lib/questions.js`. Failures show in the list with Resend's reason; Send retries it |
 | Form reminder | All | Sends by itself 24 hours after the welcome if the form isn't submitted |
 | Confirmation (booking link) | All | Sends on submit; template per offer in `lib/questions.js` |
 | Campaign live | Clipping | Admin clicks Send (live report link). Starts the weekly clock |
