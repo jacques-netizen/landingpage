@@ -292,6 +292,7 @@
     var o = $('#nOffer').value, c = $('#nClient').value.trim(), k = $('#nCampaign').value.trim();
     if (!o) { $('#newErr').textContent = 'Choose the offer.'; return; }
     if (!c) { $('#newErr').textContent = 'Enter the client’s name.'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('#nEmail').value.trim())) { $('#newErr').textContent = 'Enter the client’s email: the welcome email with the form link goes to it.'; return; }
     $('#createBtn').disabled = true;
     req('links', { method:'POST', headers:{ 'content-type':'application/json' }, body: JSON.stringify({ client_name:c, campaign_name:k, first_name:$('#nFirst').value.trim(), email:$('#nEmail').value.trim(), offer:o }) })
       .then(function(j){ LINKS.unshift(j.link); renderList(j.url, j.welcome); })
