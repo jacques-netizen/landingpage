@@ -170,6 +170,13 @@ Grouped by area. Every item has a matching entry in `DECISIONS.md` with its reas
   or TRC-20; bank transfer (UK sort code; address for tier 1 countries). Staff verify, send by hand,
   then mark paid with the transaction hash or bank reference.
 - Admin credits to any user (admin only, audited). Daily ledger check.
+- Clippers stop earning once the client's budget is used up: on a campaign with a budget shown to the
+  client or a spend factor above 1, total earnings are capped at that budget divided by the factor
+  (`packages/money/src/engine.ts`, tests in `packages/money/test/client-cap.test.ts`). Nothing already
+  earned is taken back; the campaign closes when no more can be earned.
+- A campaign can carry a flat fee per post paid outside the platform (`campaigns.post_fee_cents`) and a
+  post can carry pay made outside the platform (`submissions.outside_paid_cents`). Neither touches the
+  ledger; the client report counts them as spend.
 
 **Client reporting**
 - Live report link per campaign (/r/token), revocable, refreshing every 2 minutes, CSV export.
@@ -177,6 +184,10 @@ Grouped by area. Every item has a matching entry in `DECISIONS.md` with its reas
   shown to the client. Used on Marrz-Audio and Davido X Winnerman-Audio.
 - Designed weekly and final reports (/reports/slug and .pdf), drafted from data and rewritten by Claude
   through a JSON spec, with writing rules checked in code, versions, and stale-sentence detection.
+- Report spend never passes the budget the client sees: posts take the budget oldest first and later
+  ones show "Budget reached"; every total and the clips always add up. "Show all" loads every clip.
+  The report has a phone layout below 640 px. A campaign with a per-post fee reports each post at the
+  fee plus the rate on its views.
 
 **Partner API and developer site**
 - Read-only API (/api/v1) with keys issued by admins at Admin, Developers (sandbox and live), webhooks
@@ -196,7 +207,11 @@ All in `DECISIONS.md`; these come up most.
 - Client report: rejected and removed posts never appear; clippers appear by public handle only.
 - Marrz-Audio and Davido X Winnerman-Audio report spend at twice clipper earnings.
 - One Billion Dollar Billboard: each post was paid $10 plus $3 per 1,000 views **outside the platform**.
-  Those posts never earn here; the report counts that outside pay as spend.
+  The campaign carries a $10 per-post fee and the report shows each post at $10 plus $3 per 1,000 of its
+  views; the client sees a $2,000 budget. It holds 106 posts: 77 from the owner's CSV and 29 videos of
+  posts no longer online (Batuhan @batuangym 15, Keira 14).
+- Clippers stop earning once the client's budget is used up (2026-11-06, owner chose this after Davido
+  was overspent). The client report never shows spend above the client's budget.
 - The leaderboard ranks by counted views on approved posts; staff-added posts are left off it.
 
 ## 9. Day-to-day operations
@@ -214,7 +229,14 @@ All in `DECISIONS.md`; these come up most.
 - **Costs to watch:** Scrape Creators credits (every view check and refresh), Anthropic (report
   writing), Resend, Railway.
 - **Production data:** there is no direct database access from Claude sessions. Changes to live data
-  go through the admin, a migration, or the Railway console.
+  go through the admin, or through code that runs on deploy: the migrate step
+  (`packages/db/src/archived-clips-import.ts`, run by `pnpm db:migrate` before every deploy) for plain
+  data, and one-time worker tasks (`apps/worker/src/one-offs.ts`, run when the worker starts) for
+  anything that needs the money, review or campaign code. Both mark themselves done so they never run
+  twice. `docs/RUNBOOK.md` explains the pattern.
+- **Checking the live site from a session:** `/api/health` (public JSON), a client report link's JSON at
+  `/api/r/<token>/report` and its CSV at `/api/r/<token>/report.csv`. Report links are signed by the
+  server: get them from the owner or from Admin, campaign, Create report link.
 
 ## 10. Where to find things
 
@@ -222,6 +244,7 @@ All in `DECISIONS.md`; these come up most.
 | --- | --- |
 | Product brief | `docs/01_PRODUCT.md` to `docs/05_DESIGN_SYSTEM.md` |
 | Technical handbook | `docs/DEVELOPER.md` |
+| Running the project from a new Claude Code account | `docs/RUNBOOK.md` |
 | Every decision and owner rule | `DECISIONS.md` |
 | Project rules for Claude | `CLAUDE.md` |
 | Deploy setup | `docs/DEPLOY_PLATFORM.md` |
@@ -235,7 +258,6 @@ All in `DECISIONS.md`; these come up most.
   Marrz check): a plan was given; it waits on the owner's answers to five questions (mark paid vs wallet
   withdrawals, ready at close or after release, legacy crypto networks, how the minimum is compared,
   how to verify Marrz). Do not build without his OK.
-- **Recent deploys** are not reaching the live site; start with the Railway deploy logs (section 9).
 - **developers.maisondelites.com** needs its DNS record (Cloudflare) and a custom domain in Railway.
 - **CI** fails at the designed-screen visual test step; everything before it passes. Find out why
   (likely the Git LFS screenshots not being fetched) and get CI fully green.
