@@ -107,6 +107,17 @@ Then make a one-line harmless change (for example a comment in `tools/serve.sh`)
 push it to the production branch and confirm Cloudflare deploys it. That proves
 the full loop: new account → GitHub → Cloudflare → live.
 
+### 2.6 Confirming a deploy when the change isn't public
+Files in `tools/`, `lib/`, `*.md` and `worker.js` are not served, so curl can't show
+them. Cloudflare reports every build on GitHub as the check run
+"Workers Builds: landingpage". Poll it (every 20 s, up to 8 minutes):
+```
+gh api repos/jacques-netizen/landingpage/commits/$(git rev-parse HEAD)/check-runs \
+  --jq '.check_runs[]|select(.name|startswith("Workers"))|"\(.status) \(.conclusion)"'
+```
+`completed success` means it is deployed. The "Vercel" checks on the same commit
+are an old integration and always fail; ignore them.
+
 ---
 
 ## 3. Accounts and services
