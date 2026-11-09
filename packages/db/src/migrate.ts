@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { REASON_CODES } from '@mde/config'
 import { importArchivedClips } from './archived-clips-import'
 import { createDb } from './client'
-import { reasonCodes } from './schema'
+import { deploys, reasonCodes } from './schema'
 import { seedSettingsDefaults } from './settings'
 
 export async function runMigrations(url: string) {
@@ -17,6 +17,24 @@ export async function runMigrations(url: string) {
     .insert(reasonCodes)
     .values(REASON_CODES.map(([code, label, creatorMessage]) => ({ code, label, creatorMessage })))
     .onConflictDoNothing()
+  // Record the deploy (owner, 2026-11-09): which commit is going live, from which branch, by whom. Railway
+  // sets these for a deploy from GitHub; elsewhere (local, CI) nothing is recorded. Never blocks a deploy.
+  try {
+    const sha = process.env.RAILWAY_GIT_COMMIT_SHA
+    if (sha)
+      await db
+        .insert(deploys)
+        .values({
+          commitSha: sha,
+          branch: process.env.RAILWAY_GIT_BRANCH || null,
+          message: (process.env.RAILWAY_GIT_COMMIT_MESSAGE ?? '').split('\n')[0]!.slice(0, 300) || null,
+          author: process.env.RAILWAY_GIT_AUTHOR || null,
+          railwayDeploymentId: process.env.RAILWAY_DEPLOYMENT_ID || null,
+        })
+        .onConflictDoNothing()
+  } catch (err) {
+    console.error(JSON.stringify({ level: 'error', msg: 'deploy record failed', err: String(err) }))
+  }
   // One-off data the owner asked for (2026-11-02); never blocks a deploy.
   try {
     await importArchivedClips(db)

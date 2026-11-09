@@ -121,7 +121,8 @@ From `CLAUDE.md` and the owner; Claude reads them every session.
    `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, the changed package's tests
    (`cd packages/<name> && DATABASE_URL=postgres://postgres@localhost:5432/mde_test_<name> npx vitest run`),
    and for screens an end-to-end test (section 8).
-4. Add a line to `DECISIONS.md`, commit, push to the deploy branch.
+4. Add a line to `DECISIONS.md`. Commit with a `Requested-by:` trailer (who asked), run
+   `pnpm changelog`, commit `CHANGELOG.md` as "Update the change log", then push to the deploy branch.
 5. Check it is live (section 6), then tell the owner in plain words what changed.
 
 ## 6. Live data without database access
@@ -147,6 +148,17 @@ data at `https://app.maisondelites.com/api/r/<token>/report` (JSON) and `/report
 signed by the server: get one from the owner or from Admin, campaign, Create report link. A change in a
 public page (for example the leaderboard at /leaderboard) also shows when a deploy went live. If
 nothing changes after 20 minutes, read the Railway deploy logs.
+
+## 6b. The change log
+
+Every change is recorded in three places, all readable in the admin at **Change log** (admin only):
+
+- **Code changes:** `CHANGELOG.md`, one line per commit: what changed, who asked (`Requested-by:` trailer),
+  who made it (the Claude Code session, or a `Made-by:` trailer for a person), and the commit. Built by
+  `pnpm changelog` (`scripts/changelog.mjs`), which only adds missing lines, so hand corrections stay.
+- **Deploys:** the `deploys` table, written by the migrate step before every deploy from what Railway
+  reports (commit, branch, message, author). The page also shows the commit live right now.
+- **Staff actions on live data:** the audit log (who changed money, a decision or a user, and when).
 
 ## 7. Recommended clean-up of the workflow
 

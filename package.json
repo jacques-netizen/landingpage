@@ -19,7 +19,8 @@
     "db:check": "pnpm --filter @mde/db check",
     "db:seed": "pnpm --filter @mde/seed seed",
     "staff:grant": "pnpm --filter @mde/db staff:grant",
-    "worker": "pnpm --filter @mde/worker start"
+    "worker": "pnpm --filter @mde/worker start",
+    "changelog": "node scripts/changelog.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

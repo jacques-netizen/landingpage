@@ -13,6 +13,8 @@ docs
 # Content rewards platform (deployed separately, never served by this Worker)
 apps
 packages
+scripts
+CHANGELOG.md
 node_modules
 package.json
 pnpm-lock.yaml

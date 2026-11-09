@@ -739,6 +739,19 @@ export const reasonCodes = pgTable('reason_codes', {
 })
 
 // Append only. A trigger in the migrations blocks UPDATE and DELETE.
+// Every deploy that reached the live site (owner, 2026-11-09: "track what changes are being made to the
+// platform and where they came from"), written by the migrate step before each deploy from what Railway
+// says it is deploying. Code changes themselves are listed in CHANGELOG.md.
+export const deploys = pgTable('deploys', {
+  id: id(),
+  commitSha: text('commit_sha').notNull().unique(),
+  branch: text('branch'),
+  message: text('message'),
+  author: text('author'),
+  railwayDeploymentId: text('railway_deployment_id'),
+  ...timestamps,
+})
+
 export const auditLog = pgTable(
   'audit_log',
   {

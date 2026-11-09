@@ -47,6 +47,7 @@ Where things live:
 - Every staff action that changes money, a decision or a user writes to the audit log.
 - When the docs do not answer a question, choose the simplest option, record it in `DECISIONS.md` with a one line reason, and continue. Stop and ask only for the open decisions in `docs/README.md`, for anything that would change a money rule, or for anything that would touch the locked design.
 - One task per commit, with a plain message.
+- Every change is logged (owner, 2026-11-09). Each commit ends with a `Requested-by:` trailer naming who asked (for example `Requested-by: owner`), and a `Made-by:` trailer when a person rather than a Claude Code session wrote it. After committing, run `pnpm changelog` and commit `CHANGELOG.md` as "Update the change log" before pushing. Staff can read it in the admin at Change log.
 
 ## Repository notes
 

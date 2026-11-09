@@ -245,6 +245,7 @@ All in `DECISIONS.md`; these come up most.
 | Product brief | `docs/01_PRODUCT.md` to `docs/05_DESIGN_SYSTEM.md` |
 | Technical handbook | `docs/DEVELOPER.md` |
 | Running the project from a new Claude Code account | `docs/RUNBOOK.md` |
+| Every change, who asked and who made it | `CHANGELOG.md`; admin, Change log |
 | Every decision and owner rule | `DECISIONS.md` |
 | Project rules for Claude | `CLAUDE.md` |
 | Deploy setup | `docs/DEPLOY_PLATFORM.md` |

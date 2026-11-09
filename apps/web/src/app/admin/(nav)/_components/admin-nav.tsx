@@ -49,7 +49,7 @@ const SECTIONS: { title?: string; links: [string, string, keyof typeof I][] }[] 
       ['Developers', '/admin/developers', 'settings'],
       ['Settings', '/admin/settings', 'settings'],
       ['Demo campaigns', '/admin/demo', 'campaigns'],
-      ['Audit log', '/admin/audit-log', 'audit'],
+      ['Change log', '/admin/changes', 'audit'],
     ],
   },
 ]
