@@ -1,0 +1,492 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Distribution Problem Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo+Narrow:wght@500;600&display=swap">
+<style>
+/* Layout: a white Miro style canvas, seventeen frames on a serpentine path, real campaign clips and proof inside the frames. Keys fly the camera. */
+:root {
+  --bg: #ffffff; --panel: #ffffff; --panel-2: #faf8f3; --hair: rgba(20,16,10,.16); --hair-soft: rgba(20,16,10,.09);
+  --gold: #a8843c; --gold-soft: #8a6a2a; --ink: #1a1612; --muted: rgba(26,22,18,.6);
+  --note: #fff3a8; --note-2: #e4f3ff; --note-3: #ffe0d6; --red: #c9654a; --surface: rgba(20,16,10,.035); --shadow: rgba(20,16,10,.18);
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif; --body: "EB Garamond", Georgia, serif; --ui: "Archivo Narrow", "Arial Narrow", Arial, sans-serif;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); overflow: hidden; }
+#stage { position: fixed; inset: 0; overflow: hidden; cursor: grab; touch-action: none; background: var(--bg) radial-gradient(circle, rgba(20,16,10,.16) 1.6px, transparent 1.8px) 0 0 / 40px 40px; }
+#stage.dragging { cursor: grabbing; }
+#world { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform; }
+#world.fly { transition: transform 1.05s cubic-bezier(.65,.02,.25,1); }
+#links { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+#links path { fill: none; stroke: var(--hair); stroke-width: 3; stroke-dasharray: 10 12; }
+.frame { position: absolute; width: 960px; height: 560px; box-sizing: border-box; background: var(--panel); border: 1.5px solid var(--hair); border-radius: 18px;
+  padding: 44px 52px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 30px 60px -36px var(--shadow); overflow: hidden; }
+.frame.alt { background: var(--panel-2); }
+.frame.active { border-color: var(--gold); box-shadow: 0 0 0 6px rgba(168,132,60,.14), 0 30px 60px -36px var(--shadow); }
+.tag { position: absolute; top: 18px; left: 52px; font: 600 12px/1 var(--ui); letter-spacing: .18em; text-transform: uppercase; color: #fff; background: var(--ink); padding: 8px 12px; border-radius: 999px; z-index: 2; }
+.num { position: absolute; top: 20px; right: 28px; font: 800 14px/1 var(--display); color: var(--gold); letter-spacing: .12em; font-variant-numeric: tabular-nums; z-index: 2; }
+.frame > h1, .frame > h2, .frame > .lead:first-of-type { margin-top: 18px; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; line-height: .98; margin: 0; text-wrap: balance; color: var(--ink); }
+h1 { font-size: 68px; text-transform: uppercase; }
+h2 { font-size: 42px; text-transform: uppercase; }
+h2 em, h1 em { font-style: normal; color: var(--gold); }
+.lead { font-size: 24px; line-height: 1.35; max-width: 34ch; margin: 0; }
+.lead.small { font-size: 20px; color: var(--muted); }
+.row { display: flex; gap: 18px; flex-wrap: wrap; align-items: stretch; }
+.grow { flex: 1 1 0; min-width: 0; }
+.split { display: grid; grid-template-columns: 1.15fr .85fr; gap: 24px; align-items: start; }
+.split.rev { grid-template-columns: .85fr 1.15fr; }
+.pic { width: 100%; border-radius: 12px; object-fit: cover; display: block; border: 1px solid var(--hair-soft); background: var(--surface); }
+.pic.tall { aspect-ratio: 4/3; }
+.pic.wide { aspect-ratio: 16/9; }
+.cap { font: 600 12px/1.4 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+/* sticky notes */
+.notes { display: flex; flex-wrap: wrap; gap: 14px; }
+.note { background: var(--note); color: var(--ink); font: 500 18px/1.25 var(--body); padding: 14px 16px; width: 232px; box-sizing: border-box; border-radius: 4px; box-shadow: 0 10px 18px -10px var(--shadow); transform: rotate(var(--r, -1deg)); }
+.note.two { background: var(--note-2); } .note.three { background: var(--note-3); }
+.note b { font-family: var(--display); font-weight: 700; display: block; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; color: rgba(26,22,18,.6); }
+/* phones and clips */
+.phone { position: relative; aspect-ratio: 9/16; border-radius: 12px; overflow: hidden; background: #0b0906; box-shadow: 0 14px 24px -14px var(--shadow); border: 1px solid rgba(20,16,10,.2); }
+.phone video, .phone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.phone.sm { border-radius: 8px; }
+.strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.strip.four { grid-template-columns: repeat(4, 1fr); }
+.wall { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+.wall .phone { border-radius: 5px; }
+.wall.one .phone { opacity: .14; } .wall.one .phone:first-child { opacity: 1; }
+/* cards and tiles */
+.card { background: var(--surface); border: 1px solid var(--hair-soft); border-radius: 12px; padding: 18px 20px; }
+.card h3 { font: 700 14px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0 0 10px; }
+.card p { margin: 0; font-size: 19px; line-height: 1.3; }
+.card.bad { border-color: rgba(201,101,74,.5); } .card.bad h3 { color: var(--red); }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.tile { background: var(--surface); border: 1px solid var(--hair-soft); border-radius: 12px; padding: 16px 18px; }
+.tile .v { font: 800 42px/1 var(--display); color: var(--ink); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.tile .l { font: 600 12px/1.2 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 8px; }
+.four { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.four .card { display: flex; gap: 16px; align-items: flex-start; }
+.four .n { font: 800 38px/1 var(--display); color: var(--gold); min-width: 50px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font: 600 14px/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; border: 1px solid var(--hair); border-radius: 999px; padding: 10px 14px; color: var(--ink); background: #fff; }
+.vs { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: center; gap: 12px; }
+.vs .mid { font: 800 20px/1 var(--display); color: var(--gold); text-align: center; letter-spacing: .1em; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.steps .card p { font-size: 17px; }
+.loop { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.loop .card { flex: 1; text-align: center; }
+.loop .arrow { font: 800 28px/1 var(--display); color: var(--gold); }
+.cta { display: inline-block; background: var(--ink); color: #fff; font: 700 19px/1 var(--display); letter-spacing: .04em; padding: 18px 28px; border-radius: 999px; text-transform: uppercase; }
+.foot { font: 600 12px/1.4 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-top: auto; }
+.logos { display: flex; align-items: center; justify-content: space-between; gap: 22px; padding: 16px 20px; border: 1px solid var(--hair-soft); border-radius: 12px; background: #fff; }
+.logos img { height: 30px; width: auto; max-width: 150px; object-fit: contain; filter: grayscale(1) contrast(1.1); opacity: .85; }
+.logos img.tall { height: 46px; }
+/* proof cases */
+.cases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: 1; min-height: 0; }
+.case { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.case .phone { flex: 1; aspect-ratio: auto; min-height: 0; }
+.case .ct { font: 700 14px/1.2 var(--display); letter-spacing: .02em; }
+.case .kv { font: 800 30px/1 var(--display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.case .kl { font: 600 11px/1.3 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.case .k2 { display: flex; gap: 14px; }
+/* scene art */
+.street { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+.street .scene { border: 1px solid var(--hair-soft); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--surface); min-height: 0; }
+.street .shop { height: 64px; border: 2px solid var(--ink); border-radius: 8px 8px 2px 2px; display: grid; place-items: center; font: 700 14px/1 var(--display); letter-spacing: .14em; color: var(--ink); background: #fff; }
+.street .road { height: 40px; border-top: 2px dashed var(--hair); display: flex; gap: 8px; align-items: center; padding-top: 10px; }
+.street .p { width: 10px; height: 22px; border-radius: 6px 6px 2px 2px; background: var(--gold); }
+.street img { flex: 1; min-height: 0; width: 100%; object-fit: cover; border-radius: 8px; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal span { aspect-ratio: 1; border: 1px solid var(--hair-soft); border-radius: 6px; display: grid; place-items: center; font: 600 12px/1 var(--ui); color: var(--muted); background: #fff; }
+.cal span.on { background: var(--gold); color: #fff; border-color: var(--gold); }
+.hero-bg { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; opacity: .22; }
+.frame.dark { background: #15120d; color: #f1e9d8; border-color: #15120d; }
+.frame.dark h1, .frame.dark h2, .frame.dark .lead { color: #f1e9d8; } .frame.dark h1 em { color: #ebd69e; }
+.frame.dark .foot { color: rgba(241,233,216,.7); }
+.frame.dark .cta { background: #ebd69e; color: #15120d; }
+.frame.dark > * { position: relative; }
+.mde { height: 22px; width: auto; display: block; }
+/* HUD */
+.hud { position: fixed; z-index: 5; font-family: var(--ui); }
+#top { top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+#top > * { pointer-events: auto; }
+.brand { display: flex; align-items: center; gap: 12px; font: 500 12px/1 var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+#count { font: 600 14px/1 var(--ui); letter-spacing: .14em; color: var(--ink); font-variant-numeric: tabular-nums; }
+#bar { position: fixed; left: 0; top: 0; height: 3px; background: var(--gold); z-index: 6; width: 0; transition: width .5s; }
+#bottom { bottom: 0; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); flex-wrap: wrap; }
+button { font: 600 13px/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; background: rgba(255,255,255,.96); color: var(--ink); border: 1px solid var(--hair); border-radius: 999px; padding: 11px 16px; cursor: pointer; box-shadow: 0 6px 16px -10px var(--shadow); }
+button:hover { border-color: var(--gold); }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+button kbd { font: inherit; color: var(--muted); margin-left: 6px; }
+#notes { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(56px + env(safe-area-inset-top, 0px)); bottom: calc(70px + env(safe-area-inset-bottom, 0px)); width: min(380px, calc(100vw - 32px)); z-index: 5; background: rgba(255,255,255,.97); border: 1px solid var(--hair); border-radius: 14px; padding: 18px 20px; overflow: auto; box-sizing: border-box; box-shadow: 0 20px 40px -24px var(--shadow); }
+#notes h4 { font: 700 12px/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin: 0 0 12px; }
+#notes p { font-size: 18px; line-height: 1.45; margin: 0 0 12px; }
+#notes .tip { font: 500 13px/1.4 var(--ui); color: var(--muted); letter-spacing: .04em; border-top: 1px solid var(--hair-soft); padding-top: 10px; }
+#list { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); top: calc(56px + env(safe-area-inset-top, 0px)); z-index: 5; background: rgba(255,255,255,.97); border: 1px solid var(--hair); border-radius: 14px; padding: 10px; max-height: calc(100vh - 150px); overflow: auto; width: 260px; box-sizing: border-box; box-shadow: 0 20px 40px -24px var(--shadow); }
+#list button { display: block; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 9px 10px; text-transform: none; letter-spacing: 0; font-size: 14px; box-shadow: none; }
+#list button.on { background: rgba(168,132,60,.16); }
+#list button i { font-style: normal; color: var(--gold); margin-right: 8px; font-variant-numeric: tabular-nums; }
+body.clean #top, body.clean #bottom, body.clean #notes, body.clean #list, body.clean #bar, body.clean #hint { display: none !important; }
+body.clean #stage { cursor: default; }
+#hint { position: fixed; left: 50%; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 5; font: 600 12px/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: rgba(255,255,255,.92); padding: 10px 14px; border-radius: 999px; border: 1px solid var(--hair-soft); pointer-events: none; transition: opacity .6s; white-space: nowrap; }
+@media (max-width: 720px) { #notes { width: calc(100vw - 32px); top: auto; height: 42vh; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); } #list { width: calc(100vw - 32px); max-height: 50vh; } }
+@media (prefers-reduced-motion: reduce) { #world.fly { transition: none; } }
+</style>
+
+<div id="bar"></div>
+<div id="stage">
+  <div id="world">
+    <svg id="links"></svg>
+
+    <section class="frame">
+      <span class="tag">Cold open</span><span class="num">01</span>
+      <div class="split">
+        <div>
+          <h1>Does this <em>sound familiar?</em></h1>
+          <div class="notes" style="margin-top:16px">
+            <div class="note" style="--r:-2deg"><b>Posted</b>Something you were proud of. 300 views.</div>
+            <div class="note two" style="--r:1.5deg"><b>Ads</b>Paying to be ignored.</div>
+            <div class="note three" style="--r:-1deg"><b>Watched</b>Half your quality blow up while you explain what you do.</div>
+            <div class="note two" style="--r:2deg"><b>Paid promo</b>Numbers went up. Nothing changed.</div>
+            <div class="note" style="--r:-1.5deg"><b>Same 50 people</b>Over and over. And you are tired.</div>
+          </div>
+        </div>
+        <div class="strip four" style="margin-top:24px">
+          <div class="phone sm"><video muted loop playsinline preload="none" poster="clips/walmart_a.jpg" src="clips/walmart_a.mp4"></video></div>
+          <div class="phone sm"><video muted loop playsinline preload="none" poster="clips/wale_main.jpg" src="clips/wale_main.mp4"></video></div>
+          <div class="phone sm"><video muted loop playsinline preload="none" poster="clips/kojo_a.jpg" src="clips/kojo_a.mp4"></video></div>
+          <div class="phone sm"><video muted loop playsinline preload="none" poster="clips/paul_a.jpg" src="clips/paul_a.mp4"></video></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">Diagnosis</span><span class="num">02</span>
+      <div class="split">
+        <div>
+          <h2>You have a <em>distribution problem</em></h2>
+          <p class="lead" style="margin-top:14px">The thing you make is fine. Almost nobody is seeing it.</p>
+          <div class="row" style="margin-top:18px">
+            <div class="card grow"><h3>Artists stay small</h3><p>Good music, no reach.</p></div>
+            <div class="card grow"><h3>Products don’t sell</h3><p>Good product, no street.</p></div>
+            <div class="card grow"><h3>People quit</h3><p>Good work, no reward.</p></div>
+          </div>
+        </div>
+        <div style="margin-top:24px"><img class="pic tall" src="img/bb-b.webp" alt="A billboard with content scattering into dozens of small screens"><div class="cap">One post, many screens. That is the whole job.</div></div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">What I noticed</span><span class="num">03</span>
+      <div class="split rev">
+        <div style="margin-top:24px"><img class="pic tall" src="img/bh-3.webp" alt="A creator surrounded by clip, post and pay cards"><div class="cap">A year of campaigns for brands and artists</div></div>
+        <div>
+          <h2>Content problem <em>vs</em> distribution problem</h2>
+          <p class="lead small" style="margin-top:12px">One theme separates the ones who grow fast from the ones who stay stuck.</p>
+          <div class="vs" style="margin-top:16px">
+            <div class="card bad"><h3>What most people think</h3><p>“My content isn’t good enough yet.” So they polish, and post less.</p></div>
+            <div class="mid">VS</div>
+            <div class="card"><h3>What is true</h3><p>The content is fine. The distribution is broken.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">Definition</span><span class="num">04</span>
+      <h2>Distribution <em>is</em></h2>
+      <div class="tiles">
+        <div class="tile"><div class="v">How many</div><div class="l">people see what you make</div></div>
+        <div class="tile"><div class="v">How often</div><div class="l">they see it</div></div>
+        <div class="tile"><div class="v">Right people</div><div class="l">or the wrong ones</div></div>
+      </div>
+      <p class="lead">If distribution is broken, nothing downstream works.</p>
+      <div class="chips"><span class="chip">The launch goes nowhere</span><span class="chip">Ad costs keep climbing</span><span class="chip">Great reviews, still unknown</span></div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">Picture it</span><span class="num">05</span>
+      <h2>Your content is a shop. <em>Distribution is the street.</em></h2>
+      <div class="street">
+        <div class="scene"><div class="shop">BEST SHOP IN THE CITY</div><div class="road"></div><div class="cap">A street nobody walks down. Quality doesn’t matter here.</div></div>
+        <div class="scene"><div class="shop">SAME SHOP</div><div class="road"><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i><i class="p"></i></div><img src="img/concert-s.webp" alt="A crowd at a concert, phones up"><div class="cap">A street people walk down. Now the quality counts.</div></div>
+      </div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">How I know</span><span class="num">06</span>
+      <h2>One person posting <em>hits a ceiling</em></h2>
+      <p class="lead small">I built this agency from my own content. Every client we ever signed came from someone seeing a video of mine. And one page, however good, has a ceiling.</p>
+      <div class="row">
+        <div class="grow"><div class="wall one" data-wall="20"></div><div class="cap">One page. Seen once.</div></div>
+        <div class="grow"><div class="wall" data-wall="20"></div><div class="cap">A hundred pages. Seen a hundred times, by a hundred audiences.</div></div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">Where it got us</span><span class="num">07</span>
+      <h2>From nothing to <em>Walmart, Wale, Jake and Logan Paul</em></h2>
+      <div class="logos">
+        <img src="logos/walmart.png" alt="Walmart"><img src="logos/sony.png" alt="Sony"><img src="logos/nintendo-t.png" alt="Nintendo"><img class="tall" src="logos/defjam.png" alt="DEF JAM"><img src="logos/wyde.svg" alt="WYDE">
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="v">1B+</div><div class="l">views delivered across campaigns</div></div>
+        <div class="tile"><div class="v">~3,000</div><div class="l">creators posting for our clients</div></div>
+        <div class="tile"><div class="v">4 lanes</div><div class="l">music, consumer brands, fintech, personal brands</div></div>
+      </div>
+      <p class="lead small">Probably something like yours. If you sell a product, a service, a ticket or a stream, we have worked with businesses like yours many times.</p>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">Proof</span><span class="num">08</span>
+      <h2>Real campaigns, <em>real numbers</em></h2>
+      <div class="cases">
+        <div class="case"><div class="phone"><video muted loop playsinline preload="none" poster="clips/walmart_c.jpg" src="clips/walmart_c.mp4"></video></div><div class="ct">Walmart beauty box</div><div class="k2"><div><div class="kv">3M</div><div class="kl">total views</div></div><div><div class="kv">$2.30</div><div class="kl">effective CPM</div></div></div></div>
+        <div class="case"><div class="phone"><video muted loop playsinline preload="none" poster="clips/wale_main.jpg" src="clips/wale_main.mp4"></video></div><div class="ct">Mannywellz ft. Wale</div><div class="k2"><div><div class="kv">4.6M</div><div class="kl">total views</div></div><div><div class="kv">$0.48</div><div class="kl">effective CPM</div></div></div></div>
+        <div class="case"><div class="phone"><video muted loop playsinline preload="none" poster="clips/paul_b.jpg" src="clips/paul_b.mp4"></video></div><div class="ct">Paul American</div><div class="k2"><div><div class="kv">11.2M</div><div class="kl">total views</div></div><div><div class="kv">$1.78</div><div class="kl">effective CPM</div></div></div></div>
+        <div class="case"><div class="phone"><video muted loop playsinline preload="none" poster="clips/kojo_b.jpg" src="clips/kojo_b.mp4"></video></div><div class="ct">Kojo Blak</div><div class="k2"><div><div class="kv">1.9M</div><div class="kl">total views</div></div><div><div class="kv">$2.00</div><div class="kl">per 1,000 views</div></div></div></div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">Where it breaks</span><span class="num">09</span>
+      <h2>Four places a distribution problem <em>shows up</em></h2>
+      <div class="four">
+        <div class="card"><div class="n">1</div><div><h3>Reach</h3><p>You post and it dies at your followers.</p></div></div>
+        <div class="card"><div class="n">2</div><div><h3>Frequency</h3><p>Someone sees you once and never again. You never become familiar.</p></div></div>
+        <div class="card"><div class="n">3</div><div><h3>Audience</h3><p>Your content reaches people. The wrong ones.</p></div></div>
+        <div class="card"><div class="n">4</div><div><h3>Conversion</h3><p>People see you, but nothing gives them a reason to act.</p></div></div>
+      </div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">The painful part</span><span class="num">10</span>
+      <h2>The better your content gets, <em>the worse this feels</em></h2>
+      <p class="lead small">You did the work. You have the quality. It still isn’t moving.</p>
+      <div class="loop">
+        <div class="card"><p>Polish more</p></div><span class="arrow">&rarr;</span>
+        <div class="card"><p>Post less</p></div><span class="arrow">&rarr;</span>
+        <div class="card bad"><p>Problem gets bigger</p></div><span class="arrow">&#8635;</span>
+      </div>
+      <div class="strip" style="margin-top:4px">
+        <div class="phone sm"><img src="img/story-1-s.webp" alt=""></div><div class="phone sm"><img src="img/story-2-s.webp" alt=""></div><div class="phone sm"><img src="img/story-3-s.webp" alt=""></div><div class="phone sm"><img src="img/story-4-s.webp" alt=""></div><div class="phone sm"><img src="img/story-1-s.webp" alt=""></div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">The lesson</span><span class="num">11</span>
+      <h2>With a repeatable system, <em>growth stops being luck</em></h2>
+      <p class="lead">Get your content in front of the right people, over and over. Artist or brand, it is the same mechanism.</p>
+      <div class="chips"><span class="chip">Right people</span><span class="chip">Over and over</span><span class="chip">On purpose</span></div>
+      <div class="strip"><div class="phone sm"><video muted loop playsinline preload="none" poster="clips/manny_a.jpg" src="clips/manny_a.mp4"></video></div><div class="phone sm"><video muted loop playsinline preload="none" poster="clips/walmart_d.jpg" src="clips/walmart_d.mp4"></video></div><div class="phone sm"><video muted loop playsinline preload="none" poster="clips/kojo_a.jpg" src="clips/kojo_a.mp4"></video></div><div class="phone sm"><video muted loop playsinline preload="none" poster="clips/wale_b.jpg" src="clips/wale_b.mp4"></video></div><div class="phone sm"><video muted loop playsinline preload="none" poster="clips/paul_a.jpg" src="clips/paul_a.mp4"></video></div></div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">The question</span><span class="num">12</span>
+      <h2>“How do I get seen <em>without going viral</em> or burning money on ads?”</h2>
+      <p class="lead">It depends on where your distribution is breaking. Whichever of the four it is, there is a system for it.</p>
+      <div class="chips"><span class="chip">Reach</span><span class="chip">Frequency</span><span class="chip">Audience</span><span class="chip">Conversion</span></div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">How our campaigns work</span><span class="num">13</span>
+      <h2>Not one page and hope. <em>A network built around your audience.</em></h2>
+      <div class="steps">
+        <div class="card"><h3>Network</h3><p>Creators and pages built around your audience.</p></div>
+        <div class="card"><h3>Paid on views</h3><p>They only get paid when the post actually gets watched.</p></div>
+        <div class="card"><h3>Checked</h3><p>Every post is checked before it goes out.</p></div>
+        <div class="card"><h3>Live</h3><p>You see all of it as it happens.</p></div>
+      </div>
+      <p class="lead small">Not a magic button. There is a process: your content, your audience, your goal. You leave with a plan specific to you, not a template.</p>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">Imagine this instead</span><span class="num">14</span>
+      <h2>Fifty pages at once. <em>Monday, Wednesday, the week after.</em></h2>
+      <div class="row">
+        <div class="grow"><div class="wall" data-wall="30"></div></div>
+        <div class="grow"><div class="cal"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span><span class="on">1</span><span>2</span><span class="on">3</span><span>4</span><span>5</span><span>6</span><span>7</span><span class="on">8</span><span>9</span><span class="on">10</span><span>11</span><span>12</span><span>13</span><span>14</span></div><div class="card" style="margin-top:12px"><h3>The end goal</h3><p>Your name feels familiar to people who have never met you. When you drop something, there is already an audience waiting.</p></div></div>
+      </div>
+    </section>
+
+    <section class="frame">
+      <span class="tag">Straight talk</span><span class="num">15</span>
+      <h2>I can’t promise <em>fireworks</em></h2>
+      <p class="lead">It works on what you put in. If the content is bad, distribution just shows more people that it is bad. But we can show you how we do it, across all these kinds of businesses.</p>
+      <div class="split" style="margin-top:4px"><div><img class="pic wide" src="img/sky-b.webp" alt="A city skyline at sunrise"></div><div class="card"><h3>The honest version</h3><p>Distribution multiplies what you already have. Good content times reach. Bad content times reach.</p></div></div>
+    </section>
+
+    <section class="frame alt">
+      <span class="tag">The cost of waiting</span><span class="num">16</span>
+      <h2>Every month invisible is <em>rent on a shop nobody walks past</em></h2>
+      <div class="row">
+        <div class="card grow"><h3>It compounds</h3><p>The longer your content reaches nobody, the harder it is to start from zero later.</p></div>
+        <div class="card grow"><h3>My foot hurts</h3><p>When should I see the doctor? When it hurts less? No. The best time is today.</p></div>
+        <div class="card grow"><h3>Mid-launch is fine</h3><p>Fix distribution while you are busy and it is easy when you are not.</p></div>
+      </div>
+    </section>
+
+    <section class="frame dark">
+      <img class="hero-bg" src="img/concert-s.webp" alt="">
+      <span class="tag">Next step</span><span class="num">17</span>
+      <h1>Book <em>a call</em></h1>
+      <p class="lead">We figure out whether this is a fit, both ways. We take on a limited number of new campaigns a month, so if it is a fit, we find a time that works for you.</p>
+      <div><span class="cta">Book a strategy call</span></div>
+      <div class="foot">Maison d’Élites. The people who actually run these campaigns. Can’t wait to meet you.</div>
+    </section>
+  </div>
+</div>
+
+<div class="hud" id="top">
+  <div class="brand"><img class="mde" src="img/logo-nav-clear.png" alt="Maison d’Élites"><span>The distribution problem</span></div>
+  <div id="count">1 / 17</div>
+</div>
+<div id="list" hidden></div>
+<aside id="notes" hidden><h4 id="ntitle">Notes</h4><div id="ntext"></div><div class="tip">Press N to hide notes before you record. Press H to hide everything but the board.</div></aside>
+<div id="hint">Click or press space to fly to the next frame</div>
+<div class="hud" id="bottom">
+  <button id="bPrev">Back<kbd>&larr;</kbd></button>
+  <button id="bNext">Next<kbd>&rarr;</kbd></button>
+  <button id="bOver">Overview<kbd>O</kbd></button>
+  <button id="bList">Frames<kbd>L</kbd></button>
+  <button id="bNotes">Notes<kbd>N</kbd></button>
+  <button id="bClean">Record mode<kbd>H</kbd></button>
+</div>
+
+<script>
+(function () {
+  const NOTES = [
+    ["Cold open", "Let me ask you a question. Have you ever posted something you were genuinely proud of and watched it get 300 views? Or run ads and felt like you were paying to be ignored? Or seen someone with half your quality blow up while you’re still explaining what you do? Or maybe you’ve paid for promotion before, the numbers went up, and nothing in your business actually changed. Maybe you just feel like you’re making content for the same 50 people over and over, and you’re tired."],
+    ["Diagnosis", "If that sounds at least familiar, you have what we call a distribution problem. The thing you make is fine, but almost nobody is seeing it. It’s the number one reason good artists stay small, it’s why good products don’t sell, and it’s why most people quit posting."],
+    ["What I noticed", "After running campaigns for brands and artists for the last year, I’ve noticed one very common theme that separates the ones who grow fast from the ones who stay stuck. Most people think they have a content problem, when in reality they have a distribution problem."],
+    ["Definition", "Distribution is simply how many people see what you make, how often, and whether they’re the right people. If distribution is broken, nothing downstream works. For some, this shows up at launch, when the thing finally drops and it goes nowhere. For others, it’s when they start paying for ads and realise the cost keeps climbing. Or they’ve got great reviews, great music, a great product, and they still can’t explain why nobody knows."],
+    ["Picture it", "Your content is a shop. Could be the best shop in the city. But if it’s on a street nobody walks down, the quality of the shop doesn’t matter. Distribution is the street."],
+    ["How I know", "I know this because I had it. I built this agency from my own content. Every client we’ve ever signed came from someone seeing a video of mine. And the thing I learned doing that is that one person posting, however good, hits a ceiling. The same video on one page gets seen once. The same video on a hundred pages gets seen a hundred times by a hundred different audiences. That’s the difference between content and distribution."],
+    ["Where it got us", "Once I fixed that, we went from nothing to running campaigns for Walmart, Wale, and Jake and Logan Paul, with a network of around three thousand creators posting for our clients. We’ve done this for music, for consumer brands, for fintech, for personal brands. Probably something like yours. If you sell a product, a service, a ticket or a stream, we’ve worked with businesses like yours many times."],
+    ["Proof", "Here is what that looks like on real campaigns. Walmart’s beauty box: three million views at an effective CPM of two dollars thirty. The Mannywellz and Wale release: nineteen creators, four point six million views, at forty eight cents per thousand. Paul American, the show from Jake and Logan Paul: clippers reposted clips from two episodes for eleven point two million views at a dollar seventy eight. And Kojo Blak: clippers earned two dollars per thousand views and the songs did one point nine million views. He later won Best New Ghanaian Artist."],
+    ["Where it breaks", "A distribution problem presents itself in four main areas. Number one, reach. You post and it dies at your followers. Number two, frequency. Someone sees you once and never again, so you never become familiar. Number three, audience. Your content reaches people, but the wrong ones. Number four, conversion. People see you, but nothing you post gives them a reason to act."],
+    ["The painful part", "Here’s the painful part. The better your content gets, the worse this feels. Because you’ve done the work. You’ve got the quality. And it’s still not moving. So you polish more, you post less, and the problem gets bigger."],
+    ["The lesson", "Here’s what I’ve learned. As soon as you have a repeatable system for getting your content in front of the right people, over and over, growth stops being luck. Whether you’re an artist or a brand, it’s the same mechanism."],
+    ["The question", "Most people in your position ask a version of the same question. How do I get seen without going viral? How do I get seen without burning money on ads? And the answer is, it depends on where your distribution is breaking. But the good news is, whichever of the four it is, there’s a system for it."],
+    ["How our campaigns work", "That’s why we built our campaigns the way we did. Instead of you posting on one page and hoping, your content goes out across a network of creators and pages built around your audience. They only get paid when the post actually gets watched. Every post is checked before it goes out. You see all of it live. But this isn’t a magic button. If there was one thing that fixed distribution overnight, everyone would do it. There’s a process. We work directly on your content, your audience, your goal. And you leave with a plan that’s specific to you, not a template."],
+    ["Imagine this instead", "Instead of one post on one page that dies in a day, your content is on fifty pages at once. People see you on Monday, again on Wednesday, again the week after. Your name starts to feel familiar to people who’ve never met you. And when you drop something, there’s already an audience waiting. That’s the end goal."],
+    ["Straight talk", "Now, I can’t promise fireworks. It works on what you put in. If the content’s bad, distribution just shows more people that it’s bad. But we can show you how we do it, and how we’ve done it across all these different kinds of businesses."],
+    ["The cost of waiting", "Every month you stay invisible, you’re not building an audience. You’re paying rent on a shop nobody walks past. And if you want to keep doing it that way, that’s completely fine. As long as you understand that’s what you’re choosing. There’s never a perfect time. These problems compound. It’s like, my foot hurts, when should I see the doctor. When it hurts less? No. The best time to fix it is today. And plenty of people come to us mid-launch, mid-tour, mid-busy season. If you can fix distribution while you’re busy, it’s easy when you’re not."],
+    ["Next step", "The people who book a call with us tend to be the ones who are done waiting for the algorithm to notice them. They want to build something that gets seen on purpose. So when you book a call, we’ll figure out whether this is a fit, both ways. We take on a limited number of new campaigns a month, so if it is a fit, we’ll find a time that works for you. If you want our team’s help, the people who actually run these campaigns, book a call. And if it is a fit, can’t wait to meet you."]
+  ];
+  const CLIPS = ["walmart_a","walmart_b","walmart_c","walmart_d","walmart_e","wale_a","wale_b","wale_main","manny_a","manny_b","kojo_a","kojo_b","paul_a","paul_b"];
+  // Walls of real clip posters.
+  document.querySelectorAll("[data-wall]").forEach((w) => {
+    const n = +w.dataset.wall;
+    for (let i = 0; i < n; i++) { const d = document.createElement("div"); d.className = "phone"; const im = document.createElement("img"); im.src = "clips/" + CLIPS[(i * 5 + 3) % CLIPS.length] + ".jpg"; im.alt = ""; d.appendChild(im); w.appendChild(d); }
+  });
+
+  const stage = document.getElementById("stage"), world = document.getElementById("world"), links = document.getElementById("links");
+  const frames = Array.from(document.querySelectorAll(".frame"));
+  const FW = 960, FH = 560, GX = 1150, GY = 760, COLS = 4;
+  // Serpentine layout with a little drift so it reads as a board, not a grid.
+  frames.forEach((f, i) => {
+    const r = Math.floor(i / COLS), c = r % 2 === 0 ? i % COLS : COLS - 1 - (i % COLS);
+    const x = c * GX, y = r * GY + ((i * 7) % 3) * 30;
+    f.dataset.x = x; f.dataset.y = y; f.style.left = x + "px"; f.style.top = y + "px";
+  });
+  const centers = frames.map((f) => ({ x: +f.dataset.x + FW / 2, y: +f.dataset.y + FH / 2 }));
+  let d = "";
+  for (let i = 0; i < centers.length - 1; i++) {
+    const a = centers[i], b = centers[i + 1];
+    if (Math.abs(a.y - b.y) < 200) { const mx = (a.x + b.x) / 2; d += `M${a.x} ${a.y} C${mx} ${a.y} ${mx} ${b.y} ${b.x} ${b.y} `; }
+    else { const my = (a.y + b.y) / 2; d += `M${a.x} ${a.y} C${a.x} ${my} ${b.x} ${my} ${b.x} ${b.y} `; }
+  }
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", d); links.appendChild(path);
+  const bounds = { x: 0, y: 0, w: Math.max(...frames.map((f) => +f.dataset.x)) + FW, h: Math.max(...frames.map((f) => +f.dataset.y)) + FH };
+
+  let cam = { x: 0, y: 0, s: 1 }, idx = -1, fly = true;
+  function apply() { world.style.transform = `translate(${cam.x}px, ${cam.y}px) scale(${cam.s})`; }
+  function fit(rect, pad) {
+    const vw = stage.clientWidth, vh = stage.clientHeight;
+    const s = Math.min((vw - pad * 2) / rect.w, (vh - pad * 2) / rect.h);
+    cam = { s, x: (vw - rect.w * s) / 2 - rect.x * s, y: (vh - rect.h * s) / 2 - rect.y * s };
+    world.classList.toggle("fly", fly); apply();
+  }
+  function playClips() {
+    frames.forEach((f, k) => f.querySelectorAll("video").forEach((v) => {
+      if (k === idx) { v.muted = true; if (!v.getAttribute("src") && v.dataset.src) v.src = v.dataset.src; v.play().catch(() => {}); }
+      else v.pause();
+    }));
+  }
+  function go(i) {
+    idx = Math.max(0, Math.min(frames.length - 1, i));
+    frames.forEach((f, k) => f.classList.toggle("active", k === idx));
+    const f = frames[idx];
+    const pad = Math.min(stage.clientWidth, stage.clientHeight) < 600 ? 14 : 48;
+    fit({ x: +f.dataset.x - 24, y: +f.dataset.y - 24, w: FW + 48, h: FH + 48 }, pad);
+    document.getElementById("count").textContent = (idx + 1) + " / " + frames.length;
+    document.getElementById("bar").style.width = ((idx + 1) / frames.length * 100) + "%";
+    document.getElementById("ntitle").textContent = (idx + 1) + ". " + NOTES[idx][0];
+    document.getElementById("ntext").innerHTML = NOTES[idx][1].split(/(?<=\.)\s+(?=[A-Z“])/).map((p) => "<p>" + p + "</p>").join("");
+    Array.from(document.querySelectorAll("#list button")).forEach((b, k) => b.classList.toggle("on", k === idx));
+    playClips();
+    try { localStorage.setItem("db.frame", String(idx)); } catch (e) {}
+  }
+  function overview() { idx = -1; frames.forEach((f) => f.classList.remove("active")); fit({ x: -60, y: -60, w: bounds.w + 120, h: bounds.h + 120 }, 24); document.getElementById("count").textContent = "Overview"; playClips(); }
+  const hint = document.getElementById("hint");
+  function hideHint() { hint.style.opacity = "0"; }
+
+  const list = document.getElementById("list");
+  frames.forEach((f, k) => { const b = document.createElement("button"); b.innerHTML = `<i>${String(k + 1).padStart(2, "0")}</i>${NOTES[k][0]}`; b.addEventListener("click", () => { go(k); }); list.appendChild(b); });
+
+  const notes = document.getElementById("notes");
+  const toggle = (el) => { el.hidden = !el.hidden; };
+  document.getElementById("bPrev").addEventListener("click", () => go(idx - 1));
+  document.getElementById("bNext").addEventListener("click", () => go(idx + 1));
+  document.getElementById("bOver").addEventListener("click", overview);
+  document.getElementById("bList").addEventListener("click", () => toggle(list));
+  document.getElementById("bNotes").addEventListener("click", () => toggle(notes));
+  document.getElementById("bClean").addEventListener("click", () => document.body.classList.toggle("clean"));
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    const k = e.key;
+    if (k === "ArrowRight" || k === " " || k === "PageDown" || k === "Enter") { e.preventDefault(); hideHint(); go(idx + 1); }
+    else if (k === "ArrowLeft" || k === "PageUp" || k === "Backspace") { e.preventDefault(); go(idx - 1); }
+    else if (k === "o" || k === "O") overview();
+    else if (k === "n" || k === "N") toggle(notes);
+    else if (k === "l" || k === "L") toggle(list);
+    else if (k === "h" || k === "H") document.body.classList.toggle("clean");
+    else if (k === "Home") go(0);
+    else if (k === "End") go(frames.length - 1);
+  });
+
+  let drag = null, moved = false;
+  stage.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; moved = false; stage.setPointerCapture(e.pointerId); });
+  stage.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 6) { moved = true; stage.classList.add("dragging"); world.classList.remove("fly"); cam.x = drag.cx + dx; cam.y = drag.cy + dy; apply(); }
+  });
+  stage.addEventListener("pointerup", (e) => {
+    stage.classList.remove("dragging");
+    if (drag && !moved) {
+      hideHint();
+      const f = e.target.closest && e.target.closest(".frame");
+      if (f) { const k = frames.indexOf(f); go(k === idx ? idx + 1 : k); } else go(idx + 1);
+    }
+    drag = null;
+  });
+  stage.addEventListener("pointercancel", () => { drag = null; stage.classList.remove("dragging"); });
+  stage.addEventListener("wheel", (e) => {
+    e.preventDefault(); world.classList.remove("fly");
+    const z = Math.exp(-e.deltaY * 0.0015), ns = Math.max(0.05, Math.min(3, cam.s * z));
+    const r = ns / cam.s;
+    cam = { s: ns, x: e.clientX - (e.clientX - cam.x) * r, y: e.clientY - (e.clientY - cam.y) * r }; apply();
+  }, { passive: false });
+  window.addEventListener("resize", () => { if (idx >= 0) go(idx); else overview(); });
+
+  let start = 0;
+  try { const v = localStorage.getItem("db.frame"); if (v !== null) start = Math.min(frames.length - 1, +v); } catch (e) {}
+  fly = false; overview(); fly = true;
+  setTimeout(() => go(start), 500);
+  setTimeout(hideHint, 9000);
+})();
+</script>
+
+</body></html>
