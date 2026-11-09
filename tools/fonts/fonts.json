@@ -1,0 +1,50 @@
+[
+ {
+  "family": "Archivo",
+  "weight": "400",
+  "style": "normal",
+  "file": "Archivo-400.ttf"
+ },
+ {
+  "family": "Archivo",
+  "weight": "500",
+  "style": "normal",
+  "file": "Archivo-500.ttf"
+ },
+ {
+  "family": "Archivo",
+  "weight": "600",
+  "style": "normal",
+  "file": "Archivo-600.ttf"
+ },
+ {
+  "family": "Archivo",
+  "weight": "700",
+  "style": "normal",
+  "file": "Archivo-700.ttf"
+ },
+ {
+  "family": "Archivo",
+  "weight": "800",
+  "style": "normal",
+  "file": "Archivo-800.ttf"
+ },
+ {
+  "family": "EB Garamond",
+  "weight": "400",
+  "style": "italic",
+  "file": "EBGaramond-400i.ttf"
+ },
+ {
+  "family": "EB Garamond",
+  "weight": "400",
+  "style": "normal",
+  "file": "EBGaramond-400.ttf"
+ },
+ {
+  "family": "EB Garamond",
+  "weight": "500",
+  "style": "normal",
+  "file": "EBGaramond-500.ttf"
+ }
+]
