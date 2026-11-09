@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-09
 
+- Client reports load fonts from the app, not Google; email footer can carry the postal address · Requested by: owner · Made by: Claude Code session …oZc8T8 · 687a61f
 - Change log: every change with who asked and who made it, deploys, and staff actions in the admin · Requested by: owner · Made by: Claude Code session …oZc8T8 · f9c3851
 - Add the runbook for running the platform from a new Claude Code account; bring the handover up to date · Requested by: owner · Made by: Claude Code session …oZc8T8 · 7b87b49
 
