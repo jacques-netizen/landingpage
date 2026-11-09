@@ -124,6 +124,7 @@ Set the same values on the web and worker services.
 | `STORAGE_ENDPOINT`, `STORAGE_BUCKET`, `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY`, `STORAGE_REGION` | S3-compatible bucket for uploads. Unset: files up to 25 MB are kept in Postgres |
 | `ADMIN_EMAIL` | Comma-separated addresses that become admin when they sign in |
 | `BRAND_NAME`, `LEGAL_ENTITY`, `CONTACT_EMAIL`, `SUPPORT_DISCORD_URL` | Shown in the interface and emails |
+| `BUSINESS_ADDRESS` | The company postal address, printed in every email footer (one line) |
 | `STRIPE_*`, `PAYPAL_*`, `META_*`, `TIKTOK_*`, `SENTRY_DSN` | Reserved; not in use yet |
 
 Test-only, never in production: `MOCK_PROVIDER`, `MOCK_PROVIDER_FILE`, `EMAIL_DEV_OUTBOX`,

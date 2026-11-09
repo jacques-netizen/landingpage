@@ -40,6 +40,9 @@ export const envSchema = z.object({
   ANTHROPIC_API_KEY: optional,
   BRAND_NAME: z.string().default('BRAND_NAME'),
   LEGAL_ENTITY: z.string().default('LEGAL_ENTITY'),
+  // The company's postal address, printed in every email's footer (2026-11-09: the US CAN-SPAM Act asks
+  // for one in commercial email, such as new campaign alerts). One line; empty prints none.
+  BUSINESS_ADDRESS: optional,
   CONTACT_EMAIL: z.string().default('CONTACT_EMAIL'),
   SUPPORT_DISCORD_URL: optional,
   APP_URL: z.string().url().default('http://localhost:3000'),
@@ -70,6 +73,7 @@ export function brand() {
   return {
     name: e.BRAND_NAME,
     legalEntity: e.LEGAL_ENTITY,
+    businessAddress: e.BUSINESS_ADDRESS ?? null,
     contactEmail: e.CONTACT_EMAIL,
     supportDiscordUrl: e.SUPPORT_DISCORD_URL,
   }

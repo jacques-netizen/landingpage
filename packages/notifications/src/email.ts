@@ -26,18 +26,19 @@ export function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 }
 
-// Every email has a plain text version and the legal entity in the footer, and notification emails
+// Every email has a plain text version and the legal entity (and postal address, when set) in the footer, and notification emails
 // a one-click link to change preferences. Subjects never contain money amounts or reasons.
 export function withFooter(email: Email): Email {
-  const { legalEntity } = brand()
+  const { legalEntity, businessAddress } = brand()
+  const who = businessAddress ? `${legalEntity}, ${businessAddress}` : legalEntity
   const prefsText = email.preferencesUrl ? `\nChange or stop these emails: ${email.preferencesUrl}` : ''
   const prefsHtml = email.preferencesUrl
     ? `<p style="font:13px Archivo,Arial,sans-serif;color:#6E675C"><a href="${escapeHtml(email.preferencesUrl)}" style="color:#6E675C">Change or stop these emails</a></p>`
     : ''
   return {
     ...email,
-    text: `${email.text}\n\n--\n${legalEntity}${prefsText}`,
-    html: `${email.html}<hr style="border:0;border-top:1px solid #E0D6C6;margin:32px 0 16px"><p style="font:13px Archivo,Arial,sans-serif;color:#6E675C">${escapeHtml(legalEntity)}</p>${prefsHtml}`,
+    text: `${email.text}\n\n--\n${who}${prefsText}`,
+    html: `${email.html}<hr style="border:0;border-top:1px solid #E0D6C6;margin:32px 0 16px"><p style="font:13px Archivo,Arial,sans-serif;color:#6E675C">${escapeHtml(who)}</p>${prefsHtml}`,
   }
 }
 

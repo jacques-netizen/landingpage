@@ -419,9 +419,7 @@ export function renderReport(data: ReportData, spec: ReportSpec, o: RenderOption
 ${o.baseHref ? `<base href="${esc(o.baseHref)}">\n` : ''}<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>${esc(spec.artist)} &middot; ${title} &middot; Maison d'&Eacute;lites</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="/fonts/report-fonts.css" rel="stylesheet">
 <style>
 ${REPORT_CSS}
 ${EXTRA_CSS}
