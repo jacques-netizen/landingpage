@@ -65,6 +65,8 @@ export const users = pgTable(
     // Notification preferences (03_SYSTEMS.md section 9): email is on by default; new campaign alerts can be switched off.
     notifyEmail: boolean('notify_email').notNull().default(true),
     notifyNewCampaigns: boolean('notify_new_campaigns').notNull().default(true),
+    // Staff only (owner, 2026-11-10): finance and admins hear when a clipper adds or changes a payout method.
+    notifyPayoutChanges: boolean('notify_payout_changes').notNull().default(true),
     ...timestamps,
   },
   () => [check('users_status_check', inList('status', USER_STATUSES))],

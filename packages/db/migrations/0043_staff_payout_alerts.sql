@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "notify_payout_changes" boolean DEFAULT true NOT NULL;

@@ -302,6 +302,13 @@
       "when": 1794238625638,
       "tag": "0042_deploys",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1794271346049,
+      "tag": "0043_staff_payout_alerts",
+      "breakpoints": true
     }
   ]
 }

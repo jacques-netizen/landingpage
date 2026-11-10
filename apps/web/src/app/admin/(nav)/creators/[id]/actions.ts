@@ -1,9 +1,11 @@
 'use server'
 
 import { db } from '@mde/db'
+import { sendStaffMessage, StaffMessageError } from '@mde/notifications'
 import { issueWarning, ReviewError, setStaffNotes, setSuspended } from '@mde/review'
 import { revalidatePath } from 'next/cache'
 import { requireStaff } from '@/server/guard'
+import type { MessageState } from '../../_components/message-form'
 
 export type CreatorFormState = { error?: string; ok?: string }
 
@@ -52,4 +54,20 @@ export async function notesAction(id: string, _p: CreatorFormState, form: FormDa
     await setStaffNotes(db(), viewer.id, id, String(form.get('notes') ?? ''))
     return done(id, 'Notes saved.')
   })
+}
+
+/** A message to this clipper, in the app and by email, without a warning or strike (owner, 2026-11-10). */
+export async function messageAction(id: string, _p: MessageState, form: FormData): Promise<MessageState> {
+  const viewer = await requireStaff('staff', `/admin/creators/${id}`)
+  try {
+    const sent = await sendStaffMessage(db(), viewer.id, [id], {
+      title: String(form.get('title') ?? ''),
+      body: String(form.get('body') ?? ''),
+    })
+    if (!sent) return { error: 'This account is closed, so the message was not sent.' }
+    return { ok: 'Message sent.', sent }
+  } catch (e) {
+    if (e instanceof StaffMessageError) return { error: e.message }
+    throw e
+  }
 }

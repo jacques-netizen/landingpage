@@ -20,6 +20,8 @@ export type NotificationKind =
   | 'campaign_event'
   | 'payout_failed'
   | 'view_proof'
+  | 'payout_method_changed'
+  | 'staff_message'
 
 export async function notify(
   d: DbOrTx,

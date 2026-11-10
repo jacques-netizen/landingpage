@@ -1,8 +1,11 @@
-import { db } from '@mde/db'
+import { db, tables } from '@mde/db'
 import { listNotifications, markAllRead } from '@mde/notifications'
 import { EmptyState } from '@mde/ui'
+import { eq } from 'drizzle-orm'
 import { requireStaff } from '@/server/guard'
+import { hasAccess } from '@/server/viewer'
 import { AdminPage } from '../_components/ui'
+import { PayoutAlertsForm } from './alerts-form'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,8 +18,16 @@ export default async function StaffNotificationsPage() {
   const d = db()
   const rows = await listNotifications(d, viewer.id)
   await markAllRead(d, viewer.id)
+  const money = hasAccess(viewer, 'money')
+  const [prefs] = money
+    ? await d
+        .select({ payout: tables.users.notifyPayoutChanges, email: tables.users.notifyEmail })
+        .from(tables.users)
+        .where(eq(tables.users.id, viewer.id))
+    : []
   return (
-    <AdminPage title="Notifications" lead="New appeals, deadlines, funding and campaign events.">
+    <AdminPage title="Notifications" lead="New appeals, deadlines, funding, campaign events and payout method changes.">
+      {money && prefs ? <PayoutAlertsForm on={prefs.payout} emailOn={prefs.email} /> : null}
       {rows.length === 0 ? (
         <EmptyState body="No notifications yet." />
       ) : (

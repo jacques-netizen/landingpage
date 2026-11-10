@@ -132,6 +132,14 @@ test('a creator withdraws to a bank account; staff pay it with the bank referenc
   await dialog.getByLabel('State (optional)').fill('NY')
   await dialog.getByRole('button', { name: 'Save payout method' }).click()
   await expect(page.getByText('Bank transfer, Chase Bank, ending 6789 (United States)').first()).toBeVisible()
+  // Finance and admins are told, with the account number shortened (owner, 2026-11-10).
+  const [alert] = await sql`
+    select n.title, n.body, n.link from notifications n join users u on u.id = n.user_id
+    where u.email = 'finance@seed.invalid' and n.kind = 'payout_method_changed' and n.link = ${`/admin/creators/${me.id}`}`
+  expect(alert).toMatchObject({
+    title: `@${me.username} added a payout method`,
+    body: 'Bank transfer, Chase Bank, ending 6789 (United States).',
+  })
 
   await page.getByRole('link', { name: /^Withdraw\s*→/ }).click()
   await page.getByRole('dialog', { name: 'Withdraw' }).getByRole('button', { name: 'Request withdrawal' }).click()
