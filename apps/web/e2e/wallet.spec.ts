@@ -85,10 +85,10 @@ test('admins credit a user, who withdraws to a crypto wallet set up in three ste
   await page.goto('/admin/payouts?show=send')
   const sendRow = page.getByRole('region').filter({ hasText: me.email })
   await sendRow.getByLabel('Transaction hash').fill('not-a-hash')
-  await sendRow.getByRole('button', { name: 'Mark paid' }).click()
-  await expect(sendRow.getByText('Paste the transaction hash', { exact: false })).toBeVisible()
+  await sendRow.getByRole('button', { name: 'Mark as sent' }).click()
+  await expect(sendRow.getByText('That is not a transaction hash on this network.', { exact: false })).toBeVisible()
   await sendRow.getByLabel('Transaction hash').fill('a'.repeat(64))
-  await sendRow.getByRole('button', { name: 'Mark paid' }).click()
+  await sendRow.getByRole('button', { name: 'Mark as sent' }).click()
   await expect(sendRow).toHaveCount(0)
   const [done] = await sql`select status, partner_reference from withdrawals where id = ${req!.id}`
   expect(done).toMatchObject({ status: 'paid', partner_reference: 'a'.repeat(64) })
@@ -96,6 +96,39 @@ test('admins credit a user, who withdraws to a crypto wallet set up in three ste
   expect(all.map((n) => n.title)).toEqual(
     expect.arrayContaining(['Your withdrawal is verified', 'Your withdrawal was sent']),
   )
+})
+
+test('staff mark a withdrawal sent in one step, without a reference, and the creator sees Sent', async ({ page }) => {
+  const me = await signUpWithUsername(page)
+  await creditThroughAdmin(page, me.username, '20')
+  await signBackIn(page, me.email)
+  await page.getByRole('link', { name: /^Add payout method/ }).click()
+  const dialog = page.getByRole('dialog', { name: 'Add payout method' })
+  await dialog.getByRole('button', { name: 'USDT', exact: true }).click()
+  await dialog.getByRole('button', { name: 'Tron (TRC-20)', exact: true }).click()
+  await dialog.getByLabel('Wallet address').fill('TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE')
+  await dialog.getByRole('button', { name: 'Save payout method' }).click()
+  await expect(page.getByText('USDT on Tron (TRC-20), TQn9Y2…bLSE').first()).toBeVisible()
+  await page.getByRole('link', { name: /^Withdraw\s*→/ }).click()
+  await page.getByRole('dialog', { name: 'Withdraw' }).getByRole('button', { name: 'Request withdrawal' }).click()
+  await expect(page.getByText('Verifying').first()).toBeVisible()
+
+  // Straight from "To verify": staff already sent it, so they mark it sent with no hash.
+  await signInAs(page, 'finance@seed.invalid')
+  await page.goto('/admin/payouts')
+  const row = page.getByRole('region').filter({ hasText: me.email })
+  await row.getByRole('button', { name: 'Mark as sent' }).click()
+  await expect(row).toHaveCount(0)
+  const [w] = await sql`select status, partner_reference from withdrawals where creator_id = ${me.id}`
+  expect(w).toMatchObject({ status: 'paid', partner_reference: '' })
+  const [paid] = await sql`
+    select count(*)::int as n from ledger_transactions t join withdrawals w on w.id = t.payout_id
+    where w.creator_id = ${me.id} and t.kind = 'withdrawal_paid'`
+  expect(paid!.n).toBe(1)
+
+  await signBackIn(page, me.email)
+  await page.getByText('Withdrawals', { exact: true }).click()
+  await expect(page.getByText('Sent', { exact: true }).first()).toBeVisible()
 })
 
 test('a creator withdraws to a bank account; staff pay it with the bank reference', async ({ page }) => {
@@ -159,7 +192,7 @@ test('a creator withdraws to a bank account; staff pay it with the bank referenc
   await page.goto('/admin/payouts?show=send')
   const sendRow = page.getByRole('region').filter({ hasText: me.email })
   await sendRow.getByLabel('Bank reference').fill('WIRE-2026-001')
-  await sendRow.getByRole('button', { name: 'Mark paid' }).click()
+  await sendRow.getByRole('button', { name: 'Mark as sent' }).click()
   await expect(sendRow).toHaveCount(0)
   const [done] = await sql`select status, partner_reference from withdrawals where id = ${req!.id}`
   expect(done).toMatchObject({ status: 'paid', partner_reference: 'WIRE-2026-001' })

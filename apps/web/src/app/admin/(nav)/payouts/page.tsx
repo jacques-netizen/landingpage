@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 const TABS = {
   verify: { label: 'To verify', statuses: ['requested'] },
   send: { label: 'To send', statuses: ['approved', 'in_batch', 'sent'] },
-  paid: { label: 'Paid', statuses: ['paid'] },
+  paid: { label: 'Sent', statuses: ['paid'] },
   returned: { label: 'Returned', statuses: ['failed', 'cancelled'] },
 } as const
 type Tab = keyof typeof TABS

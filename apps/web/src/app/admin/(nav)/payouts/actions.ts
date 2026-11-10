@@ -34,23 +34,27 @@ export async function payoutAction(id: string, _prev: PayoutState, form: FormDat
       return { ok: 'Verified. Send it from the company wallet, then mark it paid.' }
     }
     if (what === 'paid') {
+      // Mark as sent (owner, 2026-11-10: clippers were confused while a withdrawal staff had already
+      // sent still read "Processing"). The hash or bank reference is optional; when given it is checked.
+      // From "To verify" it verifies and marks sent in one step. Same money engine steps as before.
       const hash = String(form.get('hash') ?? '').trim()
-      if (!w.destination || !validTransaction(w.destination, hash))
+      if (hash && (!w.destination || !validTransaction(w.destination, hash)))
         return {
           error: parseBank(w.destination)
-            ? 'Paste the bank transfer reference.'
-            : 'Paste the transaction hash from the network this wallet is on.',
+            ? 'That bank reference looks wrong. Fix it, or leave the box empty.'
+            : 'That is not a transaction hash on this network. Fix it, or leave the box empty.',
         }
+      if (w.status === 'requested') await approveWithdrawal(store, { withdrawalId: id, actorId: viewer.id })
       await markWithdrawalPaid(store, { withdrawalId: id, partnerReference: hash, actorId: viewer.id })
       await notify(d, w.creatorId, 'withdrawal_status', {
         title: 'Your withdrawal was sent',
         body: parseBank(w.destination)
           ? `${amount} is on its way to your bank account. Bank transfers can take a few working days.`
           : `${amount} in stablecoins is on its way to your wallet. It can take a few minutes to arrive.`,
-        link: explorerLink(w.destination, hash) ?? '/wallet',
+        link: (hash && explorerLink(w.destination, hash)) || '/wallet',
       })
       revalidatePath('/admin/payouts')
-      return { ok: 'Marked paid. The creator was told.' }
+      return { ok: 'Marked as sent. The creator now sees Sent and was told.' }
     }
     if (what === 'reject') {
       const reason = String(form.get('reason') ?? '').trim()
