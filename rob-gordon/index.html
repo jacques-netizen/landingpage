@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Rob Gordon &middot; 90-Day Growth Plan &middot; Maison d'&Eacute;lites</title>
+<script>try{var t=localStorage.getItem('mde-theme');if(t==='glass')document.documentElement.setAttribute('data-theme','glass');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --band:#1F1911; --card:#1F1911; --card-on-band:#15120D; --card-2:#261F15; --track:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --accent:#D4B26A; --num:#EBD69E; --on-gold:#15120D;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+    --bad:#E0705A; --bad-bg:rgba(224,112,90,.10); --bad-line:rgba(224,112,90,.45);
+    --good:#6FC08E; --good-bg:rgba(111,192,142,.10); --good-line:rgba(111,192,142,.45);
+    --blur:none; --card-shadow:none; --grain:0.04;
+    --hero-glow:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%);
+  }
+  html[data-theme="glass"]{
+    --bg:#EEE7DB; --band:rgba(255,255,255,.20); --card:rgba(255,255,255,.46); --card-on-band:rgba(255,255,255,.50); --card-2:rgba(255,255,255,.66); --track:rgba(120,96,50,.16);
+    --text:#1E1912; --mute:#665B48; --dim:#978B76;
+    --gold:#A67F33; --accent:#8A6722; --num:#7A5A1A; --on-gold:#FFFDF8;
+    --hair:rgba(120,96,50,.30); --hair-soft:rgba(255,255,255,.80);
+    --bad:#C0492F; --bad-bg:rgba(192,73,47,.10); --bad-line:rgba(192,73,47,.45);
+    --good:#2B8552; --good-bg:rgba(43,133,82,.10); --good-line:rgba(43,133,82,.45);
+    --blur:blur(22px) saturate(1.5); --card-shadow:0 14px 44px -22px rgba(90,66,20,.45), inset 0 1px 0 rgba(255,255,255,.85); --grain:0.025;
+    --hero-glow:none;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .5s,color .5s}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:var(--grain);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* glass backdrop: soft colour fields behind frosted panels */
+  .backdrop{position:fixed;inset:0;z-index:-1;opacity:0;transition:opacity .6s;pointer-events:none;
+    background:
+      radial-gradient(42% 36% at 12% 8%,rgba(236,196,112,.85),transparent 70%),
+      radial-gradient(36% 40% at 88% 18%,rgba(255,168,134,.60),transparent 70%),
+      radial-gradient(46% 42% at 74% 86%,rgba(146,178,255,.55),transparent 70%),
+      radial-gradient(40% 40% at 8% 82%,rgba(196,166,255,.45),transparent 70%),
+      #EEE7DB}
+  html[data-theme="glass"] .backdrop{opacity:1}
+  html[data-theme="glass"]{background:#EEE7DB}
+  html[data-theme="glass"] body{background:transparent}
+  ::selection{background:var(--gold);color:var(--on-gold)}
+  img{display:block;max-width:100%}
+  button{font:inherit;color:inherit}
+  a{color:inherit}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:27ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .section{padding:clamp(4.2rem,10vh,7rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3rem 0 1.2rem}
+  .band{background:var(--band)}
+  /* every panel is a .card so both themes style it in one place */
+  .card{background:var(--card);border:1px solid var(--hair-soft);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:var(--card-shadow);transition:background .5s,border-color .4s,transform .4s}
+  .band .card{background:var(--card-on-band)}
+  html[data-theme="glass"] .card{border-radius:16px}
+  .k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--num));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.66rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--accent);border-color:var(--accent);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text);background:var(--card-2);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* theme switch */
+  .theme{position:fixed;top:0.9rem;right:clamp(1rem,4vw,2.4rem);z-index:9997;display:flex;gap:3px;padding:3px;border-radius:999px;background:var(--card-2);border:1px solid var(--hair);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px -12px rgba(0,0,0,.5)}
+  .theme button{border:0;background:none;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.5rem 0.9rem;border-radius:999px;color:var(--mute);transition:.3s}
+  .theme button.on{background:var(--gold);color:var(--on-gold)}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;background:var(--hero-glow)}
+  .hero-top{position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
+  .mark b{color:var(--num);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.1fr 0.9fr;gap:2.4rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3rem,8.4vw,7.2rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.36em;letter-spacing:0.02em;color:var(--num);margin-top:0.7rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.88;margin-top:1.8rem;max-width:44ch;line-height:1.5}
+  .hero-sub b{color:var(--num);font-weight:500}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .ramp{padding:1.5rem 1.4rem;max-width:440px;width:100%;justify-self:center}
+  .ramp-top{display:flex;align-items:center;gap:0.9rem;padding-bottom:1.1rem;border-bottom:1px solid var(--hair)}
+  .ramp-top img{width:54px;height:54px;border-radius:50%;border:2px solid var(--gold)}
+  .ramp-top b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .ramp-top span{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .ramp-bars{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;align-items:end;height:210px;margin-top:1.3rem}
+  .rb{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+  .rb .rv2{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.5rem,3.2vw,2.1rem);color:var(--num);line-height:1}
+  .rb .rs{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin:0.2rem 0 0.5rem}
+  .rb i{display:block;height:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--num),var(--gold));transition:height 1.4s cubic-bezier(.2,.7,.2,1)}
+  .rb .rm{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-top:0.6rem}
+
+  /* ============ 01 GOAL ============ */
+  .parts{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .part{padding:1.6rem 1.4rem;position:relative;overflow:hidden;text-decoration:none;display:block}
+  .part:hover{transform:translateY(-5px);border-color:var(--hair)}
+  .part .pn{font-family:'Archivo',sans-serif;font-weight:800;font-size:3rem;line-height:0.85;color:var(--track);transition:color .4s}
+  .part:hover .pn{color:var(--gold)}
+  .part h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.15rem;margin-top:1rem;line-height:1.25}
+  .part .pw{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-top:0.7rem}
+  .after{margin-top:1rem;padding:1.2rem 1.4rem;border-left:3px solid var(--gold);font-size:1.05rem}
+  .after b{color:var(--num);font-weight:500}
+
+  /* ============ PROFILE AUDIT ============ */
+  .audit{display:grid;grid-template-columns:1.2fr 0.8fr;gap:1.4rem;margin-top:2.4rem;align-items:start}
+  .shots{display:flex;flex-direction:column;gap:0.9rem;position:sticky;top:4.4rem}
+  .shot{position:relative;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 26px 60px -30px rgba(0,0,0,.8),0 0 0 1px var(--hair)}
+  .shot img{width:100%}
+  .shot .cap{position:absolute;right:0.7rem;bottom:0.7rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.3rem 0.55rem;border-radius:999px;background:rgba(21,18,13,.82);color:#EFE7D5}
+  .pin{position:absolute;transform:translate(-50%,-50%);width:clamp(16px,1.7vw,22px);height:clamp(16px,1.7vw,22px);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(0.52rem,0.9vw,0.7rem);color:#fff;cursor:pointer;padding:0;transition:transform .25s,box-shadow .25s;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+  .hb{position:absolute;border:2px solid;border-radius:6px;pointer-events:none;transition:box-shadow .3s,background .3s}
+  .hb.bad{border-color:#D4553C;background:rgba(212,85,60,.10)}
+  .hb.good{border-color:#2F9460;background:rgba(47,148,96,.10)}
+  .hb.miss{border-style:dashed;background:repeating-linear-gradient(135deg,rgba(212,85,60,.16) 0 6px,rgba(212,85,60,.04) 6px 12px)}
+  .hb.on.bad{box-shadow:0 0 0 4px rgba(212,85,60,.28);background:rgba(212,85,60,.2)}
+  .hb.on.good{box-shadow:0 0 0 4px rgba(47,148,96,.28);background:rgba(47,148,96,.2)}
+  .pin.bad{background:#D4553C}
+  .pin.good{background:#2F9460}
+  .pin:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid currentColor;opacity:0}
+  .pin.bad:before{color:#D4553C}.pin.good:before{color:#2F9460}
+  .pin.on{transform:translate(-50%,-50%) scale(1.35);z-index:3}
+  .pin.on:before{animation:ping 1.4s ease-out infinite}
+  @keyframes ping{0%{opacity:.9;transform:scale(.7)}100%{opacity:0;transform:scale(1.6)}}
+  .issues{display:flex;flex-direction:column;gap:0.5rem}
+  .issue{display:grid;grid-template-columns:30px 1fr;gap:0.9rem;align-items:start;padding:0.95rem 1.05rem;cursor:pointer;text-align:left;width:100%}
+  .issue .in{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.74rem;color:#fff}
+  .issue.bad .in{background:#D4553C}.issue.good .in{background:#2F9460}
+  .issue .it{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)}
+  .issue .iv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;line-height:1.3;margin-top:0.15rem}
+  .issue.bad .iv{color:var(--bad)}.issue.good .iv{color:var(--good)}
+  .issue .iq{font-size:0.98rem;color:var(--text);opacity:.85;margin-top:0.15rem;line-height:1.45}
+  .issue .iw{font-size:0.95rem;color:var(--mute);margin-top:0.4rem;line-height:1.5;padding-top:0.4rem;border-top:1px solid var(--hair)}
+  .issue .iw b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-right:0.4rem}
+  .issue.bad.on{border-color:var(--bad-line);background:var(--bad-bg)}
+  .issue.good.on{border-color:var(--good-line);background:var(--good-bg)}
+  .visitor{margin-top:1.2rem;padding:1.3rem 1.5rem;border-left:3px solid var(--bad)}
+  .visitor.good{border-left-color:var(--good)}
+  .visitor p{font-size:1.06rem;line-height:1.6;margin-top:0.4rem}
+
+  /* ============ SIDE BY SIDE ============ */
+  .sbs-head{display:grid;grid-template-columns:0.7fr 1fr 1fr;gap:0.6rem;margin-top:2.4rem;align-items:center}
+  .who{display:flex;align-items:center;gap:0.7rem;padding:0.8rem 1rem}
+  .who img{width:38px;height:38px;border-radius:50%}
+  .who b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;display:block;line-height:1.2}
+  .who span{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase}
+  .who.g span{color:var(--good)}.who.b span{color:var(--bad)}
+  .sbs{display:flex;flex-direction:column;gap:0.6rem;margin-top:0.6rem}
+  .row{display:grid;grid-template-columns:0.7fr 1fr 1fr;gap:0.6rem}
+  .row > div{padding:1rem 1.05rem}
+  .row .rp b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;display:block}
+  .row .rp p{font-size:0.93rem;color:var(--mute);margin-top:0.3rem;line-height:1.45}
+  .cell{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;align-items:start;font-size:1.02rem;line-height:1.4}
+  .cell i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:#fff;margin-top:1px}
+  .cell.g{border-color:var(--good-line);background:var(--good-bg)}
+  .cell.g i{background:#2F9460}
+  .cell.b{border-color:var(--bad-line);background:var(--bad-bg)}
+  .cell.b i{background:#D4553C}
+
+  /* ============ NEW PROFILE ============ */
+  .np{display:grid;grid-template-columns:1fr 0.9fr;gap:1.4rem;margin-top:2.2rem;align-items:start}
+  .seg{display:inline-flex;padding:4px;gap:4px;border-radius:999px;margin-top:2rem}
+  .seg button{background:none;border:0;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.7rem 1.1rem;border-radius:999px;color:var(--mute);transition:.3s}
+  .seg button.on{background:var(--gold);color:var(--on-gold)}
+  .ig{padding:1.6rem 1.5rem}
+  .ig-top{display:grid;grid-template-columns:84px 1fr;gap:1.2rem;align-items:center}
+  .ig-top img{width:84px;height:84px;border-radius:50%;border:2px solid var(--gold)}
+  .ig-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem}
+  .ig-st{display:flex;gap:1.1rem;margin-top:0.4rem;font-family:'Archivo',sans-serif;font-size:0.8rem;color:var(--mute)}
+  .ig-st b{color:var(--text)}
+  .ig-body{margin-top:1.1rem;font-family:'Archivo',sans-serif;font-size:0.95rem;line-height:1.6;animation:fadeup .45s ease}
+  .ig-body .nm{font-weight:700}
+  .ig-body .cat{color:var(--mute);font-size:0.86rem}
+  .ig-body .lnk{color:var(--accent);font-weight:700}
+  .ig-body .none{color:var(--bad);font-weight:700;font-size:0.8rem}
+  .slot{display:inline-block;border:1.5px dashed var(--gold);border-radius:6px;padding:0 0.45rem;margin:0.1rem 0.1rem;font-size:0.78rem;font-weight:700;color:var(--accent);background:var(--card-2);white-space:nowrap}
+  .ig-hl{display:flex;gap:1rem;margin-top:1.2rem}
+  .hl{text-align:center;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem}
+  .hl i{display:block;width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);margin:0 auto 0.35rem;background:var(--card-2)}
+  .ig-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1.2rem}
+  .ig-tab{padding:0.8rem 0.9rem;border:1px solid var(--hair);border-radius:10px;font-family:'Archivo',sans-serif;font-size:0.8rem;line-height:1.4}
+  .ig-tab b{display:block;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.2rem}
+  .np-side .note{padding:1.3rem 1.4rem;border-left:3px solid var(--gold);font-size:1.03rem;line-height:1.6}
+  .now{margin-top:1rem;padding:1.3rem 1.4rem}
+  .tick{list-style:none;margin-top:0.7rem}
+  .tick li{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;padding:0.5rem 0;border-top:1px solid var(--hair);font-size:1.02rem}
+  .tick li:first-child{border-top:0}
+  .tick .bx{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--gold);margin-top:4px}
+
+  /* ============ STEPPERS ============ */
+  .stepper{display:grid;grid-template-columns:0.8fr 1.2fr;gap:1rem;margin-top:2.2rem;align-items:start}
+  .st-list{display:flex;flex-direction:column;gap:0.5rem}
+  .st{display:grid;grid-template-columns:44px 1fr;gap:0.9rem;align-items:center;padding:0.85rem 1rem;cursor:pointer;text-align:left;width:100%}
+  .st:hover{border-color:var(--hair)}
+  .st .sn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.82rem;color:var(--mute);width:44px;height:36px;border-radius:999px;border:1.5px solid var(--hair);display:flex;align-items:center;justify-content:center;transition:.3s}
+  .st .stt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;color:var(--mute);transition:.3s;line-height:1.3}
+  .st.on{border-color:var(--gold);background:var(--card-2)}
+  .st.on .sn{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
+  .st.on .stt{color:var(--text)}
+  .st-detail{padding:clamp(1.4rem,3vw,2.1rem);border-left:3px solid var(--gold);min-height:300px}
+  .st-detail .anim{animation:fadeup .45s ease}
+  .st-detail h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.8rem);letter-spacing:-0.015em;margin-top:0.5rem;line-height:1.15}
+  .st-detail p{font-size:1.04rem;line-height:1.62;margin-top:0.8rem;opacity:.92}
+  .st-detail p b{color:var(--num);font-weight:500}
+  .st-detail ul,.st-detail ol{margin:0.8rem 0 0 1.25rem;font-size:1.02rem;line-height:1.55}
+  .st-detail li{padding:0.22rem 0}
+  .st-detail li b{color:var(--num);font-weight:500}
+  .outcome{margin-top:1rem;padding:1.3rem 1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start}
+  .outcome .chips{display:flex;flex-wrap:wrap;gap:0.45rem}
+  .outcome .chips span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;padding:0.45rem 0.75rem;border:1px solid var(--hair);border-radius:999px;background:var(--card-2)}
+  /* buyer card */
+  .bc{list-style:none;margin:0.9rem 0 0!important;display:grid;grid-template-columns:1fr 1fr;gap:0.4rem}
+  .bc li{padding:0!important}
+  .bc button{width:100%;display:grid;grid-template-columns:22px 1fr;gap:0.6rem;align-items:start;text-align:left;padding:0.6rem 0.7rem;border:1px solid var(--hair);border-radius:8px;background:none;cursor:pointer;font-size:0.96rem;line-height:1.35;transition:.25s}
+  .bc button i{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:transparent;margin-top:1px}
+  .bc button.on{border-color:var(--good-line);background:var(--good-bg)}
+  .bc button.on i{background:#2F9460;border-color:#2F9460;color:#fff}
+  .bc-count{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+  .bc-count.ok{color:var(--good)}
+  /* 90 seconds */
+  .ninety{margin-top:1rem;display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:center;padding:1.5rem 1.6rem}
+  .n-ring{position:relative;width:128px;height:128px}
+  .n-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .n-ring circle{fill:none;stroke-width:8}
+  .n-ring .t{stroke:var(--track)}
+  .n-ring .f{stroke:var(--num);stroke-linecap:round;stroke-dasharray:263.9;stroke-dashoffset:0}
+  .n-ring.go .f{animation:drain 9s linear infinite}
+  @keyframes drain{from{stroke-dashoffset:0}to{stroke-dashoffset:263.9}}
+  .n-ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:2rem;color:var(--num);line-height:1}
+  .n-ring b small{font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .ninety p{font-size:1.06rem;line-height:1.6}
+  .ninety p b{color:var(--num);font-weight:500}
+  /* decision */
+  .decide{margin-top:1rem;padding:1.5rem 1.6rem}
+  .decide .dq{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.3;margin-top:0.4rem}
+  .decide .da{margin-top:1rem;padding:1.1rem 1.2rem;border-radius:10px;font-size:1.04rem;line-height:1.6;animation:fadeup .4s ease}
+  .decide .da.no{background:var(--bad-bg);border:1px solid var(--bad-line)}
+  .decide .da.yes{background:var(--good-bg);border:1px solid var(--good-line)}
+  .decide .da b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;display:block;margin-bottom:0.3rem}
+  .decide .da.no b{color:var(--bad)}.decide .da.yes b{color:var(--good)}
+
+  /* ============ RHYTHM ============ */
+  .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-top:2.4rem}
+  .rh{padding:1.2rem 1.2rem;display:grid;grid-template-columns:34px 1fr;gap:0.9rem;align-items:center;font-size:1.03rem;line-height:1.4}
+  .rh i{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.78rem;color:var(--num)}
+  .calls{margin-top:1rem;padding:1.4rem 1.5rem}
+  .cgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:0.9rem}
+  .cgrid div{height:38px;border-radius:6px;background:var(--track);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;color:var(--mute);transition:background .4s,color .4s}
+  .cgrid div.lit{background:var(--gold);color:var(--on-gold)}
+  .cnote{display:flex;justify-content:space-between;margin-top:0.6rem;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+
+  /* ============ TARGETS ============ */
+  .tg{margin-top:1rem;display:grid;grid-template-columns:0.8fr 1.2fr;gap:1rem}
+  .tg-l{padding:1.6rem 1.5rem}
+  .tg-l .tv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(3.4rem,9vw,5.6rem);line-height:0.9;letter-spacing:-0.045em;color:var(--num)}
+  .tg-l .tl{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
+  .tg-l .ti{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.5rem;margin-top:1.2rem}
+  .tg-l p{font-size:1.02rem;line-height:1.6;margin-top:0.9rem;opacity:.9}
+  .tg-r{padding:1.5rem 1.5rem}
+  .chain{display:flex;flex-direction:column;gap:0.2rem;margin-top:0.8rem}
+  .ch{display:grid;grid-template-columns:120px 1fr 96px;gap:0.9rem;align-items:center}
+  .ch .cn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute)}
+  .ch .ctr{height:26px;background:var(--track);border-radius:4px;overflow:hidden}
+  .ch .cf{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--num));border-radius:4px;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .ch .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;text-align:right;font-variant-numeric:tabular-nums}
+  .rate{margin:0.1rem 0 0.1rem 120px;padding-left:0.9rem;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent)}
+  .perday{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:1.2rem;border-radius:10px;overflow:hidden}
+  .pd{background:var(--card-2);padding:0.85rem 0.8rem}
+  .pd b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;line-height:1.2}
+  .pd span{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+
+  /* ============ WHO DOES WHAT ============ */
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
+  .role{padding:1.6rem 1.5rem}
+  .role .rk{display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.32rem 0.7rem;border:1px solid var(--gold);color:var(--accent);border-radius:999px}
+  .role.us .rk{background:var(--gold);color:var(--on-gold)}
+  .role ul{list-style:none;margin-top:1rem}
+  .role li{display:grid;grid-template-columns:26px 1fr;gap:0.8rem;align-items:start;font-size:1.03rem;padding:0.65rem 0;border-top:1px solid var(--hair);line-height:1.45}
+  .role li:first-child{border-top:0}
+  .role .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center}
+  .role .ck svg{width:12px;height:12px;stroke:var(--num);fill:none;stroke-width:2.8;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .5s ease}
+  .role li.tk .ck svg{stroke-dashoffset:0}
+  .depends{margin-top:1rem;padding:1.2rem 1.4rem;border-left:3px solid var(--gold);font-size:1.06rem}
+
+  /* ============ MODEL ============ */
+  .model{padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl{margin-top:1.6rem}
+  .ctrl:first-child{margin-top:0}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cvv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--num);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--track) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--num);border:5px solid var(--bg);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.4);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--num);border:5px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:2.2rem;border-radius:12px;overflow:hidden}
+  .o{background:var(--card-2);padding:1.3rem 1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--num);line-height:1;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(1.9rem,4.4vw,2.9rem)}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.55rem;line-height:1.4}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--num);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--num);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:1.6rem}
+    .audit,.np,.stepper,.tg{grid-template-columns:1fr}
+    .shots{position:static}
+    .rhythm{grid-template-columns:1fr 1fr}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .parts,.roles,.rhythm,.bc{grid-template-columns:1fr}
+    .sbs-head{display:none}
+    .row{grid-template-columns:1fr;gap:0.35rem;padding-bottom:0.5rem}
+    .cell:before{grid-column:1/-1;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase}
+    .cell.g:before{content:"Model profile";color:var(--good)}
+    .cell.b:before{content:"@yesrobgordon today";color:var(--bad)}
+    .ch{grid-template-columns:86px 1fr 70px;gap:0.5rem}
+    .rate{margin-left:86px;padding-left:0.5rem}
+    .perday{grid-template-columns:1fr 1fr}
+    .ninety,.outcome{grid-template-columns:1fr}
+    .cgrid{grid-template-columns:repeat(6,1fr)}
+    .ig-top{grid-template-columns:64px 1fr}
+    .ig-top img{width:64px;height:64px}
+    .theme button{padding:0.45rem 0.7rem;font-size:0.56rem}
+    .shot .cap{display:none}
+    .hb{border-width:1.5px;border-radius:4px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue,.pin.on:before,.n-ring.go .f{animation:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<div id="progress"></div>
+<div class="theme" role="group" aria-label="Theme"><button id="thDark" class="on" type="button">Dark</button><button id="thGlass" type="button">Glass</button></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>The goal</span></a>
+  <a href="#s2"><span>The profile today</span></a>
+  <a href="#s3"><span>The model profile</span></a>
+  <a href="#s4"><span>Side by side</span></a>
+  <a href="#s5"><span>The new profile</span></a>
+  <a href="#s6"><span>Step 1 · Offer and buyer</span></a>
+  <a href="#s7"><span>Step 2 · Profile and sales</span></a>
+  <a href="#s8"><span>Step 3 · Content</span></a>
+  <a href="#s9"><span>Weeks 2 to 12</span></a>
+  <a href="#s10"><span>Targets</span></a>
+  <a href="#s11"><span>Who does what</span></a>
+  <a href="#s12"><span>Work it backwards</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top"><a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a></div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">90-day growth plan &middot; @yesrobgordon</span>
+      <h1 class="rv d1">Rob Gordon<span>60 sales a month by month&nbsp;3</span></h1>
+      <p class="hero-sub rv d2">At $250 a sale, that is <b>$15,000 a month</b>. Three parts, and all three start in week 1.</p>
+    </div>
+    <div class="ramp card rv d2" id="ramp">
+      <div class="ramp-top"><img src="img/rob-avatar.jpg" alt="Rob Gordon"><div><b>@yesrobgordon</b><span>Sales per month</span></div></div>
+      <div class="ramp-bars">
+        <div class="rb"><div class="rv2">4</div><div class="rs">$1,000</div><i data-h="7"></i><div class="rm">Month 1</div></div>
+        <div class="rb"><div class="rv2">30</div><div class="rs">$7,500</div><i data-h="50"></i><div class="rm">Month 2</div></div>
+        <div class="rb"><div class="rv2">60</div><div class="rs">$15,000</div><i data-h="100"></i><div class="rm">Month 3</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d3" style="color:var(--mute)">Prepared November 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 01 GOAL ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; The goal</span>
+    <h2 class="statement rv d1">60 sales a month by month 3.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">At $250 a sale, that is <b>$15,000 a month</b>. The plan has three parts, and all three start in week 1.</p>
+    <div class="parts rv d2">
+      <a class="part card" href="#s6"><div class="pn">1</div><h4>Break down the offer and the buyer</h4><div class="pw">Step 1</div></a>
+      <a class="part card" href="#s7"><div class="pn">2</div><h4>Build the profile and the sales setup</h4><div class="pw">Step 2</div></a>
+      <a class="part card" href="#s8"><div class="pn">3</div><h4>Make content and post every day</h4><div class="pw">Step 3</div></a>
+    </div>
+    <div class="after card rv d3">After week 1, the work is the same every week: <b>post, follow up, hold calls, track the numbers, and fix the weakest step.</b></div>
+  </div>
+</section>
+
+<!-- ============ 02 PROFILE TODAY ============ -->
+<section class="section band" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The profile today &middot; @yesrobgordon</span>
+    <h2 class="statement rv d1">The bio says business, but the page looks like an old comedy account.</h2>
+    <div class="audit" data-audit="rob">
+      <div class="shots rv d1">
+        <div class="shot"><img src="img/rob-header.jpg" alt="@yesrobgordon Instagram profile header: 52 posts, 573 followers"><span class="cap">Profile</span></div>
+        <div class="shot"><img src="img/rob-reels.jpg" alt="@yesrobgordon reels tab: comedy flyers with 274, 528, 109 and 382 views"><span class="cap">Reels tab</span></div>
+      </div>
+      <div>
+        <div class="issues rv d2"></div>
+        <div class="visitor card rv"><span class="k" style="color:var(--bad)">What a new visitor sees</span><p>No proof, no link to click and no reason to send a message. The last line of the bio sends them away to another page.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 MODEL PROFILE ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; The model profile &middot; @jacques.amoako</span>
+    <h2 class="statement rv d1">In a few seconds a visitor knows what he does and what to do next.</h2>
+    <div class="audit" data-audit="jacques">
+      <div class="shots rv d1">
+        <div class="shot"><img src="img/jacques-header.jpg" alt="@jacques.amoako Instagram profile header: 7 posts, 13.5K followers" loading="lazy"><span class="cap">Profile</span></div>
+        <div class="shot"><img src="img/jacques-grid.jpg" alt="@jacques.amoako grid of photo sets" loading="lazy"><span class="cap">Grid</span></div>
+      </div>
+      <div>
+        <div class="issues rv d2"></div>
+        <div class="visitor good card rv"><span class="k" style="color:var(--good)">What a new visitor sees</span><p>What he does, proof that it works, a life that backs it up, his best videos and one clear thing to do.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 SIDE BY SIDE ============ -->
+<section class="section band" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Side by side</span>
+    <h2 class="statement rv d1">Eight parts of the profile, and why each one matters.</h2>
+    <div class="sbs-head rv d2">
+      <div></div>
+      <div class="who g card"><img src="img/jacques-avatar.jpg" alt=""><div><b>@jacques.amoako</b><span>Model profile</span></div></div>
+      <div class="who b card"><img src="img/rob-avatar.jpg" alt=""><div><b>@yesrobgordon</b><span>Today</span></div></div>
+    </div>
+    <div class="sbs" id="sbs"></div>
+  </div>
+</section>
+
+<!-- ============ 05 NEW PROFILE ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; The new profile</span>
+    <h2 class="statement rv d1">The profile is a storefront. This is what it becomes.</h2>
+    <div class="seg card rv d2" id="npSeg"><button data-m="new" class="on" type="button">New profile</button><button data-m="today" type="button">Today</button></div>
+    <div class="np">
+      <div class="ig card rv d2">
+        <div class="ig-top"><img src="img/rob-avatar.jpg" alt="Rob Gordon"><div><div class="ig-h">yesrobgordon</div><div class="ig-st" id="igStats"></div></div></div>
+        <div class="ig-body" id="igBody"></div>
+      </div>
+      <div class="np-side rv d3">
+        <div class="note card">The open slots are filled from <b>Step 1</b>. They are left open on purpose. A bio written from a guess reads vague, and a vague bio does not convert.</div>
+        <div class="now card"><span class="k">Can be done right away</span>
+          <ul class="tick"><li><span class="bx"></span>Category</li><li><span class="bx"></span>Link</li><li><span class="bx"></span>Archiving old posts</li><li><span class="bx"></span>Picking the grid photos</li><li><span class="bx"></span>Building the Life highlight</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 STEP 1 ============ -->
+<section class="section band" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Step 1 &middot; Break down the offer and the buyer</span>
+    <h2 class="statement rv d1">If the buyer is a guess, everything built after it is a guess too.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">This comes first. The content, the sales material, the bio and the free offer are all written from it.</p>
+    <div class="stepper rv d2" data-stepper="s1"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <div class="outcome card rv"><span class="k">What comes out of Step 1</span><div class="chips"><span>One clear buyer</span><span>The bio lines</span><span>The DM keyword</span><span>The free offer</span><span>Objections and answers</span><span>The topics for content</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 07 STEP 2 ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Step 2 &middot; Build the profile and the sales setup</span>
+    <h2 class="statement rv d1">Content brings people to the profile. The profile turns them into conversations.</h2>
+    <div class="stepper rv d2" data-stepper="s2"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <div class="ninety card rv" id="ninety">
+      <div class="n-ring"><svg viewBox="0 0 100 100"><circle class="t" cx="50" cy="50" r="42"/><circle class="f" cx="50" cy="50" r="42"/></svg><b>90<small>Seconds</small></b></div>
+      <p>Every new lead gets a call within <b>90 seconds</b> of signing up. Interest is highest in the first minutes. It drops with every hour that passes.</p>
+    </div>
+    <div class="outcome card rv"><span class="k">What comes out of Step 2</span><div class="chips"><span>A profile that converts</span><span>Leads captured without manual work</span><span>Every lead called within 90 seconds</span><span>Every number tracked</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 08 STEP 3 ============ -->
+<section class="section band" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; Step 3 &middot; Content</span>
+    <h2 class="statement rv d1">Proven formats, posted every day, each one sending viewers to the keyword.</h2>
+    <div class="stepper rv d2" data-stepper="s3"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <div class="decide card rv">
+      <span class="k">The first number to read on every video</span>
+      <div class="dq">Are half of the viewers still watching after 3 seconds?</div>
+      <div class="seg card" id="decSeg" style="margin-top:1rem"><button data-m="no" class="on" type="button">No</button><button data-m="yes" type="button">Yes</button></div>
+      <div id="decOut"></div>
+    </div>
+    <div class="outcome card rv"><span class="k">What comes out of Step 3</span><div class="chips"><span>A daily flow of content</span><span>Built on proven formats</span><span>Every video points to the keyword and the free offer</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 09 RHYTHM ============ -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; Weeks 2 to 12</span>
+    <h2 class="statement rv d1">The same six things, every week.</h2>
+    <div class="rhythm rv d2">
+      <div class="rh card"><i>1</i>Post every day</div>
+      <div class="rh card"><i>2</i>Answer every lead and book the calls</div>
+      <div class="rh card"><i>3</i>Call every new lead within 90 seconds</div>
+      <div class="rh card"><i>4</i>Hold the calls and close</div>
+      <div class="rh card"><i>5</i>Fill in the tracker daily</div>
+      <div class="rh card"><i>6</i>One strategy call to review the numbers and fix the weakest step</div>
+    </div>
+    <div class="calls card rv" id="calls">
+      <span class="k">Four strategy calls a month, twelve over the 90 days</span>
+      <div class="cgrid"></div>
+      <div class="cnote"><span>Month 1</span><span>Month 2</span><span>Month 3</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 TARGETS ============ -->
+<section class="section band" id="s10">
+  <div class="wrap">
+    <span class="snum rv">10 &middot; The targets</span>
+    <h2 class="statement rv d1">The plan starts from the sales goal and works backwards.</h2>
+    <div class="seg card rv d2" id="mSeg"><button data-m="0" type="button">Month 1</button><button data-m="1" type="button">Month 2</button><button data-m="2" class="on" type="button">Month 3</button></div>
+    <div class="tg rv d2">
+      <div class="tg-l card"><div class="tv" id="tSales">60</div><div class="tl">Sales in the month</div><div class="ti" id="tInc">$15,000</div><div class="tl">Income at $250 a sale</div><p id="tMean"></p></div>
+      <div class="tg-r card">
+        <span class="k">What it takes, posting daily</span>
+        <div class="chain" id="chain"></div>
+        <span class="k" style="display:block;margin-top:1.3rem">Per day</span>
+        <div class="perday" id="perday"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 WHO DOES WHAT ============ -->
+<section class="section" id="s11">
+  <div class="wrap">
+    <span class="snum rv">11 &middot; Who does what</span>
+    <h2 class="statement rv d1">We bring the plan. Rob carries it out every day.</h2>
+    <div class="roles">
+      <div class="role us card rv d1"><span class="rk">Maison d'&Eacute;lites provides</span><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Four strategy calls a month</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The content plan</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The funnel audit with written recommendations</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Clear written steps for every change</li>
+      </ul></div>
+      <div class="role card rv d2"><span class="rk">The client</span><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Films and posts the content</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Carries out the changes agreed on the calls</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Gives access to the funnel, the lead system and the page numbers</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Makes sure every video, offer and sale follows the product company's rules</li>
+      </ul></div>
+    </div>
+    <div class="depends card rv">Results depend on the plan being carried out every day.</div>
+  </div>
+</section>
+
+<!-- ============ 12 MODEL ============ -->
+<section class="section band" id="s12">
+  <div class="wrap">
+    <span class="snum rv">12 &middot; Work it backwards</span>
+    <h2 class="statement rv d1">Set the sales goal and the close rate.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">0.3% of views become leads, 20% of leads book a call and 70% of booked calls show up. <b>If the close rate reaches 50%, the same 60 sales needs only 120 calls and about 286,000 views.</b></p>
+    <div class="model card rv d2">
+      <div class="ctrl"><div class="ctrl-head"><span class="cl">Sales a month</span><span class="cvv" id="gVal">60</span></div>
+        <input type="range" id="goal" min="4" max="100" step="1" value="60" aria-label="Sales a month"><div class="range-ends"><span>4</span><span>100</span></div></div>
+      <div class="ctrl"><div class="ctrl-head"><span class="cl">Calls that become sales</span><span class="cvv" id="cVal">30%</span></div>
+        <input type="range" id="close" min="30" max="50" step="1" value="30" aria-label="Close rate"><div class="range-ends"><span>30%</span><span>50%</span></div></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oInc">$15,000</div><div class="ol">Income a month at $250 a sale</div></div>
+        <div class="o"><div class="ov" id="oHeld">200</div><div class="ol">Calls held</div></div>
+        <div class="o"><div class="ov" id="oBook">286</div><div class="ol">Calls booked</div></div>
+        <div class="o"><div class="ov" id="oLeads">1,429</div><div class="ol">Leads</div></div>
+        <div class="o"><div class="ov" id="oViews">476,000</div><div class="ol">Views</div></div>
+      </div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+  /* theme: dark or glass, remembered on this device */
+  function setTheme(t){
+    if(t==='glass') document.documentElement.setAttribute('data-theme','glass'); else document.documentElement.removeAttribute('data-theme');
+    $('#thDark').classList.toggle('on',t!=='glass'); $('#thGlass').classList.toggle('on',t==='glass');
+    try{localStorage.setItem('mde-theme',t);}catch(e){}
+  }
+  $('#thDark').addEventListener('click',()=>setTheme('dark'));
+  $('#thGlass').addEventListener('click',()=>setTheme('glass'));
+  setTheme(document.documentElement.getAttribute('data-theme')==='glass'?'glass':'dark');
+
+  const prog=$('#progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=$$('#dots a'), secs=dots.map(a=>$(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  once([$('#ramp')],el=>el.querySelectorAll('i[data-h]').forEach(b=>b.style.height=(b.dataset.h*1.15)+'px'),0.4);
+
+  /* ---------- profile audits: numbered pins on the screenshots ---------- */
+  // Each item: shot index (-1 = not in a screenshot), tag [x,y] and box [x1,y1,x2,y2] in
+  // screenshot pixels, miss = the thing is absent (dashed box where it should be),
+  // then part, verdict, quote, why.
+  const AUDIT={
+    rob:{kind:'bad',dims:[[990,470],[1480,574]],items:[
+      {s:0,t:[403,97],b:[262,84,385,110],p:'Name line',v:'Name only',q:'“Rob Gordon”',w:'This line shows up in search. It is the first thing people read.'},
+      {s:0,t:[438,164],b:[262,152,420,176],m:1,p:'Category',v:'None',q:'',w:'The model profile shows a category under the name. Here there is nothing.'},
+      {s:0,t:[626,186],b:[262,179,608,203],p:'Bio line 1',v:'A slogan',q:'“Say YES to better business moves”',w:'The visitor must know in one line if this is for them.'},
+      {s:0,t:[668,220],b:[262,204,618,228],p:'Bio line 2',v:'A list of topics',q:'“Business • Legal • Financial Solutions.”',w:'Proof is what makes a stranger believe line 1.'},
+      {s:0,t:[936,241],b:[262,229,916,253],p:'Bio line 3',v:'Sends people to another page',q:'“Main page @itsrobgordon”',w:'Every visitor should have one next step, and it should start a conversation.'},
+      {s:0,t:[488,270],b:[262,258,470,282],m:1,p:'Link',v:'No link',q:'',w:'The funnel is already built. Right now nobody can reach it from the profile.'},
+      {s:0,t:[438,386],b:[23,366,420,406],m:1,p:'Highlights',v:'None',q:'',w:'Results show it works. Life shows who he is.'},
+      {s:1,t:[46,46],b:null,p:'Reels tab',v:'Nothing pinned',q:'The four most recent reels have 274, 528, 109 and 382 views.',w:'A visitor watches the first videos they see. Those should be the best ones.'},
+      {s:1,t:[1438,44],b:[374,6,1474,568],p:'Grid',v:'52 mixed posts',q:'The newest is one business video from 24 June. The other 51 are older stand-up flyers, stage photos, film festival clips, event photos and gym pictures.',w:'A small, clean grid looks intentional. Old posts confuse the message.'}
+    ]},
+    jacques:{kind:'good',dims:[[990,660],[1479,343]],items:[
+      {s:0,t:[718,97],b:[265,84,700,110],p:'Name line',v:'Says what he does',q:'“Jacques | Influencer marketing Agency Owner”',w:'This line shows up in search. It is the first thing people read.'},
+      {s:0,t:[413,192],b:[265,180,395,204],p:'Category',v:'Entrepreneur',q:'',w:'Set, and shown right under the name.'},
+      {s:0,t:[666,222],b:[265,210,648,234],p:'Bio line 1',v:'Who he helps and the result',q:'“I help brands turn attention into revenue”',w:'The visitor knows in one line if this is for them.'},
+      {s:0,t:[623,247],b:[265,235,605,259],p:'Bio line 2',v:'A proof number',q:'“500M+ views Generated for Clients”',w:'Proof is what makes a stranger believe line 1.'},
+      {s:0,t:[673,274],b:[265,260,655,284],p:'Bio line 3',v:'One action: DM a keyword',q:'“Dm me “Attention” to scale your reach”',w:'One next step, and it starts a conversation.'},
+      {s:0,t:[290,332],b:[265,290,535,314],p:'Link',v:'One link',q:'',w:'One place to go from the profile.'},
+      {s:0,t:[322,482],b:[42,468,305,636],p:'Highlights',v:'Results and Life',q:'',w:'Results show it works. Life shows who he is.'},
+      {s:1,t:[46,46],b:[4,4,1475,339],p:'Grid',v:'7 strong photos',q:'All photo sets that show the lifestyle. There are no videos on the grid.',w:'A small, clean grid looks intentional.'},
+      {s:-1,p:'Reels tab',v:'Best three pinned',q:'All videos live here. The three best are pinned at the top: 928K, 350K and 244K views.',w:'A visitor watches the first videos they see. Those are his best ones.'}
+    ]}
+  };
+  $$('[data-audit]').forEach(root=>{
+    const cfg=AUDIT[root.dataset.audit], shots=[...root.querySelectorAll('.shot')], list=root.querySelector('.issues');
+    cfg.items.forEach((it,i)=>{
+      if(it.s>=0){
+        const [W,H]=cfg.dims[it.s];
+        if(it.b){
+          const h=document.createElement('div'); h.className='hb '+cfg.kind+(it.m?' miss':''); h.dataset.i=i;
+          h.style.left=(it.b[0]/W*100)+'%'; h.style.top=(it.b[1]/H*100)+'%'; h.style.width=((it.b[2]-it.b[0])/W*100)+'%'; h.style.height=((it.b[3]-it.b[1])/H*100)+'%';
+          shots[it.s].appendChild(h);
+        }
+        const p=document.createElement('button'); p.type='button'; p.className='pin '+cfg.kind; p.textContent=i+1; p.dataset.i=i;
+        p.style.left=(it.t[0]/W*100)+'%'; p.style.top=(it.t[1]/H*100)+'%'; p.setAttribute('aria-label',it.p+': '+it.v);
+        shots[it.s].appendChild(p);
+      }
+      const b=document.createElement('button'); b.type='button'; b.className='issue card '+cfg.kind; b.dataset.i=i;
+      b.innerHTML='<span class="in">'+(i+1)+'</span><span><div class="it">'+it.p+'</div><div class="iv">'+it.v+'</div>'+(it.q?'<div class="iq">'+it.q+'</div>':'')+'<div class="iw"><b>Why</b>'+it.w+'</div></span>';
+      list.appendChild(b);
+    });
+    function pick(i){
+      root.querySelectorAll('.pin,.hb').forEach(p=>p.classList.toggle('on',+p.dataset.i===i));
+      root.querySelectorAll('.issue').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+    }
+    root.querySelectorAll('.pin,.issue').forEach(el=>{
+      el.addEventListener('click',()=>pick(+el.dataset.i));
+      el.addEventListener('mouseenter',()=>pick(+el.dataset.i));
+    });
+    pick(0);
+  });
+
+  /* ---------- side by side ---------- */
+  const SBS=[
+    ['Name line','Says what he does','Name only','This line shows up in search. It is the first thing people read.'],
+    ['Bio line 1','Who he helps and the result','A slogan','The visitor must know in one line if this is for them.'],
+    ['Bio line 2','A proof number','A list of topics','Proof is what makes a stranger believe line 1.'],
+    ['Bio line 3','One action: DM a keyword','Sends people to another page','Every visitor should have one next step, and it should start a conversation.'],
+    ['Link','One link','No link','The funnel is already built. Right now nobody can reach it from the profile.'],
+    ['Highlights','Results and Life','None','Results show it works. Life shows who he is.'],
+    ['Grid','7 strong photos','52 mixed posts','A small, clean grid looks intentional. Old posts confuse the message.'],
+    ['Reels tab','Best three pinned','Nothing pinned','A visitor watches the first videos they see. Those should be the best ones.']
+  ];
+  $('#sbs').innerHTML=SBS.map((r,i)=>'<div class="row rv'+(i%2?' d1':'')+'"><div class="rp card"><b>'+r[0]+'</b><p>'+r[3]+'</p></div><div class="cell g card"><i>✓</i><span>'+r[1]+'</span></div><div class="cell b card"><i>✕</i><span>'+r[2]+'</span></div></div>').join('');
+
+  /* ---------- new profile mock: new vs today ---------- */
+  const s=t=>'<span class="slot">'+t+'</span>';
+  const IG={
+    today:{stats:'<span><b>52</b> posts</span><span><b>573</b> followers</span><span><b>42</b> following</span>',
+      body:'<div class="nm">Rob Gordon</div><div class="none">No category</div><div style="margin-top:0.5rem">Say YES to better business moves 💼</div><div>Business • Legal • Financial Solutions.</div><div>Protect your business. Build smarter income. Main page @itsrobgordon</div><div class="none" style="margin-top:0.5rem">No link</div><div class="none">No highlights</div>'
+        +'<div class="ig-tabs"><div class="ig-tab"><b>Grid</b>52 mixed posts. One business video, 51 older comedy and event posts.</div><div class="ig-tab"><b>Reels tab</b>Nothing pinned. 274, 528, 109 and 382 views on the latest four.</div></div>'},
+    new:{stats:'<span><b>~7</b> posts</span><span><b>573</b> followers</span>',
+      body:'<div class="nm">Rob Gordon | '+s('what he does, in a few words')+'</div><div class="cat">Entrepreneur</div><div style="margin-top:0.5rem">I help '+s('who')+' '+s('result')+'</div><div>'+s('number')+'+ '+s('proof')+'</div><div>📥 DM me “'+s('keyword')+'” to '+s('what they get')+'</div><div class="lnk" style="margin-top:0.5rem">🔗 The funnel. One link only.</div>'
+        +'<div class="ig-hl"><div class="hl"><i></i>Results</div><div class="hl"><i></i>Life</div></div>'
+        +'<div class="ig-tabs"><div class="ig-tab"><b>Highlight 1 · Results</b>Client wins, sign-ups, screenshots.</div><div class="ig-tab"><b>Highlight 2 · Life</b>Film sets, stages, the Prime Video special.</div><div class="ig-tab"><b>Grid</b>Old posts archived. Around 7 strong photos stay.</div><div class="ig-tab"><b>Reels tab</b>All new videos go here. Best three get pinned once they exist.</div></div>'}
+  };
+  function seg(id,fn,init){
+    const b=$$('#'+id+' button');
+    b.forEach(x=>x.addEventListener('click',()=>{b.forEach(y=>y.classList.toggle('on',y===x));fn(x.dataset.m);}));
+    fn(init);
+  }
+  seg('npSeg',m=>{const body=$('#igBody');$('#igStats').innerHTML=IG[m].stats;body.style.animation='none';void body.offsetWidth;body.style.animation='';body.innerHTML=IG[m].body;},'new');
+
+  /* ---------- steppers ---------- */
+  const BUYER=['What they do for work','What they earn each month','Their biggest problem, in their own words','What they already tried','What they want','Who decides: them alone, or with someone else','What happened right before they went looking','What they have spent on this kind of thing before'];
+  const STEPS={
+    s1:[
+      ['1.1','Name five real buyers','<p>Write down five real people who already bought.</p><p><b>If five names do not come easily, the buyer is not known yet</b> and that gets fixed first.</p>'],
+      ['1.2','Fill in the buyer card','<p>Eight things about one real buyer. At least six must be filled in.</p><ul class="bc">'+BUYER.map(b=>'<li><button type="button"><i>✓</i><span>'+b+'</span></button></li>').join('')+'</ul><div class="bc-count" id="bcCount">0 of 8 filled in</div>'],
+      ['1.3','The deep dive','<p>With those five buyers in mind, go deeper on:</p><ul><li><b>Who they are:</b> what kind of person or business, and what stage they are at</li><li><b>How they think:</b> how they see themselves, what they fear losing, what story they tell about why they are stuck</li><li><b>Their pains:</b> what they complain about each week, what they tried, why it did not work, what makes them say “I need help”</li><li><b>What they want:</b> the one big outcome, and what success looks like to them</li><li><b>Their beliefs:</b> why they might not trust this, and what has to change for them to buy</li><li><b>Where they are online:</b> who they follow, what they watch, what they scroll past</li><li><b>How they decide:</b> what proof they need, what makes it urgent</li><li><b>Their words:</b> the exact words they use for the problem, for success and for failure</li></ul><p>Mark every answer as “a buyer told me this” or “my guess”. Guesses get checked on real calls.</p><p>Two of these matter most. <b>Where they are online</b> decides what content gets made. <b>Their words</b> become the bio, the hooks and the scripts.</p>'],
+      ['1.4','Break down the offer','<ul><li>The core problem it solves, in the buyer’s words</li><li>Who is a good fit and who is not</li><li>The top objections heard on calls, the fear behind each one, and the answer to each</li><li>The questions buyers always ask</li><li>Before and after: what life looks like without it and with it</li><li>What else buyers consider instead, and why those options fall short</li><li>Proof: client quotes, numbers, screenshots, and the gaps that still need filling</li><li>Claims that will never be made</li><li>One sentence people should remember</li></ul>'],
+      ['1.5','Audit and test the funnel','<p>The funnel is already built. It gets walked through from start to finish as if we were a new lead:</p><ul><li><b>The sign-up page:</b> is it clear what the person gets and what to do?</li><li><b>The page after sign-up:</b> does it build trust and tell them what happens next?</li><li><b>The follow-up messages:</b> does every one give something useful before it asks for something?</li><li><b>The handover:</b> does a new lead reach a person fast?</li></ul><p>Written recommendations come out of this.</p>'],
+      ['1.6','Build the free offer','<p>One free thing that gets a stranger to raise their hand. Two rules:</p><ul><li><b>It gives value right away.</b> Something the person can use today.</li><li><b>It matches what the content promises.</b> If the video talks about a problem, the free offer helps with that same problem.</li></ul>']
+    ],
+    s2:[
+      ['2.1','The profile','<p>Rebuilt as shown in the new profile above, using the answers from Step 1.</p><p>The profile is a storefront. Content brings people to it, and <b>the profile turns them into conversations.</b></p>'],
+      ['2.2','The automations','<ul><li><b>Keyword DM.</b> A viewer sends the keyword from the bio or from a video. They get the free offer right away, and they are saved as a lead.</li><li><b>New follower message.</b> Every new follower gets a short message with one simple question and a few answers to tap. Their answer shows what they need.</li></ul>'],
+      ['2.3','The 90-second callback','<p>Every new lead gets a call within <b>90 seconds</b> of signing up. On that call they are walked through the sign-up and closed.</p><p>Interest is highest in the first minutes. It drops with every hour that passes.</p>'],
+      ['2.4','The sales team','<ul><li><b>One DM setter to start.</b> A second is added when lead volume grows.</li><li><b>A closer if needed.</b> If the setter can close on their own, no closer is needed.</li></ul><p>How the setter works:</p><ul><li>Asks questions so the lead explains their own problem</li><li>Books the call. The call does the selling</li><li>Logs every conversation in the tracker, every day</li><li>Hands over to the closer when the lead is ready to start, upset or asking about terms</li></ul>'],
+      ['2.5','Follow-up','<p><b>Every follow-up leads with value.</b> It is never just a reminder.</p>'],
+      ['2.6','The tracker','<p>One sheet, filled in daily: new leads, conversations, calls booked, calls held, sales.</p><p>This is how <b>the weakest step is found each week.</b></p>']
+    ],
+    s3:[
+      ['3.1','Research what already works','<p>Two places to look:</p><ul><li><b>Direct competitors.</b> Creators in the same space with 0 to 200K followers. The smaller the better, because what works for a small account can work from scratch. Pick the videos that clearly beat that creator’s normal numbers.</li><li><b>Nearby niches.</b> This is the best source. A format that works in another niche can be brought into this one. It is already proven, and it will feel fresh here.</li></ul><p>For each video, check one more thing: can it be remade with what is available?</p>'],
+      ['3.2','Break each video into three parts','<ul><li><b>The hook.</b> The most important part. It is copied almost exactly: the visuals, the text on screen, the caption.</li><li><b>The body.</b> This has the most room to change. It decides whether people keep watching. The story has to keep them wanting the next part.</li><li><b>The call to action.</b> It works best when it gives before it asks. Here that means the keyword for the free offer.</li></ul>'],
+      ['3.3','Write the scripts','<p>The breakdown is turned into a new script with the offer and <b>the buyer’s own words from Step 1</b> put in. AI is used to speed this up.</p>'],
+      ['3.4','Post every day','<p><b>Volume comes before perfection.</b> Daily posting is how the winning video gets found.</p>'],
+      ['3.5','Read the numbers on every video','<p>The first thing to check is whether <b>half of the viewers are still watching after 3 seconds.</b></p><ul><li><b>If no:</b> keep the hook and post it again as a trial reel with a small change, like the caption colour, the caption position or the sound timing. Repeat.</li><li><b>If yes:</b> it is a winner. Double down on it.</li></ul>'],
+      ['3.6','Double down on winners','<p>A winning script gets remade. The remake keeps <b>the same structure, the same beats and the same length</b>, with only the details changed.</p><p>Best videos are also reposted as trial reels and pinned at the top of the reels tab.</p>']
+    ]
+  };
+  $$('[data-stepper]').forEach(root=>{
+    const data=STEPS[root.dataset.stepper], list=root.querySelector('.st-list'), det=root.querySelector('.anim');
+    list.innerHTML=data.map((d,i)=>'<button class="st card" type="button" data-i="'+i+'"><span class="sn">'+d[0]+'</span><span class="stt">'+d[1]+'</span></button>').join('');
+    function set(i){
+      [...list.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+      det.style.animation='none';void det.offsetWidth;det.style.animation='';
+      det.innerHTML='<span class="k">Step '+data[i][0]+'</span><h4>'+data[i][1]+'</h4>'+data[i][2];
+      const btns=det.querySelectorAll('.bc button');
+      btns.forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('on');const n=det.querySelectorAll('.bc button.on').length,c=det.querySelector('#bcCount');c.textContent=n+' of 8 filled in'+(n>=6?' · enough to build from':'');c.classList.toggle('ok',n>=6);}));
+    }
+    [...list.children].forEach((b,i)=>b.addEventListener('click',()=>set(i)));
+    set(0);
+  });
+
+  once([$('#ninety')],el=>{if(!reduce)el.querySelector('.n-ring').classList.add('go');},0.4);
+
+  /* ---------- 3-second decision ---------- */
+  seg('decSeg',m=>{
+    $('#decOut').innerHTML=m==='no'
+      ?'<div class="da no"><b>If no</b>Keep the hook and post it again as a trial reel with a small change, like the caption colour, the caption position or the sound timing. Repeat.</div>'
+      :'<div class="da yes"><b>If yes, it is a winner</b>The script gets remade with the same structure, the same beats and the same length, with only the details changed. Best videos are reposted as trial reels and pinned at the top of the reels tab.</div>';
+  },'no');
+
+  /* ---------- 12 strategy calls ---------- */
+  const cg=$('#calls .cgrid'); cg.innerHTML=Array.from({length:12},(_,i)=>'<div>'+(i+1)+'</div>').join('');
+  once([$('#calls')],()=>[...cg.children].forEach((c,i)=>setTimeout(()=>c.classList.add('lit'),reduce?0:i*110)),0.4);
+  once($$('.role li'),el=>setTimeout(()=>el.classList.add('tk'),250),0.6);
+
+  /* ---------- targets per month ---------- */
+  const M=[
+    {sales:4,inc:'$1,000',held:14,book:19,leads:95,views:32000,day:['3','1','1 every 2 days','1 a week'],mean:'The system is built and running, and the monthly fee is paid back.'},
+    {sales:30,inc:'$7,500',held:100,book:143,leads:714,views:238000,day:['24','5','3','1'],mean:'Content is finding winners and the sales team is handling daily volume.'},
+    {sales:60,inc:'$15,000',held:200,book:286,leads:1429,views:476000,day:['48','10','7','2'],mean:'The system produces $15,000 a month.'}
+  ];
+  const N=n=>n.toLocaleString('en-US');
+  function setM(i){
+    const m=M[+i], mx=M[2];
+    $('#tSales').textContent=m.sales; $('#tInc').textContent=m.inc; $('#tMean').textContent=m.mean;
+    const rows=[['Views',m.views,mx.views,'0.3% of views become leads'],['Leads',m.leads,mx.leads,'20% of leads book a call'],['Calls booked',m.book,mx.book,'70% of booked calls show up'],['Calls held',m.held,mx.held,'30% of calls become sales'],['Sales',m.sales,mx.sales,'']];
+    $('#chain').innerHTML=rows.map(r=>'<div class="ch"><span class="cn">'+r[0]+'</span><div class="ctr"><div class="cf" data-w="'+(Math.log10(r[1])/Math.log10(mx.views)*100).toFixed(1)+'"></div></div><span class="cv">'+N(r[1])+'</span></div>'+(r[3]?'<div class="rate">↓ '+r[3]+'</div>':'')).join('');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#chain .cf').forEach(f=>f.style.width=f.dataset.w+'%')));
+    $('#perday').innerHTML=['Leads','Calls booked','Calls held','Sales'].map((l,k)=>'<div class="pd"><b>'+m.day[k]+'</b><span>'+l+'</span></div>').join('');
+  }
+  seg('mSeg',setM,'2');
+
+  /* ---------- work it backwards: sales goal and close rate ---------- */
+  const gS=$('#goal'), cS=$('#close');
+  function calc(){
+    const g=+gS.value, c=+cS.value/100;
+    const held=g/c, book=held/0.7, leads=book/0.2, views=leads/0.003;
+    $('#gVal').textContent=g; $('#cVal').textContent=cS.value+'%';
+    $('#oInc').textContent='$'+N(g*250);
+    $('#oHeld').textContent=N(Math.ceil(held-1e-9));
+    $('#oBook').textContent=N(Math.round(book));
+    $('#oLeads').textContent=N(Math.round(leads));
+    $('#oViews').textContent=N(Math.round(views/1000)*1000);
+    gS.style.setProperty('--p',((g-gS.min)/(gS.max-gS.min)*100)+'%');
+    cS.style.setProperty('--p',((cS.value-cS.min)/(cS.max-cS.min)*100)+'%');
+  }
+  gS.addEventListener('input',calc); cS.addEventListener('input',calc); calc();
+
+  once($$('.rv'),el=>el.classList.add('in'),0.08);
+})();
+</script>
+</body>
+</html>
