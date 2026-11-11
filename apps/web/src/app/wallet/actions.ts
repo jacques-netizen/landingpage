@@ -1,11 +1,12 @@
 'use server'
 
-import { db, tables } from '@mde/db'
+import { db, tables, writeAudit } from '@mde/db'
 import { createPgStore, MoneyError, requestWithdrawal } from '@mde/money'
 import { parseDollarsToCents } from '@mde/money/dollars'
+import { notifyPayoutMethodChange } from '@mde/notifications'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { bankDestination, methodOf, walletDestination } from '@/lib/crypto-wallets'
+import { bankDestination, describeDestination, methodOf, walletDestination } from '@/lib/crypto-wallets'
 import { rateLimit } from '@/server/rate-limit'
 import { getViewer } from '@/server/viewer'
 
@@ -103,10 +104,39 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
   }
   // Valid details are all a withdrawal needs: staff verify each withdrawal before paying it.
   const values = { payoutProvider: provider, payoutProviderRef: destination, payoutStatus: 'verified' }
-  await db()
-    .insert(tables.creatorProfiles)
-    .values({ userId: viewer.id, ...values })
-    .onConflictDoUpdate({ target: tables.creatorProfiles.userId, set: { ...values, updatedAt: new Date() } })
+  await db().transaction(async (tx) => {
+    const [prev] = await tx
+      .select({ ref: tables.creatorProfiles.payoutProviderRef })
+      .from(tables.creatorProfiles)
+      .where(eq(tables.creatorProfiles.userId, viewer.id))
+      .for('update')
+    await tx
+      .insert(tables.creatorProfiles)
+      .values({ userId: viewer.id, ...values })
+      .onConflictDoUpdate({ target: tables.creatorProfiles.userId, set: { ...values, updatedAt: new Date() } })
+    const before = prev?.ref && methodOf(prev.ref) ? prev.ref : null
+    if (before === destination) return
+    // Finance and admins hear about every new or changed payout method (owner, 2026-11-10), masked
+    // because it is emailed; the audit log keeps both in full for staff.
+    await writeAudit(tx, {
+      actorId: viewer.id,
+      action: 'payout_method.change',
+      entity: 'user',
+      entityId: viewer.id,
+      before: before ? { destination: before } : null,
+      after: { destination },
+    })
+    const [u] = await tx
+      .select({ username: tables.users.username })
+      .from(tables.users)
+      .where(eq(tables.users.id, viewer.id))
+    await notifyPayoutMethodChange(tx, {
+      creatorId: viewer.id,
+      creatorName: u?.username ? `@${u.username}` : (viewer.name ?? viewer.email),
+      before: before ? describeDestination(before) : null,
+      after: describeDestination(destination) ?? 'A new payout method',
+    })
+  })
   revalidatePath('/wallet')
   return { ok: true }
 }

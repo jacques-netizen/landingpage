@@ -13,6 +13,11 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 - Client report refresh: unchanged data answers 304 and is not redrawn; remove the old load-more path · Requested by: owner · Made by: Claude Code session …oZc8T8 · 99abf5e
 
+## 2026-11-10
+
+- Staff can mark a withdrawal as sent in one step, reference optional; clippers see Sent · Requested by: owner · Made by: Claude Code session …6mbuoN · 55190ee
+- Staff are told when a clipper changes their payout method; staff can message clippers without a strike · Requested by: owner · Made by: Claude Code session …6mbuoN · b297cdc
+
 ## 2026-11-09
 
 - Client reports load fonts from the app, not Google; email footer can carry the postal address · Requested by: owner · Made by: Claude Code session …oZc8T8 · 687a61f

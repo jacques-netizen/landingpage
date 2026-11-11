@@ -19,4 +19,6 @@ export const EMAIL_SUBJECT: Record<NotificationKind, string> = {
   campaign_event: 'Campaign update',
   payout_failed: 'A payout failed',
   view_proof: 'An update on your view proof',
+  payout_method_changed: 'A clipper changed their payout method',
+  staff_message: 'A message from the team',
 }

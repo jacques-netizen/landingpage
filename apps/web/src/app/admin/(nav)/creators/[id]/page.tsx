@@ -11,6 +11,8 @@ import { creatorDetail } from '@/server/creators'
 import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
 import { AdminPage } from '../../_components/ui'
+import { MessageForm } from '../../_components/message-form'
+import { messageAction } from './actions'
 import { NotesForm, SuspendForm, WarnForm } from './forms'
 
 export const dynamic = 'force-dynamic'
@@ -155,6 +157,20 @@ export default async function CreatorPage({ params }: { params: Promise<{ id: st
             </tbody>
           </table>
         )}
+      </Section>
+
+      <Section title="Send a message">
+        <p className="m-0 mb-4 text-muted-2">
+          A plain message, not a warning: it adds no strike.{' '}
+          {c.user.notifyEmail
+            ? 'They see it in their notifications and by email.'
+            : 'They have switched email off, so they will see it in their notifications only.'}
+        </p>
+        <MessageForm
+          action={messageAction.bind(null, c.user.id)}
+          submitLabel="Send message"
+          helper="Up to 2,000 characters."
+        />
       </Section>
 
       <Section title="Warnings">

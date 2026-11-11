@@ -23,6 +23,7 @@ import {
 } from '@/server/campaign-workspace'
 import { requireStaff } from '@/server/guard'
 import { hasAccess } from '@/server/viewer'
+import { MessageForm } from '../../_components/message-form'
 import { Notice } from '../../_components/ui'
 import { ClipsGrid } from './clips-grid'
 import { CopyReportLink } from './copy-report-link'
@@ -30,6 +31,7 @@ import { Card, Dot, PlatformTag, Rule, RuleGroup, Th } from './parts'
 import { RefreshButton } from './refresh-button'
 import { ArchivedClips } from './archived-clips'
 import { ImportCsv } from './import-csv'
+import { messageClippersAction } from './message-actions'
 import { ReportLink } from './report-link'
 import { CampaignReports } from './reports-tab'
 import { CampaignReview } from './review-cards'
@@ -519,86 +521,100 @@ export default async function CampaignAdminPage({
             </Card>
           </>
         ) : tab === 'clippers' ? (
-          <Card title="Clippers" note="Everyone who joined this campaign. Click a clipper to see their clips.">
-            {clippers.length === 0 ? (
-              <EmptyState body="Nobody has joined yet." />
-            ) : (
-              <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
-                <table className="w-full border-collapse text-[13px]">
-                  <thead className="bg-field">
-                    <tr>
-                      <Th>Clipper</Th>
-                      <Th>Handles</Th>
-                      <Th right>Submissions</Th>
-                      <Th right>Approved</Th>
-                      <Th right>Rejected</Th>
-                      <Th right>Total views</Th>
-                      <Th right>Earned</Th>
-                      <Th right>Verifications waiting</Th>
-                      <Th>Flags</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {clippers.map((m) => (
-                      <tr key={m.id} className="border-0 border-t border-solid border-line">
-                        <td className="px-3 py-3">
-                          <a href={clipHref({ clipper: m.id })} className="font-semibold text-ink">
-                            {m.name}
-                          </a>
-                          <a href={`/admin/creators/${m.id}`} className="ml-2 text-[11px] text-muted-2">
-                            Profile
-                          </a>
-                        </td>
-                        <td className="px-3 py-3">
-                          <span className="flex flex-wrap gap-3">
-                            {m.handles.slice(0, 3).map((a) => (
-                              <span key={a.platform + a.handle} className="inline-flex items-center gap-1">
-                                @{a.handle}
-                                <Dot status={a.status} />
-                              </span>
-                            ))}
-                            {m.handles.length > 3 ? (
-                              <span className="text-muted">+{m.handles.length - 3} more</span>
-                            ) : null}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3 text-right tabular-nums">{m.submissions}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{m.approved}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{m.rejected}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{n(m.views)}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">{formatDollars(m.earnedCents)}</td>
-                        <td className="px-3 py-3 text-right tabular-nums">
-                          {m.pendingVerifications ? (
-                            <a href={`${base}?tab=verifications`} className="font-semibold text-pending">
-                              {m.pendingVerifications}
+          <>
+            <Card title="Clippers" note="Everyone who joined this campaign. Click a clipper to see their clips.">
+              {clippers.length === 0 ? (
+                <EmptyState body="Nobody has joined yet." />
+              ) : (
+                <div className="overflow-x-auto rounded-[10px] border border-solid border-line">
+                  <table className="w-full border-collapse text-[13px]">
+                    <thead className="bg-field">
+                      <tr>
+                        <Th>Clipper</Th>
+                        <Th>Handles</Th>
+                        <Th right>Submissions</Th>
+                        <Th right>Approved</Th>
+                        <Th right>Rejected</Th>
+                        <Th right>Total views</Th>
+                        <Th right>Earned</Th>
+                        <Th right>Verifications waiting</Th>
+                        <Th>Flags</Th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {clippers.map((m) => (
+                        <tr key={m.id} className="border-0 border-t border-solid border-line">
+                          <td className="px-3 py-3">
+                            <a href={clipHref({ clipper: m.id })} className="font-semibold text-ink">
+                              {m.name}
                             </a>
-                          ) : (
-                            0
-                          )}
-                        </td>
-                        <td className="px-3 py-3">
-                          {m.flags.length ? (
-                            <span className="flex flex-wrap gap-1">
-                              {m.flags.map((f) => (
-                                <span
-                                  key={f}
-                                  className="rounded-[6px] border border-solid border-[rgba(229,103,92,0.5)] px-2 py-[1px] text-[11px] text-[#F08A80]"
-                                >
-                                  {f}
+                            <a href={`/admin/creators/${m.id}`} className="ml-2 text-[11px] text-muted-2">
+                              Profile
+                            </a>
+                          </td>
+                          <td className="px-3 py-3">
+                            <span className="flex flex-wrap gap-3">
+                              {m.handles.slice(0, 3).map((a) => (
+                                <span key={a.platform + a.handle} className="inline-flex items-center gap-1">
+                                  @{a.handle}
+                                  <Dot status={a.status} />
                                 </span>
                               ))}
+                              {m.handles.length > 3 ? (
+                                <span className="text-muted">+{m.handles.length - 3} more</span>
+                              ) : null}
                             </span>
-                          ) : (
-                            <span className="text-muted">None</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+                          </td>
+                          <td className="px-3 py-3 text-right tabular-nums">{m.submissions}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">{m.approved}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">{m.rejected}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">{n(m.views)}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">{formatDollars(m.earnedCents)}</td>
+                          <td className="px-3 py-3 text-right tabular-nums">
+                            {m.pendingVerifications ? (
+                              <a href={`${base}?tab=verifications`} className="font-semibold text-pending">
+                                {m.pendingVerifications}
+                              </a>
+                            ) : (
+                              0
+                            )}
+                          </td>
+                          <td className="px-3 py-3">
+                            {m.flags.length ? (
+                              <span className="flex flex-wrap gap-1">
+                                {m.flags.map((f) => (
+                                  <span
+                                    key={f}
+                                    className="rounded-[6px] border border-solid border-[rgba(229,103,92,0.5)] px-2 py-[1px] text-[11px] text-[#F08A80]"
+                                  >
+                                    {f}
+                                  </span>
+                                ))}
+                              </span>
+                            ) : (
+                              <span className="text-muted">None</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </Card>
+            {clippers.length ? (
+              <Card
+                title="Message every clipper"
+                note={`A plain message to the ${clippers.length} ${clippers.length === 1 ? 'clipper' : 'clippers'} who joined, in their notifications and by email (unless they switched email off). Not a warning: it adds no strike.`}
+              >
+                <MessageForm
+                  action={messageClippersAction.bind(null, id)}
+                  submitLabel="Send to every clipper"
+                  helper="Up to 2,000 characters. To message one clipper, open their Profile."
+                />
+              </Card>
+            ) : null}
+          </>
         ) : tab === 'payouts' && payouts ? (
           <Card
             title="Payouts"

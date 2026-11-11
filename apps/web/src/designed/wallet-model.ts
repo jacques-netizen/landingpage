@@ -115,13 +115,13 @@ export function inPeriod(d: Date, period: Period, now: Date) {
   return d.getTime() >= start && d.getTime() < end
 }
 
-// Verifying: staff check the request. Processing: verified and being sent. Paid: sent to the wallet.
+// Verifying: staff check the request. Processing: verified and being sent. Sent: staff sent it (owner, 2026-11-10).
 const WITHDRAWAL_STATUS: Record<string, { label: string; dot: string }> = {
   requested: { label: 'Verifying', dot: '#E0A94A' },
   approved: { label: 'Processing', dot: '#E0A94A' },
   in_batch: { label: 'Processing', dot: '#E0A94A' },
   sent: { label: 'Processing', dot: '#E0A94A' },
-  paid: { label: 'Paid', dot: '#4FB286' },
+  paid: { label: 'Sent', dot: '#4FB286' },
   failed: { label: 'Returned to balance', dot: '#E26B5E' },
   cancelled: { label: 'Cancelled', dot: '#E26B5E' },
 }
