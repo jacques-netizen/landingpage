@@ -1,12 +1,20 @@
 import type { EventName } from "@/lib/events";
 
 let sessionToken: string | null = null;
+// The signed lead reference from the delivery email link (?l=). Used when the
+// guide opens in a browser that never held the session, such as a mail app.
+let leadRef: string | null = null;
 // Events fired before the session exists (the cold open renders at once)
 // wait here and go out as soon as the token arrives.
 const early: [EventName, Record<string, unknown>][] = [];
 export const setApiToken = (t: string | null) => {
   sessionToken = t;
   if (t) for (const [name, props] of early.splice(0)) track(name, props);
+};
+
+export const setLeadRef = (r: string | null) => {
+  leadRef = r;
+  if (r && !sessionToken) for (const [name, props] of early.splice(0)) track(name, props);
 };
 
 export async function postJson<T>(url: string, body: unknown, timeoutMs = 10_000): Promise<{ ok: boolean; status: number; data: T | null }> {
@@ -31,11 +39,11 @@ export async function postJson<T>(url: string, body: unknown, timeoutMs = 10_000
 
 /** Fire and forget analytics. Never pass personal data in props. */
 export function track(name: EventName, props: Record<string, unknown> = {}) {
-  if (!sessionToken) {
+  if (!sessionToken && !leadRef) {
     if (early.length < 50) early.push([name, props]);
     return;
   }
-  const body = JSON.stringify({ token: sessionToken, name, props });
+  const body = JSON.stringify(sessionToken ? { token: sessionToken, name, props } : { lead: leadRef, name, props });
   try {
     if (navigator.sendBeacon && navigator.sendBeacon("/api/event", new Blob([body], { type: "text/plain" }))) return;
   } catch {

@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import content from "../../../content/secrets.json";
 import type { ProofItem } from "@/lib/content";
 import { Logo } from "@/components/funnel/ui";
+import { setApiToken, setLeadRef, track } from "@/lib/client/api";
+import { safeStorage } from "@/lib/client/storage";
 
 const CalInline = dynamic(() => import("./CalInline").then((x) => x.CalInline), { ssr: false });
 
@@ -791,7 +793,30 @@ function Next({ bookingUrl }: { bookingUrl: string }) {
 
 /* ---------------------------------------------------------------- page */
 
+/** Counts an open of the guide, and reaching the calendar at the end, for the funnel dashboard. */
+function useGuideTracking() {
+  useEffect(() => {
+    // From the email: the signed link. Same browser as the sign-up: the saved session.
+    const saved = safeStorage.get("mde_guide_session");
+    const ref = new URLSearchParams(window.location.search).get("l");
+    if (ref) setLeadRef(ref.slice(0, 300));
+    else if (saved) setApiToken(saved);
+    else return;
+    track("secrets_view", { from: ref ? "email" : "site" });
+    const end = document.getElementById("next");
+    if (!end || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      track("secrets_end", {});
+      io.disconnect();
+    }, { threshold: 0.15 });
+    io.observe(end);
+    return () => io.disconnect();
+  }, []);
+}
+
 export function Secrets({ cases, bookingUrl, showSlots }: { cases: Case[]; bookingUrl: string; showSlots: boolean }) {
+  useGuideTracking();
   return (
     <main className="gd sx">
       <Progress />
