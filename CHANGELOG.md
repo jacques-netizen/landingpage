@@ -9,6 +9,10 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-11
+
+- Client report refresh: unchanged data answers 304 and is not redrawn; remove the old load-more path · Requested by: owner · Made by: Claude Code session …oZc8T8 · 99abf5e
+
 ## 2026-11-09
 
 - Client reports load fonts from the app, not Google; email footer can carry the postal address · Requested by: owner · Made by: Claude Code session …oZc8T8 · 687a61f
