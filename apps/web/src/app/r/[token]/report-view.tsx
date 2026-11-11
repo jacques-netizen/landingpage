@@ -254,6 +254,7 @@ export function ReportView({
   const [state, setState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [extra, setExtra] = useState<ReportClip[]>([])
   const all = useRef(false)
+  const drawn = useRef('')
   const [spendView, setSpendView] = useState<'chart' | 'table'>('chart')
   const [clipPage, setClipPage] = useState(1)
   const [clipPageSize, setClipPageSize] = useState(10)
@@ -261,31 +262,32 @@ export function ReportView({
   const latest = useRef(queryString(initialFilters))
 
   const load = useCallback(
-    async (f: Filters) => {
+    async (f: Filters, quiet = false) => {
       const qs = queryString(f)
       latest.current = qs
-      setState('loading')
+      if (!quiet) setState('loading')
       try {
-        const res = await fetch(`/api/r/${token}/report${qs ? `?${qs}` : ''}`, { cache: 'no-store' })
-        if (!res.ok) throw new Error(String(res.status))
-        const data = (await res.json()) as CampaignReport
+        // "no-cache" asks the server every time but lets it answer "unchanged" (304), and an unchanged
+        // report is not drawn again: refreshing costs almost nothing until the figures move (owner,
+        // 2026-11-11: no needless polling).
+        const get = async (q: string) => {
+          const res = await fetch(`/api/r/${token}/report${q ? `?${q}` : ''}`, { cache: 'no-cache' })
+          if (!res.ok) throw new Error(String(res.status))
+          return res.text()
+        }
+        const texts = [await get(qs)]
+        const data = JSON.parse(texts[0]!) as CampaignReport
         // After "Show all", every page is loaded, on each refresh too (owner, 2026-11-03: the report showed
         // only the first 50 clips, and the 2-minute refresh dropped the rest).
-        const more: ReportClip[] = []
         if (f.page === 1 && all.current) {
           const pages = Math.ceil(data.submissions.total / data.submissions.pageSize)
-          for (let p = 2; p <= pages; p++) {
-            const next = await fetch(`/api/r/${token}/report?${queryString({ ...f, page: p })}`, { cache: 'no-store' })
-            if (!next.ok) throw new Error(String(next.status))
-            more.push(...((await next.json()) as CampaignReport).submissions.rows)
-          }
+          for (let p = 2; p <= pages; p++) texts.push(await get(queryString({ ...f, page: p })))
         }
         if (latest.current === qs) {
-          if (f.page > 1) {
-            setExtra((x) => [...x, ...data.submissions.rows])
-            setReport((old) => ({ ...data, submissions: { ...data.submissions, rows: old.submissions.rows } }))
-          } else {
-            setExtra(more)
+          const key = `${qs}\n${texts.join('\n')}`
+          if (key !== drawn.current) {
+            drawn.current = key
+            setExtra(texts.slice(1).flatMap((t) => (JSON.parse(t) as CampaignReport).submissions.rows))
             setReport(data)
           }
           setState('idle')
@@ -306,7 +308,7 @@ export function ReportView({
   }, [filters, load])
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | undefined
-    const fresh = () => void load({ ...filters, page: 1 })
+    const fresh = () => void load({ ...filters, page: 1 }, true)
     const start = () => {
       stop()
       timer = setInterval(fresh, REFRESH_MS)
