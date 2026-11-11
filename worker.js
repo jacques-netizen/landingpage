@@ -2,6 +2,7 @@
 // (index.html, /admin, /talent, images) is served from static assets.
 import { handleRunItBakApi, handleRunItBakPage } from './lib/runitbak.js';
 import { handleOnboarding } from './lib/onboarding.js';
+import { handleBlueprintApi } from './lib/blueprint.js';
 import { runSequence } from './lib/sequence.js';
 import { handleUpload, handleList, handleMedia, handleNotify, handleBrandSheet, handleCampaign, handleCampaignList, handleCampaignImport, handleCampaignBanner, pullCampaignCSV, handleWhopProbe, handleThumbTest, handleResolveThumbs, handleImageProxy, resolveStoredThumbnails } from './lib/handlers.js';
 
@@ -24,6 +25,12 @@ export default {
     if (path === '/api/img') return handleImageProxy(request, env);
     if (path.startsWith('/v/')) return handleMedia(request, env);
     if (path.startsWith('/api/runitbak/')) return handleRunItBakApi(request, env);
+    // The Athlete Income Blueprint opt-in (Chris Bak). Pages in blueprint/,
+    // settings in lib/blueprint-config.js. On a blueprint.* host the root is the opt-in.
+    if (path.startsWith('/api/blueprint/')) return handleBlueprintApi(request, env, ctx);
+    if (url.hostname.startsWith('blueprint.') && path === '/') {
+      return env.ASSETS.fetch(new Request(new URL('/blueprint/', request.url).toString(), request));
+    }
     // Client onboarding form, its admin page and API all live under /onboarding.
     // On onboarding.maisondelites.com the form sits at the root instead:
     //   /<token> -> the form, /admin -> admin, / -> the main site.

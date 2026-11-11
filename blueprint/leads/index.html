@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- Private list of Athlete Income Blueprint sign-ups. Uses ADMIN_PASSWORD (same as /admin). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Blueprint sign-ups</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+:root{--paper:#F8F6F0;--ink:#111110;--mut:#6B6862;--lime:#D8F26B;--line:rgba(17,17,16,.14)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:28px 16px 60px}
+h1{margin:0 0 18px;font:600 32px/1.1 Georgia,serif}
+form{display:flex;gap:8px;flex-wrap:wrap}
+input{height:44px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);font:inherit;min-width:220px}
+button,a.btn{height:44px;padding:0 18px;border-radius:999px;border:0;background:var(--ink);color:var(--paper);font:600 15px system-ui,sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.tot{display:flex;gap:28px;margin:22px 0;flex-wrap:wrap}
+.tot div b{display:block;font:600 30px/1 Georgia,serif}
+.tot div span{color:var(--mut);font-size:13px}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mut);font-size:13px}
+td small{color:var(--mut)}
+.msg{color:#9B2B1D;margin-top:10px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Blueprint sign-ups</h1>
+  <form id="f"><input id="pw" type="password" placeholder="Admin password" autocomplete="current-password"><button>Open</button><a class="btn" id="csv" href="#" hidden>Download CSV</a></form>
+  <p class="msg" id="msg"></p>
+  <div id="out" hidden>
+    <div class="tot"><div><b id="t-all">0</b><span>All</span></div><div><b id="t-today">0</b><span>Today</span></div><div><b id="t-week">0</b><span>Last 7 days</span></div><div><b id="t-dm">0</b><span>Came from the DM link</span></div></div>
+    <div class="wrap"><table><thead><tr><th>Date</th><th>Name</th><th>Email</th><th>WhatsApp</th><th>Source</th><th>Email sent</th><th>ManyChat</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </div>
+</main>
+<script>
+(function () {
+  var pw = '';
+  try { pw = sessionStorage.getItem('bp_admin') || ''; } catch (e) {}
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var FOLLOW = 'Hey {first}, Chris here. Did the Athlete Income Blueprint come through? When you run it, send me the offer Claude landed on and I will tell you what I would change.';
+  function load() {
+    fetch('/api/blueprint/leads', { headers: { Authorization: 'Bearer ' + pw } }).then(function (r) {
+      if (r.status === 401) throw new Error('Wrong password.');
+      return r.json();
+    }).then(function (d) {
+      try { sessionStorage.setItem('bp_admin', pw); } catch (e) {}
+      var L = d.leads || [], now = Date.now(), day = new Date().toISOString().slice(0, 10);
+      $('t-all').textContent = L.length;
+      $('t-today').textContent = L.filter(function (x) { return String(x.created_at).slice(0, 10) === day; }).length;
+      $('t-week').textContent = L.filter(function (x) { return now - Date.parse(x.created_at) < 7 * 864e5; }).length;
+      $('t-dm').textContent = L.filter(function (x) { return x.source && x.source.mc; }).length;
+      $('rows').innerHTML = L.map(function (x) {
+        var wa = 'https://wa.me/' + String(x.phone).replace(/\D/g, '') + '?text=' + encodeURIComponent(FOLLOW.replace('{first}', x.first_name));
+        var j = x.jobs || {};
+        return '<tr><td>' + esc(String(x.created_at).replace('T', ' ').slice(0, 16)) + '</td><td>' + esc(x.first_name + ' ' + x.last_name) + '</td><td><a href="mailto:' + esc(x.email) + '">' + esc(x.email) + '</a></td><td><a href="' + esc(wa) + '" target="_blank" rel="noopener">' + esc(x.phone) + '</a></td><td>' + esc((x.source && x.source.src) || '') + '</td><td><small>' + esc(j.email || 'pending') + '</small></td><td><small>' + esc(j.manychat || 'pending') + '</small></td></tr>';
+      }).join('');
+      $('out').hidden = false; $('csv').hidden = false; $('msg').textContent = '';
+    }).catch(function (e) { $('msg').textContent = e.message || 'Could not load the list.'; });
+  }
+  $('csv').addEventListener('click', function (e) {
+    e.preventDefault();
+    fetch('/api/blueprint/leads?format=csv', { headers: { Authorization: 'Bearer ' + pw } }).then(function (r) { return r.blob(); }).then(function (b) {
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'blueprint-leads.csv'; a.click();
+    });
+  });
+  $('f').addEventListener('submit', function (e) { e.preventDefault(); pw = $('pw').value; load(); });
+  if (pw) load();
+})();
+</script>
+</body>
+</html>
