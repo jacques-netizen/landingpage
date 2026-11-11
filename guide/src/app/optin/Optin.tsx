@@ -345,7 +345,10 @@ function Thanks({ lead, config, showSlots, filmId }: { lead: LeadView; config: P
   useEffect(() => {
     track("result_view", { path: lead.path, qualified: lead.qualified, page: "thanks" });
   }, [lead.path, lead.qualified]);
-  const goBooking = () => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const goBooking = () => {
+    track("book_click", { page: "thanks" });
+    document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const reviews = b.reviews.items as { name: string; who: string; text: string; stars?: number }[];
   return (
     <div className="op">

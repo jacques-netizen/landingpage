@@ -16,6 +16,10 @@ export const EVENT_NAMES = [
   "booking_view",
   "booking_created",
   "join_click",
+  // Opt-in funnel: the Book a call button on the thanks page, and the guide page (/secrets).
+  "book_click",
+  "secrets_view",
+  "secrets_end",
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];

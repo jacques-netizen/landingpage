@@ -32,7 +32,8 @@ export function buildDeliveryEmail(lead: LeadRow) {
   const asset = typeof lead.answers.asset === "string" ? lead.answers.asset : undefined;
   const fromOptin = isOptin(lead.answers);
   const headline = fromOptin ? optin.guide.emailHeadline : resultText(p, asset, textAnswer(lead.answers, "project")).headline;
-  const guide = guideUrlFor(lead);
+  // Opt-in leads: the link carries a signed reference so an open of the guide counts for this lead on the dashboard.
+  const guide = fromOptin ? `${guideUrlFor(lead)}?l=${signToken(lead.id, "lead")}` : guideUrlFor(lead);
   const intro = fromOptin ? optin.guide.emailIntro : e.intro;
   const guideButton = fromOptin ? optin.guide.emailButton : e.guideButton;
   const unsub = unsubscribeUrl(lead.email);

@@ -141,3 +141,44 @@ describe("opt-in page", () => {
     expect(isOptin({ role: "brand" })).toBe(false);
   });
 });
+
+import { followUpTable, groupBy, pct, totals, type VisitRow } from "@/lib/funnel-stats";
+
+describe("opt-in dashboard arithmetic", () => {
+  const v = (over: Partial<VisitRow> = {}): VisitRow => ({ day: "2026-11-10", source: "direct", device: "ios", name_done: false, lead: false, emailed: false, thanks: false, book_click: false, guide_open: false, guide_end: false, booked: false, ...over });
+  const rows = [
+    v(),
+    v({ name_done: true }),
+    v({ name_done: true, lead: true, emailed: true, thanks: true, source: "ig-distribution", device: "ig_inapp" }),
+    v({ name_done: true, lead: true, emailed: true, thanks: true, book_click: true, guide_open: true, guide_end: true, booked: true, source: "ig-distribution", device: "ig_inapp", day: "2026-11-11" }),
+  ];
+
+  it("counts each step once per visit", () => {
+    expect(totals(rows)).toEqual({ visits: 4, nameDone: 3, leads: 2, emailed: 2, thanks: 2, bookClick: 1, guideOpen: 1, guideEnd: 1, booked: 1 });
+    // The pg driver can hand booleans back as text.
+    expect(totals([v({ lead: "t" as unknown as boolean }), v({ lead: "f" as unknown as boolean })]).leads).toBe(1);
+  });
+
+  it("groups by source by visits and by day newest first", () => {
+    expect(groupBy(rows, "source").map((g) => [g.key, g.visits, g.leads, g.booked])).toEqual([["direct", 2, 0, 0], ["ig-distribution", 2, 2, 1]]);
+    expect(groupBy(rows, "day").map((g) => g.key)).toEqual(["2026-11-11", "2026-11-10"]);
+  });
+
+  it("writes shares as whole percent", () => {
+    expect(pct(2, 4)).toBe("50%");
+    expect(pct(1, 300)).toBe("<1%");
+    expect(pct(0, 4)).toBe("0%");
+    expect(pct(3, 0)).toBe("");
+  });
+
+  it("sorts follow-up steps into done, skipped, waiting and failed", () => {
+    const t = followUpTable([
+      { kind: "email", status: "done", leads: 9 },
+      { kind: "email", status: "failed", leads: 1 },
+      { kind: "crm", status: "skipped", leads: 10 },
+      { kind: "manychat", status: "dead", leads: 2 },
+      { kind: "write", status: "done", leads: 5 },
+    ]);
+    expect(t.map((f) => [f.kind, f.done, f.skipped, f.waiting, f.failed])).toEqual([["email", 9, 0, 1, 0], ["crm", 0, 10, 0, 0], ["manychat", 0, 0, 0, 2]]);
+  });
+});

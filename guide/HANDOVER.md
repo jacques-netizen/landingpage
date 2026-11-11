@@ -4,7 +4,7 @@ Everything needed to run, change and deploy the Maison d'Élites guide funnel
 from any Claude Code account or by hand. Read this first, then `CLAUDE.md`
 (working rules) and `docs/SETUP.md` (connecting each outside account).
 
-Last updated 2026-11-09.
+Last updated 2026-11-11.
 
 ---
 
@@ -17,7 +17,7 @@ repository, deployed on Vercel at **https://guide.maisondelites.com**.
 | --- | --- |
 | `/` | The opt-in: two steps (first and last name, then email and WhatsApp number), then the thanks page in place |
 | `/secrets` | The lead magnet: "The 7 secrets of the most-watched names online", an interactive page that ends on the booking calendar |
-| `/dashboard` | Funnel numbers, counts only, no personal data |
+| `/dashboard` | The opt-in funnel step by step (visits, name step, sign-ups, guide email, thanks page, Book a call presses, guide opens, booked calls), by source, browser and day. Counts only, no personal data. The older film funnel is not on it |
 | `/dashboard/leads?key=<DASHBOARD_PASSWORD>` | Every submission with name, email, phone; CSV download. 404 without the right key |
 | `/api/dashboard/leads?key=<DASHBOARD_PASSWORD>` | The same list as a CSV file |
 | `/film` | The older film-and-questions funnel. Still works, gets no traffic |
@@ -150,6 +150,10 @@ docs/               SETUP.md (accounts), QA.md, build plan, video scripts, board
    `crm` (GoHighLevel contact tagged `guide-lead`), `capi` (Meta Lead),
    `discord` (alert, qualified leads only), `manychat` (tag, when the link carried
    a ManyChat subscriber id as `?mc=`).
+   The guide link in that email carries a signed lead reference (`?l=`), so
+   an open of `/secrets` from the email is counted for that lead
+   (`secrets_view`, `secrets_end`). The Book a call button on the thanks page
+   sends `book_click`.
 5. Failed jobs retry with backoff; `vercel.json` runs `/api/cron/jobs` daily at
    03:00 UTC to sweep anything left (Vercel sends `CRON_SECRET` as a bearer token).
 6. A booking in Cal.com calls `/api/webhooks/cal`; the lead is matched by the
