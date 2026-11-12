@@ -1,0 +1,23 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/audience/{platform}, 200 SongPlotCollectionResponse { related: SongLight, items: AudiencePlot[] { date, plots: Plot2[] { identifier, value } }, page: OffsetPage { offset, limit, total, next, previous }, errors }. Two identifiers on the last day with the same value show the help article's rule (add each unique value). Values are test values. Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": ""
+  },
+  "items": [
+    { "date": "2026-10-01T00:00:00+00:00", "plots": [{ "identifier": "0bYg9bo50gSsH3LtXe2SQn", "value": 100000 }] },
+    { "date": "2026-10-02T00:00:00+00:00", "plots": [{ "identifier": "0bYg9bo50gSsH3LtXe2SQn", "value": 101000 }] },
+    {
+      "date": "2026-10-03T00:00:00+00:00",
+      "plots": [
+        { "identifier": "0bYg9bo50gSsH3LtXe2SQn", "value": 102500 },
+        { "identifier": "1aaaaaaaaaaaaaaaaaaaaa", "value": 500 },
+        { "identifier": "2bbbbbbbbbbbbbbbbbbbbb", "value": 500 }
+      ]
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 3, "next": null, "previous": null },
+  "errors": []
+}

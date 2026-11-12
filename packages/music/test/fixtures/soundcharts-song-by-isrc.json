@@ -1,0 +1,30 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2.25/song/by-isrc/{isrc}, 200 SongResponse3 { type, object: Song3, errors }; Song3 fields uuid, name, isrc (Isrc: value, countryCode, countryName), creditName, artists and mainArtists (ArtistLight: uuid, slug, name, appUrl, imageUrl), releaseDate. The uuid and ISRC are the reference's own examples; the names are test values. Never seen from the live API.",
+  "type": "song",
+  "object": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "isrc": { "value": "USSM19400325", "countryCode": "US", "countryName": "United States" },
+    "creditName": "Test Artist",
+    "artists": [
+      {
+        "uuid": "aaaaaaaa-0000-0000-0000-000000000001",
+        "slug": "test-artist",
+        "name": "Test Artist",
+        "appUrl": "",
+        "imageUrl": ""
+      }
+    ],
+    "mainArtists": [
+      {
+        "uuid": "aaaaaaaa-0000-0000-0000-000000000001",
+        "slug": "test-artist",
+        "name": "Test Artist",
+        "appUrl": "",
+        "imageUrl": ""
+      }
+    ],
+    "releaseDate": "2026-08-01T00:00:00+00:00"
+  },
+  "errors": []
+}

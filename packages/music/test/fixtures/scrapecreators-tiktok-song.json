@@ -1,0 +1,16 @@
+{
+  "_source": "Example response of https://docs.scrapecreators.com/v1/tiktok/song (opened 2026-11-12), trimmed to the fields read. id is left out because it does not fit a JavaScript number.",
+  "success": true,
+  "credits_remaining": 1000000,
+  "credits_charged": 1,
+  "music_info": {
+    "id_str": "6717159721276540930",
+    "title": "Different (Acoustic)",
+    "author": "Micah Tyler",
+    "user_count": 358,
+    "is_original": false,
+    "is_original_sound": false
+  },
+  "status_code": 0,
+  "status_msg": ""
+}
