@@ -41,6 +41,7 @@ packages/
   review/       Staff decisions, appeals, warnings and strikes, view verifications
   platforms/    Data providers: Scrape Creators (TikTok, Instagram, X), YouTube API, mock; bio codes, OAuth
   notifications/ In-app and email notifications, email sending, appeal deadlines
+  music/        Music tracking: song links, Soundcharts adapter, sound count and check, calculations, music report
   ui/           Shared React components and design tokens
   seed/         Sample data for local development and tests
 docs/           The original brief (01-05), deploy guide, design handoff and locked screenshots
@@ -117,6 +118,7 @@ Set the same values on the web and worker services.
 | `EMAIL_API_KEY`, `EMAIL_FROM` | Resend; sign-in codes and notifications |
 | `DATA_PROVIDER_API_KEY` | Scrape Creators: views for TikTok, Instagram and X |
 | `YOUTUBE_API_KEY` | YouTube views |
+| `MUSIC_DATA_PROVIDER`, `SOUNDCHARTS_APP_ID`, `SOUNDCHARTS_API_KEY` | Music tracking: `soundcharts` or `none` (default). Without both Soundcharts values nothing calls Soundcharts |
 | `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | Google sign-in and "Link with YouTube". The OAuth client must list `APP_URL/api/auth/callback/google` and `APP_URL/api/oauth/youtube/callback` |
 | `AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET` | Discord sign-in |
 | `TOKEN_ENCRYPTION_KEY` | Encrypts linked YouTube tokens. Never change it once set |
@@ -142,6 +144,7 @@ All tables are in `packages/db/src/schema.ts`; migrations in `packages/db/migrat
 | Posts | `submissions`, `view_snapshots` (every read), `view_snapshot_days` (one row per post per day), `review_decisions`, `fraud_flags`, `appeals`, `view_proofs`, `warnings` |
 | Money | `ledger_accounts`, `ledger_transactions`, `ledger_entries`, `withdrawals`, `payout_batches` |
 | Client reports | `campaign_reports`, `campaign_report_versions` |
+| Music tracking | `music_artists`, `music_tracks`, `music_metric_snapshots` (one number a day per source), `chart_entries`, `music_job_runs`; sound check columns on `submissions` |
 | Everything else | `notifications`, `settings`, `reason_codes`, `legal_documents`, `files`, `audit_log` (append only; a trigger blocks updates and deletes) |
 
 Campaign status: `draft` → `awaiting_funding` → `live` → `closing` (budget used up) → `closed`, or
@@ -217,6 +220,7 @@ Scrape Creators charges per request: avoid needless refreshes and never loop ove
 | `appeal-deadlines` | 1 h | Warns staff about appeals due within 24 hours |
 | `ledger-check` | 1 day | Checks the ledger's money properties |
 | `strike-expiry` | 1 day | Expires old strikes |
+| `music-pull` | 1 h | Each tracked song once a day: Soundcharts streams (history from before launch on the first run), the TikTok sound count from Scrape Creators |
 
 The admin home warns when the worker has not reported for 10 minutes.
 
