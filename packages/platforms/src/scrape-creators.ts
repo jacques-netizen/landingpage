@@ -179,6 +179,15 @@ export class ScrapeCreatorsProvider implements ViewProvider {
         ),
         // A TikTok photo post carries image_post_info (and no playable video).
         mediaKind: pick(v, 'image_post_info') ? 'image' : durationMs !== null ? 'video' : null,
+        // The sound (https://docs.scrapecreators.com/v2/tiktok/video: aweme_detail.music with id_str, title,
+        // is_original_sound). id itself is too large for a JavaScript number, so only id_str is read.
+        sound: pick(v, 'music')
+          ? {
+              id: str(pick(v, 'music.id_str')),
+              title: str(pick(v, 'music.title')),
+              isOriginal: bool(pick(v, 'music.is_original_sound')),
+            }
+          : null,
         rawRef: { platform: 'tiktok', id: str(pick(v, 'aweme_id')) },
       }
     }

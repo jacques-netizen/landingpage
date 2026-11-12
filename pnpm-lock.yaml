@@ -504,6 +504,9 @@ importers:
       '@mde/money':
         specifier: workspace:*
         version: link:../money
+      '@mde/music':
+        specifier: workspace:*
+        version: link:../music
       '@mde/platforms':
         specifier: workspace:*
         version: link:../platforms

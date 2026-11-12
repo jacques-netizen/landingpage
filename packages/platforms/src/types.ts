@@ -32,6 +32,11 @@ export type PostData = {
   mediaKind?: 'video' | 'image' | null
   /** A perceptual hash the provider computed itself, where it can (the mock scripts this). */
   mediaHash?: string | null
+  /**
+   * The sound the post uses, where the platform says (TikTok: aweme_detail.music in Scrape Creators'
+   * /v2/tiktok/video answer). Undefined when the provider does not read sounds; used by the music sound check.
+   */
+  sound?: { id: string | null; title: string | null; isOriginal: boolean | null } | null
   rawRef: unknown
   /** Which provider answered. The router fills this in. */
   source?: string

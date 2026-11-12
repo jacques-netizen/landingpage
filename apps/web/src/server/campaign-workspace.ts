@@ -24,6 +24,7 @@ const FLAG_LABEL: Record<string, string> = {
   engagement_below_floor: 'Engagement below the floor',
   duplicate_media: 'Same clip posted before',
   wrong_author: 'Posted from another account',
+  sound_mismatch: 'Does not use the official sound',
   follower_drop: 'Follower drop',
 }
 

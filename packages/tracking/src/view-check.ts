@@ -10,6 +10,7 @@ import {
   type PostData,
   type ProviderRouter,
 } from '@mde/platforms'
+import { officialSound, soundCheckStatus, type SoundCheckStatus } from '@mde/music'
 import { nextCheckAt } from '@mde/submissions'
 import { and, asc, desc, eq, isNotNull, lte, sql } from 'drizzle-orm'
 import { engagementBelowFloor, viewJump } from './fraud'
@@ -109,6 +110,24 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
     }
   }
 
+  // Music campaigns (owner, 2026-11-12): does the post use the official sound? Only TikTok posts, where
+  // the provider reports the sound. A "reject" rule flags the post for a reviewer when its sound changes
+  // to a wrong one; a reviewer still decides. Never automatic rejection.
+  let sound: { status: SoundCheckStatus; id: string | null; title: string | null } | null = null
+  if (visible && s.platform === 'tiktok' && post.sound !== undefined) {
+    const official = await officialSound(db, s.campaignId)
+    if (official) {
+      const status = soundCheckStatus(post.sound, official)
+      sound = { status, id: post.sound?.id ?? null, title: post.sound?.title ?? null }
+      if (
+        official.soundRule === 'reject' &&
+        (status === 'original_sound' || status === 'different_sound') &&
+        s.soundCheckStatus !== status
+      )
+        newFlags.push({ kind: 'sound_mismatch', detail: { status, soundId: sound.id, soundTitle: sound.title } })
+    }
+  }
+
   const before = s.state
   const outcome = await db.transaction(async (tx) => {
     // 2. Keep the snapshot.
@@ -137,6 +156,12 @@ export async function runViewCheck(db: Db, submissionId: string, deps: CheckDeps
         .values({ submissionId: s.id, kind: f.kind, detail: { ...f.detail, previousState: before } })
 
     const patch: Partial<typeof submissions.$inferInsert> = { missingSince }
+    if (sound) {
+      patch.soundCheckStatus = sound.status
+      patch.detectedSoundId = sound.id
+      patch.detectedSoundTitle = sound.title
+      patch.soundCheckedAt = now
+    }
     let state = before
     if (remove) {
       // 3.4: still missing or private after the grace period.

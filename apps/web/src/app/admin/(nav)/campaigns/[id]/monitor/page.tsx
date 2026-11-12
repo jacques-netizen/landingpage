@@ -47,6 +47,7 @@ const FLAG_LABEL: Record<string, string> = {
   engagement_below_floor: 'Low engagement',
   duplicate_media: 'Same clip posted before',
   wrong_author: 'Wrong author',
+  sound_mismatch: 'Wrong sound',
   follower_drop: 'Follower drop',
 }
 

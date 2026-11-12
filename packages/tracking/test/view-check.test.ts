@@ -435,3 +435,53 @@ describe('view checks and earnings', () => {
     expect((await u.sub()).state).toBe('final')
   })
 })
+
+describe('sound check on music campaigns (owner, 2026-11-12)', () => {
+  async function withSong(t: Awaited<ReturnType<typeof setup>>, soundRule: 'warn' | 'reject') {
+    await db.insert(tables.musicTracks).values({
+      campaignId: t.c.id,
+      title: 'Song',
+      launchDate: '2026-10-01',
+      tiktokClipId: '7439295283975702544',
+      soundRule,
+    })
+  }
+
+  it('labels the post with the sound the platform reports', async () => {
+    const t = await setup()
+    await withSong(t, 'warn')
+    t.post(2_000, { sound: { id: '7439295283975702544', title: 'Song', isOriginal: false } })
+    await t.check(2)
+    expect(await t.sub()).toMatchObject({ soundCheckStatus: 'matched', detectedSoundTitle: 'Song', state: 'earning' })
+    // Warn: a different sound is labelled, nothing else changes.
+    t.post(3_000, { sound: { id: '1', title: 'Other', isOriginal: false } })
+    await t.check(4)
+    expect(await t.sub()).toMatchObject({ soundCheckStatus: 'different_sound', state: 'earning' })
+    // The platform said nothing about the sound.
+    t.post(3_500, { sound: null })
+    await t.check(6)
+    expect((await t.sub()).soundCheckStatus).toBe('not_checked')
+  })
+
+  it('with the reject rule, flags the post for a reviewer once, and never rejects it', async () => {
+    const t = await setup()
+    await withSong(t, 'reject')
+    t.post(2_000, { sound: { id: '5', title: 'original sound - maya', isOriginal: true } })
+    const r = await t.check(2)
+    expect(r.flags).toEqual(['sound_mismatch'])
+    expect(await t.sub()).toMatchObject({ soundCheckStatus: 'original_sound', state: 'flagged' })
+    // A reviewer clears it; the same sound on the next check does not flag it again.
+    await db.update(tables.fraudFlags).set({ status: 'cleared' }).where(eq(tables.fraudFlags.submissionId, t.id))
+    await db.update(tables.submissions).set({ state: 'approved' }).where(eq(tables.submissions.id, t.id))
+    t.post(2_500, { sound: { id: '5', title: 'original sound - maya', isOriginal: true } })
+    expect((await t.check(4)).flags).toEqual([])
+    expect((await t.sub()).state).not.toBe('rejected')
+  })
+
+  it('leaves posts of campaigns with no song alone', async () => {
+    const t = await setup()
+    t.post(2_000, { sound: { id: '1', title: 'x', isOriginal: false } })
+    await t.check(2)
+    expect((await t.sub()).soundCheckStatus).toBeNull()
+  })
+})

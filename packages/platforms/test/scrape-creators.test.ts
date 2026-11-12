@@ -126,6 +126,32 @@ describe('Scrape Creators provider', () => {
     })
     expect(v.publishedAt?.toISOString()).toBe('2025-10-05T10:00:00.000Z')
     expect(calls[0]!.searchParams.get('url')).toBe(url)
+    // No music object: the sound is unknown.
+    expect(v.sound).toBeNull()
+  })
+
+  it("reads a TikTok video's sound from aweme_detail.music (docs example shape)", async () => {
+    // Field names from the example at https://docs.scrapecreators.com/v2/tiktok/video.
+    const p = provider(() => ({
+      aweme_detail: {
+        aweme_id: '7350123456789012345',
+        statistics: { play_count: 10 },
+        music: {
+          id: 7463250381684477000,
+          id_str: '7463250381684476718',
+          mid: '7463250381684476718',
+          title: 'original sound - stoolpresidente',
+          author: 'Dave Portnoy',
+          is_original: false,
+          is_original_sound: true,
+        },
+      },
+    }))
+    const v = await p.fetchPost({
+      platform: 'tiktok',
+      postUrl: 'https://www.tiktok.com/@maya/video/7350123456789012345',
+    })
+    expect(v.sound).toEqual({ id: '7463250381684476718', title: 'original sound - stoolpresidente', isOriginal: true })
   })
 
   it('reads an Instagram reel and an X post', async () => {
