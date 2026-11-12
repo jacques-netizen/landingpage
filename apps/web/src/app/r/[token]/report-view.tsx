@@ -1,6 +1,7 @@
 'use client'
 
-import type { CampaignReport, ReportClip, ReportMode, ReportSort, ReportStatus } from '@mde/campaigns'
+import type { CampaignReport as BaseReport, ReportClip, ReportMode, ReportSort, ReportStatus } from '@mde/campaigns'
+import type { FlowBlock, MusicReport, TrackReport } from '@mde/music'
 import { formatDollars } from '@mde/money/dollars'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -11,6 +12,9 @@ import { PLATFORM_NAMES, PlatformIcon } from './platform-icon'
 // clips, and a floating filter bar. Every number is from the JSON endpoint, fetched again every 2
 // minutes while the tab is visible and whenever it comes back into focus.
 const REFRESH_MS = 2 * 60_000
+
+/** The report, with the song's numbers on campaigns with a tracked song (owner, 2026-11-12). */
+type CampaignReport = BaseReport & { music?: MusicReport }
 
 type Filters = {
   from: string
@@ -333,18 +337,20 @@ export function ReportView({
     }
   }, [filters, load])
 
-  // Scroll spy for the section nav.
+  // Scroll spy for the section nav. Music shows only on campaigns with a song's numbers (owner, 2026-11-12).
+  const hasMusic = !!report.music
   const SECTIONS = useMemo(
     () =>
       [
         ['campaign', 'Campaign'],
+        ...(hasMusic ? ([['music', 'Music']] as const) : []),
         ['submissions', 'Submissions'],
         ['platforms', 'Platform Stats'],
         ['spend', 'Spend'],
         ['settings', 'Settings'],
         ['clips', 'Clips'],
       ] as const,
-    [],
+    [hasMusic],
   )
   useEffect(() => {
     const onScroll = () => {
@@ -617,6 +623,8 @@ export function ReportView({
             </div>
           </div>
         </section>
+
+        {r.music ? <MusicSection music={r.music} /> : null}
 
         {/* Submissions */}
         <section id="sec-submissions" aria-label="Submissions" className="flex flex-col gap-[18px]">
@@ -1896,4 +1904,203 @@ function SubmissionCard({
       </div>
     </div>
   )
+}
+
+// ---------- Music results (owner, 2026-11-12; build proposal sections 8 and 9) ----------
+// What happened to the song, in the report's own cards, chart and type. It says what changed and when,
+// never that the campaign caused it. Blocks with no data are left out; nothing missing is shown as zero.
+
+const round = (v: number) => Math.round(v)
+const period = (from: string, to: string) =>
+  `${dateFmt.format(new Date(`${from}T00:00:00Z`))} to ${dateFmt.format(new Date(`${to}T00:00:00Z`))}`
+
+function SourceLines({ lines }: { lines: string[] }) {
+  return (
+    <div style={{ padding: '0 24px 18px', fontSize: 14, color: C.muted }}>
+      {lines.map((l) => (
+        <div key={l}>{l}</div>
+      ))}
+    </div>
+  )
+}
+
+/** "Spotify streams averaged 1.2K a day since launch, 42% higher than in the 28 days before launch." */
+function flowSentence(b: FlowBlock, t: TrackReport, what: string) {
+  const since = b.since.average === null ? null : compact(round(b.since.average))
+  if (since === null) return null
+  const head = `${what} averaged ${since} a day since launch`
+  if (b.changePercent !== null && b.baseline.average !== null) {
+    const dir = b.changePercent >= 0 ? 'higher' : 'lower'
+    return `${head}, ${Math.abs(b.changePercent)}% ${dir} than the ${compact(round(b.baseline.average))} a day in the ${t.baselineDays} days before launch.`
+  }
+  if (t.newRelease) return `${head}. The song came out at launch, so there is no before to compare with.`
+  return `${head}. There was not enough data from before launch to compare.`
+}
+
+function FlowCard({ b, t, what }: { b: FlowBlock; t: TrackReport; what: string }) {
+  const sentence = flowSentence(b, t, what)
+  if (!sentence) return null
+  const shown = b.daily.filter((d) => d.date >= b.baseline.from)
+  return (
+    <div style={card}>
+      <div style={cardHead}>
+        <span style={{ fontWeight: 600 }}>{b.label}</span>
+        <span style={{ fontSize: 17, color: C.muted }}>
+          {period(b.since.from, b.since.to)}
+          {b.changePercent !== null ? `, compared with the ${t.baselineDays} days before` : ''}
+        </span>
+      </div>
+      <div style={{ padding: '22px 24px 6px', fontSize: 17 }}>{sentence}</div>
+      {shown.length > 1 ? (
+        <LineArea
+          values={shown.map((d) => round(d.value))}
+          labels={shown.map((d) => dayLabel(d.date))}
+          color={C.gold}
+          fill="rgba(201,168,92,0.14)"
+          format={compact}
+        />
+      ) : null}
+      <SourceLines lines={b.sourceLines} />
+    </div>
+  )
+}
+
+function MusicSection({ music }: { music: MusicReport }) {
+  return (
+    <section id="sec-music" aria-label="Music" className="flex flex-col gap-[18px]">
+      <div style={sectionTitle}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+          <path d="M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        MUSIC RESULTS
+      </div>
+      {music.tracks.map((t) => (
+        <div key={t.id} className="flex flex-col gap-[18px]">
+          <div style={{ fontSize: 17, color: C.muted }}>
+            <b style={{ color: C.ink, fontWeight: 600 }}>{t.title}</b>
+            {t.artist ? ` by ${t.artist}` : ''} · clips from {dateFmt.format(new Date(`${t.launchDate}T00:00:00Z`))}
+          </div>
+          {t.streams ? <FlowCard b={t.streams} t={t} what="Spotify streams" /> : null}
+          {t.algorithmic ? (
+            <FlowCard b={t.algorithmic} t={t} what="Streams from Spotify's own recommendations" />
+          ) : null}
+          {t.listeners && t.listeners.latest ? (
+            <div style={card}>
+              <div style={cardHead}>
+                <span style={{ fontWeight: 600 }}>Monthly listeners</span>
+                <span style={{ fontSize: 17, color: C.muted }}>
+                  {dateFmt.format(new Date(`${t.listeners.latest.date}T00:00:00Z`))}
+                </span>
+              </div>
+              <div style={{ padding: '22px 24px 6px', fontSize: 17 }}>
+                {t.listeners.before && t.listeners.change !== null
+                  ? `Spotify monthly listeners went from ${full(t.listeners.before.value)} before launch to ${full(t.listeners.latest.value)}.`
+                  : `Spotify monthly listeners: ${full(t.listeners.latest.value)}.`}
+              </div>
+              <SourceLines lines={t.listeners.sourceLines} />
+            </div>
+          ) : null}
+          {t.charts && (t.charts.sinceLaunch.length || t.charts.beforeLaunch.length) ? (
+            <div style={card}>
+              <div style={cardHead}>
+                <span style={{ fontWeight: 600 }}>Charts</span>
+                <span style={{ fontSize: 17, color: C.muted }}>Best place on each chart</span>
+              </div>
+              <div
+                style={{ padding: '18px 24px 10px', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 17 }}
+              >
+                {t.charts.sinceLaunch.map((c) => (
+                  <div key={`${c.chartPlatform}${c.chartName}${c.country}${c.city}`}>
+                    {chartName(c)}: <b style={{ fontWeight: 600 }}>No. {c.bestPosition}</b>, first on{' '}
+                    {dateFmt.format(new Date(`${c.firstDate}T00:00:00Z`))}
+                  </div>
+                ))}
+                {t.charts.beforeLaunch.length ? (
+                  <div style={{ color: C.muted }}>
+                    Already charting before launch:{' '}
+                    {t.charts.beforeLaunch.map((c) => `${chartName(c)} (best No. ${c.bestPosition})`).join(', ')}
+                  </div>
+                ) : null}
+              </div>
+              <SourceLines lines={t.charts.sourceLines} />
+            </div>
+          ) : null}
+          {t.sound && t.sound.total ? (
+            <div style={card}>
+              <div style={cardHead}>
+                <span style={{ fontWeight: 600 }}>Videos using the sound</span>
+                <span style={{ fontSize: 17, color: C.muted }}>TikTok</span>
+              </div>
+              <div
+                style={{
+                  padding: '22px 24px',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))',
+                  gap: 24,
+                }}
+              >
+                {(
+                  [
+                    ['Videos using the sound', full(t.sound.total.value)],
+                    ...(t.sound.newSinceLaunch !== null ? [['New since launch', full(t.sound.newSinceLaunch)]] : []),
+                    ...(t.sound.outsideCampaign !== null
+                      ? [
+                          [
+                            t.sound.outsideIsEstimate
+                              ? 'About this many made by people outside the campaign'
+                              : 'Made by people outside the campaign',
+                            full(t.sound.outsideCampaign),
+                          ],
+                        ]
+                      : []),
+                  ] as [string, string][]
+                ).map(([k, v]) => (
+                  <div key={k}>
+                    <div style={{ fontSize: 15, color: C.muted, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                      {k}
+                    </div>
+                    <div style={{ marginTop: 8, font: `400 28px ${serif}` }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <SourceLines lines={t.sound.sourceLines} />
+            </div>
+          ) : null}
+          {t.shazams ? <FlowCard b={t.shazams} t={t} what="Shazams" /> : null}
+          {t.following.length ? (
+            <div style={card}>
+              <div style={cardHead}>
+                <span style={{ fontWeight: 600 }}>Following</span>
+                <span style={{ fontSize: 17, color: C.muted }}>Since launch</span>
+              </div>
+              <div
+                style={{ padding: '18px 24px 10px', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 17 }}
+              >
+                {t.following.map((f) => (
+                  <div key={f.metric}>
+                    {f.label}: {full(f.before!.value)} before launch, {full(f.latest!.value)} on{' '}
+                    {dateFmt.format(new Date(`${f.latest!.date}T00:00:00Z`))}
+                  </div>
+                ))}
+              </div>
+              <SourceLines lines={[...new Set(t.following.flatMap((f) => f.sourceLines))]} />
+            </div>
+          ) : null}
+        </div>
+      ))}
+    </section>
+  )
+}
+
+const CHART_PLATFORM: Record<string, string> = {
+  spotify: 'Spotify',
+  apple_music: 'Apple Music',
+  shazam: 'Shazam',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  other: '',
+}
+function chartName(c: { chartPlatform: string; chartName: string; country: string | null; city: string | null }) {
+  const place = [c.city, c.country].filter(Boolean).join(', ')
+  return `${[CHART_PLATFORM[c.chartPlatform] ?? '', c.chartName].filter(Boolean).join(' ')}${place ? `, ${place}` : ''}`
 }

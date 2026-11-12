@@ -8,7 +8,8 @@ import {
   type ReportStatus,
 } from '@mde/campaigns'
 import { env } from '@mde/config'
-import { db, tables, writeAudit } from '@mde/db'
+import { db, getSetting, tables, writeAudit } from '@mde/db'
+import { musicReport, type MusicReport } from '@mde/music'
 import { eq } from 'drizzle-orm'
 import { newReportSecret, readReportToken, reportKey, signReportToken, verifyReportToken } from '@/lib/report-token'
 import { redis } from './rate-limit'
@@ -76,12 +77,18 @@ export function reportCacheKey(token: string, q: ReportQuery) {
   return `report:v3:${token}:${parts.join('|')}`
 }
 
+/**
+ * The client report, plus the song's numbers on campaigns with a tracked song (owner, 2026-11-12). Campaigns
+ * without one carry no `music` key at all, so their report is exactly what it was.
+ */
+export type ClientReport = CampaignReport & { music?: MusicReport }
+
 /** The report, from Redis when a copy under 60 seconds old exists, else from Postgres (and then cached). */
-export async function cachedReport(token: string, campaignId: string, q: ReportQuery): Promise<CampaignReport | null> {
+export async function cachedReport(token: string, campaignId: string, q: ReportQuery): Promise<ClientReport | null> {
   const key = reportCacheKey(token, q)
   try {
     const hit = await redis().get(key)
-    if (hit) return JSON.parse(hit) as CampaignReport
+    if (hit) return JSON.parse(hit) as ClientReport
   } catch (err) {
     console.error(JSON.stringify({ level: 'warn', msg: 'report cache read failed', err: String(err) }))
   }
@@ -93,7 +100,15 @@ export async function cachedReport(token: string, campaignId: string, q: ReportQ
       .from(tables.campaigns)
       .where(eq(tables.campaigns.id, campaignId)),
   ])
-  const report = raw ? forClient(raw, c?.f ?? 1, c?.budget ?? null) : null
+  const report: ClientReport | null = raw ? forClient(raw, c?.f ?? 1, c?.budget ?? null) : null
+  // Only the sources the client may see: Soundcharts needs its written permission (music settings).
+  if (report) {
+    const music = await musicReport(db(), campaignId, {
+      audience: 'client',
+      clientDisplay: await getSetting(db(), 'music_client_display_allowed'),
+    })
+    if (music) report.music = music
+  }
   if (report)
     redis()
       .set(key, JSON.stringify(report), 'EX', CACHE_SECONDS)
