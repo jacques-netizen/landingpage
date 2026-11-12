@@ -43,6 +43,7 @@ jobs:
       REVIEW_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_review
       NOTIFICATIONS_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_notifications
       PARTNERS_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_partners
+      MUSIC_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/mde_test_music
       REDIS_URL: redis://localhost:6379
       AUTH_SECRET: ci-only-secret-not-for-production-0123456789
       CONTACT_EMAIL: hello@example.com
