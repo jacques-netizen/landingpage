@@ -30,6 +30,10 @@ export const settingsSchema = z.object({
   }),
   bio_code_prefix: z.string().min(1),
   require_staff_2fa: z.boolean(),
+  // Music data providers whose numbers may be shown on the client report (owner, 2026-11-12). Soundcharts'
+  // terms (https://www.soundcharts.com/en/terms) forbid its data in a paid service to third parties without
+  // written permission, so it stays false until that permission is in hand. Admin screens always show it.
+  music_client_display_allowed: z.object({ soundcharts: z.boolean() }),
 })
 
 export type Settings = z.infer<typeof settingsSchema>
@@ -61,4 +65,5 @@ export const SETTINGS_DEFAULTS: Settings = {
   },
   bio_code_prefix: 'MDE',
   require_staff_2fa: true,
+  music_client_display_allowed: { soundcharts: false },
 }

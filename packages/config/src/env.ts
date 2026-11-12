@@ -35,6 +35,13 @@ export const envSchema = z.object({
   TIKTOK_CLIENT_KEY: optional,
   TIKTOK_CLIENT_SECRET: optional,
   DATA_PROVIDER_API_KEY: optional,
+  // Music impact tracking (owner, 2026-11-12): which music data provider feeds streams and Shazams.
+  // none (the default) leaves only the sound counts from Scrape Creators and the numbers staff type in.
+  MUSIC_DATA_PROVIDER: z.enum(['soundcharts', 'none']).default('none'),
+  // Soundcharts API credentials (https://developers.soundcharts.com/api/getting-started), sent as the
+  // x-app-id and x-api-key headers. Both are needed; either missing means no Soundcharts calls.
+  SOUNDCHARTS_APP_ID: optional,
+  SOUNDCHARTS_API_KEY: optional,
   SENTRY_DSN: optional,
   // Claude writes and edits the campaign reports (owner brief, 2026-10-26).
   ANTHROPIC_API_KEY: optional,

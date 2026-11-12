@@ -431,12 +431,23 @@ export const submissions = pgTable(
     // What the clipper was paid for this post outside the platform (owner, 2026-11-02: the Billboard posts
     // were $10 each). Never in the ledger; the client report counts it as spent and paid out.
     outsidePaidCents: cents('outside_paid_cents').notNull().default(0),
+    // Music tracking (owner, 2026-11-12): whether the post uses the campaign's official sound, from the
+    // sound the platform reports on each check. Null on posts of campaigns with no tracked song.
+    // matched, original_sound, different_sound or not_checked (the platform gave no sound).
+    soundCheckStatus: text('sound_check_status'),
+    detectedSoundId: text('detected_sound_id'),
+    detectedSoundTitle: text('detected_sound_title'),
+    soundCheckedAt: tz('sound_checked_at'),
     ...timestamps,
   },
   (t) => [
     unique('submissions_campaign_post').on(t.campaignId, t.platform, t.platformPostId),
     index('submissions_next_check').on(t.nextCheckAt),
     check('submissions_state_check', inList('state', SUBMISSION_STATES)),
+    check(
+      'submissions_sound_check_status_check',
+      sql`sound_check_status is null or sound_check_status in ('matched','original_sound','different_sound','not_checked')`,
+    ),
   ],
 )
 
@@ -929,3 +940,168 @@ export const webhookCursors = pgTable('webhook_cursors', {
   name: text('name').primaryKey(),
   at: tz('at').notNull(),
 })
+
+// ---------- Music tracking (owner, 2026-11-12) ----------
+// For campaigns run for a song: what happened to the song (streams, Shazams, uses of the sound,
+// charts), next to the clips. A campaign is tracked when it has at least one row in music_tracks.
+
+export const MUSIC_ACCESS_STATUSES = ['not_requested', 'requested', 'granted', 'declined'] as const
+export const SOUND_RULES = ['warn', 'reject'] as const
+export const BASELINE_STATUSES = ['pending', 'ready', 'short', 'unavailable'] as const
+export const SOUND_CHECK_STATUSES = ['matched', 'original_sound', 'different_sound', 'not_checked'] as const
+
+/** The artist behind a campaign's songs. One per campaign. */
+export const musicArtists = pgTable(
+  'music_artists',
+  {
+    id: id(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id),
+    name: text('name').notNull(),
+    spotifyArtistId: text('spotify_artist_id'),
+    /** The music data provider's own id for the artist, once a song lookup gave it. */
+    provider: text('provider'),
+    providerArtistId: text('provider_artist_id'),
+    tiktokHandle: text('tiktok_handle'),
+    instagramHandle: text('instagram_handle'),
+    youtubeChannelId: text('youtube_channel_id'),
+    /** Whether the client gave MDE access to Spotify for Artists and Apple Music for Artists. */
+    s4aAccessStatus: text('s4a_access_status').notNull().default('not_requested'),
+    amfaAccessStatus: text('amfa_access_status').notNull().default('not_requested'),
+    ...timestamps,
+  },
+  (t) => [
+    unique('music_artists_campaign').on(t.campaignId),
+    check('music_artists_s4a_check', inList('s4a_access_status', MUSIC_ACCESS_STATUSES)),
+    check('music_artists_amfa_check', inList('amfa_access_status', MUSIC_ACCESS_STATUSES)),
+  ],
+)
+
+export const musicTracks = pgTable(
+  'music_tracks',
+  {
+    id: id(),
+    campaignId: uuid('campaign_id')
+      .notNull()
+      .references(() => campaigns.id),
+    musicArtistId: uuid('music_artist_id').references(() => musicArtists.id),
+    title: text('title').notNull(),
+    isrc: text('isrc'),
+    spotifyTrackId: text('spotify_track_id'),
+    /** The provider's match: its id, and the title and artist it found, for staff to confirm. */
+    provider: text('provider'),
+    providerTrackId: text('provider_track_id'),
+    providerTitle: text('provider_title'),
+    providerArtistName: text('provider_artist_name'),
+    matchConfirmedAt: tz('match_confirmed_at'),
+    matchConfirmedBy: uuid('match_confirmed_by').references(() => users.id),
+    /** The sound clippers are given: the link, the clip id at its end, and the id the platform reports. */
+    tiktokSoundUrl: text('tiktok_sound_url'),
+    tiktokClipId: text('tiktok_clip_id'),
+    tiktokMusicId: text('tiktok_music_id'),
+    instagramAudioUrl: text('instagram_audio_url'),
+    instagramAudioId: text('instagram_audio_id'),
+    youtubeVideoId: text('youtube_video_id'),
+    releaseDate: date('release_date', { mode: 'string' }),
+    /** The day clips started going out. The "before" period ends the day before. */
+    launchDate: date('launch_date', { mode: 'string' }).notNull(),
+    targetCountries: text('target_countries').array(),
+    baselineDays: integer('baseline_days').notNull().default(28),
+    baselineStatus: text('baseline_status').notNull().default('pending'),
+    /** After this day nothing new is pulled. Null: still open. */
+    trackingEndDate: date('tracking_end_date', { mode: 'string' }),
+    /** warn: a post without the official sound is labelled for the reviewer; reject: it is also flagged. */
+    soundRule: text('sound_rule').notNull().default('warn'),
+    ...timestamps,
+  },
+  (t) => [
+    index('music_tracks_campaign').on(t.campaignId),
+    check('music_tracks_baseline_status_check', inList('baseline_status', BASELINE_STATUSES)),
+    check('music_tracks_sound_rule_check', inList('sound_rule', SOUND_RULES)),
+    check('music_tracks_baseline_days_check', sql`baseline_days between 1 and 365`),
+  ],
+)
+
+/**
+ * One number for a song or an artist on one day (or one week, for weekly exports), from one source.
+ * Running totals are stored as they come (is_cumulative) and daily changes are worked out when read.
+ */
+export const musicMetricSnapshots = pgTable(
+  'music_metric_snapshots',
+  {
+    id: id(),
+    musicTrackId: uuid('music_track_id').references(() => musicTracks.id),
+    musicArtistId: uuid('music_artist_id').references(() => musicArtists.id),
+    date: date('date', { mode: 'string' }).notNull(),
+    periodStart: date('period_start', { mode: 'string' }),
+    periodEnd: date('period_end', { mode: 'string' }),
+    source: text('source').notNull(),
+    metric: text('metric').notNull(),
+    value: bigint('value', { mode: 'number' }).notNull(),
+    isCumulative: boolean('is_cumulative').notNull().default(false),
+    /** ISO country code; null is worldwide. */
+    country: text('country'),
+    city: text('city'),
+    /** Who typed it, for manual rows. */
+    enteredBy: uuid('entered_by').references(() => users.id),
+    note: text('note'),
+    ...timestamps,
+  },
+  (t) => [
+    unique('music_metric_snapshots_point')
+      .on(t.musicTrackId, t.musicArtistId, t.date, t.source, t.metric, t.country, t.city)
+      .nullsNotDistinct(),
+    index('music_metric_snapshots_track').on(t.musicTrackId, t.metric, t.date),
+    check('music_metric_snapshots_one_owner', sql`(music_track_id is null) <> (music_artist_id is null)`),
+    check('music_metric_snapshots_value_check', sql`value >= 0`),
+  ],
+)
+
+export const chartEntries = pgTable(
+  'chart_entries',
+  {
+    id: id(),
+    musicTrackId: uuid('music_track_id')
+      .notNull()
+      .references(() => musicTracks.id),
+    date: date('date', { mode: 'string' }).notNull(),
+    chartPlatform: text('chart_platform').notNull(),
+    chartName: text('chart_name').notNull(),
+    country: text('country'),
+    city: text('city'),
+    position: integer('position').notNull(),
+    previousPosition: integer('previous_position'),
+    source: text('source').notNull(),
+    enteredBy: uuid('entered_by').references(() => users.id),
+    ...timestamps,
+  },
+  (t) => [
+    unique('chart_entries_point')
+      .on(t.musicTrackId, t.date, t.chartPlatform, t.chartName, t.country, t.city)
+      .nullsNotDistinct(),
+    check('chart_entries_position_check', sql`position > 0`),
+  ],
+)
+
+/** Each music pull, for the data health list and the provider's monthly request count. */
+export const musicJobRuns = pgTable(
+  'music_job_runs',
+  {
+    id: id(),
+    jobName: text('job_name').notNull(),
+    musicTrackId: uuid('music_track_id').references(() => musicTracks.id),
+    /** The UTC day the run was for: a second run on the same day for the same track does nothing. */
+    runDate: date('run_date', { mode: 'string' }).notNull(),
+    startedAt: tz('started_at').notNull().defaultNow(),
+    finishedAt: tz('finished_at'),
+    status: text('status').notNull().default('running'),
+    error: text('error'),
+    /** Calls made to each source, e.g. { soundcharts: 3, scrapecreators: 1 }. */
+    requestsUsed: jsonb('requests_used').$type<Record<string, number>>().notNull().default({}),
+  },
+  (t) => [
+    index('music_job_runs_track').on(t.musicTrackId, t.runDate),
+    check('music_job_runs_status_check', sql`status in ('running','ok','failed')`),
+  ],
+)
