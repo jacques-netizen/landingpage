@@ -11,6 +11,7 @@ import { asc, eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { clientHolding } from '@/server/admin-queries'
 import { campaignReport } from '@mde/campaigns'
+import { hasMusicTracking } from '@mde/music'
 import { BUCKETS, campaignOverview, campaignPages, type Bucket } from '@/server/campaign-overview'
 import {
   campaignClippers,
@@ -33,6 +34,7 @@ import { ArchivedClips } from './archived-clips'
 import { ImportCsv } from './import-csv'
 import { messageClippersAction } from './message-actions'
 import { ReportLink } from './report-link'
+import { CampaignMusic } from './music-tab'
 import { CampaignReports } from './reports-tab'
 import { CampaignReview } from './review-cards'
 import { CampaignVerifications, type VerificationRow } from './verifications'
@@ -48,6 +50,7 @@ const TABS = [
   'payouts',
   'pages',
   'overview',
+  'music',
   'reports',
   'settings',
 ] as const
@@ -119,6 +122,9 @@ export default async function CampaignAdminPage({
   const locked = live ? ['minViewsToEarn', 'clientId'] : []
   const status = CAMPAIGN_STATUS[c.status]
   const head = await campaignHeadline(id)
+  // The Music tab shows on music campaigns and on any campaign with a tracked song (owner, 2026-11-12);
+  // other campaigns keep their tabs as they were. ?tab=music opens it on any campaign, to start tracking.
+  const musicOn = c.type === 'music' || sp.tab === 'music' || (await hasMusicTracking(d, id))
   const asked = (sp.tab && OLD_TABS[sp.tab]) ?? sp.tab
   const tab: Tab = TABS.includes(asked as Tab)
     ? (asked as Tab)
@@ -382,7 +388,10 @@ export default async function CampaignAdminPage({
         />
       ) : null}
 
-      <nav aria-label="Campaign" className="mt-5 grid grid-cols-9 gap-1 rounded-[12px] bg-panel p-1 text-[13px]">
+      <nav
+        aria-label="Campaign"
+        className={`mt-5 grid ${musicOn ? 'grid-cols-10' : 'grid-cols-9'} gap-1 rounded-[12px] bg-panel p-1 text-[13px]`}
+      >
         {(
           [
             ['review', 'Review', head.waiting],
@@ -392,24 +401,27 @@ export default async function CampaignAdminPage({
             ['payouts', 'Payouts', 0],
             ['pages', 'Pages', 0],
             ['overview', 'Overview', 0],
+            ['music', 'Music', 0],
             ['reports', 'Reports', 0],
             ['settings', 'Settings', 0],
           ] as const
-        ).map(([key, label, waiting]) => (
-          <a
-            key={key}
-            href={`${base}?tab=${key}`}
-            aria-current={tab === key ? 'page' : undefined}
-            className={`flex h-9 items-center justify-center rounded-[9px] no-underline ${
-              tab === key
-                ? 'border border-solid border-[rgba(216,197,143,0.35)] bg-[rgba(216,197,143,0.12)] font-medium text-gold-soft'
-                : 'text-muted-2 hover:text-ink'
-            }`}
-          >
-            {label}
-            {count(waiting)}
-          </a>
-        ))}
+        )
+          .filter(([key]) => key !== 'music' || musicOn)
+          .map(([key, label, waiting]) => (
+            <a
+              key={key}
+              href={`${base}?tab=${key}`}
+              aria-current={tab === key ? 'page' : undefined}
+              className={`flex h-9 items-center justify-center rounded-[9px] no-underline ${
+                tab === key
+                  ? 'border border-solid border-[rgba(216,197,143,0.35)] bg-[rgba(216,197,143,0.12)] font-medium text-gold-soft'
+                  : 'text-muted-2 hover:text-ink'
+              }`}
+            >
+              {label}
+              {count(waiting)}
+            </a>
+          ))}
       </nav>
 
       <div className="mt-4 flex flex-col gap-4">
@@ -739,6 +751,13 @@ export default async function CampaignAdminPage({
               </div>
             )}
           </Card>
+        ) : tab === 'music' ? (
+          <CampaignMusic
+            campaignId={c.id}
+            campaignStart={c.startAt}
+            canEdit={canMoney}
+            isAdmin={viewer.roles.includes('admin')}
+          />
         ) : tab === 'reports' ? (
           <CampaignReports campaignId={c.id} title={c.title} canEdit={canMoney} />
         ) : tab === 'overview' && o ? (
