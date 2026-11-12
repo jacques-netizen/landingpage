@@ -1,8 +1,10 @@
 // Scheduled jobs (03_SYSTEMS.md section 11). Every job must be safe to run twice: a retry or two
 // workers picking up the same tick must not change the result.
 import { runCampaignLifecycle } from '@mde/campaigns'
+import { env } from '@mde/config'
 import { writeAudit, type Db } from '@mde/db'
 import { ledgerCheck } from '@mde/money'
+import { buildMusicProvider, runMusicPulls } from '@mde/music'
 import { deliverPendingEmails, notifyAppealDeadlines } from '@mde/notifications'
 import type { LinkedAccount, ProviderRouter } from '@mde/platforms'
 import { deliverWebhooks, queueWebhookEvents } from '@mde/partners'
@@ -74,4 +76,14 @@ export const SCHEDULED_JOBS: Record<string, ScheduledJob> = {
   'appeal-deadlines': { every: 60 * MINUTE, run: ({ db, now }) => notifyAppealDeadlines(db, now) },
   // Warnings stop counting as strikes after strike_days (03_SYSTEMS.md section 8).
   'strike-expiry': { every: 24 * 60 * MINUTE, run: ({ db, now }) => expireStrikes(db, now) },
+  // Music tracking (owner, 2026-11-12): each open song once a day (streams from the music data provider,
+  // the TikTok sound count from Scrape Creators). Hourly, so a song confirmed today gets its history soon
+  // and a failed pull is tried again; a song already pulled today is skipped.
+  'music-pull': {
+    every: 60 * MINUTE,
+    run: ({ db, now }) => {
+      const e = env()
+      return runMusicPulls(db, { provider: buildMusicProvider(e), scrapeCreatorsKey: e.DATA_PROVIDER_API_KEY, now })
+    },
+  },
 }
