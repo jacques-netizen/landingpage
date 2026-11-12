@@ -44,6 +44,9 @@ importers:
       '@mde/money':
         specifier: workspace:*
         version: link:../../packages/money
+      '@mde/music':
+        specifier: workspace:*
+        version: link:../../packages/music
       '@mde/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications
@@ -153,6 +156,9 @@ importers:
       '@mde/money':
         specifier: workspace:*
         version: link:../../packages/money
+      '@mde/music':
+        specifier: workspace:*
+        version: link:../../packages/music
       '@mde/notifications':
         specifier: workspace:*
         version: link:../../packages/notifications

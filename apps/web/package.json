@@ -17,6 +17,7 @@
     "@mde/config": "workspace:*",
     "@mde/db": "workspace:*",
     "@mde/money": "workspace:*",
+    "@mde/music": "workspace:*",
     "@mde/notifications": "workspace:*",
     "@mde/partners": "workspace:*",
     "@mde/platforms": "workspace:*",

@@ -1,6 +1,7 @@
 import 'server-only'
 import { campaignFigures } from '@mde/campaigns'
 import { db, tables } from '@mde/db'
+import { SOUND_CHECK_LABEL, type SoundCheckStatus } from '@mde/music/sound-check'
 import { creatorVerificationStats, isInstagramPost, REJECTIONS_TO_BLOCK } from '@mde/review'
 import type { CheckResult } from '@mde/submissions/checks'
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
@@ -68,9 +69,10 @@ export async function campaignReviewQueue(campaignId: string): Promise<ReviewCar
     views: string | null
     likes: string | null
     comments: string | null
+    sound_check_status: SoundCheckStatus | null
   }>(sql`
     select s.id, s.state, s.creator_id, s.platform, s.platform_post_id, s.post_url, s.video_url, s.thumbnail_url,
-      s.submitted_at, s.published_at, s.check_results as checks, u.email, coalesce(u.username, u.display_name) as name,
+      s.submitted_at, s.published_at, s.check_results as checks, s.sound_check_status, u.email, coalesce(u.username, u.display_name) as name,
       a.handle, v.views, v.likes, v.comments
     from submissions s
     join users u on u.id = s.creator_id
@@ -94,6 +96,12 @@ export async function campaignReviewQueue(campaignId: string): Promise<ReviewCar
     for (const fl of flags.filter((x) => x.submissionId === r.id))
       if (!checks.some((c) => c.label === FLAG_LABEL[fl.kind]))
         checks.push({ label: FLAG_LABEL[fl.kind] ?? fl.kind, status: 'review' })
+    // Music campaigns: the sound check next to the other checks, in the same labels (owner, 2026-11-12).
+    if (r.sound_check_status)
+      checks.push({
+        label: SOUND_CHECK_LABEL[r.sound_check_status],
+        status: r.sound_check_status === 'matched' ? 'pass' : 'review',
+      })
     return {
       id: r.id,
       who: r.name ?? r.email,

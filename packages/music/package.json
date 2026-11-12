@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./links": "./src/links.ts",
-    "./metrics": "./src/metrics.ts"
+    "./metrics": "./src/metrics.ts",
+    "./sound-check": "./src/sound-check.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
