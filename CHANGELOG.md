@@ -9,6 +9,19 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-12
+
+- Record the music tracking decisions and document the new tables, job and settings · Requested by: owner · Made by: Claude Code session …T7QHqA · 8bd84ca
+- Show music results on the client report for campaigns with a tracked song · Requested by: owner · Made by: Claude Code session …T7QHqA · 4f982d7
+- Add the Music tab to the campaign workspace: song setup, provider match, typed-in numbers, chart places and data health · Requested by: owner · Made by: Claude Code session …T7QHqA · 6180dc1
+- Run the music pull every hour in the worker · Requested by: owner · Made by: Claude Code session …T7QHqA · 073d41a
+- Show the sound check on the review cards · Requested by: owner · Made by: Claude Code session …T7QHqA · 2c0af4d
+- Read the sound of each TikTok post and check it against the campaign's official sound · Requested by: owner · Made by: Claude Code session …T7QHqA · dec7404
+- Add music setup, typed-in numbers, the daily music pull and the music report queries · Requested by: owner · Made by: Claude Code session …T7QHqA · 528940f
+- Add the music data provider layer: Soundcharts adapter, the empty provider and the Scrape Creators sound count, tested on documented response shapes · Requested by: owner · Made by: Claude Code session …T7QHqA · ef4074c
+- Add the music package: link parsing, metric names and the music calculations, with tests · Requested by: owner · Made by: Claude Code session …T7QHqA · 7bc549d
+- Add music tracking tables, sound check columns and the music provider settings · Requested by: owner · Made by: Claude Code session …T7QHqA · 44b5a47
+
 ## 2026-11-11
 
 - Client report refresh: unchanged data answers 304 and is not redrawn; remove the old load-more path · Requested by: owner · Made by: Claude Code session …oZc8T8 · 99abf5e
