@@ -3,6 +3,7 @@ import { db } from '@mde/db'
 import { formatDollars } from '@mde/money/dollars'
 import { type NextRequest } from 'next/server'
 import { campaignForReportToken, parseReportQuery } from '@/server/report'
+import { limitVisitor } from '@/server/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,6 +11,8 @@ const cell = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`
 
 // The report's submissions as a CSV file (01_PRODUCT.md 8.3), in the list's current range, filters and order.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
+  const limited = await limitVisitor('report-csv', 20, 600)
+  if (limited) return limited
   const { token } = await params
   const campaign = await campaignForReportToken(token)
   if (!campaign) return new Response('This report link is no longer active.', { status: 404 })

@@ -17,6 +17,8 @@ import {
   type VerifyWhy,
 } from '@mde/review'
 import { CREATOR_STATE, DECISION_LABEL, getCreatorSubmission } from '@mde/submissions'
+import { formText, isId } from '@/server/input'
+import { rateLimit } from '@/server/rate-limit'
 import { reasonMessages } from '@/server/submissions'
 import { getViewer } from '@/server/viewer'
 
@@ -84,7 +86,7 @@ function proofSummary(p: NonNullable<Awaited<ReturnType<typeof latestViewProof>>
 /** One of the signed-in creator's submissions, for the detail drawer. */
 export async function submissionDetailAction(id: string): Promise<SubmissionDetail | null> {
   const viewer = await getViewer()
-  if (!viewer) return null
+  if (!viewer || !isId(id)) return null
   const s = await getCreatorSubmission(db(), viewer.id, id)
   if (!s) return null
   const messages = await reasonMessages()
@@ -146,6 +148,8 @@ export async function requestViewProofAction(
 ): Promise<ProofFormState & { proof?: ViewProofSummary }> {
   const viewer = await getViewer()
   if (!viewer) return { error: 'Sign in to continue.' }
+  if (!isId(submissionId)) return { error: 'That post was not found.' }
+  if (!(await rateLimit(`proof-open:${viewer.id}`, 20, 3600))) return { error: TOO_MANY }
   try {
     await requestViewProof(db(), { submissionId, creatorId: viewer.id })
     const p = await latestViewProof(db(), submissionId)
@@ -164,6 +168,10 @@ export async function submitViewProofAction(
 ): Promise<ProofFormState> {
   const viewer = await getViewer()
   if (!viewer) return { error: 'Sign in to continue.' }
+  if (!isId(proofId)) return { error: 'That verification was not found.' }
+  if (!(await rateLimit(`proof-send:${viewer.id}`, 10, 3600))) return { error: TOO_MANY }
+  const note = formText(form, 'note', 1000)
+  if (note === null) return { error: 'Keep the note to 1,000 characters.' }
   const views = Number(String(form.get('views') ?? '').replace(/[^0-9]/g, ''))
   const fileId = (k: string) => {
     const v = String(form.get(k) ?? '')
@@ -176,7 +184,7 @@ export async function submitViewProofAction(
       claimedViews: views,
       screenshotFileId: fileId('screenshotFileId'),
       recordingFileId: fileId('recordingFileId'),
-      note: String(form.get('note') ?? ''),
+      note,
     })
     return { ok: true }
   } catch (e) {
@@ -187,13 +195,18 @@ export async function submitViewProofAction(
 
 export type AppealFormState = { error?: string; ok?: boolean }
 
+const TOO_MANY = 'Too many tries. Please wait a while and try again.'
+
 /** Appeal a rejected or removed post: one per submission, message up to 1,000 characters (01 8.5). */
 export async function appealAction(id: string, _prev: AppealFormState, form: FormData): Promise<AppealFormState> {
   const viewer = await getViewer()
   if (!viewer) return { error: 'Sign in again to appeal.' }
+  if (!isId(id)) return { error: 'That post was not found.' }
+  if (!(await rateLimit(`appeal:${viewer.id}`, 10, 3600))) return { error: TOO_MANY }
   const links = String(form.get('links') ?? '')
     .split(/\s+/)
     .filter(Boolean)
+  if (links.some((l) => l.length > 500)) return { error: 'One of the links is too long.' }
   try {
     await openAppeal(db(), viewer.id, id, { message: String(form.get('message') ?? ''), links })
   } catch (e) {
@@ -207,6 +220,8 @@ export async function appealAction(id: string, _prev: AppealFormState, form: For
 export async function answerInfoAction(id: string, _prev: AppealFormState, form: FormData): Promise<AppealFormState> {
   const viewer = await getViewer()
   if (!viewer) return { error: 'Sign in again to answer.' }
+  if (!isId(id)) return { error: 'That post was not found.' }
+  if (!(await rateLimit(`answer:${viewer.id}`, 20, 3600))) return { error: TOO_MANY }
   try {
     await answerInfo(db(), viewer.id, id, String(form.get('answer') ?? ''))
   } catch (e) {

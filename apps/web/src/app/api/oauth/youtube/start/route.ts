@@ -3,9 +3,12 @@ import crypto from 'node:crypto'
 import { NextResponse } from 'next/server'
 import { getViewer } from '@/server/viewer'
 import { OAUTH_STATE_COOKIE, youtubeLogin } from '@/server/youtube'
+import { limitVisitor } from '@/server/rate-limit'
 
 // Sends the signed-in creator to Google to approve read-only access to their YouTube channel.
 export async function GET(req: Request) {
+  const limited = await limitVisitor('youtube-login', 20, 3600)
+  if (limited) return limited
   const viewer = await getViewer()
   const back = new URL('/accounts', req.url)
   if (!viewer) return NextResponse.redirect(new URL('/sign-in?next=/accounts', req.url))

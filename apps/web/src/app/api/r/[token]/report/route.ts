@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { NextResponse, type NextRequest } from 'next/server'
 import { cachedReport, campaignForReportToken, parseReportQuery } from '@/server/report'
+import { limitVisitor } from '@/server/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,6 +9,8 @@ export const dynamic = 'force-dynamic'
 // cached for 60 seconds. The page asks again every 2 minutes while open; when nothing changed it gets a
 // 304 with no body (owner, 2026-11-11: no needless polling), so an unchanged report costs almost nothing.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
+  const limited = await limitVisitor('report-data', 120, 60)
+  if (limited) return limited
   const { token } = await params
   const campaign = await campaignForReportToken(token)
   if (!campaign)

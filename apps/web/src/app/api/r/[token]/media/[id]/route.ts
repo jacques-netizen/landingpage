@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm'
 import type { NextRequest } from 'next/server'
 import { mediaGone, streamClipMedia } from '@/server/clip-media'
 import { campaignForReportToken } from '@/server/report'
+import { limitVisitor } from '@/server/rate-limit'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -10,6 +11,8 @@ export const runtime = 'nodejs'
 // A clip's video file or picture for the client report (owner request, 2026-10-12), open to anyone
 // with the report link. The streaming itself is shared with the staff admin (server/clip-media.ts).
 export async function GET(req: NextRequest, { params }: { params: Promise<{ token: string; id: string }> }) {
+  const limited = await limitVisitor('report-media', 900, 60)
+  if (limited) return limited
   const { token, id } = await params
   const campaign = await campaignForReportToken(token)
   if (!campaign || !/^[0-9a-f-]{36}$/.test(id)) return mediaGone()

@@ -23,6 +23,13 @@ test('an admin makes a partner key that reads campaigns through the API, and rev
   expect(clips.object).toBe('list')
   expect(JSON.stringify(clips)).not.toMatch(/email|earned/)
   expect((await request.get('/api/v1/me')).status()).toBe(401)
+  // Strict input (2026-11-13): an unknown field in a webhook is refused, not ignored.
+  const extra = await request.post('/api/v1/webhooks', {
+    headers: auth,
+    data: { url: 'https://example.com/hook', events: ['clip.approved'], admin: true },
+  })
+  expect(extra.status()).toBe(400)
+  expect((await extra.json()).error.message).toContain('Unknown field: admin')
 
   await page.getByRole('button', { name: 'Done' }).click()
   page.once('dialog', (d) => d.accept())

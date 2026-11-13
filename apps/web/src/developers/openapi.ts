@@ -277,9 +277,10 @@ export const OPENAPI = {
               schema: {
                 type: 'object',
                 required: ['url', 'events'],
+                additionalProperties: false,
                 properties: {
-                  url: { type: 'string', format: 'uri', description: 'A public https address.' },
-                  events: { type: 'array', items: ref('EventType') },
+                  url: { type: 'string', format: 'uri', maxLength: 2000, description: 'A public https address.' },
+                  events: { type: 'array', items: ref('EventType'), minItems: 1, maxItems: 10 },
                 },
               },
               example: { url: 'https://example.com/webhooks/maison', events: ['clip.approved', 'clip.views_updated'] },

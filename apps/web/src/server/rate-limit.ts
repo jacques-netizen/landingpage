@@ -1,6 +1,7 @@
 import 'server-only'
 import { env } from '@mde/config'
 import Redis from 'ioredis'
+import { clientIp } from './client-ip'
 
 const g = globalThis as unknown as { __mdeRedis?: Redis }
 
@@ -30,6 +31,23 @@ export async function rateLimit(key: string, limit: number, windowSeconds: numbe
     console.error(JSON.stringify({ level: 'error', msg: 'rate limiter unavailable', err: String(err) }))
     return true
   }
+}
+
+/**
+ * A per-visitor limit for a public endpoint (owner, 2026-11-13: rate limiting on all public endpoints).
+ * Returns the polite 429 to send back, with how long to wait, or null when the visitor is within it.
+ */
+export async function limitVisitor(name: string, limit: number, windowSeconds: number): Promise<Response | null> {
+  if (await rateLimit(`${name}:ip:${await clientIp()}`, limit, windowSeconds)) return null
+  return tooManyRequests(windowSeconds - (Math.floor(Date.now() / 1000) % windowSeconds))
+}
+
+/** The answer to a caller over a limit: 429, a JSON error in the platform's shape and Retry-After. */
+export function tooManyRequests(retryAfterSeconds: number) {
+  return Response.json(
+    { error: { code: 'rate_limited', message: 'Too many requests. Please wait a moment and try again.' } },
+    { status: 429, headers: { 'retry-after': String(Math.max(1, retryAfterSeconds)), 'cache-control': 'no-store' } },
+  )
 }
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {

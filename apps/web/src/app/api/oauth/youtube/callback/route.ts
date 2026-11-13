@@ -5,12 +5,15 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { getViewer } from '@/server/viewer'
 import { OAUTH_STATE_COOKIE, youtubeLogin, youtubeProvider } from '@/server/youtube'
+import { limitVisitor } from '@/server/rate-limit'
 
 const same = (a: string, b: string) => a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
 
 // Google sends the creator back here. The code becomes tokens, the tokens give the creator's own
 // channel, and the channel is linked as verified. Results go back to the accounts screen.
 export async function GET(req: Request) {
+  const limited = await limitVisitor('youtube-login', 20, 3600)
+  if (limited) return limited
   const url = new URL(req.url)
   const back = new URL('/accounts', req.url)
   const fail = (code: string) => {
