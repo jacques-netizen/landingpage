@@ -46,9 +46,11 @@ export default {
     }
     if (path === '/runitbak' || path.startsWith('/runitbak/') || (path === '/' && url.hostname.startsWith('runitbak.'))) return handleRunItBakPage(request, env);
 
-    // On the booking subdomain (book.*), the root IS the calendar.
+    // On the booking subdomain (book.*), the root IS the calendar. The query
+    // string (utm_* setter tags) is kept so the calendar can attribute the booking;
+    // straight to the folder form so no second redirect can drop it.
     if (url.hostname.startsWith('book.') && path === '/') {
-      return Response.redirect(new URL('/book', request.url).toString(), 302);
+      return Response.redirect(new URL('/book/' + url.search, request.url).toString(), 302);
     }
 
     // Client reports on reports.maisondelites.com:

@@ -43,15 +43,32 @@
     //    While this is empty, the page uses the existing Calendly embed.
     var CAL_ACCOUNT = "maison-d-elites-tvxf8y";
     var CAL_EVENT = "discovery-call";
-    var CAL_LINK = CAL_ACCOUNT + "/" + CAL_EVENT + (function () {
-      try {
-        var src = new URLSearchParams(window.location.search).get("utm_source");
-        src = src ? src.trim().slice(0, 60) : "";
-        return src ? ("?utmSource=" + encodeURIComponent(src)) : "";
-      } catch (e) {
-        return "";
+    // ── Link tags (utm_*) from this page's URL, cleaned to short lowercase
+    //    letters, digits and dashes. Setter links look like
+    //    /?utm_source=instagram&utm_medium=dm&utm_campaign=setter&utm_content=<setter-slug>
+    //    The utm_* values go into the embed config (Cal.com stores them on the
+    //    booking); the hidden booking questions "utmSource" and "setter" are
+    //    prefilled through the link so the webhook (/api/notify) can name them.
+    var TAGS = (function () {
+      var out = {};
+      function clean(v) {
+        return String(v || "").toLowerCase().replace(/[^a-z0-9-]+/g, "-")
+          .replace(/-+/g, "-").replace(/^-+/, "").slice(0, 40).replace(/-+$/, "");
       }
+      try {
+        var q = new URLSearchParams(window.location.search);
+        ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function (k) {
+          var v = clean(q.get(k));
+          if (v) out[k] = v;
+        });
+      } catch (e) {}
+      return out;
     })();
+    var PREFILL = [];
+    if (TAGS.utm_source) PREFILL.push("utmSource=" + encodeURIComponent(TAGS.utm_source));
+    if (TAGS.utm_campaign === "setter" && TAGS.utm_content) PREFILL.push("setter=" + encodeURIComponent(TAGS.utm_content));
+    var CAL_LINK = CAL_ACCOUNT + "/" + CAL_EVENT + (PREFILL.length ? "?" + PREFILL.join("&") : "");
+    var DIRECT_QS = PREFILL.concat(Object.keys(TAGS).map(function (k) { return k + "=" + encodeURIComponent(TAGS[k]); })).join("&");
     var CALENDLY  = "https://calendly.com/jacques-maisondelitesagency/discovery-call";
 
     var embed = document.getElementById('embed');
@@ -79,13 +96,15 @@
       })(window, "https://app.cal.com/embed/embed.js", "init");
 
       Cal("init", { origin: "https://cal.com" });
-      Cal("inline", { elementOrSelector: "#embed", calLink: CAL_LINK, layout: "month_view" });
+      var inline = { elementOrSelector: "#embed", calLink: CAL_LINK, layout: "month_view" };
+      if (Object.keys(TAGS).length) inline.config = TAGS;
+      Cal("inline", inline);
       Cal("ui", { hideEventTypeDetails: false, layout: "month_view",
         cssVarsPerTheme: { light: { "cal-brand": "#c7a867" }, dark: { "cal-brand": "#c7a867" } } });
       // The Discord ping is handled server-side by Cal.com's webhook; just send them home.
       Cal("on", { action: "bookingSuccessful", callback: goHome });
 
-      fallback.innerHTML = "Trouble with the calendar? <a href='https://cal.com/" + CAL_LINK + "' target='_blank' rel='noopener'>Open it directly &rarr;</a>";
+      fallback.innerHTML = "Trouble with the calendar? <a href='https://cal.com/" + CAL_ACCOUNT + "/" + CAL_EVENT + (DIRECT_QS ? "?" + DIRECT_QS : "") + "' target='_blank' rel='noopener'>Open it directly &rarr;</a>";
 
     } else {
       // ── Calendly fallback: reliable inline embed (no custom form, so no double name) ──

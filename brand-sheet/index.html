@@ -239,7 +239,16 @@
   // ---- where completed sheets are sent (same-origin Cloudflare endpoint) ----
   var ENDPOINT = "/api/brandsheet";
   var STORAGE_KEY = "mde_brandsheet_v1";
-  var BOOK_URL = "https://book.maisondelites.com"; // thank-you funnel
+  var BOOK_URL = "https://book.maisondelites.com" + (function () { // thank-you funnel
+    // Carry setter/UTM tags from this page's link on to the booking page (book/ cleans them).
+    try {
+      var q = new URLSearchParams(location.search), out = new URLSearchParams();
+      ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach(function (k) {
+        var v = q.get(k); if (v) out.set(k, v.slice(0, 80));
+      });
+      var s = out.toString(); return s ? "/?" + s : "";
+    } catch (e) { return ""; }
+  })();
   var REDIRECT_SECONDS = 12; // gentle auto-redirect after submit (0 = off)
 
   // ---------- questionnaire definition ----------
