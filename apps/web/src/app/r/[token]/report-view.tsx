@@ -1463,7 +1463,11 @@ export function ReportView({
 // a phone the two-part cards stack, the budget figures stack, narrow tables drop their bars, the clips
 // table keeps account, views and date (the cards above play each clip), the clip pager wraps, and the
 // floating filters become one slim bar across the bottom.
-const MOBILE_CSS = `@media (max-width: 640px) {
+// The phone layout, also for a phone turned on its side (owner, 2026-11-14: on an iPhone held sideways the
+// report showed zoomed out and cut off on the left). A sideways phone is wide but short, so it gets the
+// same one-column layout, and nothing on the page may widen it past the screen.
+const MOBILE_CSS = `html, body { overflow-x: clip; }
+@media (max-width: 640px), (max-height: 500px) and (orientation: landscape) {
   [data-r=aside] { padding: 16px 20px !important; gap: 20px !important; }
   [data-r=split] { grid-template-columns: minmax(0, 1fr) !important; }
   [data-r=split] > :first-child { border-right: 0 !important; border-bottom: 1px solid ${C.line}; }
