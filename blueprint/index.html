@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <!--
   The Athlete Income Blueprint: Chris Bak's opt-in page.
-  Styled to match the lead magnet PDF (ATHLETE_INCOME_BLUEPRINT v1.0):
-  black #0D0D0D, panels #161616, lines #2A2A2A, white text, grey #8A8A8A,
-  yellow #F2B705; Archivo Black headings in capitals, Inter body,
-  DejaVu Sans Mono labels starting with "//" (self-hosted in blueprint/fonts).
-  Two steps (name, then email and WhatsApp). The form posts to /api/blueprint/lead,
-  which saves the lead first, then sends the email and tags the ManyChat contact.
-  Settings: lib/blueprint-config.js. Thank-you page: /blueprint/thanks.
-  Link from ManyChat (OPEN button): /blueprint?src=ig-5y-N&mc={{Contact Id}}
+  Built as a copy of the Maison d'Élites opt-in (guide.maisondelites.com, guide/src/app/optin/Optin.tsx):
+  headline, the pages fanned out, one centred form card in two steps (name, then
+  email and WhatsApp), the consent line, footer. Nothing of the prompt is on this
+  page: it is only in the email, behind a signed link (/api/blueprint/open).
+  Look: Chris's PDF (ATHLETE_INCOME_BLUEPRINT v1.0): black #0D0D0D, panels #161616,
+  lines #2A2A2A, white, grey #8A8A8A, yellow #F2B705; Archivo Black capitals,
+  Inter body, DejaVu Sans Mono labels (self-hosted in blueprint/fonts). No photo.
+  The form posts to /api/blueprint/lead, which saves the lead first, then sends
+  the email and tags the ManyChat contact. Then /blueprint/thanks/.
+  Settings: lib/blueprint-config.js. ManyChat link: /blueprint/?src=ig-reels (or ig-5y-N) &mc={{Contact Id}}
   Asset paths are absolute so the page also works at the root of a blueprint.* host.
 -->
 <html lang="en">
@@ -17,13 +19,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0D0D0D">
-<title>The Athlete Income Blueprint | A free Claude prompt by Chris Bak</title>
-<meta name="description" content="A free Claude prompt for athletes. It interviews you about your career, finds what people would pay to learn from you, and shapes it into one offer.">
+<title>Your free Athlete Income Blueprint prompt | Chris Bak</title>
+<meta name="description" content="A free Claude prompt for athletes, sent to your email in under 30 seconds.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/blueprint/fonts/archivo-black.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="/blueprint/fonts/dejavu-sans-mono.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="/blueprint/fonts/inter-regular.woff" as="font" type="font/woff" crossorigin>
 <style>
 @font-face{font-family:"Archivo Black";src:url(/blueprint/fonts/archivo-black.woff) format("woff");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"Inter";src:url(/blueprint/fonts/inter-regular.woff) format("woff");font-weight:400;font-style:normal;font-display:swap}
@@ -35,266 +37,118 @@
   --hf:"Archivo Black","Arial Black",Impact,sans-serif;
   --bf:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mf:"DejaVu Sans Mono",ui-monospace,Menlo,Consolas,monospace;
-  --px:20px;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--white);font:400 16px/1.6 var(--bf);-webkit-font-smoothing:antialiased;border-top:6px solid var(--yellow)}
+html{-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--white);font:400 16px/1.6 var(--bf);-webkit-font-smoothing:antialiased;border-top:6px solid var(--yellow)}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
-.wrap{max-width:1180px;margin:0 auto;padding:0 var(--px)}
-
-/* PDF habits: mono kicker in yellow, capital headings, grey body */
-.k{display:block;margin:0 0 12px;font:400 13px/1.4 var(--mf);color:var(--yellow);letter-spacing:.02em}
-h1,h2,h3{font-family:var(--hf);font-weight:400;text-transform:uppercase;margin:0;letter-spacing:.005em}
-h1{font-size:clamp(38px,10.6vw,96px);line-height:.95}
-h1 span{display:block;white-space:nowrap}
-h1 .y{color:var(--yellow)}
-h2{font-size:clamp(28px,7vw,48px);line-height:1}
-h3{font-size:18px;line-height:1.15}
-.grey{color:var(--grey)}
 p{margin:0}
+.y{color:var(--yellow)}
 
-.top{display:flex;justify-content:space-between;align-items:center;padding:16px 0 0;font:400 12px var(--mf);color:var(--grey)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;height:56px;padding:0 max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);font:400 12px var(--mf);color:var(--grey)}
 .top a{text-decoration:none}
 .top a:hover{color:var(--white)}
 
-/* hero */
-.hero{display:grid;grid-template-columns:1fr;gap:24px;padding:32px 0 0}
-.sub{margin-top:18px;max-width:46ch;font-size:16px;line-height:1.55;color:var(--grey)}
-.sub b{color:var(--white);font-weight:500}
+main{flex:1;display:flex;flex-direction:column;align-items:center;gap:36px;padding:44px max(20px,env(safe-area-inset-right,0px)) 72px max(20px,env(safe-area-inset-left,0px))}
+h1,h2{font-family:var(--hf);font-weight:400;text-transform:uppercase;margin:0}
+h1{max-width:960px;text-align:center;font-size:clamp(32px,5.2vw,58px);line-height:1;letter-spacing:.005em;text-wrap:balance}
+.pages{display:block;width:100%;max-width:740px;height:auto;margin:-8px 0 -16px}
 
-.stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--panel)}
-.stats div{padding:16px 16px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stats div:nth-child(2n){border-right:0}
-.stats div:nth-child(n+3){border-bottom:0}
-.stats b{display:block;font:400 32px/1 var(--hf);color:var(--yellow)}
-.stats span{display:block;margin-top:6px;font:400 12px/1.3 var(--mf);color:var(--grey);text-transform:uppercase}
-
-/* form: a PDF panel */
-.form{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--yellow);padding:22px 20px 20px}
-.step{display:flex;justify-content:space-between;align-items:center;margin:0 0 12px;font:400 12px var(--mf);color:var(--yellow)}
-.bar{flex:none;width:72px;height:3px;background:var(--line)}
-.bar i{display:block;height:100%;width:50%;background:var(--yellow);transition:width .5s ease}
-.form h2{font-size:26px;margin:0 0 16px}
+/* the form: one PDF panel, centred, the main thing on the page */
+.card{width:100%;max-width:640px;background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--yellow);padding:32px clamp(20px,5vw,44px) 30px;display:flex;flex-direction:column;gap:22px}
+.steps{display:flex;justify-content:space-between;align-items:center;font:400 12px var(--mf);color:var(--yellow);text-transform:uppercase}
+.bar{height:3px;background:var(--line);margin-top:-12px}
+.bar i{display:block;height:100%;width:0;background:var(--yellow);transition:width .4s ease}
+h2{font-size:clamp(26px,4vw,34px);line-height:1.05}
+.pane{display:flex;flex-direction:column;gap:22px}
 .pane[hidden]{display:none}
-.fields{display:grid;gap:12px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.phone{display:grid;grid-template-columns:84px 1fr;gap:10px}
-label.f span{display:block;margin:0 0 6px;font:400 12px var(--mf);color:var(--grey);text-transform:uppercase}
-input{width:100%;height:52px;padding:0 14px;border-radius:0;border:1px solid var(--line);background:var(--bg);color:var(--white);font:500 17px var(--bf);-webkit-appearance:none}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.col{display:flex;flex-direction:column;gap:12px}
+.phone{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px}
+input{width:100%;height:56px;padding:0 16px;border-radius:0;border:1px solid var(--line);background:var(--bg);color:var(--white);font:500 17px var(--bf);-webkit-appearance:none;appearance:none}
+input::placeholder{color:var(--grey);font-weight:400}
 input:focus{outline:0;border-color:var(--yellow);box-shadow:0 0 0 1px var(--yellow)}
 input[aria-invalid="true"]{border-color:var(--err)}
-.go{width:100%;height:56px;margin-top:16px;border:0;border-radius:0;background:var(--yellow);color:var(--bg);font:400 17px var(--hf);text-transform:uppercase;letter-spacing:.02em;cursor:pointer}
-.go:hover{background:#FFC61A}
-.go[disabled]{opacity:.6;cursor:wait}
-.back{margin-top:10px;padding:6px 0;border:0;background:none;color:var(--grey);font:400 13px var(--mf);cursor:pointer}
-.back:hover{color:var(--white)}
+#cc{text-align:center;padding:0 10px}
 .err:empty{display:none}
-.err{margin:12px 0 0;font:500 14px var(--bf);color:var(--err)}
-.consent{margin:14px 0 0;font-size:12.5px;line-height:1.5;color:var(--grey)}
+.err{margin:-8px 0 0;font:500 14px var(--bf);color:var(--err)}
+.actions{display:flex;flex-direction:column;align-items:center;gap:12px}
+.go{width:100%;height:60px;border:0;border-radius:0;background:var(--yellow);color:var(--bg);font:400 17px var(--hf);text-transform:uppercase;letter-spacing:.03em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.go:hover{background:#FFC61A}
+.go[disabled]{opacity:.75;cursor:wait}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(13,13,13,.3);border-top-color:var(--bg);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.back{padding:0;border:0;background:none;color:var(--grey);font:400 13px var(--mf);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.back:hover{color:var(--white)}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.legal{max-width:560px;text-align:center;font-size:12px;line-height:1.6;color:var(--grey);text-wrap:pretty;margin-top:-12px}
 
-/* sections */
-section{padding:88px 0 0}
-.lede{margin-top:14px;max-width:62ch;font-size:17px;color:var(--grey)}
+footer{border-top:1px solid var(--line);padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font:400 12px var(--mf);color:var(--grey);text-align:center}
 
-/* pipeline grid, as on page 2 of the PDF */
-.grid{display:grid;grid-template-columns:1fr;margin-top:32px;border:1px solid var(--line);background:var(--panel)}
-.cell{padding:20px;border-bottom:1px solid var(--line)}
-.cell:last-child{border-bottom:0}
-.cell .k{margin-bottom:8px}
-.cell p{margin-top:6px;color:var(--grey);font-size:15px}
-.cell.out{background:var(--yellow);color:var(--bg)}
-.cell.out .k{color:var(--bg)}
-.cell.out p{color:var(--bg)}
-
-/* the prompt, as on page 3 */
-.code{position:relative;margin-top:30px;background:var(--panel);border:1px solid var(--line);padding:20px 18px 0;font:400 13px/1.65 var(--mf);color:var(--white);overflow:hidden;max-height:380px}
-.code pre{margin:0;white-space:pre-wrap;word-break:break-word;font:inherit}
-.code .c{color:var(--grey)}
-.code .t{color:var(--yellow)}
-.code .fade{position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(rgba(22,22,22,0),var(--panel) 72%)}
-.after{margin-top:14px;font:400 13px/1.5 var(--mf);color:var(--yellow)}
-
-/* deliverables, as on page 5 */
-.gets{display:grid;grid-template-columns:1fr;margin-top:30px;border:1px solid var(--line);background:var(--panel)}
-.gets div{padding:18px 20px;border-bottom:1px solid var(--line)}
-.gets div:last-child{border-bottom:0}
-.gets p{color:var(--white);font-size:15px}
-
-.note{margin-top:28px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--yellow);font-size:14px;color:var(--grey)}
-.note b{color:var(--white);font-weight:600}
-
-.who h2{margin-bottom:16px}
-.who p{max-width:60ch;font-size:17px;color:var(--grey)}
-.cta{display:inline-flex;align-items:center;height:54px;padding:0 24px;margin-top:26px;background:var(--yellow);color:var(--bg);font:400 16px var(--hf);text-transform:uppercase;text-decoration:none;letter-spacing:.02em}
-.cta:hover{background:#FFC61A}
-
-footer{margin-top:96px;border-top:1px solid var(--line)}
-footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding-top:18px;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px));font:400 12px var(--mf);color:var(--grey)}
-
-@media (prefers-reduced-motion:no-preference){
-  h1 span{animation:in .9s cubic-bezier(.2,.7,.2,1) both}
-  h1 span:nth-child(2){animation-delay:.08s}
-  h1 span:nth-child(3){animation-delay:.16s}
-}
-@keyframes in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-
-@media (min-width:700px){
-  .stats{grid-template-columns:repeat(4,1fr)}
-  .stats div{border-bottom:0}
-  .stats div:nth-child(2n){border-right:1px solid var(--line)}
-  .stats div:last-child{border-right:0}
-  .grid{grid-template-columns:repeat(3,1fr)}
-  .cell{border-right:1px solid var(--line)}
-  .cell:nth-child(3n){border-right:0}
-  .cell:nth-child(n+4){border-bottom:0}
-  .cell:nth-child(-n+3){border-bottom:1px solid var(--line)}
-  .gets{grid-template-columns:1fr 1fr}
-  .gets div{border-right:1px solid var(--line)}
-  .gets div:nth-child(2n){border-right:0}
-  .gets div:nth-last-child(-n+2){border-bottom:0}
-}
-@media (min-width:980px){
-  :root{--px:40px}
-  .hero{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);grid-template-areas:"copy form" "stats form";column-gap:56px;row-gap:40px;align-items:start;padding-top:72px}
-  .hero>div:first-child{grid-area:copy}
-  .form{grid-area:form;margin-top:30px}
-  .hero .stats{grid-area:stats}
-  h1{font-size:clamp(56px,5.1vw,76px)}
-  .sub{font-size:18px}
-  section{padding-top:120px}
-  .code{max-height:420px;padding:26px 28px 0}
-}
+@media (min-width:980px){ main{padding-top:56px;gap:40px} }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <span>ATHLETE_INCOME_BLUEPRINT v1.0</span>
-    <a href="https://instagram.com/chris_bak0" rel="noopener" target="_blank">@chris_bak0</a>
-  </header>
+<header class="top">
+  <span>ATHLETE_INCOME_BLUEPRINT v1.0</span>
+  <a href="https://instagram.com/chris_bak0" rel="noopener" target="_blank">@chris_bak0</a>
+</header>
 
-  <main>
-    <div class="hero">
-      <div>
-        <span class="k">// A FREE CLAUDE PROMPT BY CHRIS BAK</span>
-        <h1><span>The Athlete</span><span>Income</span><span class="y">Blueprint</span></h1>
-        <p class="sub">Your career already built skills other people would pay to learn. I built this prompt for athletes who want to build <b>income that supports their career, not compromises it</b>. Claude interviews you, finds those skills and shapes them into one high-ticket digital offer, with 20 reel topics to reach the people who would buy it.</p>
+<main>
+  <h1>Get your free <span class="y">Athlete Income Blueprint</span> prompt... in under 30 seconds.</h1>
+  <img class="pages" src="/blueprint/img/blueprint-pages.webp" alt="Pages of The Athlete Income Blueprint fanned out" width="1704" height="967">
+
+  <form class="card" id="optin" novalidate>
+    <div class="steps"><span id="stepLabel">// Step 1 of 2</span><span id="stepPct">0%</span></div>
+    <div class="bar" aria-hidden="true"><i id="stepBar"></i></div>
+
+    <div class="pane" id="p1">
+      <h2>What's your <span class="y">name?</span></h2>
+      <div class="two">
+        <input id="first" name="first" autocomplete="given-name" placeholder="First name" aria-label="First name" maxlength="60" required>
+        <input id="last" name="last" autocomplete="family-name" placeholder="Last name" aria-label="Last name" maxlength="60" required>
       </div>
-
-      <form class="form" id="optin" novalidate>
-        <div class="step"><span id="stepLabel">// STEP 1 OF 2</span><span class="bar" aria-hidden="true"><i id="stepBar"></i></span></div>
-
-        <div class="pane" id="p1">
-          <h2>What's your name?</h2>
-          <div class="fields two">
-            <label class="f"><span>First name</span><input id="first" name="first" autocomplete="given-name" required></label>
-            <label class="f"><span>Last name</span><input id="last" name="last" autocomplete="family-name" required></label>
-          </div>
-          <button class="go" type="submit" id="next">Next</button>
-        </div>
-
-        <div class="pane" id="p2" hidden>
-          <h2>Where do I send your prompt?</h2>
-          <div class="fields">
-            <label class="f"><span>Email</span><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required></label>
-            <div class="phone">
-              <label class="f"><span>Code</span><input id="cc" name="cc" autocomplete="tel-country-code" inputmode="tel" value="+44"></label>
-              <label class="f"><span>WhatsApp</span><input id="phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" required></label>
-            </div>
-          </div>
-          <button class="go" type="submit" id="send">Send me the prompt</button>
-          <button class="back" type="button" id="back">Back</button>
-        </div>
-
-        <label class="hp" aria-hidden="true">Website<input id="website" name="website" tabindex="-1" autocomplete="off"></label>
-        <p class="err" id="err" role="alert"></p>
-        <p class="consent">THE ATHLETE INCOME BLUEPRINT goes to your email as a PDF. By sending this you agree that Chris Bak can contact you by email, WhatsApp, text or phone. Your details are never sold. Reply "stop" to any message and you will not hear from him again.</p>
-      </form>
-      <div class="stats" aria-label="At a glance">
-          <div><b>5</b><span>Interview stages</span></div>
-          <div><b>20-30</b><span>Minutes</span></div>
-          <div><b>20</b><span>Reel topics</span></div>
-          <div><b>$0</b><span>Ad spend</span></div>
-        </div>
     </div>
 
-    <section aria-labelledby="h-pipe">
-      <span class="k">// PIPELINE</span>
-      <h2 id="h-pipe">Interview in. Offer out.</h2>
-      <p class="lede">Claude runs the stages in order and checks each summary with you before it moves on. It gives no offer ideas and no prices until Stage 5. Until then it only listens.</p>
-      <div class="grid">
-        <div class="cell"><span class="k">STAGE_1</span><h3>Career story</h3><p>Sport, level, turning points, setbacks.</p></div>
-        <div class="cell"><span class="k">STAGE_2</span><h3>Problems solved</h3><p>Results, numbers, what people already ask you for.</p></div>
-        <div class="cell"><span class="k">STAGE_3</span><h3>Repeatable method</h3><p>Your routines and systems, written as clear steps.</p></div>
-        <div class="cell"><span class="k">STAGE_4</span><h3>The buyer</h3><p>Who pays, their pain, where they are online.</p></div>
-        <div class="cell"><span class="k">STAGE_5</span><h3>The offer</h3><p>3 options, a price test, an honest verdict.</p></div>
-        <div class="cell out"><span class="k">OUTPUT</span><h3>Blueprint</h3><p>An 11-section document with 20 reel topics.</p></div>
+    <div class="pane" id="p2" hidden>
+      <h2>Where should I <span class="y">send it?</span></h2>
+      <div class="col">
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="Email" aria-label="Email" maxlength="160" required>
+        <div class="phone">
+          <input id="cc" name="cc" inputmode="tel" autocomplete="tel-country-code" value="+44" aria-label="Country code" maxlength="6">
+          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="WhatsApp number" aria-label="WhatsApp number" maxlength="24" required>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <section aria-labelledby="h-prompt">
-      <span class="k">// THE PROMPT</span>
-      <h2 id="h-prompt">Copy. Paste. Run.</h2>
-      <p class="lede">One block of text you send to Claude as your first message. This is how it starts.</p>
-      <div class="code" aria-label="The opening lines of the prompt">
-<pre><span class="c"># ATHLETE_INCOME_BLUEPRINT v1.0
-# author: Chris Bak | instagram: @chris_bak0
-# runtime: Claude | mode: interview -&gt; blueprint</span>
+    <label class="hp" aria-hidden="true">Website<input id="website" name="website" tabindex="-1" autocomplete="off"></label>
+    <p class="err" id="err" role="alert"></p>
 
-<span class="t">&lt;role&gt;</span>
-You are an offer architect and interviewer for professional and semi-professional athletes. Interview me about my entire athletic career, pull out what I know that other people would pay to learn, and shape it into ONE high-ticket digital product I can sell.
-<span class="t">&lt;/role&gt;</span>
+    <div class="actions">
+      <button class="go" type="submit" id="go">Let's start</button>
+      <button class="back" type="button" id="back" hidden>Back</button>
+    </div>
+  </form>
 
-<span class="t">&lt;rules&gt;</span>
-R2 Max 3 questions per message. Wait for my answers.
-R4 Before STAGE_5: NO offer ideas, NO price signals, NO advice.
-R6 Never invent statistics, results or testimonials.
-R8 Be honest. If my proof does not support $2,000+, say so directly.
-<span class="t">&lt;/rules&gt;</span>
-</pre>
-        <div class="fade" aria-hidden="true"></div>
-      </div>
-      <p class="after">The full prompt is on pages 3 to 5 of THE ATHLETE INCOME BLUEPRINT. It lands in your inbox.</p>
-    </section>
+  <p class="legal">By sending this you agree that Chris Bak can contact you by email, WhatsApp, text or phone. Your details are never sold. Reply "stop" to any message and you will not hear from him again.</p>
+</main>
 
-    <section aria-labelledby="h-get">
-      <span class="k">// DELIVERABLES</span>
-      <h2 id="h-get">What you walk away with</h2>
-      <div class="gets">
-        <div><span class="k">01 / STORY</span><p>Your career story and proof, laid out the way your buyer needs to see it.</p></div>
-        <div><span class="k">02 / METHODS</span><p>Your systems, packaged into a format other athletes would pay to learn.</p></div>
-        <div><span class="k">03 / OFFER</span><p>One clear digital offer with a promise, a before and after, and a price range tested honestly against $2,000+.</p></div>
-        <div><span class="k">04 / CONTENT</span><p>20 Instagram reel topics with hooks built from your real story.</p></div>
-        <div><span class="k">05 / RHYTHM</span><p>A weekly posting rhythm that fits your training and match calendar.</p></div>
-        <div><span class="k">06 / OUTLOOK</span><p>How the offer grows during your career and carries on after it.</p></div>
-      </div>
-      <p class="note"><b>Before you start.</b> Set aside 20-30 minutes of focused time, not a gym session. This is a planning tool, not financial, legal or tax advice. Prices and income figures Claude gives you are estimates. Check anything about your contract, sponsors or taxes with your club, your agent or a professional.</p>
-    </section>
-
-    <section class="who" aria-labelledby="h-who">
-      <span class="k">// WHO BUILT THIS</span>
-      <h2 id="h-who">Chris Bak</h2>
-      <p>I'm a footballer who runs a sales agency alongside playing. I built this around the system you're looking for: time and location freedom that maximizes your potential as an athlete, and an income that keeps growing during and well beyond your career.</p>
-      <a class="cta" href="#optin" id="toForm">Get the free prompt</a>
-    </section>
-  </main>
-</div>
-
-<footer><div class="wrap"><span>ATHLETE_INCOME_BLUEPRINT v1.0 | @chris_bak0</span><span>&copy; 2026 Chris Bak</span></div></footer>
+<footer><span>ATHLETE_INCOME_BLUEPRINT v1.0 | @chris_bak0</span><span>&copy; 2026 Chris Bak</span></footer>
 
 <script>
 (function () {
-  var form = document.getElementById('optin');
-  var p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
-  var err = document.getElementById('err');
-  var label = document.getElementById('stepLabel'), bar = document.getElementById('stepBar');
-  var send = document.getElementById('send');
-  var step = 1;
   var $ = function (id) { return document.getElementById(id); };
+  var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  var THANKS = '/blueprint/thanks/';
+
+  // Someone who already left their details lands on the thanks page, as on the Maison d'Élites opt-in.
+  if (store.get('bp_done')) { location.replace(THANKS); return; }
+
+  var form = $('optin'), err = $('err'), go = $('go');
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var step = 0, sending = false;
+  var LABEL = ["Let's start", 'Get my prompt'];
 
   // Settings from lib/blueprint-config.js (country code default).
   fetch('/api/blueprint/config').then(function (r) { return r.ok ? r.json() : null; }).then(function (c) {
@@ -308,39 +162,38 @@ R8 Be honest. If my proof does not support $2,000+, say so directly.
     var v = q.get(k); if (v) source[k] = v.slice(0, 64);
   });
 
-  function show(n) {
+  function show(n, quiet) {
     step = n;
-    p1.hidden = n !== 1; p2.hidden = n !== 2;
-    label.textContent = '// STEP ' + n + ' OF 2';
-    bar.style.width = n === 1 ? '50%' : '100%';
+    $('p1').hidden = n !== 0; $('p2').hidden = n !== 1; $('back').hidden = n !== 1;
+    var pct = Math.round((n / 2) * 100) + '%';
+    $('stepLabel').textContent = '// Step ' + (n + 1) + ' of 2';
+    $('stepPct').textContent = pct; $('stepBar').style.width = pct;
+    go.textContent = LABEL[n];
     err.textContent = '';
-    setTimeout(function () { $(n === 1 ? 'first' : 'email').focus(); }, 30);
+    if (!quiet) setTimeout(function () { $(n === 0 ? 'first' : 'email').focus(); }, 30);
   }
   function fail(msg, id) {
     err.textContent = msg;
     if (id) { $(id).setAttribute('aria-invalid', 'true'); $(id).focus(); }
   }
-  form.addEventListener('input', function (e) { if (e.target.removeAttribute) e.target.removeAttribute('aria-invalid'); });
-  $('back').addEventListener('click', function () { show(1); });
-  $('toForm').addEventListener('click', function (e) {
-    e.preventDefault();
-    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(function () { $(step === 1 ? 'first' : 'email').focus({ preventScroll: true }); }, 500);
-  });
+  form.addEventListener('input', function (e) { if (e.target.removeAttribute) e.target.removeAttribute('aria-invalid'); err.textContent = ''; });
+  $('back').addEventListener('click', function () { show(0); });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (step === 1) {
-      if (!$('first').value.trim()) return fail('Add your first name.', 'first');
-      if (!$('last').value.trim()) return fail('Add your last name.', 'last');
-      return show(2);
+    if (sending) return;
+    if (step === 0) {
+      if (!$('first').value.trim()) return fail('Please enter your first and last name.', 'first');
+      if (!$('last').value.trim()) return fail('Please enter your first and last name.', 'last');
+      return show(1);
     }
     var email = $('email').value.trim();
     var digits = ($('cc').value + $('phone').value).replace(/\D/g, '');
-    if (!EMAIL.test(email)) return fail('Add the email your prompt should go to.', 'email');
-    if ($('phone').value.replace(/\D/g, '').length < 6 || digits.length < 8) return fail('Add your WhatsApp number and its country code.', 'phone');
+    if (!EMAIL.test(email)) return fail('Please enter a valid email address.', 'email');
+    if ($('phone').value.replace(/\D/g, '').length < 6 || digits.length < 8) return fail('Please enter your WhatsApp number.', 'phone');
 
-    send.disabled = true; send.textContent = 'Sending';
+    sending = true; go.disabled = true; $('back').hidden = true;
+    go.innerHTML = 'Sending<span class="spin" aria-hidden="true"></span>';
     var body = Object.assign({
       first: $('first').value.trim(), last: $('last').value.trim(), email: email,
       cc: $('cc').value, phone: $('phone').value, website: $('website').value
@@ -349,18 +202,23 @@ R8 Be honest. If my proof does not support $2,000+, say so directly.
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { status: r.status, d: d }; }); })
       .then(function (res) {
         if (res.status === 200 && res.d.ok) {
-          try { sessionStorage.setItem('bp_lead', JSON.stringify({ first: body.first, email: email })); } catch (x) {}
-          location.href = '/blueprint/thanks/';
-          return;
+          store.set('bp_done', '1');
+          location.href = THANKS;
+          return true;
         }
-        var map = { name: ['Add your first and last name.', null], email: ['Add the email your prompt should go to.', 'email'], phone: ['Add your WhatsApp number and its country code.', 'phone'], rate_limited: ['Too many tries from this connection. Wait a minute, then send it again.', null] };
-        var m = map[res.d.error] || ['It did not go through. Send it again.', null];
-        if (res.d.error === 'name') show(1);
+        var map = { name: ['Please enter your first and last name.', null], email: ['Please enter a valid email address.', 'email'], phone: ['Please enter your WhatsApp number.', 'phone'], rate_limited: ['Too many tries. Please wait a minute and try again.', null] };
+        var m = map[res.d.error] || ['Something went wrong on our side. Please try again.', null];
+        if (res.d.error === 'name') show(0);
         fail(m[0], m[1]);
       })
-      .catch(function () { fail('It did not go through. Check your connection and send it again.'); })
-      .finally(function () { send.disabled = false; send.textContent = 'Send me the prompt'; });
+      .catch(function () { fail('Something went wrong on our side. Please try again.'); })
+      .then(function (done) {
+        if (done) return;
+        sending = false; go.disabled = false; go.textContent = LABEL[step]; $('back').hidden = step !== 1;
+      });
   });
+  // No focus on first load: on a phone it would open the keyboard over the headline.
+  show(0, true);
 })();
 </script>
 </body>
