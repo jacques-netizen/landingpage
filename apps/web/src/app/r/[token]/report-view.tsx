@@ -522,20 +522,48 @@ export function ReportView({
               </div>
             </div>
             {r.campaign.thumbnail ? (
-              <img
-                src={r.campaign.thumbnail}
-                alt=""
+              // The whole picture is always shown (owner, 2026-11-14: a tall artist photo lost its head when it
+              // was cropped to fill the wide frame). A blurred copy of the same picture fills the sides.
+              <div
                 style={{
+                  position: 'relative',
                   flex: '0 1 440px',
                   width: '100%',
                   maxWidth: 440,
                   aspectRatio: '16 / 9',
-                  objectFit: 'cover',
                   borderRadius: 16,
                   border: `1px solid ${C.line}`,
-                  display: 'block',
+                  overflow: 'hidden',
+                  background: C.ink,
                 }}
-              />
+              >
+                <img
+                  src={r.campaign.thumbnail}
+                  alt=""
+                  aria-hidden
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    filter: 'blur(24px) brightness(0.8)',
+                    transform: 'scale(1.2)',
+                  }}
+                />
+                <img
+                  src={r.campaign.thumbnail}
+                  alt=""
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    display: 'block',
+                  }}
+                />
+              </div>
             ) : null}
           </div>
           <div style={{ height: 1, background: C.line }} />
