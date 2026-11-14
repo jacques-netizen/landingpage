@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-14
 
+- Client report: the campaign picture is always shown whole, never cropped, with a blurred copy filling the frame · Requested by: owner · Made by: Claude Code session …oZc8T8 · 66ffb93
 - Client report: phone layout on a phone held sideways, and the page can no longer slide off the screen · Requested by: owner · Made by: Claude Code session …oZc8T8 · b2dff8a
 
 ## 2026-11-13
