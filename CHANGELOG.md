@@ -9,6 +9,10 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-14
+
+- Client report: phone layout on a phone held sideways, and the page can no longer slide off the screen · Requested by: owner · Made by: Claude Code session …oZc8T8 · b2dff8a
+
 ## 2026-11-13
 
 - Security hardening: rate limits on every public endpoint, id and length checks on clipper actions, strict webhook input · Requested by: owner · Made by: Claude Code session …oZc8T8 · 3a28f0b
