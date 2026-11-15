@@ -9,6 +9,10 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-15
+
+- Delete the One Billion Dollar Billboard campaign and take back what clippers earned on it · Requested by: owner · Made by: Claude Code session …oZc8T8 · 441484b
+
 ## 2026-11-14
 
 - Client report: the campaign picture is always shown whole, never cropped, with a blurred copy filling the frame · Requested by: owner · Made by: Claude Code session …oZc8T8 · 66ffb93
