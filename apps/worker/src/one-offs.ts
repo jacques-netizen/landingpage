@@ -1,6 +1,6 @@
-import { reopenCampaign } from '@mde/campaigns'
+import { deleteCampaign, reopenCampaign } from '@mde/campaigns'
 import { and, desc, eq, ilike, inArray, isNull, sql, tables, writeAudit, type Db } from '@mde/db'
-import { accrueEarnings, createPgStore } from '@mde/money'
+import { accrueEarnings, createPgStore, takeBackPosts } from '@mde/money'
 import { approve } from '@mde/review'
 
 // One-time tasks the owner asked for that need the platform's own campaign and review code, run when the
@@ -168,6 +168,56 @@ async function davidoCapNow(db: Db, log: (e: Record<string, unknown>) => void) {
   log({ level: 'info', msg: 'davido cap applied', posts: posts.length, changed, status: after?.status })
 }
 
+/**
+ * Owner, 2026-11-15: "delete the whole 1b dollar billboard thing, delete it completely", and take back
+ * what clippers earned on it. Every post's earnings are taken back (takeBackPosts in @mde/money), then
+ * the campaign is deleted the same way as the Delete button: closed, hidden everywhere, report links
+ * dead. Money already withdrawn cannot be taken back; it is written in the audit log for staff.
+ */
+async function billboardDelete(db: Db, log: (e: Record<string, unknown>) => void) {
+  const mark = 'oneoff.billboard_delete'
+  const [done] = await db
+    .select({ id: tables.auditLog.id })
+    .from(tables.auditLog)
+    .where(eq(tables.auditLog.action, mark))
+    .limit(1)
+  if (done) return
+  const found = await db
+    .select({ id: tables.campaigns.id, title: tables.campaigns.title })
+    .from(tables.campaigns)
+    .where(and(ilike(tables.campaigns.title, '%billion dollar billboard%'), isNull(tables.campaigns.deletedAt)))
+  if (!found.length) return
+  const [admin] = await db
+    .select({ id: tables.staffRoles.userId })
+    .from(tables.staffRoles)
+    .where(eq(tables.staffRoles.role, 'admin'))
+    .orderBy(tables.staffRoles.createdAt)
+    .limit(1)
+  if (!admin) return
+  const store = createPgStore(db)
+  for (const c of found) {
+    const posts = await db
+      .select({ id: tables.submissions.id })
+      .from(tables.submissions)
+      .where(eq(tables.submissions.campaignId, c.id))
+    const taken = await takeBackPosts(store, {
+      campaignId: c.id,
+      submissionIds: posts.map((p) => p.id),
+      actorId: admin.id,
+      memo: 'Campaign deleted by the owner, earnings taken back (2026-11-15).',
+    })
+    const result = await deleteCampaign(db, admin.id, c.id)
+    await writeAudit(db, {
+      actorId: null,
+      action: mark,
+      entity: 'campaign',
+      entityId: c.id,
+      after: { title: c.title, posts: posts.length, ...taken, result },
+    })
+    log({ level: 'info', msg: 'billboard deleted', title: c.title, posts: posts.length, ...taken, result })
+  }
+}
+
 export async function runOneOffs(
   db: Db,
   log: (e: Record<string, unknown>) => void = (e) => console.log(JSON.stringify(e)),
@@ -177,6 +227,7 @@ export async function runOneOffs(
     // Owner, 2026-11-03: the campaign had ended again after being resumed on 2026-11-02; resume it once more.
     await billboardLiveAndApprove(db, log, `${MARK}.2`)
     await davidoCapNow(db, log)
+    await billboardDelete(db, log)
   } catch (err) {
     log({ level: 'error', msg: 'one-off failed', err: String(err) })
   }

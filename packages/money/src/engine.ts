@@ -582,3 +582,49 @@ export async function replayTransaction(
     tx.insertTransaction({ kind: t.kind as NewTransaction['kind'], idempotencyKey: t.idempotencyKey }, t.entries),
   )
 }
+
+/**
+ * Take back everything a set of a campaign's posts earned (owner, 2026-11-15: the One Billion Dollar
+ * Billboard campaign is deleted and its earnings taken back). Earnings not yet released are reversed to
+ * the campaign budget, as when a post is rejected. Earnings already released are moved from each
+ * clipper's available balance back to the budget, once per clipper and campaign, as far as the balance
+ * still holds them; what was already withdrawn cannot be taken and is returned in notRecovered.
+ * Safe to run again: nothing is taken twice.
+ */
+export async function takeBackPosts(
+  store: MoneyStore,
+  i: { campaignId: string; submissionIds: string[]; actorId: string; memo: string },
+) {
+  let reversedCents = 0
+  const releasedBy = new Map<string, number>()
+  for (const id of i.submissionIds) {
+    const s = await store.transaction((tx) => tx.submission(id, false))
+    if (!s || s.campaignId !== i.campaignId || s.earnedCents === 0) continue
+    if (s.state === 'paid_out') releasedBy.set(s.creatorId, (releasedBy.get(s.creatorId) ?? 0) + s.earnedCents)
+    else reversedCents += (await reverseEarnings(store, { submissionId: id, actorId: i.actorId })).reversedCents
+  }
+  let takenFromAvailableCents = 0
+  const notRecovered: { creatorId: string; cents: number }[] = []
+  for (const [creatorId, cents] of releasedBy) {
+    const key = `takeback:${i.campaignId}:${creatorId}`
+    const r = await store.transaction(async (tx) => {
+      if (await tx.transactionExists(`adjustment:${key}`)) return null
+      const [availableId] = await tx.lockAccounts([account.available(creatorId)])
+      return Math.min(cents, Math.max(0, await tx.balance(availableId!)))
+    })
+    if (r === null) continue
+    if (r > 0) {
+      await manualAdjustment(store, {
+        from: account.available(creatorId),
+        to: account.budget(i.campaignId),
+        amountCents: r,
+        memo: i.memo,
+        actorId: i.actorId,
+        idempotencyKey: key,
+      })
+      takenFromAvailableCents += r
+    }
+    if (r < cents) notRecovered.push({ creatorId, cents: cents - r })
+  }
+  return { reversedCents, takenFromAvailableCents, notRecovered }
+}
