@@ -1099,6 +1099,11 @@ export const musicJobRuns = pgTable(
     error: text('error'),
     /** Calls made to each source, e.g. { soundcharts: 3, scrapecreators: 1 }. */
     requestsUsed: jsonb('requests_used').$type<Record<string, number>>().notNull().default({}),
+    /**
+     * What the provider answered on this run: status, number of dates, field names, ids, errors
+     * (soundcharts-fix, 15 Nov). Shape: PullDiagnostic in @mde/music. Null on runs from before.
+     */
+    diagnostic: jsonb('diagnostic').$type<Record<string, unknown>>(),
   },
   (t) => [
     index('music_job_runs_track').on(t.musicTrackId, t.runDate),

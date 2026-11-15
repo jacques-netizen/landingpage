@@ -1,0 +1,12 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/audience/{platform}, 200 SongPlotCollectionResponse (required: related, items, page, errors). This is the answer for a song Soundcharts knows but holds no Spotify numbers for in the asked period (soundcharts-fix, 15 Nov). Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": ""
+  },
+  "items": [],
+  "page": { "offset": 0, "limit": 100, "total": 0, "next": null, "previous": null },
+  "errors": []
+}

@@ -21,11 +21,24 @@
 //   streams, held per Spotify identifier; the song's total adds up each unique value
 //   (https://help.soundcharts.com/en/articles/10125052-how-do-i-get-the-stream-count-for-an-artist).
 //
+// - Checked again on 15 Nov against the same reference (soundcharts-fix): paths, query names and the
+//   response fields above match the OpenAPI file. Added then: 410 on by-platform/by-isrc ("ISRC
+//   Blacklisted due to multiple tracks identified from DSP") is read as "not found"; 429 ("your quota is
+//   consumed", help article 10125141) is a refusal with its own message; every answer is noted for the pull
+//   diagnostic. Not changed: the reference now calls x-app-id / x-api-key "Deprecated" but says "Legacy API
+//   keys remain supported for existing applications" (https://developers.soundcharts.com/api/authorization).
+//
 // Only the platform code "spotify" is confirmed for the audience endpoint (it is the reference's own
 // example). The page lists Shazam, TikTok, Instagram and YouTube as platforms too, but not their codes,
 // so those metrics are not pulled until the codes are checked (TODO in the build notes).
 import type { ArtistMetric, TrackMetric } from '../metrics'
-import { MusicProviderRefused, type MusicDataProvider, type ResolvedTrack, type SeriesPoint } from './types'
+import {
+  MusicProviderRefused,
+  type MusicDataProvider,
+  type ProviderCall,
+  type ResolvedTrack,
+  type SeriesPoint,
+} from './types'
 
 export const SOUNDCHARTS_API = 'https://customer.api.soundcharts.com'
 
@@ -46,25 +59,59 @@ export class SoundchartsProvider implements MusicDataProvider {
     private base = SOUNDCHARTS_API,
   ) {}
 
-  /** null on 404 (song not found). */
+  private calls: ProviderCall[] = []
+
+  /** The calls made since the last time this was asked (pull diagnostic, soundcharts-fix 15 Nov). */
+  takeCalls(): ProviderCall[] {
+    const out = this.calls
+    this.calls = []
+    return out
+  }
+
+  /**
+   * null on 404 (song not found) and 410 (ISRC blacklisted). Every answer is noted in `calls`, with its
+   * status, its top-level fields and the messages in its root errors array: Soundcharts says "The response
+   * always contains an error array at the root level"
+   * (https://help.soundcharts.com/en/articles/10125141-what-do-errors-mean-on-soundcharts-api).
+   */
   private async get(path: string, params: Record<string, string> = {}): Promise<Json | null> {
     const url = new URL(path, this.base)
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
     this.requests++
     const res = await this.http(url, { headers: { 'x-app-id': this.appId, 'x-api-key': this.apiKey } })
-    if (res.status === 404) return null
-    if (res.status === 401 || res.status === 403) {
-      const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200)
+    const call: ProviderCall = { path: url.pathname + url.search, status: res.status }
+    this.calls.push(call)
+    const text = await res.text().catch(() => '')
+    let body: Json | null = null
+    try {
+      body = text ? obj(JSON.parse(text)) : null
+    } catch {
+      body = null
+    }
+    if (body) {
+      call.fields = Object.keys(body).sort()
+      const errs = Array.isArray(body.errors) ? body.errors : []
+      const msgs = errs
+        .map((e) => {
+          const o = obj(e)
+          return o
+            ? [str(o.key), typeof o.code === 'number' ? String(o.code) : null, str(o.message)].filter(Boolean).join(' ')
+            : null
+        })
+        .filter((m): m is string => !!m)
+      if (msgs.length) call.errors = msgs.slice(0, 5).map((m) => m.slice(0, 200))
+    }
+    const short = text.replace(/\s+/g, ' ').slice(0, 200)
+    if (res.status === 404 || res.status === 410) return null
+    if (res.status === 401 || res.status === 403 || res.status === 429) {
+      const why = res.status === 403 ? ' (not in the plan)' : res.status === 429 ? ' (request quota used up)' : ''
       throw new MusicProviderRefused(
-        `Soundcharts ${url.pathname} returned ${res.status}${res.status === 403 ? ' (not in the plan)' : ''}${text ? `: ${text}` : ''}`,
+        `Soundcharts ${url.pathname} returned ${res.status}${why}${short ? `: ${short}` : ''}`,
         res.status,
       )
     }
-    if (!res.ok) {
-      const text = (await res.text().catch(() => '')).replace(/\s+/g, ' ').slice(0, 200)
-      throw new Error(`Soundcharts ${url.pathname} returned ${res.status}${text ? `: ${text}` : ''}`)
-    }
-    return (await res.json()) as Json
+    if (!res.ok) throw new Error(`Soundcharts ${url.pathname} returned ${res.status}${short ? `: ${short}` : ''}`)
+    return body
   }
 
   async resolveTrack(input: { isrc?: string | null; spotifyTrackId?: string | null }): Promise<ResolvedTrack | null> {
@@ -102,18 +149,43 @@ export class SoundchartsProvider implements MusicDataProvider {
         sort: 'asc',
       })
       const items = Array.isArray(body?.items) ? (body.items as unknown[]) : []
+      const call = this.calls[this.calls.length - 1]
+      const ids = new Set<string>()
+      let days = 0
+      let withNumbers = 0
+      let first = null as string | null
+      let last = null as string | null
       for (const it of items) {
         const row = obj(it)
         const day = str(row?.date)?.slice(0, 10)
         if (!row || !day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) continue
+        days++
+        if (first === null || day < first) first = day
+        if (last === null || day > last) last = day
         const set = byDay.get(day) ?? new Set<number>()
+        let had = false
         for (const p of Array.isArray(row.plots) ? row.plots : []) {
-          const v = obj(p)?.value
-          if (typeof v === 'number' && Number.isFinite(v) && v >= 0) set.add(Math.floor(v))
+          const plot = obj(p)
+          const id = str(plot?.identifier)
+          if (id) ids.add(id)
+          const v = plot?.value
+          if (typeof v === 'number' && Number.isFinite(v) && v >= 0) {
+            set.add(Math.floor(v))
+            had = true
+          }
         }
+        if (had) withNumbers++
         byDay.set(day, set)
       }
       const page = obj(body?.page)
+      if (call) {
+        call.dates = days
+        call.datesWithNumbers = withNumbers
+        call.firstDate = first
+        call.lastDate = last
+        call.identifiers = [...ids].slice(0, 10)
+        call.total = typeof page?.total === 'number' ? page.total : null
+      }
       if (!items.length || !page || page.next === null || page.next === undefined) break
       offset += items.length
     }
@@ -122,6 +194,31 @@ export class SoundchartsProvider implements MusicDataProvider {
       .filter(([, set]) => set.size > 0)
       .map(([date, set]) => ({ date, value: [...set].reduce((a, v) => a + v, 0), isCumulative: true }))
       .sort((a, b) => a.date.localeCompare(b.date))
+  }
+
+  /**
+   * Which Spotify ids Soundcharts holds for the song: GET /api/v2/song/{uuid}/identifiers?platform=spotify
+   * (https://developers.soundcharts.com/documentation/reference/song/get-ids, SongIdentifier
+   * { platformCode, identifier, song }). The audience page says a missing metric can mean "We may not have
+   * the song platform ID!". One request, only after a pull that gave no numbers. Never throws.
+   */
+  async explainEmpty(providerTrackId: string): Promise<void> {
+    try {
+      const body = await this.get(`/api/v2/song/${encodeURIComponent(providerTrackId)}/identifiers`, {
+        platform: 'spotify',
+        offset: '0',
+        limit: '100',
+      })
+      const call = this.calls[this.calls.length - 1]
+      const items = Array.isArray(body?.items) ? (body.items as unknown[]) : []
+      if (call)
+        call.identifiers = items
+          .map((it) => str(obj(it)?.identifier))
+          .filter((x): x is string => !!x)
+          .slice(0, 10)
+    } catch {
+      // A diagnostic must never stop the pull; the call and its status are already noted.
+    }
   }
 
   async getArtistSeries(_id: string, _metric: ArtistMetric): Promise<SeriesPoint[]> {

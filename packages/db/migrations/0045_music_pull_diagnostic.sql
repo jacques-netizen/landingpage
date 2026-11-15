@@ -1,0 +1,1 @@
+ALTER TABLE "music_job_runs" ADD COLUMN "diagnostic" jsonb;

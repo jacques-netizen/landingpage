@@ -12,6 +12,30 @@ export type ResolvedTrack = {
 
 export type SeriesPoint = { date: string; value: number; isCumulative: boolean; country?: string; city?: string }
 
+/**
+ * What one call to the provider answered, kept on the pull run so staff can see why a pull gave no
+ * numbers (soundcharts-fix, 15 Nov). Never holds a key or a header.
+ */
+export type ProviderCall = {
+  /** The path asked, without the host. Query values are dates and paging only. */
+  path: string
+  status: number
+  /** Top-level field names of the answer, e.g. related, items, page, errors. */
+  fields?: string[]
+  /** Dated entries in the answer (audience), and how many of them held at least one number. */
+  dates?: number
+  datesWithNumbers?: number
+  /** First and last day in the answer. */
+  firstDate?: string | null
+  lastDate?: string | null
+  /** The Spotify ids seen in the answer (audience plots or the song's identifiers). */
+  identifiers?: string[]
+  /** page.total from the answer, when there is one. */
+  total?: number | null
+  /** Messages from the answer's root errors array. */
+  errors?: string[]
+}
+
 export interface MusicDataProvider {
   /** Also the `source` written on every row it gives. */
   readonly name: 'soundcharts' | 'none'
@@ -23,9 +47,16 @@ export interface MusicDataProvider {
   getArtistSeries(providerArtistId: string, metric: ArtistMetric, from: string, to: string): Promise<SeriesPoint[]>
   supportedTrackMetrics(): TrackMetric[]
   supportedArtistMetrics(): ArtistMetric[]
+  /** The calls made since the last time this was asked, then forgotten. Providers without calls give []. */
+  takeCalls?(): ProviderCall[]
+  /**
+   * Asked once when a pull gave no numbers at all: which platform ids the provider holds for the song, so
+   * staff can tell "the id is missing at the provider" from "the provider has no numbers yet".
+   */
+  explainEmpty?(providerTrackId: string): Promise<void>
 }
 
-/** The provider said no: the plan does not include the endpoint (403), or the credentials are wrong (401). */
+/** The provider said no: the plan does not include the endpoint (403), the credentials are wrong (401), or the quota is used up (429). */
 export class MusicProviderRefused extends Error {
   constructor(
     message: string,

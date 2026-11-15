@@ -9,9 +9,11 @@ import {
   matchTrack,
   musicReport,
   NoMusicProvider,
+  pullTrackNow,
   runMusicPulls,
   saveMusicSetup,
   SoundchartsProvider,
+  type PullDiagnostic,
 } from '../src'
 
 const { db, sql } = createDb(process.env.DATABASE_URL!, { max: 2, onnotice: () => {} })
@@ -288,5 +290,110 @@ describe('music report', () => {
     const rep = await musicReport(db, c.id, { audience: 'admin', clientDisplay: { soundcharts: false } })
     expect(rep!.tracks[0]!.sound).toMatchObject({ newSinceLaunch: 30, campaignVideos: 1, outsideCampaign: 29 })
     expect(rep!.tracks[0]!.admin!.soundChecks).toEqual({ matched: 1, different_sound: 1 })
+  })
+})
+
+describe('music pull diagnostic and pull again now (soundcharts-fix)', () => {
+  /** Soundcharts that knows the song but has no Spotify numbers until `filled` is set. */
+  function emptyThenFilled() {
+    const calls: string[] = []
+    let filled = false
+    const http = (async (u: URL) => {
+      const s = String(u)
+      calls.push(s)
+      if (s.includes('/by-isrc/')) return json(fixture('soundcharts-song-by-isrc.json'))
+      if (s.includes('/identifiers')) return json(fixture('soundcharts-song-identifiers-spotify.json'))
+      if (s.includes('/audience/spotify'))
+        return json(fixture(filled ? 'soundcharts-audience-spotify.json' : 'soundcharts-audience-spotify-empty.json'))
+      return json('{}', 404)
+    }) as unknown as typeof fetch
+    return {
+      calls,
+      fill: () => (filled = true),
+      provider: () => new SoundchartsProvider('app', 'key', http, 'https://sc.test'),
+    }
+  }
+
+  async function confirmedSong() {
+    const c = await campaign()
+    const r = await saveMusicSetup(db, staffId, c.id, setup({ launchDate: '2026-10-02' }))
+    if (!r.ok) throw new Error('setup')
+    const f = emptyThenFilled()
+    await matchTrack(db, staffId, r.trackId, f.provider())
+    await confirmTrackMatch(db, staffId, r.trackId)
+    return { c, trackId: r.trackId, f }
+  }
+
+  const runsOf = (trackId: string) =>
+    db
+      .select()
+      .from(tables.musicJobRuns)
+      .where(eq(tables.musicJobRuns.musicTrackId, trackId))
+      .orderBy(tables.musicJobRuns.startedAt)
+
+  it('keeps what Soundcharts answered, checks the ids once when empty, and asks for the history again next day', async () => {
+    const { trackId, f } = await confirmedSong()
+    await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-03T12:00:00Z') })
+    let runs = await runsOf(trackId)
+    const d1 = runs[0]!.diagnostic as unknown as PullDiagnostic
+    expect(d1.window).toEqual({ from: '2026-08-27', to: '2026-10-03', wide: true })
+    expect(d1.calls.map((c) => c.status)).toEqual([200, 200])
+    expect(d1.calls[0]).toMatchObject({ dates: 0 })
+    expect(d1.calls[1]!.identifiers).toEqual(['0bYg9bo50gSsH3LtXe2SQn'])
+    expect(d1.stored).toEqual({})
+    expect(runs[0]!.requestsUsed).toEqual({ soundcharts: 2 })
+
+    // Next day: still nothing stored, so the whole window from before launch is asked for again.
+    f.fill()
+    await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-04T12:00:00Z') })
+    runs = await runsOf(trackId)
+    const d2 = runs[1]!.diagnostic as unknown as PullDiagnostic
+    expect(d2.window).toEqual({ from: '2026-08-27', to: '2026-10-04', wide: true })
+    expect(d2.stored).toEqual({ spotify_streams: 3 })
+    expect(d2.calls).toHaveLength(1)
+
+    // Once numbers are stored, the daily pull asks for the last 8 days only.
+    await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-05T12:00:00Z') })
+    runs = await runsOf(trackId)
+    expect((runs[2]!.diagnostic as unknown as PullDiagnostic).window).toEqual({
+      from: '2026-09-27',
+      to: '2026-10-05',
+      wide: false,
+    })
+  })
+
+  it("pull again now runs even after today's pull, is audited, and waits a minute between clicks", async () => {
+    const { c, trackId, f } = await confirmedSong()
+    const t0 = new Date('2026-10-03T12:00:00Z')
+    await runMusicPulls(db, { provider: f.provider(), now: t0 })
+    // The daily pull already ran today: the hourly job skips the song.
+    const skipped = await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-03T13:00:00Z') })
+    expect(skipped.skipped).toBeGreaterThanOrEqual(1)
+
+    f.fill()
+    const now = new Date('2026-10-03T13:05:00Z')
+    const r = await pullTrackNow(db, staffId, c.id, trackId, { provider: f.provider(), now })
+    expect(r).toMatchObject({ ok: true, result: 'ok' })
+    if (r.ok) expect(r.summary).toContain('Stored 3 days of spotify_streams.')
+    const runs = await runsOf(trackId)
+    expect(runs).toHaveLength(2)
+    expect((runs[1]!.diagnostic as unknown as PullDiagnostic).forced).toBe(true)
+    const audit = await db
+      .select()
+      .from(tables.auditLog)
+      .where(and(eq(tables.auditLog.entityId, trackId), eq(tables.auditLog.action, 'music.pull_requested')))
+    expect(audit).toHaveLength(1)
+
+    const again = await pullTrackNow(db, staffId, c.id, trackId, {
+      provider: f.provider(),
+      now: new Date('2026-10-03T13:05:30Z'),
+    })
+    expect(again).toMatchObject({ ok: false })
+
+    const other = await campaign()
+    expect(await pullTrackNow(db, staffId, other.id, trackId, { provider: f.provider(), now })).toEqual({
+      ok: false,
+      message: 'This song is not on this campaign.',
+    })
   })
 })

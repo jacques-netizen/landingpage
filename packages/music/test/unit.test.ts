@@ -6,6 +6,8 @@ import {
   chartRuns,
   dailyBySource,
   dailyFromCumulative,
+  describeCall,
+  describePull,
   fetchTikTokSoundTotal,
   flowSummary,
   levelChange,
@@ -283,5 +285,99 @@ describe('providers', () => {
       videoCount: 358,
     })
     expect(asked).toBe('https://sc.test/v1/tiktok/song?clipId=7439295283975702544')
+  })
+})
+
+describe('Soundcharts pull diagnostic (soundcharts-fix)', () => {
+  const sc = (handler: (u: URL) => Response) => {
+    const asked: string[] = []
+    const http = (async (u: URL) => {
+      asked.push(String(u))
+      return handler(u)
+    }) as unknown as typeof fetch
+    return { asked, p: new SoundchartsProvider('app', 'key', http, 'https://sc.test') }
+  }
+
+  it('notes status, days, field names and ids of each audience answer', async () => {
+    const { p } = sc(() => json(fixture('soundcharts-audience-spotify.json')))
+    await p.getTrackSeries('11e82612-052b-f4f4-a20c-a0369fe50396', 'spotify_streams', '2026-10-01', '2026-10-03')
+    const [c] = p.takeCalls()
+    expect(c).toMatchObject({
+      status: 200,
+      fields: ['_source', 'errors', 'items', 'page', 'related'],
+      dates: 3,
+      datesWithNumbers: 3,
+      firstDate: '2026-10-01',
+      lastDate: '2026-10-03',
+      total: 3,
+    })
+    expect(c!.identifiers).toEqual(['0bYg9bo50gSsH3LtXe2SQn', '1aaaaaaaaaaaaaaaaaaaaa', '2bbbbbbbbbbbbbbbbbbbbb'])
+    expect(c!.path).toBe(
+      '/api/v2/song/11e82612-052b-f4f4-a20c-a0369fe50396/audience/spotify?startDate=2026-10-01&endDate=2026-10-03&offset=0&limit=100&sort=asc',
+    )
+    // Asked calls are forgotten once taken; no key or header is kept.
+    expect(p.takeCalls()).toEqual([])
+    expect(JSON.stringify(c)).not.toContain('key')
+  })
+
+  it('an empty answer gives no points, says "no days", and the ids check says which Spotify ids are held', async () => {
+    const { p, asked } = sc((u) =>
+      u.pathname.endsWith('/identifiers')
+        ? json(fixture('soundcharts-song-identifiers-spotify.json'))
+        : json(fixture('soundcharts-audience-spotify-empty.json')),
+    )
+    expect(await p.getTrackSeries('u1', 'spotify_streams', '2026-10-01', '2026-10-03')).toEqual([])
+    await p.explainEmpty('u1')
+    const calls = p.takeCalls()
+    expect(calls.map((c) => c.status)).toEqual([200, 200])
+    expect(calls[0]).toMatchObject({ dates: 0, datesWithNumbers: 0, total: 0 })
+    expect(calls[1]!.identifiers).toEqual(['0bYg9bo50gSsH3LtXe2SQn'])
+    expect(new URL(asked[1]!).pathname).toBe('/api/v2/song/u1/identifiers')
+    expect(new URL(asked[1]!).searchParams.get('platform')).toBe('spotify')
+    expect(p.requests).toBe(2)
+    expect(describePull({ provider: 'soundcharts', calls, stored: {} })).toBe(
+      'audience spotify: answered 200, no days, no ids, fields _source, errors, items, page, related. ' +
+        'Spotify ids held: answered 200, ids 0bYg9bo50gSsH3LtXe2SQn, fields _source, errors, items, page. Stored nothing.',
+    )
+  })
+
+  it('a 404 on the audience is kept as "song not found" instead of passing as an empty answer', async () => {
+    const { p } = sc(() => json('{"errors":[{"key":"song","code":404,"message":"Song not found"}]}', 404))
+    expect(await p.getTrackSeries('gone', 'spotify_streams', '2026-10-01', '2026-10-03')).toEqual([])
+    const [c] = p.takeCalls()
+    expect(c).toMatchObject({ status: 404, errors: ['song 404 Song not found'] })
+    expect(describeCall(c!)).toContain('answered 404, song not found')
+  })
+
+  it('messages in the root errors array of a 200 answer are kept', async () => {
+    const body = JSON.parse(fixture('soundcharts-audience-spotify-empty.json'))
+    body.errors = [{ key: 'identifier', code: 0, message: 'No identifier for this platform' }]
+    const { p } = sc(() => json(JSON.stringify(body)))
+    await p.getTrackSeries('u', 'spotify_streams', '2026-10-01', '2026-10-02')
+    expect(p.takeCalls()[0]!.errors).toEqual(['identifier 0 No identifier for this platform'])
+  })
+
+  it('a 429 says the quota is used up', async () => {
+    const { p } = sc(() => json('{"errors":[]}', 429))
+    await expect(p.getTrackSeries('u', 'spotify_streams', '2026-10-01', '2026-10-02')).rejects.toThrow(
+      /429 \(request quota used up\)/,
+    )
+  })
+
+  it('a 410 on the ISRC (blacklisted) falls back to the Spotify id', async () => {
+    const { p, asked } = sc((u) =>
+      u.pathname.includes('/by-isrc/') ? json('{"errors":[]}', 410) : json(fixture('soundcharts-song-by-isrc.json')),
+    )
+    expect((await p.resolveTrack({ isrc: 'USSM19400325', spotifyTrackId: '0bYg9bo50gSsH3LtXe2SQn' }))?.title).toBe(
+      'Test Song',
+    )
+    expect(asked).toHaveLength(2)
+  })
+
+  it('a run from before the diagnostic existed says so', () => {
+    expect(describePull(null)).toBe('No details kept for this run (it ran before details were recorded).')
+    expect(describePull({ provider: 'none', skippedProvider: 'no provider switched on', calls: [], stored: {} })).toBe(
+      'Provider not asked: no provider switched on. Stored nothing.',
+    )
   })
 })

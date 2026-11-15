@@ -18,6 +18,7 @@ import {
   type Row,
   type SoundUse,
 } from './calculations'
+import type { PullDiagnostic } from './pull'
 import { METRIC_LABEL, SOURCE_LINE, type Metric, type Source } from './metrics'
 
 const { musicTracks, musicArtists, musicMetricSnapshots, chartEntries, submissions, musicJobRuns } = tables
@@ -64,7 +65,14 @@ export type TrackReport = {
     tiktokMusicId: string | null
     soundChecks: Record<string, number>
     health: { metric: string; source: string; lastDate: string; updatedAt: string; rows: number }[]
-    runs: { runDate: string; status: string; error: string | null; requestsUsed: Record<string, number> }[]
+    runs: {
+      runDate: string
+      startedAt: string
+      status: string
+      error: string | null
+      requestsUsed: Record<string, number>
+      diagnostic: PullDiagnostic | null
+    }[]
     manual: {
       id: string
       metric: string
@@ -226,9 +234,11 @@ export async function musicReport(
         health: [...health.values()].sort((a, b) => a.metric.localeCompare(b.metric)),
         runs: jobRuns.map((r) => ({
           runDate: r.runDate,
+          startedAt: r.startedAt.toISOString(),
           status: r.status,
           error: r.error,
           requestsUsed: r.requestsUsed,
+          diagnostic: (r.diagnostic as PullDiagnostic | null) ?? null,
         })),
         manual: all
           .filter((r) => r.enteredBy)

@@ -1,0 +1,17 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/identifiers, 200 SongIdentifierCollectionResponse { items: SongIdentifier[] { platformCode, identifier, song: SongLight }, page: OffsetPage, errors } (soundcharts-fix, 15 Nov). Ids are test values. Never seen from the live API.",
+  "items": [
+    {
+      "platformCode": "spotify",
+      "identifier": "0bYg9bo50gSsH3LtXe2SQn",
+      "song": {
+        "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+        "name": "Test Song",
+        "creditName": "Test Artist",
+        "imageUrl": ""
+      }
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 1, "next": null, "previous": null },
+  "errors": []
+}
