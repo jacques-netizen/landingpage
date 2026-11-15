@@ -11,6 +11,8 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-15
 
+- Music tab: show each pull's diagnostic and add "Pull again now" · Requested by: owner · Made by: Claude Code session …T7QHqA · 63f053d
+- Music pull: keep what Soundcharts answered on every run, ask for the history again while nothing is stored · Requested by: owner · Made by: Claude Code session …T7QHqA · 8f805f7
 - Delete the One Billion Dollar Billboard campaign and take back what clippers earned on it · Requested by: owner · Made by: Claude Code session …oZc8T8 · 441484b
 
 ## 2026-11-14
