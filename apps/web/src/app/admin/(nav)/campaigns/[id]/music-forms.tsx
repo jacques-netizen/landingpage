@@ -10,6 +10,7 @@ import {
   confirmMatchAction,
   deleteManualMetricAction,
   matchTrackAction,
+  pullAgainAction,
   saveMusicSetupAction,
   setSoundchartsDisplayAction,
   type MusicFormState,
@@ -271,11 +272,14 @@ export function MatchButtons({
   trackId,
   canFind,
   canConfirm,
+  canPull = false,
 }: {
   campaignId: string
   trackId: string
   canFind: boolean
   canConfirm: boolean
+  /** The match is confirmed: staff may pull the song again at once. */
+  canPull?: boolean
 }) {
   const [state, setState] = useState<MusicFormState>({})
   const [busy, start] = useTransition()
@@ -300,6 +304,16 @@ export function MatchButtons({
             onClick={() => start(async () => setState(await confirmMatchAction(campaignId, trackId)))}
           >
             This is the right song
+          </Button>
+        ) : null}
+        {canPull ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            loading={busy}
+            onClick={() => start(async () => setState(await pullAgainAction(campaignId, trackId)))}
+          >
+            Pull again now
           </Button>
         ) : null}
       </div>

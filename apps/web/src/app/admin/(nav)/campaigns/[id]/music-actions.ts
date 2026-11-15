@@ -9,6 +9,7 @@ import {
   confirmTrackMatch,
   deleteManualMetric,
   matchTrack,
+  pullTrackNow,
   saveMusicSetup,
 } from '@mde/music'
 import { revalidatePath } from 'next/cache'
@@ -86,6 +87,26 @@ export async function confirmMatchAction(campaignId: string, trackId: string): P
   await confirmTrackMatch(db(), viewer.id, trackId)
   revalidatePath(`/admin/campaigns/${campaignId}`)
   return { ok: 'Confirmed. The history from before launch is pulled within the hour.' }
+}
+
+/**
+ * "Pull again now" (soundcharts-fix, 15 Nov, to-do note 449): pulls this song at once instead of waiting
+ * for tomorrow's daily pull, and says what the provider answered. Audited by @mde/music.
+ */
+export async function pullAgainAction(campaignId: string, trackId: string): Promise<MusicFormState> {
+  const viewer = await requireStaff('money', `/admin/campaigns/${campaignId}?tab=music`)
+  const e = env()
+  try {
+    const r = await pullTrackNow(db(), viewer.id, campaignId, trackId, {
+      provider: buildMusicProvider(e),
+      scrapeCreatorsKey: e.DATA_PROVIDER_API_KEY,
+    })
+    revalidatePath(`/admin/campaigns/${campaignId}`)
+    if (!r.ok) return { error: r.message }
+    return r.result === 'ok' ? { ok: `Pulled. ${r.summary}` } : { error: `The pull failed. ${r.summary}` }
+  } catch (err) {
+    return { error: `The pull could not run: ${err instanceof Error ? err.message : String(err)}` }
+  }
 }
 
 export async function addManualMetricAction(

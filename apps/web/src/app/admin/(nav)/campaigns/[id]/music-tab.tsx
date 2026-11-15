@@ -6,6 +6,7 @@ import {
   SOURCE_LABEL,
   SOUND_CHECK_LABEL,
   buildMusicProvider,
+  describePull,
   musicReport,
   providerRequestsThisMonth,
   type FlowBlock,
@@ -225,6 +226,7 @@ function Match({
           trackId={t.id}
           canFind={!t.matchConfirmedAt}
           canConfirm={!!t.providerTrackId && !t.matchConfirmedAt}
+          canPull={!!t.providerTrackId && !!t.matchConfirmedAt}
         />
       ) : null}
     </div>
@@ -395,7 +397,10 @@ function Health({ r, campaignId, canEdit }: { r: TrackReport; campaignId: string
                   .filter(([, v]) => v > 0)
                   .map(([k, v]) => `, ${v} ${sourceName(k)} requests`)
                   .join('')}
-                {run.error ? `. ${run.error}` : ''}
+                {run.error && !run.diagnostic ? `. ${run.error}` : ''}
+                {run.diagnostic ? (
+                  <span className="block text-[12px]">{describePull(run.diagnostic, run.error)}</span>
+                ) : null}
               </li>
             ))}
           </ul>
