@@ -1,0 +1,24 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/artist/{uuid}/streaming/{platform}, 200 StreamingPlotCollectionResponse { related, items: StreamingPlot[] { date, value, cityPlots: CityPlot[], countryPlots: CountryPlot[] }, page: OffsetPage, errors }. The reference page Get local streaming audience (artist) says it gives daily values for Spotify monthly listeners. Values are test values. Never seen from the live API.",
+  "related": { "platform": "spotify" },
+  "items": [
+    { "date": "2026-10-01T00:00:00+00:00", "value": 40000, "cityPlots": [], "countryPlots": [] },
+    {
+      "date": "2026-10-03T00:00:00+00:00",
+      "value": 46000,
+      "cityPlots": [
+        {
+          "date": "2026-10-03T00:00:00+00:00",
+          "value": 9000,
+          "countryName": "Ghana",
+          "countryCode": "GH",
+          "region": "",
+          "cityName": "Accra"
+        }
+      ],
+      "countryPlots": []
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 2, "next": null, "previous": null },
+  "errors": []
+}

@@ -1,0 +1,63 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/charts/ranks/{platform}, 200 RankCollectionResponse3 { related: SongLight, items: Rank3[] { chart: Chart { name, type, slug, platform, frequency, countryCode, countryName, cityName, maxResultsCount, webUrl }, position, positionEvolution, peakPosition, peakDate, entryState, entryDate, rankDate, oldPosition, current, timeOnChart, timeOnChartUnit }, page: OffsetPage, errors }. The Viral - Global chart and slug global-28 are the sandbox dataset page's own; the second item has position 0 (no longer in the chart). Values are test values. Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": ""
+  },
+  "items": [
+    {
+      "chart": {
+        "name": "Viral - Global",
+        "type": "viral",
+        "slug": "global-28",
+        "platform": "spotify",
+        "frequency": "daily",
+        "countryCode": "",
+        "countryName": "",
+        "cityName": "",
+        "maxResultsCount": 50,
+        "webUrl": ""
+      },
+      "position": 31,
+      "positionEvolution": 6,
+      "peakPosition": 31,
+      "peakDate": "2026-10-03T00:00:00+00:00",
+      "entryState": "new",
+      "entryDate": "2026-10-03T00:00:00+00:00",
+      "rankDate": "2026-10-03T00:00:00+00:00",
+      "oldPosition": 37,
+      "current": true,
+      "timeOnChart": 1,
+      "timeOnChartUnit": "day"
+    },
+    {
+      "chart": {
+        "name": "Viral - Ghana",
+        "type": "viral",
+        "slug": "test-gh",
+        "platform": "spotify",
+        "frequency": "daily",
+        "countryCode": "GH",
+        "countryName": "Ghana",
+        "cityName": "",
+        "maxResultsCount": 50,
+        "webUrl": ""
+      },
+      "position": 0,
+      "positionEvolution": 0,
+      "peakPosition": 20,
+      "peakDate": "2026-09-10T00:00:00+00:00",
+      "entryState": "exit",
+      "entryDate": "2026-09-01T00:00:00+00:00",
+      "rankDate": "2026-09-15T00:00:00+00:00",
+      "oldPosition": 44,
+      "current": false,
+      "timeOnChart": 15,
+      "timeOnChartUnit": "day"
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 2, "next": null, "previous": null },
+  "errors": []
+}

@@ -1,0 +1,17 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/audience/{platform} with platform shazam, 200 SongPlotCollectionResponse { related: SongLight, items: AudiencePlot[] { date, plots: Plot[] { identifier, value } }, page: OffsetPage, errors }. Shazam's value is the count (reference page Get audience), read as a running total. Values are test values. Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": ""
+  },
+  "items": [
+    { "date": "2026-09-30T00:00:00+00:00", "plots": [{ "identifier": "1440833098", "value": 5000 }] },
+    { "date": "2026-10-01T00:00:00+00:00", "plots": [{ "identifier": "1440833098", "value": 5100 }] },
+    { "date": "2026-10-02T00:00:00+00:00", "plots": [{ "identifier": "1440833098", "value": 5300 }] },
+    { "date": "2026-10-03T00:00:00+00:00", "plots": [{ "identifier": "1440833098", "value": 5800 }] }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 4, "next": null, "previous": null },
+  "errors": []
+}

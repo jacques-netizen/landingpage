@@ -1,0 +1,52 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2.20/song/{uuid}/playlist/current/{platform}, 200 PositionCollectionResponse2 { related: SongLight, items: Position2[] { playlist: PlaylistLight2 { uuid, name, identifier, platform, countryCode, latestCrawlDate, latestTrackCount, latestSubscriberCount, imageUrl, type }, position, peakPosition, entryDate, exitDate, positionDate, peakPositionDate }, page: OffsetPage, errors }. The New Music Friday uuid and identifier are the sandbox dataset page's own; the rest are test values. Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": ""
+  },
+  "items": [
+    {
+      "playlist": {
+        "uuid": "11e84493-4135-a14e-bca2-a0369fe50396",
+        "name": "New Music Friday",
+        "identifier": "37i9dQZF1DWXJfnUiYjUKT",
+        "platform": "spotify",
+        "countryCode": "US",
+        "latestCrawlDate": "2026-10-03T05:25:01+00:00",
+        "latestTrackCount": 100,
+        "latestSubscriberCount": 60000,
+        "imageUrl": "",
+        "type": "editorial"
+      },
+      "position": 12,
+      "peakPosition": 9,
+      "entryDate": "2026-10-03T00:00:00+00:00",
+      "positionDate": "2026-10-03T00:00:00+00:00",
+      "peakPositionDate": "2026-10-03T00:00:00+00:00"
+    },
+    {
+      "playlist": {
+        "uuid": "bbbbbbbb-0000-0000-0000-000000000002",
+        "name": "Test User List",
+        "identifier": "2bbbbbbbbbbbbbbbbbbbbb",
+        "platform": "spotify",
+        "countryCode": "",
+        "latestCrawlDate": "2026-10-03T05:25:01+00:00",
+        "latestTrackCount": 40,
+        "latestSubscriberCount": 2000,
+        "imageUrl": "",
+        "type": "user"
+      },
+      "position": 3,
+      "peakPosition": 3,
+      "entryDate": "2026-09-20T00:00:00+00:00",
+      "exitDate": "2026-09-28T00:00:00+00:00",
+      "positionDate": "2026-09-27T00:00:00+00:00",
+      "peakPositionDate": "2026-09-21T00:00:00+00:00"
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 2, "next": null, "previous": null },
+  "errors": []
+}

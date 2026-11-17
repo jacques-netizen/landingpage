@@ -15,6 +15,14 @@ export const TRACK_METRICS = [
   'tiktok_sound_video_count',
   'instagram_audio_reel_count',
   'youtube_views',
+  // From Soundcharts (soundcharts-more, 18 Nov). Kept apart from the metrics above because Soundcharts counts
+  // every version of the song, not one sound, one audio or one video.
+  'tiktok_song_video_count',
+  'instagram_song_reel_count',
+  'youtube_song_views',
+  'spotify_playlist_reach',
+  'spotify_editorial_playlist_count',
+  'spotify_editorial_playlist_reach',
 ] as const
 export const ARTIST_METRICS = [
   'spotify_monthly_listeners',
@@ -53,6 +61,12 @@ export const METRIC_LABEL: Record<Metric, string> = {
   tiktok_sound_video_count: 'TikTok videos using the sound',
   instagram_audio_reel_count: 'Instagram Reels using the audio',
   youtube_views: 'YouTube views on the official video',
+  tiktok_song_video_count: 'TikTok videos using the song',
+  instagram_song_reel_count: 'Instagram Reels using the song',
+  youtube_song_views: 'YouTube views of the song',
+  spotify_playlist_reach: 'Spotify playlist followers reached',
+  spotify_editorial_playlist_count: 'Spotify editorial playlists',
+  spotify_editorial_playlist_reach: 'Spotify editorial playlist followers reached',
   spotify_monthly_listeners: 'Spotify monthly listeners',
   spotify_followers: 'Spotify followers',
   tiktok_followers: 'TikTok followers',
@@ -135,5 +149,6 @@ export const FLOW_METRICS: Metric[] = [
   'streams_other',
   'shazam_count',
   'apple_music_plays',
+  'youtube_song_views',
 ]
 export const isFlowMetric = (m: string) => (FLOW_METRICS as string[]).includes(m)

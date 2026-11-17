@@ -337,11 +337,13 @@ describe('music pull diagnostic and pull again now (soundcharts-fix)', () => {
     let runs = await runsOf(trackId)
     const d1 = runs[0]!.diagnostic as unknown as PullDiagnostic
     expect(d1.window).toEqual({ from: '2026-08-27', to: '2026-10-03', wide: true })
-    expect(d1.calls.map((c) => c.status)).toEqual([200, 200])
-    expect(d1.calls[0]).toMatchObject({ dates: 0 })
-    expect(d1.calls[1]!.identifiers).toEqual(['0bYg9bo50gSsH3LtXe2SQn'])
+    // Spotify, then the other numbers (unknown to this fake Soundcharts: 404), then the ids check.
+    const spotify = d1.calls.filter((c) => c.path.includes('/audience/spotify') || c.path.includes('/identifiers'))
+    expect(spotify.map((c) => c.status)).toEqual([200, 200])
+    expect(spotify[0]).toMatchObject({ dates: 0 })
+    expect(spotify[1]!.identifiers).toEqual(['0bYg9bo50gSsH3LtXe2SQn'])
     expect(d1.stored).toEqual({})
-    expect(runs[0]!.requestsUsed).toEqual({ soundcharts: 2 })
+    expect(runs[0]!.requestsUsed).toEqual({ soundcharts: d1.calls.length })
 
     // Next day: still nothing stored, so the whole window from before launch is asked for again.
     f.fill()
@@ -350,7 +352,8 @@ describe('music pull diagnostic and pull again now (soundcharts-fix)', () => {
     const d2 = runs[1]!.diagnostic as unknown as PullDiagnostic
     expect(d2.window).toEqual({ from: '2026-08-27', to: '2026-10-04', wide: true })
     expect(d2.stored).toEqual({ spotify_streams: 3 })
-    expect(d2.calls).toHaveLength(1)
+    // Spotify streams are stored, so the ids check is not asked again.
+    expect(d2.calls.filter((c) => c.path.includes('/identifiers'))).toHaveLength(0)
 
     // Once numbers are stored, the daily pull asks for the last 8 days only.
     await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-05T12:00:00Z') })
@@ -395,5 +398,120 @@ describe('music pull diagnostic and pull again now (soundcharts-fix)', () => {
       ok: false,
       message: 'This song is not on this campaign.',
     })
+  })
+})
+
+describe('more Soundcharts numbers (soundcharts-more)', () => {
+  /** A fake Soundcharts that answers every documented endpoint from the fixtures. */
+  function full() {
+    const calls: string[] = []
+    const http = (async (u: URL) => {
+      const s = String(u)
+      calls.push(s)
+      if (s.includes('/by-isrc/')) return json(fixture('soundcharts-song-by-isrc.json'))
+      if (s.includes('/audience/spotify')) return json(fixture('soundcharts-audience-spotify.json'))
+      if (s.includes('/audience/tiktok')) return json(fixture('soundcharts-audience-tiktok.json'))
+      if (s.includes('/audience/shazam')) return json(fixture('soundcharts-audience-shazam.json'))
+      if (s.includes('/audience/instagram'))
+        return json('{"errors":[{"key":"platform","code":400,"message":"Invalid platform code"}]}', 400)
+      if (s.includes('/playlist/reach/')) return json(fixture('soundcharts-playlist-reach-spotify.json'))
+      if (s.includes('/playlist/current/')) return json(fixture('soundcharts-playlist-entries-spotify.json'))
+      if (s.includes('/charts/ranks/')) return json(fixture('soundcharts-chart-ranks-spotify.json'))
+      if (s.includes('/artist/') && s.includes('/streaming/spotify'))
+        return json(fixture('soundcharts-artist-streaming-spotify.json'))
+      return json('{}', 404)
+    }) as unknown as typeof fetch
+    return { calls, provider: () => new SoundchartsProvider('app', 'key', http, 'https://sc.test') }
+  }
+
+  it('stores every number, playlist and chart, keeps a refused one apart, and builds the attribution view', async () => {
+    const c = await campaign()
+    const r = await saveMusicSetup(db, staffId, c.id, setup({ launchDate: '2026-10-02', baselineDays: '7' }))
+    if (!r.ok) throw new Error('setup')
+    const f = full()
+    await matchTrack(db, staffId, r.trackId, f.provider())
+    await confirmTrackMatch(db, staffId, r.trackId)
+    // A chart place staff typed in for the same chart and day stays as typed.
+    await addChartEntry(db, staffId, {
+      trackId: r.trackId,
+      date: '2026-10-03',
+      chartPlatform: 'spotify',
+      chartName: 'Viral - Global',
+      position: '29',
+      country: '',
+      city: '',
+    })
+
+    await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-03T12:00:00Z') })
+    const [run] = await db.select().from(tables.musicJobRuns).where(eq(tables.musicJobRuns.musicTrackId, r.trackId))
+    expect(run!.status).toBe('ok')
+    const d = run!.diagnostic as unknown as PullDiagnostic
+    expect(d.stored).toMatchObject({
+      spotify_streams: 3,
+      tiktok_song_video_count: 4,
+      shazam_count: 4,
+      spotify_playlist_count: 2,
+      spotify_monthly_listeners: 2,
+      playlist_entries: 2,
+      chart_entries: 1,
+    })
+    expect(run!.error).toContain('instagram_song_reel_count')
+    expect(d.historyFor).toContain('tiktok_song_video_count')
+    // Five audience calls, one reach call for four numbers, playlists, charts, the artist: nine.
+    expect(run!.requestsUsed).toEqual({ soundcharts: 9 })
+
+    const charts = await db.select().from(tables.chartEntries).where(eq(tables.chartEntries.musicTrackId, r.trackId))
+    expect(charts).toHaveLength(1)
+    expect(charts[0]).toMatchObject({ source: 'manual', position: 29 })
+    const playlists = await db
+      .select()
+      .from(tables.musicPlaylistEntries)
+      .where(eq(tables.musicPlaylistEntries.musicTrackId, r.trackId))
+    expect(playlists.map((p) => p.name).sort()).toEqual(['New Music Friday', 'Test User List'])
+
+    // Next day the same answers update rows instead of adding new ones, and only the last 8 days are asked.
+    await runMusicPulls(db, { provider: f.provider(), now: new Date('2026-10-04T12:00:00Z') })
+    const again = await db
+      .select()
+      .from(tables.musicPlaylistEntries)
+      .where(eq(tables.musicPlaylistEntries.musicTrackId, r.trackId))
+    expect(again).toHaveLength(2)
+    const tiktokAsk = f.calls.filter((u) => u.includes('/audience/tiktok')).at(-1)!
+    expect(new URL(tiktokAsk).searchParams.get('startDate')).toBe('2026-09-26')
+    expect(f.calls.filter((u) => u.includes('/playlist/current/')).at(-1)).toContain('currentOnly=1')
+
+    // Staff see every block; the client sees none of it until Soundcharts display is allowed.
+    const admin = await musicReport(db, c.id, { audience: 'admin', clientDisplay: { soundcharts: false } })
+    const t = admin!.tracks[0]!
+    expect(t.attribution.map((b) => b.metric)).toEqual([
+      'tiktok_song_video_count',
+      'shazam_count',
+      'spotify_streams',
+      'spotify_playlist_count',
+      'spotify_editorial_playlist_count',
+      'spotify_playlist_reach',
+      'spotify_editorial_playlist_reach',
+      'spotify_monthly_listeners',
+    ])
+    const tiktok = t.attribution[0]!
+    expect(tiktok.kind).toBe('level')
+    expect(tiktok.before.level).toEqual({ date: '2026-10-01', value: 1010 })
+    expect(tiktok.during.level).toEqual({ date: '2026-10-03', value: 1500 })
+    expect(tiktok.sourceLines).toEqual(['Source: www.soundcharts.com'])
+    const shazam = t.attribution.find((b) => b.metric === 'shazam_count')!
+    expect(shazam.kind).toBe('flow')
+    expect(shazam.before.perDay).toBe(100)
+    expect(shazam.during.perDay).toBe(350)
+    expect(t.playlists).toMatchObject({ onBeforeLaunch: 0, current: 1 })
+    expect(t.playlists!.addedSinceLaunch.map((p) => p.name)).toEqual(['New Music Friday'])
+    expect(t.campaignEnd).toBeNull()
+
+    const hidden = await musicReport(db, c.id, { audience: 'client', clientDisplay: { soundcharts: false } })
+    // Only the typed-in chart place is left for the client.
+    expect(hidden!.tracks[0]!.attribution).toEqual([])
+    expect(hidden!.tracks[0]!.playlists).toBeNull()
+    const shown = await musicReport(db, c.id, { audience: 'client', clientDisplay: { soundcharts: true } })
+    expect(shown!.tracks[0]!.attribution.length).toBe(8)
+    expect(shown!.tracks[0]!.admin).toBeUndefined()
   })
 })

@@ -1,0 +1,32 @@
+{
+  "_source": "Shape from https://developers.soundcharts.com/openapi.json, GET /api/v2/song/{uuid}/playlist/reach/{platform}, 200 PlaylistReachCollectionResponse2 { related: SongLightReleaseDate { uuid, name, creditName, imageUrl, releaseDate }, items: Reach[] { date, playlistCount, playlistReach, playlistEditorialCount, playlistEditorialReach, playlistUserCount, playlistUserReach }, page: OffsetPage, errors }. Values are test values. Never seen from the live API.",
+  "related": {
+    "uuid": "11e82612-052b-f4f4-a20c-a0369fe50396",
+    "name": "Test Song",
+    "creditName": "Test Artist",
+    "imageUrl": "",
+    "releaseDate": "2026-08-01T00:00:00+00:00"
+  },
+  "items": [
+    {
+      "date": "2026-10-01T00:00:00+00:00",
+      "playlistCount": 10,
+      "playlistReach": 20000,
+      "playlistEditorialCount": 0,
+      "playlistEditorialReach": 0,
+      "playlistUserCount": 10,
+      "playlistUserReach": 20000
+    },
+    {
+      "date": "2026-10-03T00:00:00+00:00",
+      "playlistCount": 14,
+      "playlistReach": 95000,
+      "playlistEditorialCount": 1,
+      "playlistEditorialReach": 60000,
+      "playlistUserCount": 13,
+      "playlistUserReach": 35000
+    }
+  ],
+  "page": { "offset": 0, "limit": 100, "total": 2, "next": null, "previous": null },
+  "errors": []
+}

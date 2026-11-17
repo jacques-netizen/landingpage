@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
+  attribution,
   baseline,
   buildMusicProvider,
   chartRuns,
@@ -258,9 +259,20 @@ describe('providers', () => {
       limit: '100',
       sort: 'asc',
     })
-    // Metrics whose platform code is not confirmed are not asked for.
-    expect(await p.getTrackSeries('x', 'shazam_count', '2026-10-01', '2026-10-03')).toEqual([])
-    expect(p.supportedTrackMetrics()).toEqual(['spotify_streams'])
+    // Metrics without a platform code are not asked for (YouTube Shorts has none in the reference).
+    expect(await p.getTrackSeries('x', 'youtube_views', '2026-10-01', '2026-10-03')).toEqual([])
+    expect(p.supportedTrackMetrics()).toEqual([
+      'spotify_streams',
+      'tiktok_song_video_count',
+      'shazam_count',
+      'instagram_song_reel_count',
+      'youtube_song_views',
+      'spotify_playlist_count',
+      'spotify_playlist_reach',
+      'spotify_editorial_playlist_count',
+      'spotify_editorial_playlist_reach',
+    ])
+    expect(p.supportedArtistMetrics()).toEqual(['spotify_monthly_listeners'])
   })
 
   it('Soundcharts: a 403 says the endpoint is not in the plan', async () => {
@@ -379,5 +391,189 @@ describe('Soundcharts pull diagnostic (soundcharts-fix)', () => {
     expect(describePull({ provider: 'none', skippedProvider: 'no provider switched on', calls: [], stored: {} })).toBe(
       'Provider not asked: no provider switched on. Stored nothing.',
     )
+  })
+})
+
+describe('Soundcharts more numbers (soundcharts-more)', () => {
+  const song = '11e82612-052b-f4f4-a20c-a0369fe50396'
+  const sc = (handler: (u: URL) => Response) => {
+    const asked: URL[] = []
+    const http = (async (u: URL) => {
+      asked.push(new URL(String(u)))
+      return handler(new URL(String(u)))
+    }) as unknown as typeof fetch
+    return { asked, p: new SoundchartsProvider('app', 'key', http, 'https://sc.test') }
+  }
+
+  it('reads TikTok videos as a level and Shazams as a running total from the audience endpoint', async () => {
+    const { asked, p } = sc((u) =>
+      json(
+        fixture(
+          u.pathname.endsWith('/tiktok') ? 'soundcharts-audience-tiktok.json' : 'soundcharts-audience-shazam.json',
+        ),
+      ),
+    )
+    const tiktok = await p.getTrackSeries(song, 'tiktok_song_video_count', '2026-09-30', '2026-10-03')
+    expect(tiktok.map((x) => [x.date, x.value, x.isCumulative])).toEqual([
+      ['2026-09-30', 1000, false],
+      ['2026-10-01', 1010, false],
+      ['2026-10-02', 1200, false],
+      ['2026-10-03', 1500, false],
+    ])
+    const shazam = await p.getTrackSeries(song, 'shazam_count', '2026-09-30', '2026-10-03')
+    expect(shazam.every((x) => x.isCumulative)).toBe(true)
+    expect(shazam.at(-1)).toEqual({ date: '2026-10-03', value: 5800, isCumulative: true })
+    expect(asked.map((u) => u.pathname)).toEqual([
+      `/api/v2/song/${song}/audience/tiktok`,
+      `/api/v2/song/${song}/audience/shazam`,
+    ])
+  })
+
+  it('gives four playlist numbers from one playlist reach call', async () => {
+    const { asked, p } = sc(() => json(fixture('soundcharts-playlist-reach-spotify.json')))
+    const count = await p.getTrackSeries(song, 'spotify_playlist_count', '2026-10-01', '2026-10-03')
+    const reach = await p.getTrackSeries(song, 'spotify_playlist_reach', '2026-10-01', '2026-10-03')
+    const ed = await p.getTrackSeries(song, 'spotify_editorial_playlist_count', '2026-10-01', '2026-10-03')
+    const edReach = await p.getTrackSeries(song, 'spotify_editorial_playlist_reach', '2026-10-01', '2026-10-03')
+    expect(count.map((x) => x.value)).toEqual([10, 14])
+    expect(reach.map((x) => x.value)).toEqual([20000, 95000])
+    expect(ed.map((x) => x.value)).toEqual([0, 1])
+    expect(edReach.map((x) => x.value)).toEqual([0, 60000])
+    expect(p.requests).toBe(1)
+    expect(asked[0]!.pathname).toBe(`/api/v2/song/${song}/playlist/reach/spotify`)
+    expect(Object.fromEntries(asked[0]!.searchParams)).toEqual({
+      type: 'all',
+      startDate: '2026-10-01',
+      endDate: '2026-10-03',
+      offset: '0',
+      limit: '100',
+    })
+  })
+
+  it('reads playlist entries, past ones only when asked for the history', async () => {
+    const { asked, p } = sc(() => json(fixture('soundcharts-playlist-entries-spotify.json')))
+    const entries = await p.getPlaylistEntries(song, true)
+    expect(entries[0]).toEqual({
+      platform: 'spotify',
+      playlistId: '11e84493-4135-a14e-bca2-a0369fe50396',
+      playlistIdentifier: '37i9dQZF1DWXJfnUiYjUKT',
+      name: 'New Music Friday',
+      type: 'editorial',
+      country: 'US',
+      followers: 60000,
+      entryDate: '2026-10-03',
+      exitDate: null,
+      position: 12,
+      peakPosition: 9,
+      positionDate: '2026-10-03',
+    })
+    expect(entries[1]).toMatchObject({ country: null, exitDate: '2026-09-28', type: 'user' })
+    expect(asked[0]!.pathname).toBe(`/api/v2.20/song/${song}/playlist/current/spotify`)
+    expect(asked[0]!.searchParams.get('currentOnly')).toBe('0')
+    await p.getPlaylistEntries(song, false)
+    expect(asked[1]!.searchParams.get('currentOnly')).toBe('1')
+  })
+
+  it('reads chart places, leaving out position 0 (no longer in the chart)', async () => {
+    const { asked, p } = sc(() => json(fixture('soundcharts-chart-ranks-spotify.json')))
+    expect(await p.getChartEntries(song, true)).toEqual([
+      {
+        date: '2026-10-03',
+        entryDate: '2026-10-03',
+        chartPlatform: 'spotify',
+        chartName: 'Viral - Global',
+        country: null,
+        city: null,
+        position: 31,
+        previousPosition: 37,
+      },
+    ])
+    expect(asked[0]!.pathname).toBe(`/api/v2/song/${song}/charts/ranks/spotify`)
+    expect(asked[0]!.searchParams.get('currentOnly')).toBe('0')
+  })
+
+  it('reads Spotify monthly listeners for the artist', async () => {
+    const { asked, p } = sc(() => json(fixture('soundcharts-artist-streaming-spotify.json')))
+    expect(await p.getArtistSeries('a1', 'spotify_monthly_listeners', '2026-10-01', '2026-10-03')).toEqual([
+      { date: '2026-10-01', value: 40000, isCumulative: false },
+      { date: '2026-10-03', value: 46000, isCumulative: false },
+    ])
+    expect(asked[0]!.pathname).toBe('/api/v2/artist/a1/streaming/spotify')
+    expect(await p.getArtistSeries('a1', 'spotify_followers', '2026-10-01', '2026-10-03')).toEqual([])
+  })
+
+  it('a 400 (platform code not accepted) is a refusal for that number only, with its own words', async () => {
+    const { p } = sc(() => json('{"errors":[{"key":"platform","code":400,"message":"Invalid platform code"}]}', 400))
+    const e = await p.getTrackSeries(song, 'instagram_song_reel_count', '2026-10-01', '2026-10-03').catch((x) => x)
+    expect(e).toBeInstanceOf(MusicProviderRefused)
+    expect(String(e.message)).toContain('platform code or date not accepted')
+  })
+
+  it('names the new calls in the diagnostic', () => {
+    expect(describeCall({ path: '/api/v2/song/u/playlist/reach/spotify', status: 200 })).toBe(
+      'playlist reach: answered 200',
+    )
+    expect(describeCall({ path: '/api/v2.20/song/u/playlist/current/spotify', status: 403 })).toBe(
+      'playlist entries: answered 403',
+    )
+    expect(describeCall({ path: '/api/v2/song/u/charts/ranks/spotify', status: 200 })).toBe(
+      'chart entries: answered 200',
+    )
+    expect(describeCall({ path: '/api/v2/artist/a/streaming/spotify', status: 200 })).toBe(
+      'artist monthly listeners: answered 200',
+    )
+    expect(describeCall({ path: '/api/v2/song/u/audience/tiktok', status: 400 })).toBe('audience tiktok: answered 400')
+  })
+})
+
+describe('attribution', () => {
+  const d = (date: string, value: number): Day => ({ date, value })
+  it('splits a daily count into before, during and after the campaign', () => {
+    const series = [
+      d('2026-09-29', 10),
+      d('2026-09-30', 10),
+      d('2026-10-01', 20),
+      d('2026-10-02', 30),
+      d('2026-10-03', 40),
+      d('2026-10-04', 15),
+    ]
+    const a = attribution('flow', series, '2026-10-01', 2, '2026-10-02')
+    expect(a.before).toMatchObject({ from: '2026-09-29', to: '2026-09-30', days: 2, perDay: 10 })
+    expect(a.during).toMatchObject({ from: '2026-10-01', to: '2026-10-02', days: 2, perDay: 25 })
+    expect(a.after).toMatchObject({ from: '2026-10-03', to: '2026-10-04', days: 2, perDay: 27.5 })
+    expect(a.series).toHaveLength(6)
+  })
+
+  it('gives a level its value at the end of each window and its change a day; no after while open', () => {
+    const series = [d('2026-09-20', 900), d('2026-10-01', 1000), d('2026-10-02', 1200), d('2026-10-03', 1500)]
+    const a = attribution('level', series, '2026-10-02', 1, null)
+    expect(a.before.level).toEqual(d('2026-10-01', 1000))
+    expect(a.during.level).toEqual(d('2026-10-03', 1500))
+    expect(a.during.perDay).toBe(250)
+    expect(a.after).toBeNull()
+    // The level from before the window is still the "before" value when the window has none.
+    expect(
+      attribution('level', [d('2026-09-20', 900), d('2026-10-03', 1500)], '2026-10-02', 1, null).before.level,
+    ).toEqual(d('2026-09-20', 900))
+  })
+
+  it('keeps the first chart day from the provider, so a chart held before launch stays "before"', () => {
+    const r = chartRuns(
+      [
+        {
+          date: '2026-10-03',
+          entryDate: '2026-09-01',
+          chartPlatform: 'spotify',
+          chartName: 'Viral - Global',
+          country: null,
+          city: null,
+          position: 31,
+          source: 'soundcharts',
+        },
+      ],
+      '2026-10-02',
+    )
+    expect(r.beforeLaunch).toHaveLength(1)
+    expect(r.beforeLaunch[0]!.firstDate).toBe('2026-09-01')
   })
 })

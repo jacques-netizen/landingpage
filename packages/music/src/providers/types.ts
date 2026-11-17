@@ -36,6 +36,36 @@ export type ProviderCall = {
   errors?: string[]
 }
 
+/** A song's place on one playlist (soundcharts-more, 18 Nov). Days are UTC "YYYY-MM-DD". */
+export type PlaylistEntry = {
+  platform: string
+  playlistId: string
+  playlistIdentifier: string | null
+  name: string
+  type: string | null
+  country: string | null
+  followers: number | null
+  entryDate: string
+  exitDate: string | null
+  position: number | null
+  peakPosition: number | null
+  positionDate: string | null
+}
+
+/** A song's place on one chart on one day (soundcharts-more, 18 Nov). */
+export type ChartPoint = {
+  /** The day of this place (the provider's last day on the chart). */
+  date: string
+  /** The first day on the chart, when the provider gives it. */
+  entryDate: string | null
+  chartPlatform: string
+  chartName: string
+  country: string | null
+  city: string | null
+  position: number
+  previousPosition: number | null
+}
+
 export interface MusicDataProvider {
   /** Also the `source` written on every row it gives. */
   readonly name: 'soundcharts' | 'none'
@@ -54,6 +84,10 @@ export interface MusicDataProvider {
    * staff can tell "the id is missing at the provider" from "the provider has no numbers yet".
    */
   explainEmpty?(providerTrackId: string): Promise<void>
+  /** Current and past playlist places. `history` asks for past ones too (first pull only). */
+  getPlaylistEntries?(providerTrackId: string, history: boolean): Promise<PlaylistEntry[]>
+  /** Current and past chart places. `history` asks for past ones too (first pull only). */
+  getChartEntries?(providerTrackId: string, history: boolean): Promise<ChartPoint[]>
 }
 
 /** The provider said no: the plan does not include the endpoint (403), the credentials are wrong (401), or the quota is used up (429). */

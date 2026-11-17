@@ -4,6 +4,8 @@
 import { tables, type DbOrTx } from '@mde/db'
 import { and, desc, eq, inArray, sql } from 'drizzle-orm'
 import {
+  addDays,
+  attribution,
   chartRuns,
   dailyBySource,
   flowSummary,
@@ -11,6 +13,7 @@ import {
   mergeDaily,
   mergeLevels,
   soundUse,
+  type Attribution,
   type ChartRun,
   type Day,
   type FlowSummary,
@@ -19,9 +22,66 @@ import {
   type SoundUse,
 } from './calculations'
 import type { PullDiagnostic } from './pull'
-import { METRIC_LABEL, SOURCE_LINE, type Metric, type Source } from './metrics'
+import { isFlowMetric, METRIC_LABEL, SOURCE_LINE, type Metric, type Source } from './metrics'
 
-const { musicTracks, musicArtists, musicMetricSnapshots, chartEntries, submissions, musicJobRuns } = tables
+const {
+  musicTracks,
+  musicArtists,
+  musicMetricSnapshots,
+  musicPlaylistEntries,
+  chartEntries,
+  submissions,
+  musicJobRuns,
+  campaigns,
+} = tables
+
+/**
+ * The numbers shown day by day against the clip timeline, in the owner's order of importance (18 Nov):
+ * TikTok videos, Shazams, Spotify streams, playlists, Instagram Reels, YouTube, then the artist.
+ */
+export const ATTRIBUTION_METRICS: Metric[] = [
+  'tiktok_song_video_count',
+  'tiktok_sound_video_count',
+  'shazam_count',
+  'spotify_streams',
+  'spotify_playlist_count',
+  'spotify_editorial_playlist_count',
+  'spotify_playlist_reach',
+  'spotify_editorial_playlist_reach',
+  'instagram_song_reel_count',
+  'instagram_audio_reel_count',
+  'youtube_song_views',
+  'youtube_views',
+  'spotify_monthly_listeners',
+  'spotify_followers',
+  'tiktok_followers',
+  'instagram_followers',
+  'youtube_subscribers',
+]
+
+/** One number before, during and after the campaign, with the series behind it. */
+export type AttributionBlock = { metric: Metric; label: string; sources: Source[]; sourceLines: string[] } & Attribution
+
+export type PlaylistRow = {
+  name: string
+  type: string | null
+  country: string | null
+  followers: number | null
+  entryDate: string
+  exitDate: string | null
+  position: number | null
+}
+export type PlaylistSummary = {
+  /** Playlists the song was on the day before launch. */
+  onBeforeLaunch: number
+  /** Playlists the song was added to from launch on, biggest first. */
+  addedSinceLaunch: PlaylistRow[]
+  /** Playlists the song is on now (no exit day). */
+  current: number
+  /** Playlist adds per day, from the start of "before". */
+  addsByDay: Day[]
+  sourceLines: string[]
+}
 
 export type Audience = 'admin' | 'client'
 export type ClientDisplay = { soundcharts: boolean }
@@ -52,6 +112,11 @@ export type TrackReport = {
   following: LevelBlock[]
   sound: (SoundUse & { sourceLines: string[] }) | null
   charts: { sinceLaunch: ChartRun[]; beforeLaunch: ChartRun[]; sourceLines: string[] } | null
+  /** The campaign's last day once it has closed, else null (soundcharts-more). */
+  campaignEnd: string | null
+  /** Each number with data, before launch, while clips went out and after, day by day. */
+  attribution: AttributionBlock[]
+  playlists: PlaylistSummary | null
   /** Staff only. */
   admin?: {
     provider: string | null
@@ -111,6 +176,12 @@ export async function musicReport(
     .orderBy(musicTracks.createdAt)
   if (!tracks.length) return null
   const ok = (s: string) => allowed(s, opts.audience, opts.clientDisplay)
+  const [camp] = await db
+    .select({ status: campaigns.status, endAt: campaigns.endAt })
+    .from(campaigns)
+    .where(eq(campaigns.id, campaignId))
+  const campaignEnd =
+    camp && ['closed', 'cancelled'].includes(camp.status) && camp.endAt ? camp.endAt.toISOString().slice(0, 10) : null
 
   // Sound checks over the campaign's posts the client can see (rejected and removed never count).
   const checks = await db
@@ -164,6 +235,50 @@ export async function musicReport(
       ok(r.source),
     )
     const runs = chartRuns(chartRows, t.launchDate)
+    const attributionBlocks: AttributionBlock[] = []
+    for (const metric of ATTRIBUTION_METRICS) {
+      const rows = of(metric)
+      if (!rows.length) continue
+      const flowKind = isFlowMetric(metric)
+      const merged = flowKind ? mergeDaily(dailyBySource(rows)) : null
+      const levels = flowKind ? null : mergeLevels(rows)
+      const series = merged ? merged.daily : levels!.points
+      const sources = merged ? merged.sources : levels!.sources
+      const a = attribution(flowKind ? 'flow' : 'level', series, t.launchDate, t.baselineDays, campaignEnd)
+      if (!a.series.length) continue
+      attributionBlocks.push({ metric, label: METRIC_LABEL[metric], sources, sourceLines: lines(sources), ...a })
+    }
+    const playlistRows = (
+      await db.select().from(musicPlaylistEntries).where(eq(musicPlaylistEntries.musicTrackId, t.id))
+    ).filter((r) => ok(r.source))
+    let playlists: PlaylistSummary | null = null
+    if (playlistRows.length) {
+      const dayBefore = addDays(t.launchDate, -1)
+      const from = addDays(t.launchDate, -t.baselineDays)
+      const adds = new Map<string, number>()
+      for (const r of playlistRows) if (r.entryDate >= from) adds.set(r.entryDate, (adds.get(r.entryDate) ?? 0) + 1)
+      playlists = {
+        onBeforeLaunch: playlistRows.filter((r) => r.entryDate <= dayBefore && (!r.exitDate || r.exitDate > dayBefore))
+          .length,
+        addedSinceLaunch: playlistRows
+          .filter((r) => r.entryDate >= t.launchDate)
+          .sort((a, b) => (b.followers ?? 0) - (a.followers ?? 0) || a.entryDate.localeCompare(b.entryDate))
+          .map((r) => ({
+            name: r.name,
+            type: r.type,
+            country: r.country,
+            followers: r.followers,
+            entryDate: r.entryDate,
+            exitDate: r.exitDate,
+            position: r.position,
+          })),
+        current: playlistRows.filter((r) => !r.exitDate).length,
+        addsByDay: [...adds.entries()]
+          .map(([date, value]) => ({ date, value }))
+          .sort((a, b) => a.date.localeCompare(b.date)),
+        sourceLines: lines([...new Set(playlistRows.map((r) => r.source as Source))]),
+      }
+    }
     const report: TrackReport = {
       id: t.id,
       title: t.title,
@@ -184,6 +299,9 @@ export async function musicReport(
         runs.sinceLaunch.length || runs.beforeLaunch.length
           ? { ...runs, sourceLines: lines([...new Set(chartRows.map((r) => r.source as Source))]) }
           : null,
+      campaignEnd,
+      attribution: attributionBlocks,
+      playlists,
     }
     // A new release has no "before": the numbers since launch stay, the comparison goes.
     if (newRelease)
@@ -261,7 +379,16 @@ export async function musicReport(
   const tracksOut =
     opts.audience === 'client'
       ? out.filter(
-          (t) => t.streams || t.algorithmic || t.shazams || t.listeners || t.following.length || t.sound || t.charts,
+          (t) =>
+            t.streams ||
+            t.algorithmic ||
+            t.shazams ||
+            t.listeners ||
+            t.following.length ||
+            t.sound ||
+            t.charts ||
+            t.attribution.length ||
+            t.playlists,
         )
       : out
   return tracksOut.length ? { tracks: tracksOut } : null

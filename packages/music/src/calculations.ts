@@ -198,6 +198,8 @@ export type ChartRow = {
   city: string | null
   position: number
   source: string
+  /** The first day on the chart, when the provider gave it. */
+  entryDate?: string | null
 }
 export type ChartRun = {
   chartPlatform: string
@@ -216,6 +218,7 @@ export function chartRuns(rows: ChartRow[], launch: string): { sinceLaunch: Char
   for (const r of [...rows].sort((a, b) => a.date.localeCompare(b.date))) {
     const k = key(r)
     const cur = runs.get(k)
+    const first = r.entryDate && r.entryDate < r.date ? r.entryDate : r.date
     if (!cur)
       runs.set(k, {
         chartPlatform: r.chartPlatform,
@@ -223,14 +226,94 @@ export function chartRuns(rows: ChartRow[], launch: string): { sinceLaunch: Char
         country: r.country,
         city: r.city,
         bestPosition: r.position,
-        firstDate: r.date,
+        firstDate: first,
         source: r.source,
       })
-    else cur.bestPosition = Math.min(cur.bestPosition, r.position)
+    else {
+      cur.bestPosition = Math.min(cur.bestPosition, r.position)
+      if (first < cur.firstDate) cur.firstDate = first
+    }
   }
   const all = [...runs.values()].sort((a, b) => a.bestPosition - b.bestPosition)
   return {
     sinceLaunch: all.filter((r) => r.firstDate >= launch),
     beforeLaunch: all.filter((r) => r.firstDate < launch),
+  }
+}
+
+// ---------- Attribution view (soundcharts-more, owner 18 Nov) ----------
+// Each number before launch, while clips went out and after the campaign closed, day by day, so the report
+// can show what moved and when next to the clip timeline. It never says why.
+
+export type Window = {
+  from: string
+  to: string
+  /** Days in the window that have a value. */
+  days: number
+  /** Flow: the average count a day. Level: the average change a day (from one day to the next). */
+  perDay: number | null
+  /** Level only: the value on the last day of the window that has one. */
+  level: Day | null
+}
+export type Attribution = {
+  kind: 'flow' | 'level'
+  launch: string
+  end: string | null
+  before: Window
+  during: Window
+  /** Only once the campaign has closed. */
+  after: Window | null
+  /** Flow: the count each day. Level: the value each day. From the start of "before". */
+  series: Day[]
+}
+
+/** A level's change from each day to the next, where both days exist. */
+export function levelDeltas(points: Day[]): Day[] {
+  return dailyFromCumulative(points).daily
+}
+
+function windowOf(kind: 'flow' | 'level', series: Day[], from: string, to: string): Window {
+  const inside = series.filter((d) => d.date >= from && d.date <= to)
+  if (kind === 'flow') {
+    const total = inside.reduce((a, d) => a + d.value, 0)
+    return { from, to, days: inside.length, perDay: inside.length ? total / inside.length : null, level: null }
+  }
+  const deltas = levelDeltas(series).filter((d) => d.date >= from && d.date <= to)
+  return {
+    from,
+    to,
+    days: inside.length,
+    perDay: deltas.length ? deltas.reduce((a, d) => a + d.value, 0) / deltas.length : null,
+    level: inside.length ? inside[inside.length - 1]! : null,
+  }
+}
+
+/**
+ * Before: the `baselineDays` days up to the day before launch. During: launch to the campaign's end (or the
+ * latest day). After: the day after the end to the latest day, only when there is an end.
+ */
+export function attribution(
+  kind: 'flow' | 'level',
+  series: Day[],
+  launch: string,
+  baselineDays: number,
+  end: string | null,
+): Attribution {
+  const sorted = [...series].sort((a, b) => a.date.localeCompare(b.date))
+  const from = addDays(launch, -baselineDays)
+  const shown = sorted.filter((d) => d.date >= from)
+  const last = shown.length ? shown[shown.length - 1]!.date : launch
+  const duringTo = end && end < last ? end : last > launch ? last : launch
+  const before = windowOf(kind, sorted, from, addDays(launch, -1))
+  // A level's "before" value is the last one before launch, even when it is older than the window.
+  if (kind === 'level' && !before.level) before.level = [...sorted].reverse().find((d) => d.date < launch) ?? null
+  return {
+    kind,
+    launch,
+    end,
+    before,
+    during: windowOf(kind, sorted, launch, duringTo),
+    after: end && last > end ? windowOf(kind, sorted, addDays(end, 1), last) : null,
+    series: shown,
   }
 }

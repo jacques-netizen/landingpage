@@ -1072,6 +1072,8 @@ export const chartEntries = pgTable(
     city: text('city'),
     position: integer('position').notNull(),
     previousPosition: integer('previous_position'),
+    /** The first day on the chart, when the provider gives it (soundcharts-more, 18 Nov). */
+    entryDate: date('entry_date', { mode: 'string' }),
     source: text('source').notNull(),
     enteredBy: uuid('entered_by').references(() => users.id),
     ...timestamps,
@@ -1081,6 +1083,40 @@ export const chartEntries = pgTable(
       .on(t.musicTrackId, t.date, t.chartPlatform, t.chartName, t.country, t.city)
       .nullsNotDistinct(),
     check('chart_entries_position_check', sql`position > 0`),
+  ],
+)
+
+/**
+ * A song's place on one playlist, as the music data provider reports it (soundcharts-more, 18 Nov). One row
+ * per playlist and entry day, so a song that left and came back has two rows. Updated on every pull.
+ */
+export const musicPlaylistEntries = pgTable(
+  'music_playlist_entries',
+  {
+    id: id(),
+    musicTrackId: uuid('music_track_id')
+      .notNull()
+      .references(() => musicTracks.id),
+    source: text('source').notNull(),
+    platform: text('platform').notNull(),
+    /** The provider's id for the playlist, and the platform's own. */
+    playlistId: text('playlist_id').notNull(),
+    playlistIdentifier: text('playlist_identifier'),
+    name: text('name').notNull(),
+    /** editorial, algorithmic, user and so on, as the provider names it. */
+    type: text('type'),
+    country: text('country'),
+    followers: bigint('followers', { mode: 'number' }),
+    entryDate: date('entry_date', { mode: 'string' }).notNull(),
+    exitDate: date('exit_date', { mode: 'string' }),
+    position: integer('position'),
+    peakPosition: integer('peak_position'),
+    positionDate: date('position_date', { mode: 'string' }),
+    ...timestamps,
+  },
+  (t) => [
+    unique('music_playlist_entries_point').on(t.musicTrackId, t.source, t.platform, t.playlistId, t.entryDate),
+    index('music_playlist_entries_track').on(t.musicTrackId, t.entryDate),
   ],
 )
 

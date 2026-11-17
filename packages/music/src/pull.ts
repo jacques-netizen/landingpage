@@ -11,11 +11,18 @@
 import { tables, writeAudit, type Db } from '@mde/db'
 import { and, desc, eq, gte, inArray, isNull, or, sql } from 'drizzle-orm'
 import { baseline, dailyBySource, mergeDaily, addDays, type Row } from './calculations'
-import type { Source, TrackMetric } from './metrics'
-import { MusicProviderRefused, type MusicDataProvider, type ProviderCall } from './providers'
+import type { ArtistMetric, Source, TrackMetric } from './metrics'
+import {
+  MusicProviderRefused,
+  type ChartPoint,
+  type MusicDataProvider,
+  type PlaylistEntry,
+  type ProviderCall,
+} from './providers'
 import { fetchTikTokSoundTotal } from './scrape-creators-music'
 
-const { musicTracks, musicMetricSnapshots, musicJobRuns, campaigns } = tables
+const { musicTracks, musicArtists, musicMetricSnapshots, musicJobRuns, musicPlaylistEntries, chartEntries, campaigns } =
+  tables
 export const MUSIC_PULL_JOB = 'music-pull'
 const RUNNING_LEASE_MS = 30 * 60_000
 
@@ -38,10 +45,13 @@ export type PullDiagnostic = {
   /** Points written per metric in this run. */
   stored: Record<string, number>
   forced?: boolean
+  /** Numbers asked with their history from before launch on this run (soundcharts-more). */
+  historyFor?: string[]
 }
 
 type Point = {
-  musicTrackId: string
+  musicTrackId: string | null
+  musicArtistId?: string | null
   date: string
   source: Source
   metric: string
@@ -55,7 +65,7 @@ export async function upsertPoints(db: Db, points: Point[]) {
     if (!chunk.length) continue
     await db
       .insert(musicMetricSnapshots)
-      .values(chunk.map((p) => ({ ...p, musicArtistId: null, country: null, city: null })))
+      .values(chunk.map((p) => ({ ...p, musicArtistId: p.musicArtistId ?? null, country: null, city: null })))
       .onConflictDoUpdate({
         target: [
           musicMetricSnapshots.musicTrackId,
@@ -69,6 +79,62 @@ export async function upsertPoints(db: Db, points: Point[]) {
         set: { value: sql`excluded.value`, isCumulative: sql`excluded.is_cumulative`, updatedAt: new Date() },
       })
   }
+}
+
+/** The provider's playlist places for a song, kept as they are now (soundcharts-more). */
+export async function upsertPlaylistEntries(db: Db, trackId: string, source: string, entries: PlaylistEntry[]) {
+  for (let i = 0; i < entries.length; i += 500) {
+    const chunk = entries.slice(i, i + 500)
+    if (!chunk.length) continue
+    await db
+      .insert(musicPlaylistEntries)
+      .values(chunk.map((e) => ({ ...e, musicTrackId: trackId, source })))
+      .onConflictDoUpdate({
+        target: [
+          musicPlaylistEntries.musicTrackId,
+          musicPlaylistEntries.source,
+          musicPlaylistEntries.platform,
+          musicPlaylistEntries.playlistId,
+          musicPlaylistEntries.entryDate,
+        ],
+        set: {
+          name: sql`excluded.name`,
+          type: sql`excluded.type`,
+          country: sql`excluded.country`,
+          followers: sql`excluded.followers`,
+          exitDate: sql`excluded.exit_date`,
+          position: sql`excluded.position`,
+          peakPosition: sql`excluded.peak_position`,
+          positionDate: sql`excluded.position_date`,
+          updatedAt: new Date(),
+        },
+      })
+  }
+}
+
+/** The provider's chart places. A place staff typed in for the same chart and day is never overwritten. */
+export async function upsertProviderCharts(db: Db, trackId: string, source: string, points: ChartPoint[]) {
+  for (const p of points)
+    await db
+      .insert(chartEntries)
+      .values({ ...p, musicTrackId: trackId, source })
+      .onConflictDoUpdate({
+        target: [
+          chartEntries.musicTrackId,
+          chartEntries.date,
+          chartEntries.chartPlatform,
+          chartEntries.chartName,
+          chartEntries.country,
+          chartEntries.city,
+        ],
+        set: {
+          position: p.position,
+          previousPosition: p.previousPosition,
+          entryDate: p.entryDate,
+          updatedAt: new Date(),
+        },
+        setWhere: sql`${chartEntries.source} = ${source}`,
+      })
 }
 
 /** Pulls every open song that has not been pulled today. */
@@ -143,18 +209,25 @@ export async function pullTrack(
           : 'match not confirmed'
   deps.provider.takeCalls?.()
   try {
-    // 1. The provider's history: from before launch while nothing from the provider is stored yet (the
-    //    first run, or every run until the provider has numbers), the last 8 days after that.
+    // 1. The provider's history, per metric: from before launch while nothing of that metric from the
+    //    provider is stored yet (the first run, every run until the provider has numbers, and the first run
+    //    after a metric is added), the last 8 days after that. Asking for more days costs nothing extra up to
+    //    100 days a call (help article 10104246).
     if (providerReady) {
-      const [have] = await db
-        .select({ n: sql<number>`count(*)::int` })
+      const have = await db
+        .selectDistinct({ metric: musicMetricSnapshots.metric })
         .from(musicMetricSnapshots)
         .where(and(eq(musicMetricSnapshots.musicTrackId, t.id), eq(musicMetricSnapshots.source, deps.provider.name)))
-      const wide = backfill || !have?.n
-      const from = wide ? addDays(t.launchDate, -t.baselineDays - 8) : addDays(today, -8)
-      diag.window = { from, to: today, wide }
+      const stored = new Set(have.map((h) => h.metric))
+      const wideFrom = addDays(t.launchDate, -t.baselineDays - 8)
+      const windowFor = (metric: string) => (backfill || !stored.has(metric) ? wideFrom : addDays(today, -8))
+      const main = windowFor('spotify_streams')
+      diag.window = { from: main, to: today, wide: main === wideFrom }
       const points: Point[] = []
+      const wideFor: string[] = []
       for (const metric of deps.provider.supportedTrackMetrics()) {
+        const from = windowFor(metric)
+        if (from === wideFrom) wideFor.push(metric)
         try {
           const series = await deps.provider.getTrackSeries(t.providerTrackId!, metric as TrackMetric, from, today)
           for (const p of series)
@@ -172,10 +245,86 @@ export async function pullTrack(
           else throw e
         }
       }
+      // The song's artist: Spotify monthly listeners, history the same way.
+      const [artist] = t.musicArtistId
+        ? await db.select().from(musicArtists).where(eq(musicArtists.id, t.musicArtistId))
+        : []
+      if (artist?.providerArtistId && artist.provider === deps.provider.name) {
+        const artistHave = await db
+          .selectDistinct({ metric: musicMetricSnapshots.metric })
+          .from(musicMetricSnapshots)
+          .where(
+            and(eq(musicMetricSnapshots.musicArtistId, artist.id), eq(musicMetricSnapshots.source, deps.provider.name)),
+          )
+        const artistStored = new Set(artistHave.map((h) => h.metric))
+        for (const metric of deps.provider.supportedArtistMetrics()) {
+          const from = backfill || !artistStored.has(metric) ? wideFrom : addDays(today, -8)
+          if (from === wideFrom) wideFor.push(metric)
+          try {
+            const series = await deps.provider.getArtistSeries(
+              artist.providerArtistId,
+              metric as ArtistMetric,
+              from,
+              today,
+            )
+            for (const p of series)
+              points.push({
+                musicTrackId: null,
+                musicArtistId: artist.id,
+                date: p.date,
+                source: deps.provider.name as Source,
+                metric,
+                value: p.value,
+                isCumulative: p.isCumulative,
+              })
+          } catch (e) {
+            if (e instanceof MusicProviderRefused) errors.push(`${metric}: ${e.message}`)
+            else throw e
+          }
+        }
+      }
       for (const p of points) diag.stored[p.metric] = (diag.stored[p.metric] ?? 0) + 1
-      // Nothing at all: ask which platform ids the provider holds, so staff can see why.
-      if (!points.length && !errors.length) await deps.provider.explainEmpty?.(t.providerTrackId!)
+      // No Spotify streams: ask which Spotify ids the provider holds, so staff can see why.
+      if (!points.some((p) => p.metric === 'spotify_streams') && !errors.some((e) => e.startsWith('spotify_streams')))
+        await deps.provider.explainEmpty?.(t.providerTrackId!)
       await upsertPoints(db, points)
+
+      // Playlist and chart places: past ones too until some are stored, the current ones after that.
+      if (deps.provider.getPlaylistEntries) {
+        const [anyEntry] = await db
+          .select({ id: musicPlaylistEntries.id })
+          .from(musicPlaylistEntries)
+          .where(and(eq(musicPlaylistEntries.musicTrackId, t.id), eq(musicPlaylistEntries.source, deps.provider.name)))
+          .limit(1)
+        const history = backfill || !anyEntry
+        if (history) wideFor.push('playlist_entries')
+        try {
+          const entries = await deps.provider.getPlaylistEntries(t.providerTrackId!, history)
+          await upsertPlaylistEntries(db, t.id, deps.provider.name, entries)
+          if (entries.length) diag.stored.playlist_entries = entries.length
+        } catch (e) {
+          if (e instanceof MusicProviderRefused) errors.push(`playlist_entries: ${e.message}`)
+          else throw e
+        }
+      }
+      if (deps.provider.getChartEntries) {
+        const [anyChart] = await db
+          .select({ id: chartEntries.id })
+          .from(chartEntries)
+          .where(and(eq(chartEntries.musicTrackId, t.id), eq(chartEntries.source, deps.provider.name)))
+          .limit(1)
+        const history = backfill || !anyChart
+        if (history) wideFor.push('chart_entries')
+        try {
+          const charts = await deps.provider.getChartEntries(t.providerTrackId!, history)
+          await upsertProviderCharts(db, t.id, deps.provider.name, charts)
+          if (charts.length) diag.stored.chart_entries = charts.length
+        } catch (e) {
+          if (e instanceof MusicProviderRefused) errors.push(`chart_entries: ${e.message}`)
+          else throw e
+        }
+      }
+      if (wideFor.length) diag.historyFor = wideFor
     }
     used[deps.provider.name] = deps.provider.requests - startRequests
 
@@ -302,13 +451,21 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? o
 export function describeCall(c: ProviderCall): string {
   const what = c.path.includes('/identifiers')
     ? 'Spotify ids held'
-    : c.path.includes('/audience/')
-      ? `audience ${c.path.split('/audience/')[1]?.split('?')[0] ?? ''}`.trim()
-      : c.path.includes('/by-isrc/')
-        ? 'song by ISRC'
-        : c.path.includes('/by-platform/')
-          ? 'song by Spotify id'
-          : c.path.split('?')[0]!
+    : c.path.includes('/playlist/reach/')
+      ? 'playlist reach'
+      : c.path.includes('/playlist/current/')
+        ? 'playlist entries'
+        : c.path.includes('/charts/ranks/')
+          ? 'chart entries'
+          : c.path.includes('/artist/') && c.path.includes('/streaming/')
+            ? 'artist monthly listeners'
+            : c.path.includes('/audience/')
+              ? `audience ${c.path.split('/audience/')[1]?.split('?')[0] ?? ''}`.trim()
+              : c.path.includes('/by-isrc/')
+                ? 'song by ISRC'
+                : c.path.includes('/by-platform/')
+                  ? 'song by Spotify id'
+                  : c.path.split('?')[0]!
   const parts = [`${what}: answered ${c.status}`]
   if (c.status === 404) parts.push('song not found')
   if (c.dates !== undefined)
@@ -337,6 +494,7 @@ export function describePull(d: PullDiagnostic | null, error: string | null = nu
   if (d.skippedProvider) out.push(`Provider not asked: ${d.skippedProvider}.`)
   if (d.window)
     out.push(`Asked for ${d.window.from} to ${d.window.to}${d.window.wide ? ' (history from before launch)' : ''}.`)
+  if (d.historyFor?.length) out.push(`History from before launch asked for ${d.historyFor.join(', ')}.`)
   for (const c of d.calls) out.push(`${describeCall(c)}.`)
   const stored = Object.entries(d.stored).filter(([, v]) => v > 0)
   out.push(
