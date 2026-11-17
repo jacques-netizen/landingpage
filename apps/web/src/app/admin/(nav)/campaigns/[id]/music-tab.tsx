@@ -9,6 +9,7 @@ import {
   describePull,
   musicReport,
   providerRequestsThisMonth,
+  type AttributionBlock,
   type FlowBlock,
   type LevelBlock,
   type Metric,
@@ -119,6 +120,7 @@ export async function CampaignMusic({
             <div className="flex flex-col gap-6">
               <Match t={t} r={r} campaignId={campaignId} canEdit={canEdit} providerOn={provider.name !== 'none'} />
               {r ? <Figures r={r} /> : null}
+              {r ? <BeforeDuringAfter r={r} /> : null}
               <details>
                 <summary className="cursor-pointer text-[13px] font-semibold">Edit the song and artist</summary>
                 <div className="mt-4">
@@ -340,6 +342,115 @@ function Figures({ r }: { r: TrackReport }) {
             ))}
           </tbody>
         </table>
+      ) : null}
+    </div>
+  )
+}
+
+/** One window's cell: a level's value with its change a day, or a count's average a day. */
+function windowCell(b: AttributionBlock, w: AttributionBlock['before'] | null) {
+  if (!w) return <span className="text-muted">Not closed yet</span>
+  if (b.kind === 'level')
+    return w.level ? (
+      <>
+        {n(w.level.value)} on {day(w.level.date)}
+        <span className="block text-[11px] text-muted">
+          {w.perDay === null ? 'no day to day change' : `${w.perDay >= 0 ? '+' : ''}${n(w.perDay)} a day`}
+        </span>
+      </>
+    ) : (
+      <span className="text-muted">No data</span>
+    )
+  return w.perDay === null ? (
+    <span className="text-muted">No data</span>
+  ) : (
+    <>
+      {n(w.perDay)} a day
+      <span className="block text-[11px] text-muted">{w.days} days</span>
+    </>
+  )
+}
+
+// Before launch, while clips went out and after the campaign closed (owner, 18 Nov: music attribution).
+function BeforeDuringAfter({ r }: { r: TrackReport }) {
+  if (!r.attribution.length && !r.playlists) return null
+  return (
+    <div className="flex flex-col gap-4">
+      {r.attribution.length ? (
+        <div>
+          <h3 className="m-0 mb-2 text-[13px] font-semibold">
+            Before, during and after the campaign
+            <span className="ml-2 font-normal text-muted">
+              Before: the {r.baselineDays} days before {day(r.launchDate)}. During: from launch
+              {r.campaignEnd ? ` to ${day(r.campaignEnd)}` : ' to the latest day'}.
+            </span>
+          </h3>
+          <table className="w-full border-collapse text-[13px]">
+            <thead className="bg-field">
+              <tr>
+                <Th>Number</Th>
+                <Th right>Before</Th>
+                <Th right>During</Th>
+                <Th right>After</Th>
+                <Th>Source</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {r.attribution.map((b) => (
+                <tr key={b.metric} className="border-0 border-t border-solid border-line">
+                  <td className="px-3 py-2">
+                    {b.label}
+                    <span className="block text-[11px] text-muted">
+                      {b.kind === 'level' ? 'total so far' : 'count a day'}, {b.series.length} days stored
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums">{windowCell(b, b.before)}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{windowCell(b, b.during)}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{windowCell(b, b.after)}</td>
+                  <td className="px-3 py-2">{b.sources.map(sourceName).join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+      {r.playlists ? (
+        <div>
+          <h3 className="m-0 mb-2 text-[13px] font-semibold">
+            Spotify playlists
+            <span className="ml-2 font-normal text-muted">
+              On {n(r.playlists.onBeforeLaunch)} the day before launch, on {n(r.playlists.current)} now,{' '}
+              {n(r.playlists.addedSinceLaunch.length)} added since launch
+            </span>
+          </h3>
+          {r.playlists.addedSinceLaunch.length ? (
+            <table className="w-full border-collapse text-[13px]">
+              <thead className="bg-field">
+                <tr>
+                  <Th>Playlist</Th>
+                  <Th>Type</Th>
+                  <Th right>Followers</Th>
+                  <Th>Added</Th>
+                  <Th>Left</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {r.playlists.addedSinceLaunch.slice(0, 50).map((p) => (
+                  <tr key={`${p.name}${p.entryDate}`} className="border-0 border-t border-solid border-line">
+                    <td className="px-3 py-2">
+                      {p.name}
+                      {p.country ? ` (${p.country})` : ''}
+                    </td>
+                    <td className="px-3 py-2">{p.type ?? ''}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{p.followers === null ? '' : n(p.followers)}</td>
+                    <td className="px-3 py-2">{day(p.entryDate)}</td>
+                    <td className="px-3 py-2">{p.exitDate ? day(p.exitDate) : 'Still on it'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : null}
+        </div>
       ) : null}
     </div>
   )
