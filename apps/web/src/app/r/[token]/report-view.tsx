@@ -2080,8 +2080,8 @@ function AttributionChart({ b, clips }: { b: AttributionBlock; clips: ClipDay[] 
         <span>{dayLabel(days[days.length - 1]!)}</span>
       </div>
       <div style={{ paddingTop: 8, fontSize: 14, color: C.muted }}>
-        Line: {b.label}. Bars: clips posted each day. Shaded: from launch
-        {b.end ? ` to ${dateFmt.format(new Date(`${b.end}T00:00:00Z`))}` : ''}.
+        Line: {b.label}. Bars: clips submitted each day. Shaded: from launch
+        {b.end ? ` to ${dateFmt.format(new Date(`${b.end}T00:00:00Z`))}` : ' on'}.
       </div>
     </div>
   )
@@ -2116,7 +2116,7 @@ function attributionSentence(b: AttributionBlock, t: TrackReport) {
     pace.push(`about ${perDay(b.during.perDay)} a day ${b.end ? 'during the campaign' : 'since launch'}`)
   if (b.after?.perDay !== null && b.after?.perDay !== undefined)
     pace.push(`about ${perDay(b.after.perDay)} a day after`)
-  return `${b.label}: ${parts.join(', then ')}.${pace.length ? ` It moved by ${pace.join(', and ')}.` : ''}`
+  return `${b.label}: ${parts.join(', then ')}.${pace.length ? ` It changed by ${pace.join(', and ')}.` : ''}`
 }
 
 function AttributionCard({ b, t, clips }: { b: AttributionBlock; t: TrackReport; clips: ClipDay[] }) {
@@ -2126,7 +2126,9 @@ function AttributionCard({ b, t, clips }: { b: AttributionBlock; t: TrackReport;
     <div style={card}>
       <div style={cardHead}>
         <span style={{ fontWeight: 600 }}>{b.label}</span>
-        <span style={{ fontSize: 17, color: C.muted }}>Before, during{b.after ? ' and after' : ''} the campaign</span>
+        <span style={{ fontSize: 17, color: C.muted }}>
+          {b.after ? 'Before, during and after the campaign' : 'Before and during the campaign'}
+        </span>
       </div>
       <div style={{ padding: '22px 24px 6px', fontSize: 17 }}>{sentence}</div>
       <AttributionChart b={b} clips={clips} />
@@ -2288,7 +2290,7 @@ function MusicSection({ music, clips }: { music: MusicReport; clips: ClipDay[] }
           {t.playlists ? <PlaylistCard p={t.playlists} /> : null}
           {t.attribution.length ? (
             <div style={{ fontSize: 17, color: C.muted }}>
-              Day by day, next to the clips posted: what each number was before launch, while clips went out
+              Day by day, next to the clips submitted: what each number was before launch, while clips went out
               {t.campaignEnd ? ' and after the campaign closed' : ''}.
             </div>
           ) : null}
