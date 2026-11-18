@@ -23,6 +23,9 @@ export const TRACK_METRICS = [
   'spotify_playlist_reach',
   'spotify_editorial_playlist_count',
   'spotify_editorial_playlist_reach',
+  // Shazams so far, as the public Shazam song page shows it (owner 18 Nov: "get the TikTok videos and
+  // Shazams"). A level read on a day, unlike shazam_count, which counts Shazams in a day.
+  'shazam_total',
 ] as const
 export const ARTIST_METRICS = [
   'spotify_monthly_listeners',
@@ -41,10 +44,20 @@ export const SOURCES = [
   'spotify_for_artists_manual',
   'apple_music_for_artists_manual',
   'manual',
+  // Read by staff from the public TikTok sound page and the public Shazam song page (18 Nov), for songs the
+  // provider has no TikTok or Shazam numbers for.
+  'tiktok_page_manual',
+  'shazam_page_manual',
 ] as const
 export type Source = (typeof SOURCES)[number]
 /** Sources staff type in. They win over a provider's number for the same metric, day and place. */
-export const MANUAL_SOURCES: Source[] = ['spotify_for_artists_manual', 'apple_music_for_artists_manual', 'manual']
+export const MANUAL_SOURCES: Source[] = [
+  'spotify_for_artists_manual',
+  'apple_music_for_artists_manual',
+  'manual',
+  'tiktok_page_manual',
+  'shazam_page_manual',
+]
 
 export const METRIC_LABEL: Record<Metric, string> = {
   spotify_streams: 'Spotify streams',
@@ -67,6 +80,7 @@ export const METRIC_LABEL: Record<Metric, string> = {
   spotify_playlist_reach: 'Spotify playlist followers reached',
   spotify_editorial_playlist_count: 'Spotify editorial playlists',
   spotify_editorial_playlist_reach: 'Spotify editorial playlist followers reached',
+  shazam_total: 'Shazams so far',
   spotify_monthly_listeners: 'Spotify monthly listeners',
   spotify_followers: 'Spotify followers',
   tiktok_followers: 'TikTok followers',
@@ -81,6 +95,8 @@ export const SOURCE_LINE: Record<Source, string> = {
   spotify_for_artists_manual: 'Source: Spotify for Artists',
   apple_music_for_artists_manual: 'Source: Apple Music for Artists',
   manual: "Source: entered by Maison d'Élites",
+  tiktok_page_manual: "Source: TikTok public sound page, read by Maison d'Élites",
+  shazam_page_manual: "Source: Shazam public song page (shazam.com), read by Maison d'Élites",
 }
 
 export const SOURCE_LABEL: Record<Source, string> = {
@@ -89,6 +105,8 @@ export const SOURCE_LABEL: Record<Source, string> = {
   spotify_for_artists_manual: 'Spotify for Artists (typed in)',
   apple_music_for_artists_manual: 'Apple Music for Artists (typed in)',
   manual: 'Typed in by staff',
+  tiktok_page_manual: 'TikTok sound page (typed in)',
+  shazam_page_manual: 'Shazam song page (typed in)',
 }
 
 export const CHART_PLATFORMS = ['spotify', 'apple_music', 'shazam', 'youtube', 'tiktok', 'other'] as const
@@ -129,6 +147,9 @@ export const MANUAL_METRICS: { source: Source; metrics: Metric[] }[] = [
       'youtube_subscribers',
     ],
   },
+  // The count each public page shows on the day it was read, typed in with that day.
+  { source: 'tiktok_page_manual', metrics: ['tiktok_sound_video_count'] },
+  { source: 'shazam_page_manual', metrics: ['shazam_total'] },
 ]
 
 export const isArtistMetric = (m: string): m is ArtistMetric => (ARTIST_METRICS as readonly string[]).includes(m)

@@ -43,6 +43,7 @@ export const ATTRIBUTION_METRICS: Metric[] = [
   'tiktok_song_video_count',
   'tiktok_sound_video_count',
   'shazam_count',
+  'shazam_total',
   'spotify_streams',
   'spotify_playlist_count',
   'spotify_editorial_playlist_count',

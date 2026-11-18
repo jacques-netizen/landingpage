@@ -542,4 +542,37 @@ describe('more Soundcharts numbers (soundcharts-more)', () => {
     expect(shown!.tracks[0]!.attribution.length).toBe(8)
     expect(shown!.tracks[0]!.admin).toBeUndefined()
   })
+
+  it('shows TikTok videos and Shazams read from the public pages to the client, with their source', async () => {
+    const c = await campaign()
+    const r = await saveMusicSetup(db, staffId, c.id, setup({ launchDate: '2026-10-16' }))
+    if (!r.ok) throw new Error('setup')
+    const add = async (source: string, metric: string, day: string, value: string) =>
+      expect(
+        await addManualMetric(db, staffId, { trackId: r.trackId, source, metric, periodStart: day, value }),
+      ).toEqual({ ok: true })
+    // Shazams so far is only typed in from the Shazam page; the TikTok count only from the TikTok page.
+    expect(
+      await addManualMetric(db, staffId, {
+        trackId: r.trackId,
+        source: 'tiktok_page_manual',
+        metric: 'shazam_total',
+        periodStart: '2026-11-18',
+        value: '1',
+      }),
+    ).toMatchObject({ ok: false })
+    await add('tiktok_page_manual', 'tiktok_sound_video_count', '2026-11-18', '310')
+    await add('shazam_page_manual', 'shazam_total', '2026-11-18', '15,619')
+
+    const client = await musicReport(db, c.id, { audience: 'client', clientDisplay: { soundcharts: false } })
+    const t = client!.tracks[0]!
+    expect(t.sound!.total).toEqual({ date: '2026-11-18', value: 310 })
+    expect(t.sound!.sourceLines).toEqual(["Source: TikTok public sound page, read by Maison d'Élites"])
+    const shazam = t.attribution.find((b) => b.metric === 'shazam_total')!
+    expect(shazam.kind).toBe('level')
+    expect(shazam.label).toBe('Shazams so far')
+    expect(shazam.during.level).toEqual({ date: '2026-11-18', value: 15619 })
+    expect(shazam.sourceLines).toEqual(["Source: Shazam public song page (shazam.com), read by Maison d'Élites"])
+    expect(t.attribution.map((b) => b.metric)).toEqual(['tiktok_sound_video_count', 'shazam_total'])
+  })
 })
