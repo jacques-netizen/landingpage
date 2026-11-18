@@ -11,6 +11,8 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-18
 
+- Music: type in TikTok videos using the sound and Shazams so far from the public TikTok and Shazam pages, each with its source · Requested by: owner · Made by: Claude Code session …T7QHqA · 3373c80
+- Music pull: a Scrape Creators refusal (402 out of credits) no longer fails the whole run · Requested by: owner · Made by: Claude Code session …T7QHqA · afe1a4a
 - Decisions: more Soundcharts numbers, what is not pulled and why, the request cost, and the before, during and after view · Requested by: owner · Made by: Claude Code session …T7QHqA · 6d72dca
 - Client report: plain wording for the before and during cards, and the bars named as clips submitted each day · Requested by: owner · Made by: Claude Code session …T7QHqA · 8f75f70
 - Client report: each music number day by day next to the clips posted, before, during and after the campaign, and the Spotify playlists added since launch · Requested by: owner · Made by: Claude Code session …T7QHqA · c0b4fe5
