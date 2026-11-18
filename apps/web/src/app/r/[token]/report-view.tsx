@@ -1,7 +1,7 @@
 'use client'
 
 import type { CampaignReport as BaseReport, ReportClip, ReportMode, ReportSort, ReportStatus } from '@mde/campaigns'
-import type { FlowBlock, MusicReport, TrackReport } from '@mde/music'
+import type { AttributionBlock, FlowBlock, MusicReport, PlaylistSummary, TrackReport } from '@mde/music'
 import { formatDollars } from '@mde/money/dollars'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -652,7 +652,7 @@ export function ReportView({
           </div>
         </section>
 
-        {r.music ? <MusicSection music={r.music} /> : null}
+        {r.music ? <MusicSection music={r.music} clips={r.viewsByDay} /> : null}
 
         {/* Submissions */}
         <section id="sec-submissions" aria-label="Submissions" className="flex flex-col gap-[18px]">
@@ -1997,7 +1997,172 @@ function FlowCard({ b, t, what }: { b: FlowBlock; t: TrackReport; what: string }
   )
 }
 
-function MusicSection({ music }: { music: MusicReport }) {
+// ---------- Day by day next to the clips (owner, 18 Nov: music attribution) ----------
+// Each number's line with the clips posted each day as bars under it, launch and close marked. The words
+// say what the number was before, during and after, never that the clips caused it.
+
+type ClipDay = { day: string; views: number; clips: number }
+
+function AttributionChart({ b, clips }: { b: AttributionBlock; clips: ClipDay[] }) {
+  const days = [...new Set([...b.series.map((d) => d.date), ...clips.map((c) => c.day)])]
+    .filter((d) => d >= (b.series[0]?.date ?? d))
+    .sort()
+  if (days.length < 2) return null
+  const x0 = 40
+  const w = 1000 - x0
+  const at = (d: string) => x0 + (days.indexOf(d) / (days.length - 1)) * w
+  const near = (d: string) => days.find((x) => x >= d) ?? days[days.length - 1]!
+  const top = 20
+  const bot = 230
+  const vals = b.series.map((d) => d.value)
+  const maxV = Math.max(1, ...vals)
+  const minV = Math.min(0, ...vals)
+  const y = (v: number) => bot - ((v - minV) / (maxV - minV || 1)) * (bot - top)
+  const line = b.series.length
+    ? `M${b.series.map((d) => `${at(d.date).toFixed(1)} ${y(d.value).toFixed(1)}`).join(' L')}`
+    : ''
+  const shown = clips.filter((c) => days.includes(c.day))
+  const maxC = Math.max(1, ...shown.map((c) => c.clips))
+  const barW = Math.max(2, Math.min(18, (w / days.length) * 0.6))
+  const launchX = at(near(b.launch))
+  const endX = b.end ? at(near(b.end)) : null
+  return (
+    <div style={{ padding: '18px 20px 10px' }}>
+      <svg
+        viewBox="0 0 1000 300"
+        style={{ width: '100%', height: 'auto', display: 'block' }}
+        preserveAspectRatio="none"
+      >
+        <rect
+          x={launchX}
+          y={top - 10}
+          width={(endX ?? 1000) - launchX}
+          height={280 - top}
+          fill="rgba(201,168,92,0.08)"
+        />
+        {shown.map((c) => (
+          <rect
+            key={c.day}
+            x={at(c.day) - barW / 2}
+            y={290 - (c.clips / maxC) * 50}
+            width={barW}
+            height={(c.clips / maxC) * 50}
+            fill={C.line}
+          />
+        ))}
+        {[0, 0.5, 1].map((t) => {
+          const v = minV + t * (maxV - minV)
+          return (
+            <g key={t}>
+              <line x1={x0} x2={1000} y1={y(v)} y2={y(v)} stroke={C.hair} strokeDasharray="4 5" />
+              <text x={0} y={y(v) + 4} fontFamily={mono} fontSize={13} fill={C.muted}>
+                {compact(Math.round(v))}
+              </text>
+            </g>
+          )
+        })}
+        <line x1={launchX} x2={launchX} y1={top - 10} y2={290} stroke={C.dim} strokeDasharray="3 4" />
+        {endX !== null ? (
+          <line x1={endX} x2={endX} y1={top - 10} y2={290} stroke={C.dim} strokeDasharray="3 4" />
+        ) : null}
+        {line ? <path d={line} fill="none" stroke={C.gold} strokeWidth={2.2} strokeLinejoin="round" /> : null}
+      </svg>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: `8px 0 0 ${x0}px`,
+          fontSize: 15,
+          color: C.muted,
+        }}
+      >
+        <span>{dayLabel(days[0]!)}</span>
+        <span>{dayLabel(days[days.length - 1]!)}</span>
+      </div>
+      <div style={{ paddingTop: 8, fontSize: 14, color: C.muted }}>
+        Line: {b.label}. Bars: clips posted each day. Shaded: from launch
+        {b.end ? ` to ${dateFmt.format(new Date(`${b.end}T00:00:00Z`))}` : ''}.
+      </div>
+    </div>
+  )
+}
+
+const on = (d: string) => dateFmt.format(new Date(`${d}T00:00:00Z`))
+const perDay = (v: number) => `${v >= 0 ? '' : 'minus '}${compact(Math.abs(Math.round(v)))}`
+
+function attributionSentence(b: AttributionBlock, t: TrackReport) {
+  const closed = !!b.after
+  if (b.kind === 'flow') {
+    const parts: string[] = []
+    if (b.before.perDay !== null)
+      parts.push(`${perDay(b.before.perDay)} a day in the ${t.baselineDays} days before launch`)
+    if (b.during.perDay !== null)
+      parts.push(`${perDay(b.during.perDay)} a day ${b.end ? 'during the campaign' : 'since launch'}`)
+    if (b.after?.perDay !== null && b.after?.perDay !== undefined)
+      parts.push(`${perDay(b.after.perDay)} a day after it closed`)
+    return parts.length ? `${b.label}: ${parts.join(', ')}.` : null
+  }
+  const parts: string[] = []
+  if (b.before.level) parts.push(`${full(b.before.level.value)} on ${on(b.before.level.date)}, before launch`)
+  if (b.during.level && b.during.level.date !== b.before.level?.date)
+    parts.push(
+      `${full(b.during.level.value)} on ${on(b.during.level.date)}${closed ? ', when the campaign closed' : ''}`,
+    )
+  if (b.after?.level) parts.push(`${full(b.after.level.value)} on ${on(b.after.level.date)}`)
+  if (!parts.length) return null
+  const pace: string[] = []
+  if (b.before.perDay !== null) pace.push(`about ${perDay(b.before.perDay)} a day before launch`)
+  if (b.during.perDay !== null)
+    pace.push(`about ${perDay(b.during.perDay)} a day ${b.end ? 'during the campaign' : 'since launch'}`)
+  if (b.after?.perDay !== null && b.after?.perDay !== undefined)
+    pace.push(`about ${perDay(b.after.perDay)} a day after`)
+  return `${b.label}: ${parts.join(', then ')}.${pace.length ? ` It moved by ${pace.join(', and ')}.` : ''}`
+}
+
+function AttributionCard({ b, t, clips }: { b: AttributionBlock; t: TrackReport; clips: ClipDay[] }) {
+  const sentence = attributionSentence(b, t)
+  if (!sentence) return null
+  return (
+    <div style={card}>
+      <div style={cardHead}>
+        <span style={{ fontWeight: 600 }}>{b.label}</span>
+        <span style={{ fontSize: 17, color: C.muted }}>Before, during{b.after ? ' and after' : ''} the campaign</span>
+      </div>
+      <div style={{ padding: '22px 24px 6px', fontSize: 17 }}>{sentence}</div>
+      <AttributionChart b={b} clips={clips} />
+      <SourceLines lines={b.sourceLines} />
+    </div>
+  )
+}
+
+function PlaylistCard({ p }: { p: PlaylistSummary }) {
+  const added = p.addedSinceLaunch
+  return (
+    <div style={card}>
+      <div style={cardHead}>
+        <span style={{ fontWeight: 600 }}>Spotify playlists</span>
+        <span style={{ fontSize: 17, color: C.muted }}>Added since launch</span>
+      </div>
+      <div style={{ padding: '18px 24px 10px', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 17 }}>
+        <div>
+          On {full(p.onBeforeLaunch)} {p.onBeforeLaunch === 1 ? 'playlist' : 'playlists'} the day before launch, added
+          to {full(added.length)} since launch, on {full(p.current)} now.
+        </div>
+        {added.slice(0, 10).map((e) => (
+          <div key={`${e.name}${e.entryDate}`}>
+            {e.name}
+            {e.followers !== null ? ` (${compact(e.followers)} followers)` : ''}: added {on(e.entryDate)}
+            {e.exitDate ? `, left ${on(e.exitDate)}` : ''}
+          </div>
+        ))}
+        {added.length > 10 ? <div style={{ color: C.muted }}>And {full(added.length - 10)} more.</div> : null}
+      </div>
+      <SourceLines lines={p.sourceLines} />
+    </div>
+  )
+}
+
+function MusicSection({ music, clips }: { music: MusicReport; clips: ClipDay[] }) {
   return (
     <section id="sec-music" aria-label="Music" className="flex flex-col gap-[18px]">
       <div style={sectionTitle}>
@@ -2098,7 +2263,9 @@ function MusicSection({ music }: { music: MusicReport }) {
               <SourceLines lines={t.sound.sourceLines} />
             </div>
           ) : null}
-          {t.shazams ? <FlowCard b={t.shazams} t={t} what="Shazams" /> : null}
+          {t.shazams && !t.attribution.some((b) => b.metric === 'shazam_count') ? (
+            <FlowCard b={t.shazams} t={t} what="Shazams" />
+          ) : null}
           {t.following.length ? (
             <div style={card}>
               <div style={cardHead}>
@@ -2118,6 +2285,16 @@ function MusicSection({ music }: { music: MusicReport }) {
               <SourceLines lines={[...new Set(t.following.flatMap((f) => f.sourceLines))]} />
             </div>
           ) : null}
+          {t.playlists ? <PlaylistCard p={t.playlists} /> : null}
+          {t.attribution.length ? (
+            <div style={{ fontSize: 17, color: C.muted }}>
+              Day by day, next to the clips posted: what each number was before launch, while clips went out
+              {t.campaignEnd ? ' and after the campaign closed' : ''}.
+            </div>
+          ) : null}
+          {t.attribution.map((b) => (
+            <AttributionCard key={b.metric} b={b} t={t} clips={clips} />
+          ))}
         </div>
       ))}
     </section>
