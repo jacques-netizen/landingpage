@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-18
 
+- Music: saving a song again no longer undoes a confirmed match when the provider finds the same song · Requested by: owner · Made by: Claude Code session …T7QHqA · bea1bb9
 - Music: type in TikTok videos using the sound and Shazams so far from the public TikTok and Shazam pages, each with its source · Requested by: owner · Made by: Claude Code session …T7QHqA · 3373c80
 - Music pull: a Scrape Creators refusal (402 out of credits) no longer fails the whole run · Requested by: owner · Made by: Claude Code session …T7QHqA · afe1a4a
 - Decisions: more Soundcharts numbers, what is not pulled and why, the request cost, and the before, during and after view · Requested by: owner · Made by: Claude Code session …T7QHqA · 6d72dca
