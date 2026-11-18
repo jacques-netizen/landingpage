@@ -172,6 +172,9 @@ export async function matchTrack(
   const found = await provider.resolveTrack({ isrc: t.isrc, spotifyTrackId: t.spotifyTrackId })
   if (!found)
     return { ok: false, message: 'The provider does not know this song yet. Check the ISRC and Spotify link.' }
+  // The same song as the one staff already confirmed keeps its confirmation, so saving a song (which asks
+  // the provider again) does not undo it (seen 18 Nov when a TikTok sound link was added).
+  const same = t.provider === provider.name && t.providerTrackId === found.providerTrackId && !!t.matchConfirmedAt
   await db.transaction(async (tx) => {
     await tx
       .update(musicTracks)
@@ -180,8 +183,8 @@ export async function matchTrack(
         providerTrackId: found.providerTrackId,
         providerTitle: found.title,
         providerArtistName: found.artistName,
-        matchConfirmedAt: null,
-        matchConfirmedBy: null,
+        matchConfirmedAt: same ? t.matchConfirmedAt : null,
+        matchConfirmedBy: same ? t.matchConfirmedBy : null,
         isrc: t.isrc ?? found.isrc,
       })
       .where(eq(musicTracks.id, trackId))

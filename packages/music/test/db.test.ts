@@ -96,6 +96,21 @@ describe('music setup', () => {
       .where(and(eq(tables.auditLog.entityId, t!.id), eq(tables.auditLog.action, 'music.track_added')))
     expect(audit).toHaveLength(1)
   })
+
+  it('keeps a confirmed match when the song is saved again with a new sound link', async () => {
+    const c = await campaign()
+    const r = await saveMusicSetup(db, staffId, c.id, setup({ tiktokSoundUrl: '' }))
+    if (!r.ok) throw new Error('setup')
+    const f = fakes()
+    await matchTrack(db, staffId, r.trackId, f.provider())
+    await confirmTrackMatch(db, staffId, r.trackId)
+    const again = await saveMusicSetup(db, staffId, c.id, { ...setup(), trackId: r.trackId })
+    expect(again.ok).toBe(true)
+    await matchTrack(db, staffId, r.trackId, f.provider())
+    const [t] = await db.select().from(tables.musicTracks).where(eq(tables.musicTracks.id, r.trackId))
+    expect(t!.matchConfirmedAt).not.toBeNull()
+    expect(t!.tiktokClipId).toBe('7439295283975702544')
+  })
 })
 
 describe('music pull', () => {
