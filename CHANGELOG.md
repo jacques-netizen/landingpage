@@ -9,6 +9,14 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-18
+
+- Decisions: more Soundcharts numbers, what is not pulled and why, the request cost, and the before, during and after view · Requested by: owner · Made by: Claude Code session …T7QHqA · 6d72dca
+- Client report: plain wording for the before and during cards, and the bars named as clips submitted each day · Requested by: owner · Made by: Claude Code session …T7QHqA · 8f75f70
+- Client report: each music number day by day next to the clips posted, before, during and after the campaign, and the Spotify playlists added since launch · Requested by: owner · Made by: Claude Code session …T7QHqA · c0b4fe5
+- Music tab: each number before, during and after the campaign, and the Spotify playlists the song was added to · Requested by: owner · Made by: Claude Code session …T7QHqA · 9fc8288
+- Music pull: TikTok videos, Shazams, Instagram Reels, YouTube views, playlists, charts and monthly listeners from Soundcharts, with a before, during and after view · Requested by: owner · Made by: Claude Code session …T7QHqA · 07f59a7
+
 ## 2026-11-15
 
 - Music tab: show each pull's diagnostic and add "Pull again now" · Requested by: owner · Made by: Claude Code session …T7QHqA · 63f053d
