@@ -329,14 +329,19 @@ export async function pullTrack(
     used[deps.provider.name] = deps.provider.requests - startRequests
 
     // 2. The exact TikTok sound: videos using it so far (Scrape Creators keeps no history: one a day).
+    //    A refusal (for example 402, out of credits, seen on 17 Nov) is noted and does not fail the run, so
+    //    the provider's numbers above still count as pulled.
     if (deps.scrapeCreatorsKey && t.tiktokClipId) {
+      used.scrapecreators = 1
       const sound = await fetchTikTokSoundTotal(
         deps.scrapeCreatorsKey,
         t.tiktokClipId,
         deps.http,
         deps.scrapeCreatorsBase,
-      )
-      used.scrapecreators = 1
+      ).catch((e: unknown) => {
+        errors.push(`tiktok_sound_video_count: ${e instanceof Error ? e.message : String(e)}`)
+        return null
+      })
       if (sound?.videoCount !== null && sound?.videoCount !== undefined)
         await upsertPoints(db, [
           {

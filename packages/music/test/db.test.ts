@@ -166,6 +166,34 @@ describe('music pull', () => {
     expect(f.calls.every((u) => u.includes('/v1/tiktok/song'))).toBe(true)
     expect(await matchTrack(db, staffId, r.trackId, new NoMusicProvider())).toMatchObject({ ok: false })
   })
+
+  it('keeps the run when Scrape Creators refuses (402 out of credits), and says why', async () => {
+    const c = await campaign()
+    const r = await saveMusicSetup(db, staffId, c.id, setup())
+    if (!r.ok) throw new Error('setup')
+    const f = fakes()
+    await matchTrack(db, staffId, r.trackId, f.provider())
+    await confirmTrackMatch(db, staffId, r.trackId)
+    const http = (async (u: URL) =>
+      String(u).includes('/v1/tiktok/song')
+        ? json('{"success":false,"message":"Out of credits"}', 402)
+        : f.http(u)) as unknown as typeof fetch
+    await runMusicPulls(db, {
+      provider: new SoundchartsProvider('app', 'key', http, 'https://sc.test'),
+      scrapeCreatorsKey: 'k',
+      http,
+      scrapeCreatorsBase: 'https://sc.test',
+      now: new Date('2026-10-03T12:00:00Z'),
+    })
+    const [run] = await db.select().from(tables.musicJobRuns).where(eq(tables.musicJobRuns.musicTrackId, r.trackId))
+    expect(run!.status).toBe('ok')
+    expect(run!.error).toContain('tiktok_sound_video_count: Scrape Creators /v1/tiktok/song returned 402')
+    const rows = await db
+      .select()
+      .from(tables.musicMetricSnapshots)
+      .where(eq(tables.musicMetricSnapshots.musicTrackId, r.trackId))
+    expect(rows.filter((x) => x.metric === 'spotify_streams').length).toBeGreaterThan(0)
+  })
 })
 
 describe('music report', () => {
