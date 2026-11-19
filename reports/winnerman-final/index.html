@@ -2,511 +2,427 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>Davido x Winner Man &middot; End of Campaign Report &middot; Maison d'&Eacute;lites</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Davido X Winnerman-Audio Campaign Report | Maison d'Élites</title>
+<meta name="description" content="Campaign performance on Maison d'Élites">
+<meta property="og:title" content="Davido X Winnerman-Audio Campaign Report">
+<meta property="og:description" content="Campaign performance on Maison d'Élites">
+<meta property="og:type" content="website">
+<link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/eb-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  :root{
-    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
-    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
-    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
-    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
-    --pad:clamp(1rem,6vw,6.5rem);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  ::selection{background:var(--gold);color:var(--bg)}
-  img{display:block;max-width:100%}
-  button{font:inherit;color:inherit}
-  a{color:inherit}
-  .num{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.035em;font-variant-numeric:tabular-nums}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:400 800;font-display:swap;src:url(fonts/archivo.woff2) format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:400 500;font-display:swap;src:url(fonts/eb-garamond.woff2) format('woff2')}
+@font-face{font-family:'Geist Mono';font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/geist-mono.woff2) format('woff2')}
+:root{--page:#F2EEE6;--card:#FAF8F3;--line:#E0D6C6;--hair:#E8E1D3;--ink:#1A1510;--muted:#8A8378;--dim:#5F5950;--gold:#C9A85C;
+  --serif:'EB Garamond',Georgia,serif;--mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;--ease:200ms ease-out}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;overflow-x:clip}
+body{background:var(--page);color:var(--ink);font-family:Archivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:normal}
+img{display:block}
+a{color:inherit}
+button{font:inherit}
+.mono{font-family:var(--mono)}.mut{color:var(--muted)}.r{text-align:right}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;justify-self:end}
+.av{border-radius:50%;flex:none;display:inline-block}
+.who{display:flex;align-items:center;gap:10px;min-width:0}
+.tr{transition:color var(--ease),background-color var(--ease),border-color var(--ease),box-shadow var(--ease),transform var(--ease),opacity var(--ease)}
 
-  .section{padding:clamp(4rem,10vh,7rem) var(--pad);position:relative}
-  .wrap{max-width:1120px;margin:0 auto}
-  .alt{background:var(--panel)}
-  .shead{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:clamp(1rem,4vw,3.5rem);border-top:1px solid var(--hair);padding-top:1.4rem}
-  .shead h2{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem;letter-spacing:-0.005em;color:var(--gold-soft);line-height:1.3}
-  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.8rem,4vw,3.1rem);line-height:1.1;letter-spacing:-0.012em;max-width:24ch}
-  .body{font-size:clamp(1.05rem,1.45vw,1.18rem);color:var(--mute);max-width:62ch;line-height:1.7;margin-top:1.3rem}
-  .body b{color:var(--text);font-weight:500}
-  .body a{color:var(--gold-soft);text-decoration-color:var(--hair);text-underline-offset:3px}
-  .indent{margin-left:calc(min(15rem,100%) + clamp(1rem,4vw,3.5rem))}
-  .src{font-size:0.95rem;color:var(--dim);margin-top:2rem;max-width:70ch;line-height:1.55}
-  .src a{color:var(--mute)}
+.shell{display:grid;min-height:100vh;grid-template-columns:260px minmax(0,1fr)}
+aside{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:40px 36px;border-right:1px solid var(--line);background:var(--page)}
+aside .logo{height:24px;width:auto;object-fit:contain;object-position:left}
+nav{margin:auto 0;display:flex;flex-direction:column;gap:8px}
+nav button{display:flex;align-items:center;gap:12px;border:0;background:transparent;padding:8px 0;text-align:left;white-space:nowrap;cursor:pointer;font-size:17px;color:var(--muted);font-weight:400;transition:color var(--ease)}
+nav button:hover{color:var(--ink)}
+nav button[aria-current]{color:var(--ink);font-weight:500}
+nav .bar{width:12px;height:2px;background:var(--gold);opacity:0;transform:scaleX(.4);transition:opacity var(--ease),transform var(--ease)}
+nav button[aria-current] .bar{opacity:1;transform:scaleX(1)}
+.shared{font:500 11px var(--mono);letter-spacing:.18em;color:var(--muted)}
+.shared div{margin-top:8px;letter-spacing:0;font-size:11px}
 
-  .rv{opacity:0;transform:translateY(24px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
-  .rv.in{opacity:1;transform:none}
-  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+main{display:flex;flex-direction:column;gap:64px;padding:48px 56px 140px;min-width:0}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:40px}
+#sec-campaign{gap:28px}
+.card{border-radius:14px;border:1px solid var(--line);background:var(--card)}
+.lift{transition:transform var(--ease),box-shadow var(--ease)}
+.lift:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(26,21,16,.06)}
+.lift-s{transition:box-shadow var(--ease)}.lift-s:hover{box-shadow:0 12px 32px rgba(26,21,16,.06)}
+.ch{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 24px;border-bottom:1px solid var(--line);font-size:16px}
+.ch b{font-weight:600}.ch .mut{font-size:17px}
+.st{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:.08em}
+.lead{font-size:17px;color:var(--muted)}.lead b{color:var(--ink);font-weight:600}
+.src{padding:0 24px 18px;font-size:14px;color:var(--muted)}
+.txt{padding:22px 24px 6px;font-size:17px}
 
-  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
-  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
-  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
-  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
-  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.72rem;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
-  #dots a:hover span{opacity:1}
-  @media(max-width:1080px){#dots{display:none}}
+/* campaign head */
+.head{display:flex;flex-wrap:wrap;align-items:flex-start;gap:32px}
+.head-l{min-width:0;flex:1 1 360px}
+.brand{display:flex;align-items:center;gap:10px;font-size:18px}
+.brand img{width:30px;height:30px;border-radius:8px;object-fit:cover;border:1px solid var(--line)}
+.brand b{font-weight:600}
+h1{margin:22px 0 0;font:400 clamp(36px,5vw,56px)/1.05 var(--serif);letter-spacing:-.01em;text-wrap:balance}
+.dates{margin-top:18px;display:flex;align-items:center;gap:10px;font-size:17px;color:var(--muted)}
+.pill{height:30px;padding:0 12px;border-radius:8px;background:var(--hair);color:var(--ink);display:flex;align-items:center;font-size:16px}
+.poster{position:relative;flex:0 1 440px;width:100%;max-width:440px;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--line);overflow:hidden;background:var(--ink)}
+.poster img{position:absolute;inset:0;width:100%;height:100%}
+.poster .bg{object-fit:cover;filter:blur(24px) brightness(.8);transform:scale(1.2)}
+.poster .fg{object-fit:contain}
+.rule{height:1px;background:var(--line)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px}
+.kpi{padding:26px 24px}
+.kpi .v{font:400 40px/1 var(--serif)}
+.kpi .l{margin-top:16px;display:flex;align-items:center;gap:8px;font-size:17px;color:var(--muted)}
+.budget{padding:22px 24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.bk{font-size:15px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.bv{margin-top:8px;font:400 28px var(--serif)}
+.meter{grid-column:1/-1;height:6px;border-radius:3px;background:var(--hair)}
+.meter div{height:100%;border-radius:3px;background:var(--gold)}
 
-  /* hero */
-  .hero{min-height:92svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.6rem,4vw,3rem) var(--pad);
-    background:radial-gradient(ellipse 60% 55% at 85% 60%,rgba(184,148,79,.13),transparent 70%),var(--bg)}
-  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
-  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
-  .mark b{color:var(--gold-soft);font-weight:500}
-  .date{font-size:1.02rem;color:var(--mute)}
-  .hero-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,0.75fr);gap:2.5rem;align-items:end;padding:3rem 0 2rem}
-  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3rem,9vw,7.6rem);line-height:0.9;text-transform:uppercase}
-  .hero h1 em{font-style:normal;color:var(--gold-light)}
-  .hero .kind{display:block;font-family:'EB Garamond',serif;font-weight:400;text-transform:none;letter-spacing:-0.01em;font-size:clamp(1.5rem,3vw,2.3rem);color:var(--gold-soft);margin-top:1.1rem;line-height:1.1}
-  .hero-sub{font-size:clamp(1.1rem,1.9vw,1.32rem);color:var(--text);opacity:.88;margin-top:1.8rem;max-width:44ch;line-height:1.5}
-  .hero-sub b{color:var(--gold-soft);font-weight:500}
-  .hero-fig{border-left:1px solid var(--hair);padding-left:clamp(1.2rem,3vw,2.2rem)}
-  .hero-fig .num{display:block;font-size:clamp(4rem,11vw,8.6rem);line-height:0.85;color:var(--gold-soft)}
-  .hero-fig p{font-size:1.08rem;color:var(--mute);margin-top:0.9rem;max-width:22ch;line-height:1.45}
-  .hero-bot{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:1rem;color:var(--mute);border-top:1px solid var(--hair-soft);padding-top:1rem}
+/* charts */
+.la{padding:22px 20px 14px}
+.la svg{width:100%;height:auto;display:block}
+.la-x{display:flex;justify-content:space-between;padding-top:10px;font-size:15px;color:var(--muted)}
+.figs{padding:22px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:24px}
 
-  /* figure rows */
-  .figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:3rem;border-top:1px solid var(--hair-soft)}
-  .fig{padding:1.5rem 1.4rem 0.4rem 0;border-right:1px solid var(--hair-soft);margin-right:1.4rem}
-  .fig:last-child{border-right:0;margin-right:0}
-  .fig .num{font-size:clamp(2.6rem,6vw,4.4rem);line-height:0.95;color:var(--gold-soft);display:block}
-  .fig p{font-size:1.05rem;color:var(--mute);margin-top:0.6rem;line-height:1.4}
-  .budget{margin-top:2.6rem;max-width:760px}
-  .budget .bt{display:flex;justify-content:space-between;gap:1rem;font-size:1.05rem;color:var(--mute)}
-  .budget .bt b{color:var(--text);font-weight:500}
-  .bar{height:2px;background:var(--panel-3);margin-top:0.7rem;position:relative}
-  .bar i{position:absolute;left:0;top:-1px;height:4px;width:0;background:var(--gold-soft);transition:width 1.8s cubic-bezier(.2,.7,.2,1)}
+/* donuts */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:18px}
+.dn-h{padding:18px 24px;border-bottom:1px solid var(--line);font-weight:600;font-size:16px}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.split-l{border-right:1px solid var(--line)}
+.dn-r{display:grid;grid-template-columns:minmax(0,1fr) 64px 70px 14px;gap:10px;align-items:center;padding:0 24px;height:80px;border-bottom:1px solid var(--hair);font-size:16px}
+.dn-c{display:flex;align-items:center;justify-content:center;padding:24px;position:relative}
+.dn-c svg{width:100%;max-width:200px;height:auto;transform:rotate(-90deg)}
+.dn-t{position:absolute;font:400 36px var(--serif)}
+.note{font-size:15px;line-height:1.5;color:var(--muted)}
 
-  /* platforms */
-  .plat{margin-top:3rem}
-  .prow{display:grid;grid-template-columns:minmax(0,11rem) minmax(0,1fr) minmax(0,7.5rem);gap:1.2rem;align-items:center;padding:1.15rem 0;border-top:1px solid var(--hair-soft)}
-  .prow:last-child{border-bottom:1px solid var(--hair-soft)}
-  .prow .pn{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem}
-  .prow .pn small{display:block;font-family:'EB Garamond',serif;font-weight:400;font-size:0.98rem;color:var(--mute);margin-top:0.15rem}
-  .prow .pt{height:10px;background:var(--panel-3);position:relative}
-  .prow .pt i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
-  .prow .pv{text-align:right}
-  .prow .pv .num{font-size:1.35rem;color:var(--gold-soft);display:block;line-height:1.1}
-  .prow .pv small{font-size:0.98rem;color:var(--mute)}
+/* submissions */
+.subs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.sc{display:grid;grid-template-columns:176px minmax(0,1fr);overflow:hidden}
+.lift.sc:hover{box-shadow:0 14px 36px rgba(26,21,16,.08)}
+.sc-f{margin:10px 0 10px 10px}
+.sc-b{display:flex;flex-direction:column;padding:4px 16px 14px;min-width:0}
+.sc-r{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--hair);font-size:16px;gap:8px}
+.sc-l{display:flex;align-items:center;gap:8px;color:var(--dim)}
+.sc-v{font-size:15px;text-align:right;min-width:0}
+.sc-foot{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);gap:8px}
+.sc-foot .who{gap:8px}
+.dimlink{flex:none;color:var(--dim);text-decoration:none;transition:color var(--ease)}.dimlink:hover{color:var(--ink)}
+.bar-card{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 22px;font-size:16px}
+.fr{position:relative;display:block;width:100%;aspect-ratio:9/16;overflow:hidden;background:var(--ink);border:0;padding:0;cursor:pointer}
+.fr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform var(--ease)}
+.fr:hover img{transform:scale(1.03)}
+.fr:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(26,21,16,0) 55%,rgba(26,21,16,.45) 100%)}
+.pl-b{border-radius:50%;background:rgba(26,21,16,.55);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;transition:transform var(--ease)}
+.fr:hover .pl-b{transform:scale(1.1)}
 
-  .countries{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,4.5rem);margin-top:3.4rem}
-  .cpost h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem;color:var(--text)}
-  .cpost .cmeta{font-size:1rem;color:var(--mute);margin-top:0.2rem}
-  .crow{display:grid;grid-template-columns:minmax(0,9.5rem) minmax(0,1fr) 3.6rem;gap:0.9rem;align-items:center;padding:0.62rem 0;border-top:1px solid var(--hair-soft);font-size:1.06rem}
-  .crow:first-of-type{margin-top:1rem}
-  .crow .ct{height:6px;background:var(--panel-3);position:relative}
-  .crow .ct i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--gold-soft);transition:width 1.3s cubic-bezier(.2,.7,.2,1)}
-  .crow .cp{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.92rem;text-align:right;font-variant-numeric:tabular-nums}
-  .crow.lead{color:var(--gold-soft)}
+/* spend, settings */
+.tot{display:flex;justify-content:space-between;padding:20px 24px;font-size:16px}
+.tot b{font-family:var(--mono);font-weight:600}
+.set-box{margin:24px;border:1px solid var(--hair);border-radius:10px;overflow:hidden}
+.set{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:16px;align-items:center;padding:0 28px;height:60px;border-top:1px solid var(--hair);font-size:16px}
+.set.hd{height:auto;padding:14px 28px;color:var(--muted);background:#F4F0E7;border-top:0}
 
-  /* top clips */
-  .wall{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0.9rem;margin-top:3rem}
-  .vtile{min-width:0}
-  .vt-media{position:relative;aspect-ratio:4/5;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;border:1px solid var(--hair-soft);transition:border-color .4s}
-  .vtile:hover .vt-media{border-color:var(--hair)}
-  .vt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
-  .vtile:hover .vt-media img{transform:scale(1.04)}
-    .vt-media.plain{background:linear-gradient(160deg,var(--panel-3),var(--bg))}
-  .vt-media.plain .pl-big{position:absolute;left:0.9rem;right:0.9rem;top:1rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.4rem,2.4vw,2rem);letter-spacing:-0.03em;color:var(--gold-soft);line-height:1}
-  .vt-play{position:absolute;left:50%;top:45%;z-index:3;width:50px;height:50px;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.4);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.4);transition:transform .4s,background .4s,opacity .4s}
-  .vt-play > span{width:0;height:0;margin-left:4px;border-left:14px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent}
-  .vtile:hover .vt-play{transform:translate(-50%,-50%) scale(1.08);background:rgba(184,148,79,.9)}
-  .vt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s;background:#fff}
-  .vtile.loading .vt-play > span{border:2px solid rgba(255,255,255,.3);border-top-color:#fff;width:20px;height:20px;margin:0;border-radius:50%;animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .vtile.playing iframe{opacity:1}
-  .vtile.playing .vt-play{opacity:0;pointer-events:none}
-  .vt-cap{font-size:0.98rem;color:var(--mute);margin-top:0.55rem;line-height:1.35}
-  .vt-cap .num{font-size:1.3rem;color:var(--gold-soft)}
-  .vt-cap b{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text)}
-  @media(max-width:1020px){.wall{grid-template-columns:repeat(3,minmax(0,1fr))}}
-  @media(max-width:700px){.wall{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);gap:0.8rem;margin-left:calc(-1 * var(--pad));margin-right:calc(-1 * var(--pad));padding:0 var(--pad) 0.5rem;scrollbar-width:none}.wall::-webkit-scrollbar{display:none}.wall .vtile{flex:0 0 62%;scroll-snap-align:start}}
+/* clips */
+.ct-top{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line);font-size:16px}
+.ct-top b{font-weight:600}
+.seg{display:flex;background:#EDE7DA;border-radius:8px;padding:3px}
+.seg span{padding:7px 12px;border-radius:6px;background:#fff;color:var(--ink);font-size:16px}
+.ct-scroll{overflow-x:auto}
+.ct{min-width:820px}
+.clip{display:grid;grid-template-columns:170px 100px minmax(200px,1fr) 150px 90px 80px;gap:12px;padding:14px 24px;font-size:16px;color:var(--muted);border-bottom:1px solid var(--line)}
+.clip.ct-row{align-items:center;padding:16px 24px;border-bottom:1px solid var(--hair);color:var(--ink);transition:background-color var(--ease)}
+.clip.ct-row:hover{background:#F4F0E7}
+.ct-p{color:var(--dim);display:flex;align-items:center;gap:6px}
+.ct-post{display:flex;align-items:center;gap:16px;min-width:0}
+.ct-f{width:60px;flex:none;transition:transform var(--ease)}.ct-f:hover{transform:scale(1.03)}
+.ct-post a{color:var(--dim);font-size:15px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-decoration:none;word-break:break-all;transition:color var(--ease)}
+.ct-post a:hover{color:var(--ink)}
+.ct-d{color:var(--dim);font-size:15px}
+.ver{margin-left:6px;padding:1px 6px;border-radius:5px;background:rgba(47,125,79,.12);color:#2F7D4F;font-family:Archivo,system-ui,sans-serif;font-size:10px;font-weight:600;vertical-align:middle}
+.ct-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 24px;font-size:16px;color:var(--muted)}
+.ct-foot b{color:var(--ink);font-weight:600}
 
-  .sortbar{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-top:3.2rem}
-  .sortbar h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem}
-  .seg{display:inline-flex;gap:1.2rem}
-  .seg button{background:none;border:0;cursor:pointer;font-family:'EB Garamond',serif;font-size:1.08rem;color:var(--mute);padding:0.2rem 0;border-bottom:1px solid transparent;transition:.3s}
-  .seg button.on{color:var(--gold-soft);border-bottom-color:var(--gold-soft)}
-  .clips{margin-top:0.9rem}
-  .clip{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.6fr) minmax(0,6.5rem) minmax(0,4.5rem);gap:1.2rem;align-items:center;padding:1rem 0;border-top:1px solid var(--hair-soft)}
-  .clip:last-child{border-bottom:1px solid var(--hair-soft)}
-  .clip .who b{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.98rem}
-  .clip .who small{font-size:0.98rem;color:var(--mute)}
-  .clip .vt{display:flex;justify-content:space-between;gap:0.8rem;font-size:1rem;color:var(--mute)}
-  .clip .vt b{font-family:'Archivo',sans-serif;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;font-size:0.98rem}
-  .clip .tr{height:4px;background:var(--panel-3);margin-top:0.45rem;position:relative}
-  .clip .tr i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--gold-soft);transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
-  .clip .lk{text-align:right}
-  .clip .lk b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;color:var(--gold-soft)}
-  .clip .lk small{font-size:0.95rem;color:var(--mute)}
-  .clip .go{justify-self:end;font-size:1rem;color:var(--gold-soft);text-decoration:none;border-bottom:1px solid var(--hair)}
-  .clip .go:hover{border-bottom-color:var(--gold-soft)}
+/* player */
+.ov{position:fixed;inset:0;z-index:100;background:rgba(26,21,16,.78);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;animation:fi .2s ease-out}
+.ov[hidden]{display:none}
+.ov-in{width:min(92vw,380px);display:flex;flex-direction:column;gap:12px;animation:ri .25s ease-out}
+.ov-h{display:flex;align-items:center;justify-content:space-between;color:#fff}
+.ov-h .who{font-size:15px}.ov-h b{font-weight:600}
+.ov-h .pf{color:rgba(255,255,255,.65);display:flex;align-items:center;gap:6px}
+.ov-x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:18px;line-height:1;flex:none;cursor:pointer;transition:background-color var(--ease)}
+.ov-x:hover{background:rgba(255,255,255,.18)}
+.ov-v{width:100%;height:min(78vh,720px);border-radius:16px;overflow:hidden;background:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.ov-v iframe{width:100%;height:100%;border:0;display:block;background:var(--ink)}
+.ov-a{color:rgba(255,255,255,.75);font-size:14px;text-align:center;text-decoration:none}.ov-a:hover{color:#fff}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes ri{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-  .eng{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1.5rem,5vw,4.5rem);margin-top:3rem}
-  .eng h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem}
-  .eng dl{display:grid;grid-template-columns:1fr auto;margin-top:0.8rem}
-  .eng dt,.eng dd{padding:0.55rem 0;border-top:1px solid var(--hair-soft);font-size:1.06rem}
-  .eng dt{color:var(--mute)}
-  .eng dd{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.98rem;text-align:right;font-variant-numeric:tabular-nums}
-
-  /* music */
-  .growth{display:grid;grid-template-columns:auto auto;justify-content:start;gap:clamp(1rem,3vw,2.4rem);align-items:end;margin-top:3rem}
-  .growth .g1 .num,.growth .g2 .num{display:block;line-height:0.9}
-  .growth .g1 .num{font-size:clamp(2.6rem,6vw,4.4rem);color:var(--mute)}
-  .growth .g2 .num{font-size:clamp(3.6rem,9vw,7rem);color:var(--gold-soft)}
-  .growth p{font-size:1.02rem;color:var(--mute);margin-top:0.55rem;line-height:1.35}
-  .growth .arrow{font-family:'Archivo',sans-serif;font-weight:400;font-size:clamp(1.6rem,3vw,2.4rem);color:var(--gold);padding-bottom:2.2rem}
-  .growth .g3{grid-column:1/-1;font-size:1.05rem;color:var(--mute);line-height:1.45;margin-top:0.4rem}
-  .mtable{margin-top:3rem;border-top:1px solid var(--hair)}
-  .mrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1.3fr);gap:1.2rem;padding:1rem 0;border-bottom:1px solid var(--hair-soft);font-size:1.06rem;align-items:baseline}
-  .mrow.h{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.86rem;color:var(--mute);padding:0.8rem 0}
-  .mrow .m1{color:var(--text)}
-  .mrow .m2{color:var(--mute)}
-  .mrow .m3 b{font-family:'Archivo',sans-serif;font-weight:800;color:var(--gold-soft);font-size:1.1rem;font-variant-numeric:tabular-nums}
-  .mrow .m3 span{color:var(--mute)}
-
-  .tl{margin-top:3.2rem;position:relative}
-  .tl h3{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:1rem}
-  .ev{display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr);gap:1.4rem;padding:1.05rem 0;border-top:1px solid var(--hair-soft);position:relative}
-  .ev:last-child{border-bottom:1px solid var(--hair-soft)}
-  .ev .when{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.98rem;color:var(--gold-light)}
-  .ev p{font-size:1.08rem;color:var(--text);opacity:.9;line-height:1.55;max-width:60ch}
-  .ev.key .when{color:var(--gold-soft)}
-
-  /* learned */
-  .learn{margin-top:3rem;counter-reset:l}
-  .lrow{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:clamp(1rem,4vw,3.5rem);padding:1.5rem 0;border-top:1px solid var(--hair-soft)}
-  .lrow:last-child{border-bottom:1px solid var(--hair-soft)}
-  .lrow h4{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.08rem;line-height:1.3}
-  .lrow p{font-size:1.1rem;color:var(--mute);line-height:1.62;max-width:62ch}
-  .lrow p b{color:var(--text);font-weight:500}
-
-  .signoff{margin-top:4rem;padding-top:1.6rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
-  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
-  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
-  .signoff .s-r{font-size:1.02rem;color:var(--mute);text-align:right;line-height:1.6}
-  .signoff .s-r a{color:var(--gold-soft);text-decoration:none}
-
-  @media(max-width:1020px){
-    .hero-body{grid-template-columns:1fr;gap:2.4rem}
-    .hero-fig{border-left:0;border-top:1px solid var(--hair);padding-left:0;padding-top:1.4rem}
-  }
-  @media(max-width:760px){
-    .shead,.lrow{grid-template-columns:1fr;gap:0.9rem}
-    .indent{margin-left:0}
-    .figs{grid-template-columns:1fr}
-    .fig{border-right:0;margin-right:0;border-bottom:1px solid var(--hair-soft);padding:1.2rem 0}
-    .fig:last-child{border-bottom:0}
-    .prow{grid-template-columns:minmax(0,1fr) auto;row-gap:0.6rem}
-    .prow .pt{grid-column:1/-1;order:3}
-    .countries,.eng{grid-template-columns:1fr}
-    .crow{grid-template-columns:minmax(0,7.5rem) minmax(0,1fr) 3.4rem}
-    .clip{grid-template-columns:minmax(0,1fr) auto;row-gap:0.6rem}
-    .clip .vb{grid-column:1/-1;order:3}
-    .clip .go{grid-column:1/-1;order:4;justify-self:start}
-    .mrow{grid-template-columns:1fr 1fr;row-gap:0.25rem}
-    .mrow .m1{grid-column:1/-1}
-    .mrow.h .m1{display:none}
-    .ev{grid-template-columns:1fr;gap:0.3rem}
-    .growth{grid-template-columns:1fr;gap:1.2rem}
-    .growth .arrow{display:none}
-  }
-  @media(prefers-reduced-motion:reduce){
-    .rv{transition:none;opacity:1;transform:none}
-    html{scroll-behavior:auto}
-  }
+/* The platform's breakpoints: under 1024 px the nav runs across the top; under 640 px the phone layout. */
+@media (max-width:1023.98px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  aside{position:static;height:auto;flex-direction:row;align-items:center;gap:24px;overflow-x:auto}
+  nav{margin:0;flex-direction:row;gap:20px}
+  nav .bar,.shared{display:none}
+  main{padding:24px 20px 140px}
+}
+@media (max-width:640px),(max-height:500px) and (orientation:landscape){
+  aside{padding:16px 20px;gap:20px}
+  .split{grid-template-columns:minmax(0,1fr)}
+  .split-l{border-right:0;border-bottom:1px solid var(--line)}
+  .dn-r{padding:0 16px;height:60px}
+  .budget{grid-template-columns:minmax(0,1fr);gap:14px;padding:18px 16px}
+  .set{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding-left:14px;padding-right:14px}
+  .ct{min-width:0}
+  .clip .ver{display:none}
+  .clip{grid-template-columns:minmax(0,1fr) 96px 72px;gap:10px;padding-left:16px;padding-right:16px}
+  .clip.ct-row{padding-left:16px;padding-right:16px}
+  .clip>:nth-child(2),.clip>:nth-child(3),.clip>:nth-child(5){display:none}
+}
+@media (max-width:400px){.sc{grid-template-columns:140px minmax(0,1fr)}}
 </style>
 </head>
 <body>
+<div class="shell">
+<aside class="navrail">
+  <img class="logo" src="img/logo.png" alt="Maison d'Élites">
+  <nav aria-label="Report sections">
+    <button type="button" data-go="campaign" aria-current="true"><span class="bar"></span>Campaign</button>
+    <button type="button" data-go="music"><span class="bar"></span>Music</button>
+    <button type="button" data-go="submissions"><span class="bar"></span>Submissions</button>
+    <button type="button" data-go="platforms"><span class="bar"></span>Platform Stats</button>
+    <button type="button" data-go="spend"><span class="bar"></span>Spend</button>
+    <button type="button" data-go="settings"><span class="bar"></span>Settings</button>
+    <button type="button" data-go="clips"><span class="bar"></span>Clips</button>
+  </nav>
+  <div class="shared">SHARED REPORT<div>Final report, Nov 19, 2026</div></div>
+</aside>
 
-<div id="progress"></div>
-<nav id="dots" aria-label="Sections">
-  <a href="#s0"><span>Cover</span></a>
-  <a href="#s1"><span>Results</span></a>
-  <a href="#s2"><span>Where the views came from</span></a>
-  <a href="#s3"><span>Top clips</span></a>
-  <a href="#s4"><span>The music</span></a>
-  <a href="#s5"><span>What we learned</span></a>
-</nav>
-
-<!-- ============ HERO ============ -->
-<header class="hero" id="s0">
-  <div class="hero-top">
-    <a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a>
-    <div class="date">19 November 2026</div>
+<main>
+<section id="sec-campaign" aria-label="Campaign">
+  <div class="head">
+    <div class="head-l">
+      <div class="brand"><img src="img/camp-logo.png" alt=""><b>Maison d’Élites</b><span class="mut">Campaign Report</span></div>
+      <h1>Davido X Winnerman-Audio</h1>
+      <div class="dates">Oct 16, 2026 <span>→</span><span class="pill">Ended</span></div>
+    </div>
+    <div class="poster"><img class="bg" src="img/poster.jpg" alt="" aria-hidden="true"><img class="fg" src="img/poster.jpg" alt=""></div>
   </div>
-  <div class="hero-body">
-    <div>
-      <h1 class="rv">Davido <em>x</em><br>Winner Man<span class="kind">End of campaign report</span></h1>
-      <p class="hero-sub rv d1">The campaign reached <b>2.7 million views</b> from <b>106 approved clips</b> on TikTok, Instagram and Facebook. During the campaign, Winnerman's Spotify monthly listeners grew from <b>11.6K to 98.6K</b>.</p>
-    </div>
-    <div class="hero-fig rv d2">
-      <span class="num"><span class="cu" data-target="2.7" data-dec="1">2.7</span>M</span>
-      <p>views across TikTok, Instagram and Facebook</p>
-    </div>
+  <div class="rule"></div>
+  <div class="kpis">
+    <div class="card kpi lift"><div class="v" title="2,673,303">2.7M</div><div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>Views</div></div>
+    <div class="card kpi lift"><div class="v">159.4K</div><div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg>Likes</div></div>
+    <div class="card kpi lift"><div class="v">4.2K</div><div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Comments</div></div>
+    <div class="card kpi lift"><div class="v">1.2K</div><div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 5l7 6-7 6v-4C8 13 5 15 3 19c1-6 4-10 11-11z"/></svg>Shares</div></div>
+    <div class="card kpi lift"><div class="v">107</div><div class="l"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>Submitted</div></div>
   </div>
-  <div class="hero-bot rv d3">
-    <span>&ldquo;Give Me Chance (Remix)&rdquo; by Winnerman featuring Davido and Sabushebu</span>
-    <span>Song and clips out 16 October 2026</span>
-  </div>
-</header>
-
-<!-- ============ RESULTS ============ -->
-<section class="section" id="s1">
-  <div class="wrap">
-    <div class="shead rv">
-      <h2>Results</h2>
-      <div>
-        <p class="statement">2.7 million views from 106 approved clips.</p>
-        <p class="body">The song came out on 16 October 2026, the same day the clips started. The campaign has now ended, with <b>the full campaign budget delivered</b>.</p>
-      </div>
-    </div>
-    <div class="figs rv d1">
-      <div class="fig"><span class="num"><span class="cu" data-target="2673303">2,673,303</span></span><p>Views</p></div>
-      <div class="fig"><span class="num"><span class="cu" data-target="159" data-dec="0">159</span>K</span><p>Likes</p></div>
-      <div class="fig"><span class="num"><span class="cu" data-target="106">106</span></span><p>Approved clips</p></div>
-    </div>
-    <div class="budget rv d2" id="budget">
-      <div class="bt"><span>Campaign budget</span><b>Fully delivered</b></div>
-      <div class="bar"><i data-w="100"></i></div>
-    </div>
-    <p class="src rv">Figures are taken from the <a href="https://app.maisondelites.com/r/eyJjIjoiYWQ4ZDE0N2ItNzA5MC00OGQ4LWI5MzItM2VlMjU3NTUzY2ZhIiwiaWF0IjoxNzkyMjU0MDQ4fQ.5zyAHARhRXCVkXUsCe_SS1ILuvOGDXbnbTCUmxLIwxg" target="_blank" rel="noopener">live campaign report</a> as it stood on 19 November 2026. The two biggest posts use the page's own Instagram insights, read 19 November 2026, which count each post's views on both Instagram and Facebook.</p>
-  </div>
-</section>
-
-<!-- ============ WHERE THE VIEWS CAME FROM ============ -->
-<section class="section alt" id="s2">
-  <div class="wrap">
-    <div class="shead rv">
-      <h2>Where the views came from</h2>
-      <div>
-        <p class="statement">Two posts on a major London culture page brought 2.3 million views across Instagram and Facebook.</p>
-        <p class="body">TikTok carried the volume with 104 clips. The two biggest posts went out on 3 and 4 November and were seen in Nigeria, the UK, the US, Canada and beyond.</p>
-      </div>
-    </div>
-
-    <div class="plat rv d1" id="plat">
-      <div class="prow"><div class="pn">Facebook<small>Same 2 posts, shared to Facebook</small></div><div class="pt"><i data-w="43.4"></i></div><div class="pv"><span class="num">1,160,092</span><small>43.4% of views</small></div></div>
-      <div class="prow"><div class="pn">Instagram<small>2 posts</small></div><div class="pt"><i data-w="41.8"></i></div><div class="pv"><span class="num">1,117,694</span><small>41.8% of views</small></div></div>
-      <div class="prow"><div class="pn">TikTok<small>104 clips</small></div><div class="pt"><i data-w="14.8"></i></div><div class="pv"><span class="num">395,517</span><small>14.8% of views</small></div></div>
-    </div>
-
-    <div class="countries rv d1" id="countries">
-      <div class="cpost">
-        <h3>The 3 November post</h3>
-        <p class="cmeta">1,389,215 views. Top five countries.</p>
-        <div class="crow lead"><span>Nigeria</span><div class="ct"><i data-w="68.2"></i></div><span class="cp">68.2%</span></div>
-        <div class="crow"><span>United Kingdom</span><div class="ct"><i data-w="6.7"></i></div><span class="cp">6.7%</span></div>
-        <div class="crow"><span>United States</span><div class="ct"><i data-w="4.9"></i></div><span class="cp">4.9%</span></div>
-        <div class="crow"><span>Ghana</span><div class="ct"><i data-w="3.4"></i></div><span class="cp">3.4%</span></div>
-        <div class="crow"><span>Canada</span><div class="ct"><i data-w="2.2"></i></div><span class="cp">2.2%</span></div>
-      </div>
-      <div class="cpost">
-        <h3>The 4 November post</h3>
-        <p class="cmeta">888,571 views. Top five countries.</p>
-        <div class="crow lead"><span>United States</span><div class="ct"><i data-w="44"></i></div><span class="cp">44.0%</span></div>
-        <div class="crow"><span>United Kingdom</span><div class="ct"><i data-w="13.6"></i></div><span class="cp">13.6%</span></div>
-        <div class="crow"><span>Canada</span><div class="ct"><i data-w="6.4"></i></div><span class="cp">6.4%</span></div>
-        <div class="crow"><span>Germany</span><div class="ct"><i data-w="3.7"></i></div><span class="cp">3.7%</span></div>
-        <div class="crow"><span>Kenya</span><div class="ct"><i data-w="3.2"></i></div><span class="cp">3.2%</span></div>
-      </div>
-    </div>
-    <p class="src rv">Country shares are from the audience section of each post's Instagram insights, read 19 November 2026.</p>
-  </div>
-</section>
-
-<!-- ============ TOP CLIPS ============ -->
-<section class="section" id="s3">
-  <div class="wrap">
-    <div class="shead rv">
-      <h2>Top clips</h2>
-      <div>
-        <p class="statement">The five biggest posts of the campaign.</p>
-        <p class="body">The strongest TikTok clip reached <b>54,725 views</b>. The two posts on the London culture page reached <b>1,389,215</b> and <b>888,571</b>.</p>
-      </div>
-    </div>
-    <div class="wall" id="wall"></div>
-    <div class="sortbar rv">
-      <h3>All five, side by side</h3>
-      <div class="seg" id="sortSeg"><button class="on" data-m="views">By views</button><button data-m="likes">By likes</button></div>
-    </div>
-    <div class="clips rv d1" id="clips"></div>
-
-    <div class="eng rv d1">
-      <div>
-        <h3>The 3 November post</h3>
-        <dl>
-          <dt>Instagram views</dt><dd>234,228</dd>
-          <dt>Facebook views</dt><dd>1,154,987</dd>
-          <dt>Likes</dt><dd>19.3K</dd>
-          <dt>Comments</dt><dd>2.8K</dd>
-          <dt>Reposts</dt><dd>577</dd>
-          <dt>Saves</dt><dd>294</dd>
-        </dl>
-      </div>
-      <div>
-        <h3>The 4 November post</h3>
-        <dl>
-          <dt>Instagram views</dt><dd>883,466</dd>
-          <dt>Facebook views</dt><dd>5,105</dd>
-          <dt>Likes</dt><dd>113.0K</dd>
-          <dt>Comments</dt><dd>1.1K</dd>
-          <dt>Reposts</dt><dd>2.9K</dd>
-          <dt>Saves</dt><dd>4.5K</dd>
-        </dl>
-      </div>
+  <div class="card">
+    <div class="ch"><b>Campaign Budget</b><span class="mut">Entire campaign</span></div>
+    <div class="budget">
+      <div><div class="bk">Total budget</div><div class="bv">$2,000.00</div></div>
+      <div><div class="bk">Spent</div><div class="bv">$2,000.00</div></div>
+      <div><div class="bk">Remaining</div><div class="bv">$0.00</div></div>
+      <div class="meter" role="img" aria-label="100.0% of the budget used"><div style="width:100%"></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ MUSIC ============ -->
-<section class="section alt" id="s4">
-  <div class="wrap">
-    <div class="shead rv">
-      <h2>The music during the campaign</h2>
-      <div>
-        <p class="statement">Monthly listeners grew more than eight times.</p>
-        <p class="body">&ldquo;Give Me Chance (Remix)&rdquo; by Winnerman featuring Davido and Sabushebu came out on 16 October 2026, the day the clips started. Since then, Winnerman's Spotify monthly listeners grew more than eight times, and the song picked up 248,124 Spotify streams. These numbers show what moved and when, next to when the clips went out. They do not show how much of the growth came from the clips, since other things, such as the artists' own posts, also move a song.</p>
-      </div>
-    </div>
-
-    <div class="growth rv d1">
-      <div class="g1"><span class="num">11,636</span><p>13 October,<br>before launch</p></div>
-      <div class="arrow" aria-hidden="true">&rarr;</div>
-      <div class="g2"><span class="num"><span class="cu" data-target="98640">98,640</span></span><p>17 November</p></div>
-      <p class="g3">Winnerman's Spotify monthly listeners, from Soundcharts.</p>
-    </div>
-
-    <div class="mtable rv d1">
-      <div class="mrow h"><span class="m1">Measure</span><span class="m2">Before launch</span><span class="m3">Latest</span></div>
-      <div class="mrow"><span class="m1">Spotify monthly listeners (Winnerman)</span><span class="m2">11,636 on 13 October</span><span class="m3"><b>98,640</b> <span>on 17 November</span></span></div>
-      <div class="mrow"><span class="m1">Spotify streams</span><span class="m2">Not out yet</span><span class="m3"><b>248,124</b> <span>in 32 days, about 7.8K a day</span></span></div>
-      <div class="mrow"><span class="m1">TikTok videos using the official sound</span><span class="m2">Not out yet</span><span class="m3"><b>310</b> <span>on 18 November</span></span></div>
-      <div class="mrow"><span class="m1">Shazams</span><span class="m2">Not out yet</span><span class="m3"><b>15,619</b> <span>on 18 November</span></span></div>
-    </div>
-
-    <div class="tl rv d1">
-      <h3>What moved and when</h3>
-      <div class="ev key"><span class="when">16 October</span><p>The song came out and the first clips went out the same day.</p></div>
-      <div class="ev"><span class="when">18 October</span><p>The song's highest day of Spotify streams in the data, 22,008.</p></div>
-      <div class="ev key"><span class="when">3 and 4 November</span><p>The campaign's two biggest posts went out on a major London culture page, 2.3M views between them on Instagram and Facebook.</p></div>
-      <div class="ev"><span class="when">10 to 13 November</span><p>Daily Spotify streams rose from between 5,200 and 8,900 a day on 4 to 9 November to between 11,600 and 13,800 a day.</p></div>
-      <div class="ev key"><span class="when">17 November</span><p>Winnerman's monthly listeners reached 98,640, up from 11,636 before launch.</p></div>
-    </div>
-    <p class="src rv">Music numbers come from Soundcharts (www.soundcharts.com), the TikTok sound page and the Shazam song page, read 18 and 19 November 2026.</p>
+<section id="sec-music" aria-label="Music">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 18V5l11-2v13M9 18a3 3 0 11-6 0 3 3 0 016 0zM20 16a3 3 0 11-6 0 3 3 0 016 0z"/></svg>MUSIC RESULTS</div>
+  <div class="lead"><b>Give Me Chance (Remix)</b> by Winnerman · clips from Oct 16, 2026</div>
+  <div class="card">
+    <div class="ch"><b>Spotify streams</b><span class="mut">Oct 18, 2026 to Nov 18, 2026</span></div>
+    <div class="txt">Spotify streams averaged 7.8K a day since launch, 248,124 in total. The song came out at launch, so there is no before to compare with.</div>
+    <div class="la"><svg viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><line x1="40" x2="1000" y1="260" y2="260" stroke="#E0D6C6" stroke-dasharray="4 5"/><text x="0" y="264" font-family="'Geist Mono', ui-monospace, monospace" font-size="13" fill="#8A8378">0</text><line x1="40" x2="1000" y1="200" y2="200" stroke="#E0D6C6" stroke-dasharray="4 5"/><text x="0" y="204" font-family="'Geist Mono', ui-monospace, monospace" font-size="13" fill="#8A8378">5.5K</text><line x1="40" x2="1000" y1="140" y2="140" stroke="#E0D6C6" stroke-dasharray="4 5"/><text x="0" y="144" font-family="'Geist Mono', ui-monospace, monospace" font-size="13" fill="#8A8378">11K</text><line x1="40" x2="1000" y1="80" y2="80" stroke="#E0D6C6" stroke-dasharray="4 5"/><text x="0" y="84" font-family="'Geist Mono', ui-monospace, monospace" font-size="13" fill="#8A8378">16.5K</text><line x1="40" x2="1000" y1="20" y2="20" stroke="#E0D6C6" stroke-dasharray="4 5"/><text x="0" y="24" font-family="'Geist Mono', ui-monospace, monospace" font-size="13" fill="#8A8378">22K</text><path d="M40.0 20.0 L71.0 151.4 L101.9 180.6 L132.9 177.5 L163.9 179.7 L194.8 206.3 L225.8 245.6 L256.8 215.3 L287.7 199.9 L318.7 214.9 L349.7 222.8 L380.6 199.4 L411.6 197.5 L442.6 176.8 L473.5 186.8 L504.5 201.3 L535.5 229.4 L566.5 181.9 L597.4 186.3 L628.4 202.9 L659.4 191.8 L690.3 185.3 L721.3 163.4 L752.3 131.2 L783.2 133.6 L814.2 116.3 L845.2 109.9 L876.1 238.3 L907.1 128.3 L938.1 125.1 L969.0 158.5 L1000.0 156.2 L1000.0 260.0 L40 260.0Z" fill="rgba(201,168,92,0.14)"/><path d="M40.0 20.0 L71.0 151.4 L101.9 180.6 L132.9 177.5 L163.9 179.7 L194.8 206.3 L225.8 245.6 L256.8 215.3 L287.7 199.9 L318.7 214.9 L349.7 222.8 L380.6 199.4 L411.6 197.5 L442.6 176.8 L473.5 186.8 L504.5 201.3 L535.5 229.4 L566.5 181.9 L597.4 186.3 L628.4 202.9 L659.4 191.8 L690.3 185.3 L721.3 163.4 L752.3 131.2 L783.2 133.6 L814.2 116.3 L845.2 109.9 L876.1 238.3 L907.1 128.3 L938.1 125.1 L969.0 158.5 L1000.0 156.2" fill="none" stroke="#C9A85C" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg><div class="la-x" style="padding-left:40px"><span>Oct 18</span><span>Nov 2</span><span>Nov 18</span></div></div>
+    <div class="src">Source: www.soundcharts.com</div>
+  </div>
+  <div class="card">
+    <div class="ch"><b>Monthly listeners</b><span class="mut">Nov 17, 2026</span></div>
+    <div class="txt">Spotify monthly listeners went from 11,636 before launch to 98,640.</div>
+    <div class="src">Source: www.soundcharts.com</div>
+  </div>
+  <div class="card">
+    <div class="ch"><b>Videos using the sound</b><span class="mut">TikTok, Nov 18, 2026</span></div>
+    <div class="figs"><div><div class="bk">Videos using the sound</div><div class="bv">310</div></div></div>
+    <div class="src">Source: TikTok public sound page, read by Maison d'Élites</div>
+  </div>
+  <div class="card">
+    <div class="ch"><b>Shazams</b><span class="mut">Nov 18, 2026</span></div>
+    <div class="figs"><div><div class="bk">Shazams</div><div class="bv">15,619</div></div></div>
+    <div class="src">Source: Shazam public song page (shazam.com), read by Maison d'Élites</div>
   </div>
 </section>
 
-<!-- ============ LEARNED ============ -->
-<section class="section" id="s5">
-  <div class="wrap">
-    <div class="shead rv">
-      <h2>What we learned</h2>
-      <div><p class="statement">Five things this campaign showed.</p></div>
-    </div>
-    <div class="learn rv d1">
-      <div class="lrow"><h4>Large pages gave the widest reach</h4><p>Two placements on one major London culture page brought <b>2.3M views across Instagram and Facebook, about 85% of the total</b>. Large pages gave the song its widest reach.</p></div>
-      <div class="lrow"><h4>TikTok carried the volume</h4><p>104 clips went out there, many of them from lyric pages, which <b>kept the song in circulation for the whole campaign</b>.</p></div>
-      <div class="lrow"><h4>The TikTok result was spread out</h4><p>The strongest TikTok clip reached 54,725 views. Most TikTok clips stayed under 10,000 views, so <b>the TikTok result came from many clips</b>, not from one hit.</p></div>
-      <div class="lrow"><h4>The song grew while the campaign ran</h4><p>The biggest rise in daily streams came on 10 to 13 November, not in the days right after the two biggest posts. The data cannot show where that rise came from.</p></div>
-      <div class="lrow"><h4>Count from day one</h4><p>TikTok and Shazam were only counted from 18 November, so this report shows their totals but not how they moved during the campaign. <b>Next time, both are counted from the first day.</b></p></div>
-    </div>
-    <div class="signoff rv d2">
-      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
-      <div class="s-r"><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
-    </div>
+<section id="sec-submissions" aria-label="Submissions">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v14H4zM4 9h16M9 5v14"/></svg>SUBMISSIONS</div>
+  <div class="lead"><b>107</b> submitted · <b>106</b> approved · <b>1</b> pending review</div>
+  <div class="subs">
+<div class="card sc lift">
+  <div class="sc-f"><button type="button" class="fr" style="border-radius:10px" data-clip="0" aria-label="Play @londonbaithead's clip"><img src="img/clips/DfSYu4GAU3k.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:52px;height:52px"><svg width="18.72" height="18.72" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
+  <div class="sc-b"><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#2E6DB4"></span>Views</span><span class="mono sc-v">1,389,215<span class="ver" title="Verified from the page owner's insights">Verified</span></span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B0785A"></span>Comments</span><span class="mono sc-v">2,800</span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B04A6A"></span>Likes</span><span class="mono sc-v">19,300</span></div>
+    <div class="sc-foot"><span class="who"><span class="av" style="width:22px;height:22px;background:linear-gradient(135deg,#B0785A,#4FB286)"></span><span class="ell">@londonbaithead</span></span><a href="https://www.instagram.com/p/DfSYu4GAU3k/" target="_blank" rel="noreferrer" class="dimlink">Instagram ↗</a></div>
+  </div>
+</div>
+<div class="card sc lift">
+  <div class="sc-f"><button type="button" class="fr" style="border-radius:10px" data-clip="1" aria-label="Play @londonbaithead's clip"><img src="img/clips/DfUd7YVAr9o.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:52px;height:52px"><svg width="18.72" height="18.72" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
+  <div class="sc-b"><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#2E6DB4"></span>Views</span><span class="mono sc-v">888,571<span class="ver" title="Verified from the page owner's insights">Verified</span></span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B0785A"></span>Comments</span><span class="mono sc-v">1,100</span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B04A6A"></span>Likes</span><span class="mono sc-v">113,000</span></div>
+    <div class="sc-foot"><span class="who"><span class="av" style="width:22px;height:22px;background:linear-gradient(135deg,#B0785A,#4FB286)"></span><span class="ell">@londonbaithead</span></span><a href="https://www.instagram.com/p/DfUd7YVAr9o/" target="_blank" rel="noreferrer" class="dimlink">Instagram ↗</a></div>
+  </div>
+</div>
+<div class="card sc lift">
+  <div class="sc-f"><button type="button" class="fr" style="border-radius:10px" data-clip="2" aria-label="Play @wa7echh's clip"><span class="pl"><span class="pl-b" style="width:52px;height:52px"><svg width="18.72" height="18.72" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
+  <div class="sc-b"><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#2E6DB4"></span>Views</span><span class="mono sc-v">54,725</span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B04A6A"></span>Likes</span><span class="mono sc-v">7,913</span></div>
+    <div class="sc-foot"><span class="who"><span class="av" style="width:22px;height:22px;background:linear-gradient(135deg,#B04A6A,#C9A85C)"></span><span class="ell">@wa7echh</span></span><a href="https://www.tiktok.com/@wa7echh/video/7703326152210844946" target="_blank" rel="noreferrer" class="dimlink">TikTok ↗</a></div>
+  </div>
+</div>
+<div class="card sc lift">
+  <div class="sc-f"><button type="button" class="fr" style="border-radius:10px" data-clip="3" aria-label="Play @dk_baj's clip"><img src="img/clips/7697296279830940944.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:52px;height:52px"><svg width="18.72" height="18.72" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
+  <div class="sc-b"><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#2E6DB4"></span>Views</span><span class="mono sc-v">24,650</span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B04A6A"></span>Likes</span><span class="mono sc-v">4,358</span></div>
+    <div class="sc-foot"><span class="who"><span class="av" style="width:22px;height:22px;background:linear-gradient(135deg,#4FB286,#2E6DB4)"></span><span class="ell">@dk_baj</span></span><a href="https://www.tiktok.com/@dk_baj/video/7697296279830940944" target="_blank" rel="noreferrer" class="dimlink">TikTok ↗</a></div>
+  </div>
+</div>
+<div class="card sc lift">
+  <div class="sc-f"><button type="button" class="fr" style="border-radius:10px" data-clip="4" aria-label="Play @dk_baj's clip"><img src="img/clips/7697383810723286290.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:52px;height:52px"><svg width="18.72" height="18.72" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></div>
+  <div class="sc-b"><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#2E6DB4"></span>Views</span><span class="mono sc-v">20,469</span></div><div class="sc-r"><span class="sc-l"><span class="dot" style="background:#B04A6A"></span>Likes</span><span class="mono sc-v">3,768</span></div>
+    <div class="sc-foot"><span class="who"><span class="av" style="width:22px;height:22px;background:linear-gradient(135deg,#4FB286,#2E6DB4)"></span><span class="ell">@dk_baj</span></span><a href="https://www.tiktok.com/@dk_baj/video/7697383810723286290" target="_blank" rel="noreferrer" class="dimlink">TikTok ↗</a></div>
+  </div>
+</div>
+  </div>
+  <div class="card bar-card"><span>You are seeing the top 5 submissions by views.</span><span style="color:var(--dim)">107 submissions in total</span></div>
+</section>
+
+<section id="sec-platforms" aria-label="Platform stats">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>PLATFORM STATS</div>
+  <div class="grid2">
+    <div class="card lift-s"><div class="dn-h">Views</div><div class="split"><div class="split-l"><div class="dn-r"><span>Instagram and Facebook</span><span class="mono mut r">85.1%</span><span class="mono r">2.3M</span><span class="dot" style="background:#C9A85C"></span></div><div class="dn-r"><span>TikTok</span><span class="mono mut r">14.9%</span><span class="mono r">397.3K</span><span class="dot" style="background:#1A1510"></span></div></div><div class="dn-c"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44" fill="none" stroke="#E8E1D3" stroke-width="22"/><circle cx="60" cy="60" r="44" fill="none" stroke="#C9A85C" stroke-width="22" stroke-dasharray="235.27 276.46" stroke-dashoffset="0.00"/><circle cx="60" cy="60" r="44" fill="none" stroke="#1A1510" stroke-width="22" stroke-dasharray="41.19 276.46" stroke-dashoffset="-235.27"/></svg><div class="dn-t">2.7M</div></div></div></div>
+    <div class="card lift-s"><div class="dn-h">Posts</div><div class="split"><div class="split-l"><div class="dn-r"><span>Instagram</span><span class="mono mut r">1.9%</span><span class="mono r">2</span><span class="dot" style="background:#C9A85C"></span></div><div class="dn-r"><span>TikTok</span><span class="mono mut r">98.1%</span><span class="mono r">104</span><span class="dot" style="background:#1A1510"></span></div></div><div class="dn-c"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44" fill="none" stroke="#E8E1D3" stroke-width="22"/><circle cx="60" cy="60" r="44" fill="none" stroke="#C9A85C" stroke-width="22" stroke-dasharray="5.22 276.46" stroke-dashoffset="0.00"/><circle cx="60" cy="60" r="44" fill="none" stroke="#1A1510" stroke-width="22" stroke-dasharray="271.24 276.46" stroke-dashoffset="-5.22"/></svg><div class="dn-t">106</div></div></div></div>
+  </div>
+  <div class="note">Instagram and Facebook: the two posts on the London culture page, from the page's own insights, which count each post's views on both apps.</div>
+</section>
+
+<section id="sec-spend" aria-label="Spend">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 7h18v12H3zM3 11h18M7 15h3"/></svg>SPEND</div>
+  <div class="card">
+    <div class="ch" style="padding:14px 24px"><b>Campaign spend</b><span class="mut" style="font-size:15px">Entire campaign</span></div>
+    <div class="tot"><span class="mut">Total spend</span><b>$2,000.00</b></div>
   </div>
 </section>
+
+<section id="sec-settings" aria-label="Settings">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6zM4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4"/></svg>SETTINGS</div>
+  <div class="card">
+    <div class="ch"><b>Campaign settings</b><span class="mut">Final, as of Nov 19, 2026</span></div>
+    <div class="set-box">
+      <div class="set hd"><span>Platform</span><span class="r">Budget</span></div>
+      <div class="set"><span>Instagram</span><span class="r mono">$2,000.00</span></div>
+      <div class="set"><span>TikTok</span><span class="r mono">$2,000.00</span></div>
+    </div>
+    <div style="padding:0 24px 20px;font-size:14px;color:var(--muted)">One budget for the whole campaign, shared across its platforms.</div>
+  </div>
+</section>
+
+<section id="sec-clips" aria-label="Clips">
+  <div class="st"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 6h18v12H3zM10 9v6l5-3z"/></svg>CLIPS</div>
+  <div class="card" style="overflow:hidden">
+    <div class="ct-top"><b>Top clips</b><span class="seg"><span>All dates</span></span></div>
+    <div class="ct-scroll rail-x"><div class="ct">
+      <div class="clip"><span>Account</span><span>Platform</span><span>Post</span><span>Views ↓</span><span>Likes</span><span>Date</span></div>
+<div class="clip ct-row">
+  <span class="who"><span class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#B0785A,#4FB286)"></span><span class="ell">@londonbaithead</span></span>
+  <span class="ct-p"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.3-3.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>Instagram</span>
+  <span class="ct-post"><span class="ct-f"><button type="button" class="fr" style="border-radius:8px" data-clip="0" aria-label="Play @londonbaithead's clip"><img src="img/clips/DfSYu4GAU3k.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:28px;height:28px"><svg width="10.08" height="10.08" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></span><a href="https://www.instagram.com/p/DfSYu4GAU3k/" target="_blank" rel="noreferrer">instagram.com/p/DfSYu4GAU3k/</a></span>
+  <span class="mono">1,389,215<span class="ver" title="Verified from the page owner's insights">Verified</span></span>
+  <span class="mono">19,300</span>
+  <span class="ct-d">11/03/26</span>
+</div>
+<div class="clip ct-row">
+  <span class="who"><span class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#B0785A,#4FB286)"></span><span class="ell">@londonbaithead</span></span>
+  <span class="ct-p"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.3-3.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg>Instagram</span>
+  <span class="ct-post"><span class="ct-f"><button type="button" class="fr" style="border-radius:8px" data-clip="1" aria-label="Play @londonbaithead's clip"><img src="img/clips/DfUd7YVAr9o.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:28px;height:28px"><svg width="10.08" height="10.08" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></span><a href="https://www.instagram.com/p/DfUd7YVAr9o/" target="_blank" rel="noreferrer">instagram.com/p/DfUd7YVAr9o/</a></span>
+  <span class="mono">888,571<span class="ver" title="Verified from the page owner's insights">Verified</span></span>
+  <span class="mono">113,000</span>
+  <span class="ct-d">11/04/26</span>
+</div>
+<div class="clip ct-row">
+  <span class="who"><span class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#B04A6A,#C9A85C)"></span><span class="ell">@wa7echh</span></span>
+  <span class="ct-p"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3c.4 2.4 1.9 3.9 4.3 4.1v3.2c-1.6 0-3-.5-4.3-1.4v6.2a5.7 5.7 0 1 1-5.7-5.7c.3 0 .7 0 1 .1v3.3a2.5 2.5 0 1 0 1.5 2.3V3h3.2z"/></svg>TikTok</span>
+  <span class="ct-post"><span class="ct-f"><button type="button" class="fr" style="border-radius:8px" data-clip="2" aria-label="Play @wa7echh's clip"><span class="pl"><span class="pl-b" style="width:28px;height:28px"><svg width="10.08" height="10.08" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></span><a href="https://www.tiktok.com/@wa7echh/video/7703326152210844946" target="_blank" rel="noreferrer">tiktok.com/@wa7echh/video/7703326152210844946</a></span>
+  <span class="mono">54,725</span>
+  <span class="mono">7,913</span>
+  <span class="ct-d">11/01/26</span>
+</div>
+<div class="clip ct-row">
+  <span class="who"><span class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#4FB286,#2E6DB4)"></span><span class="ell">@dk_baj</span></span>
+  <span class="ct-p"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3c.4 2.4 1.9 3.9 4.3 4.1v3.2c-1.6 0-3-.5-4.3-1.4v6.2a5.7 5.7 0 1 1-5.7-5.7c.3 0 .7 0 1 .1v3.3a2.5 2.5 0 1 0 1.5 2.3V3h3.2z"/></svg>TikTok</span>
+  <span class="ct-post"><span class="ct-f"><button type="button" class="fr" style="border-radius:8px" data-clip="3" aria-label="Play @dk_baj's clip"><img src="img/clips/7697296279830940944.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:28px;height:28px"><svg width="10.08" height="10.08" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></span><a href="https://www.tiktok.com/@dk_baj/video/7697296279830940944" target="_blank" rel="noreferrer">tiktok.com/@dk_baj/video/7697296279830940944</a></span>
+  <span class="mono">24,650</span>
+  <span class="mono">4,358</span>
+  <span class="ct-d">10/16/26</span>
+</div>
+<div class="clip ct-row">
+  <span class="who"><span class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#4FB286,#2E6DB4)"></span><span class="ell">@dk_baj</span></span>
+  <span class="ct-p"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 3c.4 2.4 1.9 3.9 4.3 4.1v3.2c-1.6 0-3-.5-4.3-1.4v6.2a5.7 5.7 0 1 1-5.7-5.7c.3 0 .7 0 1 .1v3.3a2.5 2.5 0 1 0 1.5 2.3V3h3.2z"/></svg>TikTok</span>
+  <span class="ct-post"><span class="ct-f"><button type="button" class="fr" style="border-radius:8px" data-clip="4" aria-label="Play @dk_baj's clip"><img src="img/clips/7697383810723286290.jpg" alt="" loading="lazy"><span class="pl"><span class="pl-b" style="width:28px;height:28px"><svg width="10.08" height="10.08" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span></button></span><a href="https://www.tiktok.com/@dk_baj/video/7697383810723286290" target="_blank" rel="noreferrer">tiktok.com/@dk_baj/video/7697383810723286290</a></span>
+  <span class="mono">20,469</span>
+  <span class="mono">3,768</span>
+  <span class="ct-d">10/16/26</span>
+</div>
+    </div></div>
+    <div class="ct-foot"><span>Showing <b>1 to 5</b> of 107 clips</span></div>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-label="Clip">
+  <div class="ov-in">
+    <div class="ov-h"><span class="who"><span class="av" id="ov-av" style="width:28px;height:28px"></span><b class="ell" id="ov-h"></b><span class="pf" id="ov-p"></span></span><button type="button" class="ov-x" id="ov-x" aria-label="Close">×</button></div>
+    <div class="ov-v" id="ov-v"></div>
+    <a class="ov-a" id="ov-a" target="_blank" rel="noreferrer"></a>
+  </div>
+</div>
 
 <script>
 (function(){
-  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const once=(els,fn,th=0.3)=>{
-    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
-    els.forEach(el=>el&&io.observe(el));
-  };
-  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
-
-  const prog=document.getElementById('progress');
-  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
-  const dots=[...document.querySelectorAll('#dots a')];
-  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
-  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
-  secs.forEach(s=>s&&sio.observe(s));
-
-  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
-  once(document.querySelectorAll('.cu'),el=>{
-    const t=parseFloat(el.dataset.target);
-    if(reduce){el.textContent=fmt(t,el);return;}
-    const dur=1300,s=performance.now();
-    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
-  },0.5);
-
-  const fill=root=>root.querySelectorAll('i[data-w]').forEach(b=>b.style.width=b.dataset.w+'%');
-  ['budget','plat','countries'].forEach(id=>once([document.getElementById(id)],fill,0.3));
-
-  /* top clips: views and likes from the live report, except the two page posts (Instagram insights) */
-  const CL=[
-    {p:'londonbaithead',pf:'Instagram',sub:'Instagram and Facebook',id:'DfSYu4GAU3k',url:'https://www.instagram.com/p/DfSYu4GAU3k/',v:1389215,l:19300,ls:'19.3K',d:'3 Nov'},
-    {p:'londonbaithead',pf:'Instagram',sub:'Instagram and Facebook',id:'DfUd7YVAr9o',url:'https://www.instagram.com/p/DfUd7YVAr9o/',v:888571,l:113000,ls:'113.0K',d:'4 Nov'},
-    {p:'wa7echh',pf:'TikTok',sub:'TikTok',id:'7703326152210844946',url:'https://www.tiktok.com/@wa7echh/video/7703326152210844946',v:54725,l:7913,d:'1 Nov',nocover:true},
-    {p:'dk_baj',pf:'TikTok',sub:'TikTok',id:'7697296279830940944',url:'https://www.tiktok.com/@dk_baj/video/7697296279830940944',v:24650,l:4358,d:'16 Oct'},
-    {p:'dk_baj',pf:'TikTok',sub:'TikTok',id:'7697383810723286290',url:'https://www.tiktok.com/@dk_baj/video/7697383810723286290',v:20469,l:3768,d:'16 Oct'}
-  ];
-  const short=n=>n>=1e6?(n/1e6).toFixed(2).replace(/0$/,'')+'M':n>=1000?(n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,'')+'K':String(n);
-  const likes=c=>c.ls||c.l.toLocaleString('en-US');
-  const maxV=Math.max(...CL.map(c=>c.v));
-  const clips=document.getElementById('clips');
-  let shown=false;
-  function draw(mode){
-    const rows=CL.slice().sort((a,b)=>mode==='likes'?b.l-a.l:b.v-a.v);
-    clips.innerHTML=rows.map(c=>'<div class="clip">'+
-      '<div class="who"><b>@'+esc(c.p)+'</b><small>'+c.sub+', '+c.d+'</small></div>'+
-      '<div class="vb"><div class="vt"><b>'+c.v.toLocaleString('en-US')+'</b><span>views</span></div><div class="tr"><i data-w="'+(c.v/maxV*100).toFixed(1)+'"></i></div></div>'+
-      '<div class="lk"><b>'+likes(c)+'</b><small>likes</small></div>'+
-      '<a class="go" href="'+c.url+'" target="_blank" rel="noopener">View &#8599;</a></div>').join('');
-    if(shown) requestAnimationFrame(()=>fill(clips));
+  var CLIPS=[{"h":"@londonbaithead","p":"instagram","id":"DfSYu4GAU3k","url":"https://www.instagram.com/p/DfSYu4GAU3k/","av":"linear-gradient(135deg,#B0785A,#4FB286)"},{"h":"@londonbaithead","p":"instagram","id":"DfUd7YVAr9o","url":"https://www.instagram.com/p/DfUd7YVAr9o/","av":"linear-gradient(135deg,#B0785A,#4FB286)"},{"h":"@wa7echh","p":"tiktok","id":"7703326152210844946","url":"https://www.tiktok.com/@wa7echh/video/7703326152210844946","av":"linear-gradient(135deg,#B04A6A,#C9A85C)"},{"h":"@dk_baj","p":"tiktok","id":"7697296279830940944","url":"https://www.tiktok.com/@dk_baj/video/7697296279830940944","av":"linear-gradient(135deg,#4FB286,#2E6DB4)"},{"h":"@dk_baj","p":"tiktok","id":"7697383810723286290","url":"https://www.tiktok.com/@dk_baj/video/7697383810723286290","av":"linear-gradient(135deg,#4FB286,#2E6DB4)"}];
+  var NAMES={tiktok:'TikTok',instagram:'Instagram'};
+  var ICONS={"tiktok":"<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M16.5 3c.4 2.4 1.9 3.9 4.3 4.1v3.2c-1.6 0-3-.5-4.3-1.4v6.2a5.7 5.7 0 1 1-5.7-5.7c.3 0 .7 0 1 .1v3.3a2.5 2.5 0 1 0 1.5 2.3V3h3.2z\"/></svg>","instagram":"<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.3-3.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z\"/></svg>"};
+  var ids=["campaign","music","submissions","platforms","spend","settings","clips"];
+  var btns=document.querySelectorAll('nav button');
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    var el=document.getElementById('sec-'+b.dataset.go);
+    if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-40,behavior:'smooth'});
+  });});
+  function spy(){
+    var cur=ids[0];
+    ids.forEach(function(id){var el=document.getElementById('sec-'+id); if(el&&el.getBoundingClientRect().top<window.innerHeight*0.4) cur=id;});
+    if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2) cur=ids[ids.length-1];
+    btns.forEach(function(b){ if(b.dataset.go===cur) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current'); });
   }
-  draw('views');
-  once([clips],()=>{shown=true;fill(clips);},0.3);
-  const sb=[...document.querySelectorAll('#sortSeg button')];
-  sb.forEach(b=>b.addEventListener('click',()=>{sb.forEach(x=>x.classList.toggle('on',x===b));draw(b.dataset.m);}));
+  window.addEventListener('scroll',spy,{passive:true}); spy();
 
-  /* clip wall: plays in place */
-  const wall=document.getElementById('wall');
-  wall.innerHTML=CL.map((c,i)=>'<div class="vtile rv'+(i%3?' d'+(i%3):'')+'" data-id="'+c.id+'" data-pf="'+c.pf+'">'+
-    '<div class="vt-media'+(c.nocover?' plain':'')+'" role="button" tabindex="0" aria-label="Play clip from @'+esc(c.p)+'">'+
-    (c.nocover?'<span class="pl-big">@'+esc(c.p)+'</span>':'<img src="img/clips/'+c.id+'.jpg" alt="Post from @'+esc(c.p)+'" loading="lazy">')+
-    '<span class="vt-play" aria-hidden="true"><span></span></span>'+
-    '</div>'+
-    '<p class="vt-cap"><span class="num">'+short(c.v)+'</span> views<br><b>@'+esc(c.p)+'</b><br>'+c.sub+', '+c.d+'</p></div>').join('');
-  once(wall.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
-  const TT='?autoplay=1&controls=1&progress_bar=1&play_button=1&volume_control=1&fullscreen_button=1&timestamp=1&loop=1&music_info=0&description=0&rel=0&native_context_menu=0&closed_caption=0';
-  function playTile(t){
-    if(t.classList.contains('playing')||t.classList.contains('loading')) return;
-    t.classList.add('loading');
-    const f=document.createElement('iframe');
-    if(t.dataset.pf==='Instagram'){f.src='https://www.instagram.com/p/'+t.dataset.id+'/embed/';f.setAttribute('scrolling','no');f.title='Instagram post';}
-    else{f.src='https://www.tiktok.com/player/v1/'+t.dataset.id+TT;f.title='TikTok clip';}
-    f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture'; f.setAttribute('allowfullscreen','');
-    f.addEventListener('load',()=>{t.classList.remove('loading');t.classList.add('playing');});
-    t.querySelector('.vt-media').appendChild(f);
-    setTimeout(()=>{t.classList.remove('loading');t.classList.add('playing');},4000);
+  var ov=document.getElementById('ov'), v=document.getElementById('ov-v'), last=null;
+  function open(i){
+    var c=CLIPS[i]; last=document.activeElement;
+    document.getElementById('ov-av').style.background=c.av;
+    document.getElementById('ov-h').textContent=c.h;
+    document.getElementById('ov-p').innerHTML=ICONS[c.p]+NAMES[c.p];
+    var a=document.getElementById('ov-a'); a.href=c.url; a.textContent='Open on '+NAMES[c.p]+' ↗';
+    var src=c.p==='tiktok'?'https://www.tiktok.com/player/v1/'+c.id+'?autoplay=1':'https://www.instagram.com/p/'+c.id+'/embed/';
+    v.innerHTML='<iframe title="'+c.h+' on '+NAMES[c.p]+'" src="'+src+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+    ov.hidden=false; document.body.style.overflow='hidden'; document.getElementById('ov-x').focus();
   }
-  wall.querySelectorAll('.vtile').forEach(t=>{const m=t.querySelector('.vt-media');m.addEventListener('click',()=>playTile(t));m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});});
-  window.addEventListener('message',e=>{
-    if(typeof e.data!=='object'||!e.data||!e.data['x-tiktok-player']||e.data.type!=='onPlayerReady') return;
-    try{e.source.postMessage({'x-tiktok-player':true,type:'play'},'*');e.source.postMessage({'x-tiktok-player':true,type:'unMute'},'*');}catch(err){}
-  });
+  function close(){ ov.hidden=true; v.innerHTML=''; document.body.style.overflow=''; if(last) last.focus(); }
+  document.querySelectorAll('[data-clip]').forEach(function(b){b.addEventListener('click',function(){open(+b.dataset.clip);});});
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+  document.getElementById('ov-x').addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!ov.hidden) close(); });
 })();
 </script>
 </body>
