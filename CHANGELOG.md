@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-19
 
+- Ended campaigns can be edited, and resumed for new posts only so old posts do not use up the budget · Requested by: owner · Made by: Claude Code session …oZc8T8 · 7cd6100
 - Add page owner insights to the londonbaithead posts on the Davido campaign, for reporting only · Requested by: owner · Made by: Claude Code session …T7QHqA · 2b2bf8c
 
 ## 2026-11-18
