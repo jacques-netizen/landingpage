@@ -1,5 +1,5 @@
 import 'server-only'
-import { db } from '@mde/db'
+import { db, shownViews } from '@mde/db'
 import { sql } from 'drizzle-orm'
 
 // The staff campaign overview: headline numbers and every post, grouped the way staff think about them.
@@ -22,11 +22,11 @@ export async function campaignOverview(campaignId: string, bucket: Bucket, q?: s
   const term = q?.trim() ? `%${q.trim()}%` : null
   const [[totals], counts, posts] = await Promise.all([
     d.execute<{ views: string; counted: string; earned: string; creators: string }>(sql`
-      select coalesce(sum(latest_views - baseline_views) filter (where state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
-        coalesce(sum(counted_views), 0)::bigint as counted,
-        coalesce(sum(earned_cents), 0)::bigint as earned,
-        count(distinct creator_id) filter (where state in (${inList(BUCKETS.approved.states)}))::bigint as creators
-      from submissions where campaign_id = ${campaignId}`),
+      select coalesce(sum(${shownViews('s')} - s.baseline_views) filter (where s.state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
+        coalesce(sum(s.counted_views), 0)::bigint as counted,
+        coalesce(sum(s.earned_cents), 0)::bigint as earned,
+        count(distinct s.creator_id) filter (where s.state in (${inList(BUCKETS.approved.states)}))::bigint as creators
+      from submissions s where s.campaign_id = ${campaignId}`),
     d.execute<{ state: string; n: string }>(
       sql`select state, count(*)::bigint as n from submissions where campaign_id = ${campaignId} group by state`,
     ),
@@ -50,7 +50,7 @@ export async function campaignOverview(campaignId: string, bucket: Bucket, q?: s
       shares: string | null
       checked_at: Date | null
     }>(sql`
-      select s.id, s.state, s.platform, s.post_url, s.latest_views, s.baseline_views, s.counted_views, s.earned_cents,
+      select s.id, s.state, s.platform, s.post_url, ${shownViews('s')} as latest_views, s.baseline_views, s.counted_views, s.earned_cents,
         s.submitted_at, s.reason_code, u.email, coalesce(u.username, u.display_name) as name, s.creator_id,
         a.handle, v.likes, v.comments, v.shares, v.taken_at as checked_at
       from submissions s join users u on u.id = s.creator_id
@@ -151,7 +151,7 @@ export async function campaignPages(campaignId: string) {
   }>(sql`
     select a.id, a.platform, a.handle, a.status, a.followers, coalesce(u.username, u.display_name, u.email) as creator, u.id as creator_id,
       count(s.id)::bigint as posts,
-      coalesce(sum(s.latest_views - s.baseline_views) filter (where s.state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
+      coalesce(sum(${shownViews('s')} - s.baseline_views) filter (where s.state in (${inList(BUCKETS.approved.states)})), 0)::bigint as views,
       coalesce(sum(s.earned_cents), 0)::bigint as earned
     from linked_accounts a
     join users u on u.id = a.creator_id

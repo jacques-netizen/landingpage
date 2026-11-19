@@ -330,6 +330,13 @@
       "when": 1794959568561,
       "tag": "0046_music_playlist_entries",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1795110937347,
+      "tag": "0047_post_insights",
+      "breakpoints": true
     }
   ]
 }

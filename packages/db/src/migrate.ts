@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { REASON_CODES } from '@mde/config'
 import { importArchivedClips } from './archived-clips-import'
+import { importPostInsights } from './post-insights-import'
 import { createDb } from './client'
 import { deploys, reasonCodes } from './schema'
 import { seedSettingsDefaults } from './settings'
@@ -40,6 +41,12 @@ export async function runMigrations(url: string) {
     await importArchivedClips(db)
   } catch (err) {
     console.error(JSON.stringify({ level: 'error', msg: 'archived clips import failed', err: String(err) }))
+  }
+  // One-off reporting figures the owner asked for (2026-11-19); never blocks a deploy, never moves money.
+  try {
+    await importPostInsights(db)
+  } catch (err) {
+    console.error(JSON.stringify({ level: 'error', msg: 'post insights import failed', err: String(err) }))
   }
   await sql.end()
 }

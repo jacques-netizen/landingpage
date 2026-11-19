@@ -6,5 +6,7 @@ export * from './legal'
 export * from './notify'
 export * as tables from './schema'
 export * from './snapshots'
+export * from './shown-views'
+export { importPostInsights, BAITHEAD_INSIGHTS, INSIGHTS_SOURCE } from './post-insights-import'
 // Query helpers for apps that do not depend on drizzle-orm themselves (the worker's one-off tasks).
 export { and, desc, eq, ilike, inArray, isNull, sql } from 'drizzle-orm'

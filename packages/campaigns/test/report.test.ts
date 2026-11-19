@@ -1,6 +1,14 @@
 // The client's campaign report (client report brief, 2026-10-12): every figure from SQL, checked
 // against a hand-built campaign with three posts and three days of snapshots.
-import { createDb, recordSnapshot, tables } from '@mde/db'
+import {
+  BAITHEAD_INSIGHTS,
+  createDb,
+  importPostInsights,
+  INSIGHTS_SOURCE,
+  recordSnapshot,
+  sql as q,
+  tables,
+} from '@mde/db'
 import { accrueEarnings, createPgStore } from '@mde/money'
 import { eq } from 'drizzle-orm'
 import { afterAll, describe, expect, it } from 'vitest'
@@ -347,5 +355,119 @@ describe('the client report rate', () => {
     // A budget set for the client's report replaces the campaign's there.
     const own = forClient(base, 2, 20_000)
     expect(own.budget).toMatchObject({ budgetCents: 20_000, spentCents: 1_000, remainingCents: 19_000 })
+  })
+})
+
+// Owner, 2026-11-19: figures from a page owner's own insights raise the views staff and the client see,
+// and never what anyone earned, is owed, was paid or what the campaign spent.
+describe('page owner insights', () => {
+  it('raise the report views for the matched posts only, and leave every amount alone', async () => {
+    const { id } = await reportCampaign()
+    const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
+    const ben = (await db.select().from(tables.submissions).where(eq(tables.submissions.campaignId, id)))[0]!.creatorId
+    const [acct] = await db
+      .insert(tables.linkedAccounts)
+      .values({
+        creatorId: ben,
+        platform: 'instagram',
+        handle: 'LondonBaithead',
+        linkMethod: 'bio_code',
+        status: 'verified',
+      })
+      .returning()
+    const post = async (postedAt: string, views: number, url: string) => {
+      const [s] = await db
+        .insert(tables.submissions)
+        .values({
+          campaignId: id,
+          creatorId: ben,
+          linkedAccountId: acct!.id,
+          platform: 'instagram',
+          postUrl: url,
+          platformPostId: `${Date.now()}${++n}`,
+          state: 'final',
+          termsVersionId: c!.currentTermsVersionId!,
+          rateCentsPer1000Locked: 200,
+          submittedAt: new Date(postedAt),
+          publishedAt: new Date(postedAt),
+          countedViews: views,
+          latestViews: views,
+          earnedCents: 123,
+        })
+        .returning()
+      await recordSnapshot(db, { submissionId: s!.id, takenAt: new Date(), views, likes: 10, comments: 1, shares: 1 })
+      return s!.id
+    }
+    const p3 = await post('2026-11-03T17:13:00Z', 443_898, 'https://www.instagram.com/p/AAA/')
+    const p4 = await post('2026-11-04T12:35:00Z', 703_100, 'https://www.instagram.com/p/BBB/')
+    const before = (await campaignReport(db, id, { mode: 'all', page: 1 }))!
+    const rowsBefore = await db.select().from(tables.submissions).where(eq(tables.submissions.campaignId, id))
+    const ledgerBefore = await db.select().from(tables.ledgerTransactions)
+
+    const logs: string[] = []
+    await importPostInsights(db, (m) => logs.push(m), id)
+    // Running it again (every deploy) changes nothing and writes no second audit row.
+    await importPostInsights(db, (m) => logs.push(m), id)
+
+    const after = (await campaignReport(db, id, { mode: 'all', page: 1 }))!
+    const added = BAITHEAD_INSIGHTS[0]!.views - 443_898 + (BAITHEAD_INSIGHTS[1]!.views - 703_100)
+    expect(after.totals.views).toBe(before.totals.views + added)
+    expect(after.viewsByDay.at(-1)!.views).toBe(after.totals.views)
+    expect(after.totals.likes).toBe(before.totals.likes - 20 + 19_300 + 113_000)
+    const byId = Object.fromEntries(after.submissions.rows.map((x) => [x.id, x]))
+    expect(byId[p3]).toMatchObject({ views: 1_389_215, verified: true })
+    expect(byId[p4]).toMatchObject({ views: 888_571, verified: true })
+    // Money: the budget block, every post's payout, the spend by day and the platforms' spend are the same.
+    // eCPM is spend over views, so more views lower it; the amounts stay exactly the same.
+    const { ecpmCents: _e1, ...moneyAfter } = after.budget
+    const { ecpmCents: _e0, ...moneyBefore } = before.budget
+    expect(moneyAfter).toEqual(moneyBefore)
+    expect(after.budget.ecpmCents!).toBeLessThanOrEqual(before.budget.ecpmCents!)
+    expect(after.spendByDay).toEqual(before.spendByDay)
+    expect(after.platforms.map((p) => p.spentCents)).toEqual(before.platforms.map((p) => p.spentCents))
+    expect(after.submissions.rows.map((x) => [x.id, x.payoutCents, x.payout]).sort()).toEqual(
+      before.submissions.rows.map((x) => [x.id, x.payoutCents, x.payout]).sort(),
+    )
+    // The submissions themselves and the ledger are untouched.
+    expect(await db.select().from(tables.submissions).where(eq(tables.submissions.campaignId, id))).toEqual(rowsBefore)
+    expect(await db.select().from(tables.ledgerTransactions)).toEqual(ledgerBefore)
+    const [i3] = await db.select().from(tables.postInsights).where(eq(tables.postInsights.submissionId, p3))
+    expect(i3).toMatchObject({
+      views: 1_389_215,
+      viewsByApp: { instagram: 234_228, facebook: 1_154_987 },
+      source: INSIGHTS_SOURCE,
+    })
+    const audits = await db.select().from(tables.auditLog).where(eq(tables.auditLog.action, 'submission.insights_set'))
+    expect(audits.filter((a) => a.entityId === p3 || a.entityId === p4)).toHaveLength(2)
+    const a3 = audits.find((a) => a.entityId === p3)!
+    expect((a3.before as { campaignMoney: unknown }).campaignMoney).toEqual(
+      (a3.after as { campaignMoney: unknown }).campaignMoney,
+    )
+  })
+
+  it('adds nothing when a day matches more than one post', async () => {
+    const { id } = await reportCampaign()
+    const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, id))
+    const creator = (await db.select().from(tables.submissions).where(eq(tables.submissions.campaignId, id)))[0]!
+      .creatorId
+    for (const code of ['X1', 'X2'])
+      await db.insert(tables.submissions).values({
+        campaignId: id,
+        creatorId: creator,
+        platform: 'instagram',
+        postUrl: `https://www.instagram.com/londonbaithead/reel/${code}/`,
+        platformPostId: `${code}${Date.now()}${++n}`,
+        state: 'final',
+        termsVersionId: c!.currentTermsVersionId!,
+        rateCentsPer1000Locked: 200,
+        submittedAt: new Date('2026-11-03T10:00:00Z'),
+      })
+    const logs: string[] = []
+    await importPostInsights(db, (m) => logs.push(m), id)
+    expect(logs.some((l) => l.includes('"matches":2'))).toBe(true)
+    const rows = await db.execute<{ n: string }>(
+      q`select count(*)::text as n from post_insights pi join submissions s on s.id = pi.submission_id where s.campaign_id = ${id}`,
+    )
+    expect(Number(rows[0]!.n)).toBe(0)
   })
 })

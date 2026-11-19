@@ -142,7 +142,8 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // views the report shows for it, rounded down. It does not depend on how the post came in, and the
   // clips add up to the budget box.
   const flatFee = c.postFeeCents > 0
-  const flat = sql`(case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint + (coalesce(v.views, 0) * ${c.rateCentsPer1000}::bigint) / 1000 else 0 end)`
+  // On the scraped views only: figures from a page owner's insights are for reporting and never change spend.
+  const flat = sql`(case when s.state in (${list(APPROVED)}) then ${c.postFeeCents}::bigint + (coalesce(v.snap_views, 0) * ${c.rateCentsPer1000}::bigint) / 1000 else 0 end)`
   const raw = flatFee ? flat : sql`(s.earned_cents + ${outside})`
   const outsideRaw = flatFee ? flat : outside
   // Spend never passes the budget the client sees (owner, 2026-11-03). Posts take the budget in the
@@ -150,9 +151,20 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
   // spent ("Budget reached"). The cap is in the report's own units: the client sees spend at the spend
   // factor, so the budget is divided by it, rounded down, and every amount stays in whole cents.
   const capRaw = Math.floor((c.clientBudgetCents ?? c.budgetCents) / Math.max(1, c.clientSpendFactor))
+  // A post's latest figures: its newest day row, raised to its page owner's insights where staff added
+  // them (owner, 2026-11-19). snap_views stays the scraped figure, the only one any amount may use.
   const snap = sql`left join lateral (
-      select views, likes, comments, shares from view_snapshot_days v
-      where v.submission_id = s.id order by v.day desc limit 1
+      select dv.views as snap_views,
+        case when pi.views is null then dv.views else greatest(coalesce(dv.views, 0), pi.views) end as views,
+        case when pi.likes is null then dv.likes else greatest(coalesce(dv.likes, 0), pi.likes) end as likes,
+        case when pi.comments is null then dv.comments else greatest(coalesce(dv.comments, 0), pi.comments) end as comments,
+        dv.shares, pi.views as insight_views
+      from (select 1) one
+      left join lateral (
+        select views, likes, comments, shares from view_snapshot_days x
+        where x.submission_id = s.id order by x.day desc limit 1
+      ) dv on true
+      left join post_insights pi on pi.submission_id = s.id
     ) v on true`
   const rawRows = sql`select s.id, s.submitted_at, ${raw} as raw from submissions s ${snap}
     where s.campaign_id = ${campaignId} and s.state in (${list(APPROVED)})`
@@ -170,7 +182,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     select s.id, s.platform, s.platform_post_id, s.post_url, s.published_at, s.submitted_at, s.state, ${paidCols}, s.creator_id,
       s.thumbnail_url, s.video_url, s.counted_views, s.verified_views, s.latest_views, a.handle, u.username,
       case when u.email like '%@clippers.invalid' and u.display_name <> 'Imported from a CSV' then u.display_name end as stand_in,
-      coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes,
+      coalesce(v.views, 0)::bigint as views, coalesce(v.likes, 0)::bigint as likes, v.insight_views,
       coalesce(v.comments, 0)::bigint as comments, coalesce(v.shares, 0)::bigint as shares
     from submissions s
     left join linked_accounts a on a.id = s.linked_account_id
@@ -201,6 +213,7 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
     likes: string
     comments: string
     shares: string
+    insight_views: string | null
   }
   const toClip = (r: ClipRow): ReportClip => ({
     id: r.id,
@@ -226,7 +239,10 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
         : APPROVED.includes(r.state) && n(r.earned_cents) > 0
           ? 'pending'
           : 'none',
-    verified: n(r.verified_views) > 0 && n(r.verified_views) >= n(r.latest_views),
+    // Verified by the creator's proof, or by the page owner's insights staff added.
+    verified:
+      (n(r.verified_views) > 0 && n(r.verified_views) >= n(r.latest_views)) ||
+      (r.insight_views !== null && n(r.insight_views) >= n(r.latest_views)),
   })
 
   const order =
@@ -250,10 +266,24 @@ export async function campaignReport(db: DbOrTx, campaignId: string, q: ReportQu
       select * from l order by views desc, submitted_at desc limit 10`),
       // Cumulative views by day: each post's latest figure per day (view_snapshot_days), carried forward, summed.
       db.execute<{ day: string; views: string; clips: string }>(sql`
-      with daily as (
-        select v.submission_id, v.day, v.views
+      with raw as (
+        select v.submission_id, v.day, v.views, false as insight
         from view_snapshot_days v join submissions s on s.id = v.submission_id
         where ${inRange} and s.state in (${list(counted)}) and v.day <= ${toDay}::date
+        union all
+        -- A page owner's insights count on the day they were read, or the report's last day if later,
+        -- so the chart ends on the same total as the figures (owner, 2026-11-19).
+        select pi.submission_id, least(pi.read_on, ${toDay}::date), pi.views, true
+        from post_insights pi join submissions s on s.id = pi.submission_id
+        where ${inRange} and s.state in (${list(counted)})
+      ), by_day as (
+        select submission_id, day, max(views) as views, bool_or(insight) as insight from raw group by submission_id, day
+      ), daily as (
+        -- A post with insights never drops below them on a later day.
+        select submission_id, day,
+          case when bool_or(insight) over (partition by submission_id)
+            then max(views) over (partition by submission_id order by day) else views end as views
+        from by_day
       ), deltas as (
         select day, views - lag(views, 1, 0::bigint) over (partition by submission_id order by day) as delta from daily
       ), per_day as (

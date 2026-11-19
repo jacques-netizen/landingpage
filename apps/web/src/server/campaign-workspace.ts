@@ -1,6 +1,6 @@
 import 'server-only'
 import { campaignFigures } from '@mde/campaigns'
-import { db, tables } from '@mde/db'
+import { db, shownViews, tables } from '@mde/db'
 import { SOUND_CHECK_LABEL, type SoundCheckStatus } from '@mde/music/sound-check'
 import { creatorVerificationStats, isInstagramPost, REJECTIONS_TO_BLOCK } from '@mde/review'
 import type { CheckResult } from '@mde/submissions/checks'
@@ -165,8 +165,8 @@ export async function campaignClips(campaignId: string, f: ClipFilters = {}): Pr
     f.sort === 'newest'
       ? sql`s.submitted_at desc`
       : f.sort === 'least'
-        ? sql`s.latest_views asc, s.submitted_at desc`
-        : sql`s.latest_views desc, s.submitted_at desc`
+        ? sql`${shownViews('s')} asc, s.submitted_at desc`
+        : sql`${shownViews('s')} desc, s.submitted_at desc`
   const rows = await db().execute<{
     id: string
     state: string
@@ -190,7 +190,7 @@ export async function campaignClips(campaignId: string, f: ClipFilters = {}): Pr
     checked_at: Date | null
   }>(sql`
     select s.id, s.state, s.platform, s.platform_post_id, s.post_url, s.video_url, s.thumbnail_url,
-      s.latest_views, s.counted_views, s.verified_views, s.earned_cents, s.submitted_at, s.published_at,
+      ${shownViews('s')} as latest_views, s.counted_views, s.verified_views, s.earned_cents, s.submitted_at, s.published_at,
       s.creator_id, u.email, coalesce(u.username, u.display_name) as name, a.handle,
       v.likes, v.comments, v.taken_at as checked_at
     from submissions s
@@ -285,7 +285,7 @@ export async function campaignClippers(campaignId: string): Promise<ClipperRow[]
            and s.state in (${inList(APPROVED)}))::bigint as approved,
         (select count(*) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id
            and s.state in (${inList(BUCKETS.rejected.states)}))::bigint as rejected,
-        (select coalesce(sum(s.latest_views), 0) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id
+        (select coalesce(sum(${shownViews('s')}), 0) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id
            and s.state in (${inList(APPROVED)}))::bigint as views,
         (select coalesce(sum(s.earned_cents), 0) from submissions s where s.campaign_id = m.campaign_id and s.creator_id = u.id)::bigint as earned,
         (select count(*) from fraud_flags f join submissions s on s.id = f.submission_id
@@ -413,11 +413,11 @@ export async function campaignHeadline(campaignId: string) {
   const d = db()
   const [[r], reasons] = await Promise.all([
     d.execute<{ views: string; waiting: string; verifications: string }>(sql`
-      select coalesce(sum(latest_views) filter (where state in (${inList(APPROVED)})), 0)::bigint as views,
-        count(*) filter (where state in ('needs_review', 'flagged'))::bigint as waiting,
+      select coalesce(sum(${shownViews('s')}) filter (where s.state in (${inList(APPROVED)})), 0)::bigint as views,
+        count(*) filter (where s.state in ('needs_review', 'flagged'))::bigint as waiting,
         (select count(*) from view_proofs p join submissions x on x.id = p.submission_id
           where x.campaign_id = ${campaignId} and p.status = 'submitted')::bigint as verifications
-      from submissions where campaign_id = ${campaignId}`),
+      from submissions s where s.campaign_id = ${campaignId}`),
     d
       .select({ code: tables.reasonCodes.code, label: tables.reasonCodes.label })
       .from(tables.reasonCodes)

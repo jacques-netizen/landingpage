@@ -490,6 +490,30 @@ export const viewSnapshotDays = pgTable(
   (t) => [primaryKey({ columns: [t.submissionId, t.day] })],
 )
 
+// A post's figures from its page owner's own insights screen, for reporting only (owner, 2026-11-19:
+// the @londonbaithead posts on the Davido campaign, whose insights count Facebook cross-post views too).
+// The staff pages and the client report show the higher of the scraped views and these. Nothing that
+// pays reads this table: earnings, payouts and spend still come from counted views and the ledger, and
+// the view checks never write it.
+export const postInsights = pgTable('post_insights', {
+  submissionId: uuid('submission_id')
+    .primaryKey()
+    .references(() => submissions.id),
+  views: bigint('views', { mode: 'number' }).notNull(),
+  // Views per app when the insights split them, like { instagram: 234228, facebook: 1154987 }.
+  viewsByApp: jsonb('views_by_app'),
+  likes: bigint('likes', { mode: 'number' }),
+  comments: bigint('comments', { mode: 'number' }),
+  reposts: bigint('reposts', { mode: 'number' }),
+  saves: bigint('saves', { mode: 'number' }),
+  // Everything else the screen showed (profile activity, follows, audience by country), as read.
+  extra: jsonb('extra'),
+  source: text('source').notNull(),
+  readOn: date('read_on').notNull(),
+  setBy: uuid('set_by').references(() => users.id),
+  ...timestamps,
+})
+
 export const REVIEW_OUTCOMES = ['approve', 'reject', 'request_info', 'reverse', 'remove', 'set_pending'] as const
 
 export const reviewDecisions = pgTable(
