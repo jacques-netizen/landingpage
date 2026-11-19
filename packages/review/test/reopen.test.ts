@@ -53,4 +53,32 @@ describe('resuming a closed campaign', () => {
       .where(eq(tables.campaigns.id, t.campaignId))
     await expect(reopenCampaign(db, t.staffId, t.campaignId)).rejects.toThrow(/already been released/i)
   })
+
+  // Owner, 2026-11-19 (Fay campaign): reopen it for one clipper's new posts without the old posts
+  // earning on views read after the close and using up the rest of the budget.
+  it('can resume for new posts only: old posts stay final and keep what they earned', async () => {
+    const t = await postInReview()
+    await approve(db, t.staffId, t.id)
+    t.views(3_000)
+    await t.check(1)
+    expect((await t.sub()).earnedCents).toBe(600)
+    await db.transaction((tx) => closeCampaign(tx, t.staffId, t.campaignId))
+
+    const r = await reopenCampaign(db, t.staffId, t.campaignId, new Date(), { newPostsOnly: true })
+    expect(r.posts).toBe(0)
+    const [c] = await db.select().from(tables.campaigns).where(eq(tables.campaigns.id, t.campaignId))
+    expect(c).toMatchObject({ status: 'live', closedAt: null, releaseAt: null })
+    expect((await t.sub()).state).toBe('final')
+    // More views later: the old post earns nothing more.
+    t.views(9_000)
+    await db
+      .update(tables.submissions)
+      .set({ nextCheckAt: new Date(0) })
+      .where(eq(tables.submissions.id, t.id))
+    await t.check(2)
+    expect((await t.sub()).earnedCents).toBe(600)
+    expect((await t.sub()).state).toBe('final')
+    const audit = await db.select().from(tables.auditLog).where(eq(tables.auditLog.entityId, t.campaignId))
+    expect(audit.find((a) => a.action === 'campaign.reopen')?.after).toMatchObject({ newPostsOnly: true })
+  })
 })

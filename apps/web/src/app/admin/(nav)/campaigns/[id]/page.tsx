@@ -119,7 +119,12 @@ export default async function CampaignAdminPage({
   const live = ['live', 'closing'].includes(c.status)
   const missing = missingForPublish(c)
   // The budget can always change; its difference moves through the ledger (see changeBudget).
-  const locked = live ? ['minViewsToEarn', 'clientId'] : []
+  // An ended campaign can still be edited (owner, 2026-11-19), all but its budget.
+  const locked = live
+    ? ['minViewsToEarn', 'clientId']
+    : c.status === 'closed'
+      ? ['minViewsToEarn', 'clientId', 'budget']
+      : []
   const status = CAMPAIGN_STATUS[c.status]
   const head = await campaignHeadline(id)
   // The Music tab shows on music campaigns and on any campaign with a tracked song (owner, 2026-11-12);
@@ -904,15 +909,15 @@ export default async function CampaignAdminPage({
           </>
         ) : (
           <>
-            {canMoney && !['closed', 'cancelled'].includes(c.status) ? (
+            {canMoney && c.status !== 'cancelled' ? (
               <Card title="Edit campaign">
                 <CampaignBuilder id={c.id} initial={valuesFrom(c)} clients={clients} locked={locked} funded={funded} />
               </Card>
             ) : (
               <Card title="Edit campaign">
                 <p className="m-0 text-[14px] text-muted-2">
-                  {['closed', 'cancelled'].includes(c.status)
-                    ? 'This campaign has ended and can no longer be edited.'
+                  {c.status === 'cancelled'
+                    ? 'This campaign was cancelled and can no longer be edited.'
                     : 'Only finance and admin staff can edit campaigns.'}
                 </p>
               </Card>

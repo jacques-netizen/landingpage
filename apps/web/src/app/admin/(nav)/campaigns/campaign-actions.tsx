@@ -27,7 +27,7 @@ type Props = {
 // The actions a campaign allows in its current state. Close and cancel ask for confirmation.
 export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Props) {
   const [state, action, pending] = useActionState<BuilderState, FormData>(campaignAction.bind(null, id), {})
-  const [confirm, setConfirm] = useState<null | 'close' | 'cancel' | 'delete' | 'resume'>(null)
+  const [confirm, setConfirm] = useState<null | 'close' | 'cancel' | 'delete' | 'resume' | 'resume-new'>(null)
   const [reference, setReference] = useState('')
   const submit = (what: string) => {
     const f = new FormData()
@@ -100,6 +100,11 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
             Resume campaign
           </Button>
         ) : null}
+        {can.resume ? (
+          <Button size="sm" variant="secondary" onClick={() => setConfirm('resume-new')} disabled={pending}>
+            Resume for new posts only
+          </Button>
+        ) : null}
         {can.cancel ? (
           <Button size="sm" variant="destructive" onClick={() => setConfirm('cancel')} disabled={pending}>
             Cancel campaign
@@ -119,20 +124,24 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
             ? 'Close this campaign?'
             : confirm === 'resume'
               ? 'Resume this campaign?'
-              : confirm === 'delete'
-                ? 'Delete this campaign?'
-                : 'Cancel this campaign?'
+              : confirm === 'resume-new'
+                ? 'Resume for new posts only?'
+                : confirm === 'delete'
+                  ? 'Delete this campaign?'
+                  : 'Cancel this campaign?'
         }
         description={
           confirm === 'close'
             ? 'No new earnings after this. Posts become final and earnings are released after the review window. You can resume it until then.'
             : confirm === 'resume'
               ? 'It goes live again. Every post is checked now and the views read from here count, up to the caps and the budget. Close it again once the stats are in.'
-              : confirm === 'delete'
-                ? keepsRecords
-                  ? 'It disappears from the admin and the campaigns screen. Money has moved or creators have posted, so it is closed first and its records are kept for the books: earnings are still paid and the unspent budget goes back to the client. This cannot be undone.'
-                  : 'It is removed completely. This cannot be undone.'
-                : 'The campaign will not run. This cannot be undone.'
+              : confirm === 'resume-new'
+                ? 'It goes live again for new posts. Every post already in the campaign keeps exactly what it earned and earns nothing more, so only new posts use the budget that is left. Make it private first if only one clipper should join. Close it again when they are done.'
+                : confirm === 'delete'
+                  ? keepsRecords
+                    ? 'It disappears from the admin and the campaigns screen. Money has moved or creators have posted, so it is closed first and its records are kept for the books: earnings are still paid and the unspent budget goes back to the client. This cannot be undone.'
+                    : 'It is removed completely. This cannot be undone.'
+                  : 'The campaign will not run. This cannot be undone.'
         }
         footer={
           <>
@@ -151,9 +160,11 @@ export function CampaignActions({ id, can, fundLabel, goLive, keepsRecords }: Pr
                 ? 'Close campaign'
                 : confirm === 'resume'
                   ? 'Resume campaign'
-                  : confirm === 'delete'
-                    ? 'Delete campaign'
-                    : 'Cancel campaign'}
+                  : confirm === 'resume-new'
+                    ? 'Resume for new posts'
+                    : confirm === 'delete'
+                      ? 'Delete campaign'
+                      : 'Cancel campaign'}
             </Button>
           </>
         }

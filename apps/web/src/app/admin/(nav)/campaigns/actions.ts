@@ -140,6 +140,18 @@ export async function campaignAction(id: string, _prev: BuilderState, form: Form
       revalidatePath(`/admin/campaigns/${id}`)
       return { ok: 'Closed. Earnings are released after the review window.' }
     }
+    if (what === 'resume-new') {
+      const r = await reopenCampaign(db(), viewer.id, id, new Date(), { newPostsOnly: true })
+      revalidatePath(`/admin/campaigns/${id}`)
+      revalidatePath('/campaigns')
+      return {
+        ok: `Resumed for new posts. Posts already in the campaign keep what they earned and earn nothing more.${
+          r.endCleared
+            ? ' The end date had passed, so it was cleared: close the campaign yourself when they are done.'
+            : ''
+        }`,
+      }
+    }
     if (what === 'resume') {
       const r = await reopenCampaign(db(), viewer.id, id)
       revalidatePath(`/admin/campaigns/${id}`)

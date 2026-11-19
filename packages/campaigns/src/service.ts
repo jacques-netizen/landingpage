@@ -120,9 +120,12 @@ const LOCKED_AFTER_LIVE = ['minViewsToEarn', 'type', 'clientId'] as const
  */
 export async function changeBudget(db: Db, actorId: string, id: string, budgetCents: number) {
   const c = await load(db, id)
-  if (['closed', 'cancelled'].includes(c.status))
-    throw new CampaignError('not_editable', 'Closed and cancelled campaigns cannot be edited.')
   if (budgetCents === c.budgetCents) return { recordedCents: 0 }
+  if (['closed', 'cancelled'].includes(c.status))
+    throw new CampaignError(
+      'not_editable',
+      'The budget of an ended campaign cannot change. Resume it first, then change the budget.',
+    )
   if (!(await isFunded(db, id)) || !c.clientId) {
     await db.update(tables.campaigns).set({ budgetCents }).where(eq(tables.campaigns.id, id))
     return { recordedCents: 0 }
@@ -161,10 +164,11 @@ export async function changeBudget(db: Db, actorId: string, id: string, budgetCe
 
 /** Save changes. Rule text changes on a published campaign become a new terms version. */
 async function checkLocked(tx: DbOrTx, before: Campaign, next: ReturnType<typeof columnsFrom>) {
-  if (['closed', 'cancelled'].includes(before.status))
-    throw new CampaignError('not_editable', 'Closed and cancelled campaigns cannot be edited.')
+  // A closed campaign can still be edited (owner, 2026-11-19: make the Fay campaign private before
+  // resuming it for one clipper), with the same locks as a live one; its budget stays as it is.
+  if (before.status === 'cancelled') throw new CampaignError('not_editable', 'Cancelled campaigns cannot be edited.')
   const funded = await isFunded(tx, before.id)
-  const published = ['live', 'closing'].includes(before.status)
+  const published = ['live', 'closing', 'closed'].includes(before.status)
   const locked: readonly string[] = published ? LOCKED_AFTER_LIVE : funded ? LOCKED_AFTER_FUNDING : []
   for (const k of locked) {
     const a = before[k as keyof Campaign]
@@ -441,7 +445,13 @@ export async function closeCampaign(tx: DbOrTx, actorId: string | null, id: stri
  * budget. An end date already passed is cleared so the campaign is not closed again straight away; staff
  * close it themselves when the stats are in. Audited.
  */
-export async function reopenCampaign(db: Db, actorId: string, id: string, now = new Date()) {
+export async function reopenCampaign(
+  db: Db,
+  actorId: string,
+  id: string,
+  now = new Date(),
+  opts: { newPostsOnly?: boolean } = {},
+) {
   return db.transaction(async (tx) => {
     const c = await load(tx, id, true)
     if (c.status !== 'closed' || c.deletedAt)
@@ -459,18 +469,27 @@ export async function reopenCampaign(db: Db, actorId: string, id: string, now = 
       .update(tables.campaigns)
       .set({ status: 'live', closedAt: null, releaseAt: null, ...(clearEnd ? { endAt: null } : {}) })
       .where(eq(tables.campaigns.id, id))
-    const reopened = await tx
-      .update(tables.submissions)
-      .set({ state: 'approved', nextCheckAt: now })
-      .where(and(eq(tables.submissions.campaignId, id), eq(tables.submissions.state, 'final')))
-      .returning({ id: tables.submissions.id })
+    // For new posts only (owner, 2026-11-19): posts from before stay final, so they keep what they
+    // earned, views can only correct them down, and they are released when the campaign closes again.
+    const reopened = opts.newPostsOnly
+      ? []
+      : await tx
+          .update(tables.submissions)
+          .set({ state: 'approved', nextCheckAt: now })
+          .where(and(eq(tables.submissions.campaignId, id), eq(tables.submissions.state, 'final')))
+          .returning({ id: tables.submissions.id })
     await writeAudit(tx, {
       actorId,
       action: 'campaign.reopen',
       entity: 'campaign',
       entityId: id,
       before: { status: c.status, closedAt: c.closedAt, releaseAt: c.releaseAt, endAt: c.endAt },
-      after: { status: 'live', posts: reopened.length, endAt: clearEnd ? null : c.endAt },
+      after: {
+        status: 'live',
+        posts: reopened.length,
+        endAt: clearEnd ? null : c.endAt,
+        newPostsOnly: !!opts.newPostsOnly,
+      },
     })
     return { posts: reopened.length, endCleared: clearEnd }
   })
