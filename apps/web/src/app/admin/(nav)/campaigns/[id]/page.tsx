@@ -257,7 +257,7 @@ export default async function CampaignAdminPage({
     ) : null
 
   return (
-    <div className="mx-auto max-w-[1200px] px-8 py-6">
+    <div className="mx-auto max-w-[1200px] px-4 py-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-muted">
         <a href="/admin" className="text-muted no-underline hover:text-ink">
           Campaigns
@@ -266,7 +266,7 @@ export default async function CampaignAdminPage({
         <span className="text-ink">{c.title}</span>
       </nav>
 
-      <section className="flex gap-6 rounded-[16px] border border-solid border-line bg-panel p-4">
+      <section className="flex flex-col gap-4 rounded-[16px] border border-solid border-line bg-panel p-4 sm:flex-row sm:gap-6">
         {c.coverImageUrl ? (
           <img src={c.coverImageUrl} alt="" className="h-[180px] w-[140px] flex-none rounded-[12px] object-cover" />
         ) : (
@@ -275,7 +275,7 @@ export default async function CampaignAdminPage({
           </div>
         )}
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0">
               <h1 className="m-0 flex items-center gap-2 font-app text-[22px] font-bold">
                 {c.title}
@@ -307,7 +307,7 @@ export default async function CampaignAdminPage({
             </div>
           </div>
           <div className="mt-auto flex flex-wrap items-end gap-6 pt-4 text-[13px]">
-            <div className="min-w-[260px]">
+            <div className="w-full sm:w-auto sm:min-w-[260px]">
               <div className="flex justify-between gap-2 text-muted">
                 <span>Budget</span>
                 <span className="tabular-nums">
@@ -444,7 +444,7 @@ export default async function CampaignAdminPage({
             {canMoney && !open ? <ArchivedClips campaignId={c.id} /> : null}
             <Card title="Clips" note="Every post in the campaign. Click a clip to play it here.">
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <form action={base} className="flex gap-2">
+                <form action={base} className="flex flex-wrap gap-2">
                   <input type="hidden" name="tab" value="clips" />
                   {clipFilters.status !== 'all' ? (
                     <input type="hidden" name="status" value={clipFilters.status} />

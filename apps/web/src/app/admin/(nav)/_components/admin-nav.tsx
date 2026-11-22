@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { signOutAction } from '@/app/(auth)/actions'
 
 // The staff console sidebar, laid out like the Promote admin: logo, search, sections with icons, and the
@@ -62,13 +62,41 @@ function Icon({ d }: { d: string }) {
   )
 }
 
-export function AdminSideNav({ email, role }: { email: string; role: string }) {
+// The console's frame. On a computer the sidebar sits on the left; on a phone (owner, 2026-11-22: the
+// admin was unusable on a phone) it slides in from the left behind a menu button in the top bar.
+export function AdminShell({ email, role, children }: { email: string; role: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const path = usePathname()
+  useEffect(() => setOpen(false), [path])
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+  return (
+    <div className="mde-admin-dark flex min-h-screen bg-page font-sans text-ink">
+      {open ? (
+        <div aria-hidden className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setOpen(false)} />
+      ) : null}
+      <AdminSideNav email={email} role={role} open={open} />
+      <div className="min-w-0 flex-1">
+        <AdminTopBar onMenu={() => setOpen(true)} />
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function AdminSideNav({ email, role, open }: { email: string; role: string; open: boolean }) {
   const path = usePathname()
   const active = (href: string) => (href === '/admin' ? path === '/admin' : path.startsWith(href))
   return (
     <nav
       aria-label="Admin"
-      className="sticky top-0 box-border flex h-screen w-[232px] flex-none flex-col border-0 border-r border-solid border-line bg-panel px-3 py-5 font-sans text-[13px]"
+      className={`fixed inset-y-0 left-0 z-40 box-border flex h-dvh w-[264px] max-w-[85vw] flex-none flex-col border-0 border-r border-solid border-line bg-panel px-3 py-5 font-sans text-[13px] transition-transform duration-200 lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-[232px] lg:translate-x-0 ${
+        open ? 'translate-x-0' : '-translate-x-full'
+      }`}
     >
       <a href="/admin" className="mb-5 block px-3">
         <img
@@ -140,10 +168,18 @@ export function AdminSideNav({ email, role }: { email: string; role: string }) {
   )
 }
 
-export function AdminTopBar({ children }: { children?: ReactNode }) {
+function AdminTopBar({ onMenu }: { onMenu: () => void }) {
   return (
-    <header className="sticky top-0 z-10 flex h-14 items-center justify-end gap-3 border-0 border-b border-solid border-line bg-page/90 px-8 backdrop-blur">
-      {children}
+    <header className="sticky top-0 z-20 flex h-14 items-center justify-end gap-3 border-0 border-b border-solid border-line bg-page/90 px-4 backdrop-blur lg:px-8">
+      <button
+        type="button"
+        onClick={onMenu}
+        aria-label="Open the menu"
+        className="mr-auto flex h-9 cursor-pointer items-center gap-2 rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink lg:hidden"
+      >
+        <Icon d="M3 5h14M3 10h14M3 15h14" />
+        Menu
+      </button>
       <a
         href="/campaigns"
         className="flex h-9 items-center gap-2 rounded-[10px] border border-solid border-[rgba(216,197,143,0.35)] bg-[rgba(216,197,143,0.1)] px-4 text-[13px] font-medium text-gold-soft no-underline"

@@ -13,8 +13,8 @@ export function AdminPage({
   children: ReactNode
 }) {
   return (
-    <div className="mx-auto max-w-[1080px] px-10 py-8">
-      <div className="flex items-start justify-between gap-6">
+    <div className="mx-auto max-w-[1080px] px-4 py-6 sm:px-10 sm:py-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 sm:gap-6">
         <div>
           <h1 className="m-0 font-app text-[24px] font-bold tracking-[-0.01em]">{title}</h1>
           {lead ? <p className="mt-1 mb-0 text-[13px] text-muted-2">{lead}</p> : null}

@@ -104,7 +104,7 @@ export default async function CampaignsAdminPage({ searchParams }: { searchParam
         </Notice>
       ) : null}
 
-      <form action="/admin/campaigns" className="mb-3 flex gap-2">
+      <form action="/admin/campaigns" className="mb-3 flex flex-wrap gap-2">
         {show !== 'all' ? <input type="hidden" name="show" value={show} /> : null}
         <input
           type="search"
@@ -112,7 +112,7 @@ export default async function CampaignsAdminPage({ searchParams }: { searchParam
           defaultValue={q ?? ''}
           aria-label="Search campaigns by title"
           placeholder="Search campaigns by title"
-          className="h-10 min-w-0 flex-1 rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink"
+          className="h-10 min-w-0 flex-1 basis-full rounded-[10px] border border-solid border-line bg-field px-3 text-[13px] text-ink sm:basis-auto"
         />
         <select name="access" defaultValue={access} aria-label="Access" className={select}>
           <option value="all">Access: All</option>
@@ -131,7 +131,7 @@ export default async function CampaignsAdminPage({ searchParams }: { searchParam
           Search
         </button>
       </form>
-      <nav aria-label="Campaigns by state" className="mb-4 flex gap-2">
+      <nav aria-label="Campaigns by state" className="mb-4 flex flex-wrap gap-2">
         {(
           [
             ['all', 'All'],

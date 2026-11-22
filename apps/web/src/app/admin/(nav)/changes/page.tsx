@@ -43,7 +43,7 @@ export default async function ChangesPage({ searchParams }: { searchParams: Prom
         )}
         {live?.branch ? ` from ${live.branch}` : ''}
       </p>
-      <nav aria-label="Change log" className="mb-6 flex gap-2">
+      <nav aria-label="Change log" className="mb-6 flex flex-wrap gap-2">
         {TABS.map(([k, label]) => (
           <a
             key={k}
@@ -57,7 +57,9 @@ export default async function ChangesPage({ searchParams }: { searchParams: Prom
           </a>
         ))}
       </nav>
-      {tab === 'code' ? <Code /> : tab === 'deploys' ? <Deploys /> : <Staff page={page} />}
+      <div className="overflow-x-auto">
+        {tab === 'code' ? <Code /> : tab === 'deploys' ? <Deploys /> : <Staff page={page} />}
+      </div>
     </AdminPage>
   )
 }

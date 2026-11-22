@@ -21,19 +21,23 @@ export default async function SettingsPage() {
         <p className="mt-1 mb-4 max-w-[640px] text-[13px] text-muted-2">
           The message is what a creator sees with a rejection or removal. The code itself never changes.
         </p>
-        <div className="grid grid-cols-[180px_200px_minmax(0,1fr)_auto] gap-3 border-0 border-b border-solid border-line pb-2 text-[13px] text-muted-2">
-          <span>Code</span>
-          <span>Label</span>
-          <span>Creator message</span>
-          <span className="w-[64px]" />
+        <div className="overflow-x-auto">
+          <div className="min-w-[720px]">
+            <div className="grid grid-cols-[180px_200px_minmax(0,1fr)_auto] gap-3 border-0 border-b border-solid border-line pb-2 text-[13px] text-muted-2">
+              <span>Code</span>
+              <span>Label</span>
+              <span>Creator message</span>
+              <span className="w-[64px]" />
+            </div>
+            {codes.length === 0 ? (
+              <EmptyState body="No reason codes yet. Run the database migrations to add the starting list." />
+            ) : (
+              codes.map((c) => (
+                <ReasonCodeRow key={c.code} code={c.code} label={c.label} creatorMessage={c.creatorMessage} />
+              ))
+            )}
+          </div>
         </div>
-        {codes.length === 0 ? (
-          <EmptyState body="No reason codes yet. Run the database migrations to add the starting list." />
-        ) : (
-          codes.map((c) => (
-            <ReasonCodeRow key={c.code} code={c.code} label={c.label} creatorMessage={c.creatorMessage} />
-          ))
-        )}
       </section>
     </AdminPage>
   )
