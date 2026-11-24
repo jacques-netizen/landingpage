@@ -540,6 +540,14 @@ export default async function CampaignAdminPage({
         ) : tab === 'clippers' ? (
           <>
             <Card title="Clippers" note="Everyone who joined this campaign. Click a clipper to see their clips.">
+              {canMoney ? (
+                <a
+                  href={`/api/admin/campaigns/${c.id}/owed`}
+                  className="mb-4 inline-flex h-9 items-center rounded-[10px] border border-solid border-[rgba(216,197,143,0.35)] bg-[rgba(216,197,143,0.1)] px-4 text-[13px] font-medium text-gold-soft no-underline"
+                >
+                  Download what everyone is owed
+                </a>
+              ) : null}
               {clippers.length === 0 ? (
                 <EmptyState body="Nobody has joined yet." />
               ) : (
