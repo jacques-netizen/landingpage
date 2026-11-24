@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>SolCal Properties &middot; Season of Giving &middot; Maison d'&Eacute;lites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --teal:#0B6E76; --teal-soft:#A2E8EB;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+  img{display:block;max-width:100%}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:26ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .body-lg + .body-lg{margin-top:1.1rem}
+  .section{padding:clamp(4.2rem,10vh,7.5rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3.2rem 0 1.2rem}
+  .alt{background:var(--panel)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%),var(--bg)}
+  .hero-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;color:var(--text);text-decoration:none}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .mark i{font-family:'Archivo',sans-serif;font-style:normal;font-weight:800;letter-spacing:0.02em}
+  .hero-body{display:grid;grid-template-columns:1.1fr 0.9fr;gap:2.4rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(2.9rem,8.2vw,7rem);line-height:0.9;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.4em;letter-spacing:0.01em;color:var(--gold-soft);margin-top:0.7rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.86;margin-top:1.8rem;max-width:46ch;line-height:1.5}
+  .hero-sub b{color:var(--gold-soft);font-weight:500}
+  .hero-chips{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:2rem}
+  .hchip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 0.95rem;border:1px solid var(--hair);color:var(--text);border-radius:999px;background:rgba(31,25,17,.6)}
+  .hchip b{color:var(--gold-soft)}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* phone with the on-screen sticker */
+  .phone-wrap{position:relative;justify-self:center;width:min(100%,330px);isolation:isolate}
+  .ph-glow{position:absolute;inset:-18%;z-index:-1;background:radial-gradient(circle,rgba(212,178,106,.34),transparent 62%);filter:blur(26px);animation:pulse 6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+  .phone{position:relative;aspect-ratio:9/16;border-radius:30px;overflow:hidden;background:#0b0906;border:7px solid #241d14;
+    box-shadow:0 50px 90px -30px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.3);transform:rotate(2.5deg);animation:fl 10s ease-in-out infinite}
+  @keyframes fl{0%,100%{transform:rotate(2.5deg) translateY(0)}50%{transform:rotate(1deg) translateY(-12px)}}
+  .phone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .phone:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 25%,transparent 55%,rgba(8,6,4,.85));pointer-events:none}
+  .stk{position:absolute;z-index:2;left:8%;right:8%;bottom:9%;background:rgba(250,248,245,.96);color:#111827;border-radius:12px;padding:0.75rem 0.85rem;box-shadow:0 16px 30px -12px rgba(0,0,0,.7)}
+  .stk .s1{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal)}
+  .stk .s2{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.02rem;letter-spacing:-0.01em;margin-top:0.15rem}
+  .stk .s3{font-family:'Archivo',sans-serif;font-size:0.6rem;color:#4b5563;margin-top:0.15rem}
+  .stk-eat{position:absolute;z-index:2;top:7%;left:8%;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;color:#fff;background:rgba(15,12,8,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0.4rem 0.75rem}
+  .ph-badge{position:absolute;z-index:3;display:flex;align-items:center;gap:0.55rem;padding:0.6rem 0.95rem;border-radius:999px;
+    background:rgba(21,18,13,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(235,214,158,.28);
+    font-family:'Archivo',sans-serif;font-size:0.76rem;color:var(--text);white-space:nowrap;box-shadow:0 14px 30px -12px rgba(0,0,0,.8);left:-16%;top:30%;animation:fl2 8s ease-in-out infinite}
+  .ph-badge b{color:var(--gold-soft);font-weight:800}
+  @keyframes fl2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  /* ============ FACTS ============ */
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.6rem}
+  .fact{background:var(--panel);padding:1.6rem 1.3rem;transition:background .3s}
+  .fact:hover{background:var(--panel-2)}
+  .fact .fv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.6rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.025em}
+  .fact .fl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.65rem;line-height:1.45}
+  .places{display:flex;flex-wrap:wrap;gap:0.55rem;margin-top:1rem}
+  .places span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.78rem;padding:0.5rem 0.9rem;border:1px solid var(--hair);color:var(--text)}
+  .brandline{margin-top:2.4rem;display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:center;border-top:1px solid var(--hair-soft);border-bottom:1px solid var(--hair-soft);padding:1.6rem 0}
+  .brandline .bq{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.5rem,3.4vw,2.3rem);letter-spacing:-0.02em;line-height:1}
+  .brandline .bq em{font-style:normal;color:var(--gold-soft)}
+  .brandline p{font-size:1.02rem;color:var(--mute);line-height:1.6;max-width:56ch}
+  .brandline p b{color:var(--text);font-weight:500}
+
+  /* ============ FLOW ============ */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:2.8rem;position:relative}
+  .flow:before{content:"";position:absolute;left:12.5%;right:12.5%;top:34px;height:2px;background:var(--panel-3)}
+  .flow-fill{position:absolute;left:12.5%;top:34px;height:2px;background:var(--gold);width:0;transition:width 2.2s cubic-bezier(.3,.6,.2,1)}
+  .fs{position:relative;text-align:center;padding:0 0.8rem;z-index:2}
+  .fs .fi{width:68px;height:68px;margin:0 auto;border-radius:50%;background:var(--bg);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;transition:border-color .5s,background .5s,transform .5s}
+  .alt .fs .fi{background:var(--panel)}
+  .fs .fi svg{width:26px;height:26px;stroke:var(--mute);fill:none;stroke-width:1.7;transition:stroke .5s}
+  .fs.lit .fi{border-color:var(--gold);background:var(--panel-2);transform:scale(1.06)}
+  .fs.lit .fi svg{stroke:var(--gold-soft)}
+  .fs .ft{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;margin-top:1rem;color:var(--dim);transition:color .5s}
+  .fs.lit .ft{color:var(--text)}
+  .fs .fd{font-size:0.92rem;color:var(--mute);margin-top:0.4rem;line-height:1.5}
+  .nofilm{margin-top:2.6rem;display:flex;gap:1.1rem;align-items:center;background:var(--panel-2);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:1.3rem 1.4rem}
+  .nofilm svg{width:30px;height:30px;flex-shrink:0;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .nofilm p{font-size:1.06rem;color:var(--text);line-height:1.55}
+
+  /* ============ SEASON ============ */
+  .season{position:relative;margin-top:2.8rem;padding:4.2rem 12px 0.5rem}
+  .sz-track{position:relative;height:6px;background:var(--panel-3);border-radius:3px}
+  .sz-fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));border-radius:3px;transition:width 2s cubic-bezier(.3,.6,.2,1)}
+  .sz-dot{position:absolute;top:50%;width:24px;height:24px;transform:translate(-50%,-50%);border-radius:50%;background:var(--bg);border:2px solid var(--gold);z-index:2}
+  .sz-up{position:absolute;top:0;transform:translateX(-50%);text-align:center;white-space:nowrap}
+  .sz-low{display:flex;justify-content:space-between;margin-top:1.3rem}
+  .sz-m:last-child{text-align:right}
+  .sd{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.15rem}
+  .sl{font-family:'Archivo',sans-serif;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.25rem}
+
+  /* ============ CONTENT ============ */
+  .angles{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .ang{position:relative;background:var(--panel);border:1px solid var(--hair-soft);padding:1.7rem 1.5rem 1.6rem;overflow:hidden;transition:.4s}
+  .alt .ang{background:var(--bg)}
+  .ang:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .ang:hover{transform:translateY(-6px);border-color:var(--hair)}
+  .ang:hover:before{width:100%}
+  .ang h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.15;margin-bottom:0.7rem;letter-spacing:-0.01em}
+  .ang p{font-size:0.97rem;color:var(--mute);line-height:1.6}
+  .ang .say{display:block;margin-top:0.9rem;font-family:'Archivo',sans-serif;font-size:0.82rem;color:var(--gold-soft);line-height:1.45}
+
+  .refs{display:grid;grid-template-columns:repeat(3,minmax(0,280px)) 1fr;gap:1.3rem;align-items:start;margin-top:1.2rem}
+  .ref-note{align-self:center}
+  .ref-note p{font-size:1.04rem;color:var(--mute);line-height:1.62}
+  .ref-note p b{color:var(--text);font-weight:500}
+  .vtile{position:relative}
+  .vt-media{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:#0b0906;cursor:pointer;isolation:isolate;
+    box-shadow:0 22px 44px -22px rgba(0,0,0,.85),0 0 0 1px rgba(212,178,106,.2);transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media,.vt-media:focus-visible{transform:translateY(-6px);outline:none;box-shadow:0 34px 64px -24px rgba(0,0,0,.95),0 0 0 1px rgba(212,178,106,.6),0 0 46px -12px rgba(212,178,106,.4)}
+  .vt-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+  .vtile:hover .vt-media img{transform:scale(1.06)}
+  .vt-media:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;transition:opacity .45s;
+    background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,transparent 20%,transparent 46%,rgba(10,8,5,.72) 70%,rgba(10,8,5,.97) 100%)}
+  .vt-tag{position:absolute;top:0.85rem;left:0.85rem;z-index:3;padding:0.42rem 0.72rem;border-radius:999px;background:rgba(15,12,8,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(235,214,158,.25);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:var(--gold-soft);transition:opacity .4s}
+  .vt-play{position:absolute;left:50%;top:46%;z-index:3;width:70px;height:70px;transform:translate(-50%,-50%);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:rgba(15,12,8,.35);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,.4);transition:transform .45s cubic-bezier(.2,.7,.2,1),background .45s,opacity .4s}
+  .vt-play:before{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(212,178,106,.55);animation:ring 2.6s cubic-bezier(.2,.7,.2,1) infinite}
+  .vt-play > span{width:0;height:0;margin-left:6px;border-left:20px solid #fff;border-top:12px solid transparent;border-bottom:12px solid transparent}
+  .vtile:hover .vt-play{transform:translate(-50%,-50%) scale(1.1);background:rgba(184,148,79,.9);border-color:var(--gold-soft)}
+  @keyframes ring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.45);opacity:0}}
+  .vt-meta{position:absolute;left:1rem;right:1rem;bottom:1rem;z-index:3;transition:opacity .4s}
+  .vt-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-0.01em}
+  .vt-s{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(239,231,213,.72);margin-top:0.3rem;line-height:1.4}
+  .vt-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:5;opacity:0;transition:opacity .6s ease;background:#fff}
+  .vtile.playing iframe{opacity:1}
+  .vtile.playing .vt-play,.vtile.playing .vt-meta,.vtile.playing .vt-tag{opacity:0;pointer-events:none}
+  .vtile.playing .vt-media:after{opacity:0}
+  .vtile.playing .vt-media{cursor:default}
+  .vt-open{display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.8rem;font-family:'Archivo',sans-serif;font-weight:600;font-size:0.62rem;
+    letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;transition:color .25s}
+  .vt-open:hover{color:var(--gold-soft)}
+
+  .musts{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1rem}
+  .must{display:flex;gap:0.9rem;align-items:flex-start;background:var(--bg);border:1px solid var(--hair-soft);padding:1.05rem 1.2rem;font-size:1.02rem;line-height:1.5}
+  .must .ck{flex-shrink:0;width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .must .ck svg{width:14px;height:14px;stroke:var(--gold-soft);fill:none;stroke-width:2.4}
+
+  /* ============ WHAT SOLCAL GETS (tabs) ============ */
+  .gets{display:grid;grid-template-columns:0.85fr 1.15fr;gap:1.4rem;margin-top:2.6rem;align-items:stretch}
+  .g-list{display:flex;flex-direction:column;gap:0.5rem}
+  .g-btn{display:flex;gap:1rem;align-items:center;text-align:left;background:var(--panel);border:1px solid var(--hair-soft);color:var(--text);padding:1rem 1.2rem;cursor:pointer;font:inherit;transition:.3s}
+  .g-btn .gn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.72rem;color:var(--dim);letter-spacing:0.1em;transition:.3s}
+  .g-btn .gt{font-family:'Archivo',sans-serif;font-weight:700;font-size:1rem}
+  .g-btn:hover{border-color:var(--hair)}
+  .g-btn.on{background:var(--panel-2);border-color:var(--gold)}
+  .g-btn.on .gn{color:var(--gold-soft)}
+  .g-panel{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 60%);border:1px solid var(--hair);padding:clamp(1.5rem,3.4vw,2.4rem);display:flex;flex-direction:column;justify-content:center;min-height:260px}
+  .g-panel h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.8rem);letter-spacing:-0.015em;line-height:1.15;animation:fadeup .45s ease}
+  .g-panel p{font-size:1.08rem;color:var(--mute);margin-top:0.9rem;line-height:1.65;max-width:52ch;animation:fadeup .45s ease}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* ============ SETUP ============ */
+  .setup{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .mc{background:var(--panel);border:1px solid var(--hair-soft);padding:1.6rem 1.4rem;transition:.35s}
+  .alt .mc{background:var(--bg)}
+  .mc:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .mc .ic{width:44px;height:44px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem}
+  .mc .ic svg{width:21px;height:21px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .mc h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .mc p{font-size:0.95rem;color:var(--mute);margin-top:0.55rem;line-height:1.58}
+  .mc ul{list-style:none;margin-top:0.7rem}
+  .mc li{font-size:0.94rem;color:var(--mute);padding:0.42rem 0 0.42rem 1.2rem;position:relative;line-height:1.45}
+  .mc li:before{content:"";position:absolute;left:0;top:0.95rem;width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+
+  /* ============ ROADMAP ============ */
+  .tl-rail{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:2rem}
+  .tl-rail:before{content:"";position:absolute;left:0;right:0;top:19px;height:2px;background:var(--panel-3)}
+  .tl-fill{position:absolute;left:0;top:19px;height:2px;background:var(--gold);width:25%;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .tl-step{position:relative;background:none;border:0;cursor:pointer;text-align:left;padding:0 1rem 0 0;color:inherit;font:inherit}
+  .tl-step .node{width:40px;height:40px;border-radius:50%;background:var(--panel);border:2px solid var(--panel-3);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;color:var(--mute);transition:.3s;position:relative;z-index:2}
+  .tl-step.on .node,.tl-step.done .node{border-color:var(--gold);color:var(--gold-soft)}
+  .tl-step.on .node{background:var(--gold);color:var(--bg)}
+  .tl-step .when{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:1rem;transition:.3s}
+  .tl-step.on .when{color:var(--gold-light)}
+  .tl-step .what{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.05rem;margin-top:0.3rem;color:var(--text)}
+  .tl-panel{margin-top:2rem;background:var(--bg);border:1px solid var(--hair-soft);border-left:3px solid var(--gold);padding:clamp(1.4rem,3vw,2rem);min-height:190px}
+  .tl-panel ul{list-style:none;animation:fadeup .45s ease}
+  .tl-panel li{font-size:1.06rem;color:var(--text);line-height:1.55;padding:0.5rem 0 0.5rem 1.4rem;position:relative;border-top:1px solid var(--hair-soft)}
+  .tl-panel li:first-child{border-top:0}
+  .tl-panel li:before{content:"";position:absolute;left:0;top:1.05rem;width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+  .runs{margin-top:1.4rem;font-family:'Archivo',sans-serif;font-size:0.78rem;letter-spacing:0.04em;color:var(--gold-soft)}
+
+  /* ============ REPORTING ============ */
+  .cad{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.4rem}
+  .cd{background:var(--panel);border:1px solid var(--hair-soft);padding:1.4rem 1.3rem;transition:.35s}
+  .cd:hover{border-color:var(--hair);background:var(--panel-2)}
+  .cd .ck2{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light)}
+  .cd h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;margin-top:0.8rem;line-height:1.25}
+  .cd p{font-size:0.94rem;color:var(--mute);margin-top:0.5rem;line-height:1.5}
+
+  /* ============ NEEDS ============ */
+  .needs{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .nd{display:flex;flex-direction:column;gap:0.9rem;background:var(--bg);border:1px solid var(--hair-soft);padding:1.5rem 1.4rem;transition:.35s}
+  .nd:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .nd .di{width:46px;height:46px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center}
+  .nd .di svg{width:22px;height:22px;stroke:var(--bg);fill:none;stroke-width:2}
+  .nd h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .nd p{font-size:0.95rem;color:var(--mute);line-height:1.55}
+
+  /* ============ PROOF ============ */
+  .proof-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.4rem}
+  .pf{background:var(--bg);padding:clamp(1.6rem,3.4vw,2.4rem) clamp(1.2rem,2.6vw,1.8rem)}
+  .pf .pv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.6rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .pf.lead .pv{font-size:clamp(3rem,7.5vw,5.6rem)}
+  .pf .pl{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.9rem;line-height:1.45}
+  .pf .pd{font-size:0.95rem;color:var(--mute);margin-top:0.7rem;line-height:1.5}
+  .clients{display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:1.8rem;align-items:center}
+  .clients .cl-l{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-right:0.4rem}
+  .chip{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.8rem;padding:0.55rem 1rem;border:1px solid var(--hair);color:var(--text)}
+  .cslink{display:inline-flex;margin-top:1.6rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-soft);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:0.2rem}
+
+  /* ============ MODEL ============ */
+  .model{background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 55%);border:1px solid var(--hair);padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--panel-3) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--gold-soft);border:5px solid var(--panel-3);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.6fr 1fr;gap:1px;background:var(--hair-soft);border:1px solid var(--hair-soft);margin-top:2.2rem}
+  .o{background:var(--bg);padding:1.5rem 1.1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft);line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(2rem,5vw,3.4rem)}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair-soft);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--gold-soft);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:2.4rem}
+    .phone-wrap{width:min(70%,290px);margin:1rem auto 0}
+    .facts{grid-template-columns:1fr 1fr}
+    .refs{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .ref-note{grid-column:1/-1}
+    .cad{grid-template-columns:1fr 1fr}
+    .gets{grid-template-columns:1fr}
+    .proof-grid{grid-template-columns:1fr 1fr}
+    .pf.lead{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .angles,.setup,.needs,.musts,.cad,.proof-grid{grid-template-columns:1fr}
+    .refs{grid-template-columns:1fr}
+    .refs .vtile{max-width:300px}
+    .flow{grid-template-columns:1fr 1fr;row-gap:2rem}
+    .flow:before,.flow-fill{display:none}
+    .tl-rail{grid-template-columns:1fr 1fr;row-gap:1.4rem}
+    .tl-rail:before,.tl-fill{display:none}
+    .brandline{grid-template-columns:1fr;gap:0.9rem}
+    .ph-badge{left:-10%;font-size:0.7rem;padding:0.5rem 0.8rem}
+    .sd{font-size:0.95rem}
+    .sl{font-size:0.56rem;letter-spacing:0.08em}
+    .out{grid-template-columns:1fr}
+  }
+  .pdf .hero-body{padding:0.5rem 0}
+  .pdf .phone-wrap{width:250px}
+  .pdf #s1{padding-top:3rem}
+  .pdf .refs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pdf .ref-note{grid-column:1/-1}
+  .pdf .gets{grid-template-columns:1fr}
+  .pdf .g-list{display:none}
+  .pdf .g-panel{min-height:0}
+  .pdf .g-panel h4{font-size:1.15rem;margin-top:1rem}
+  .pdf .g-panel h4:first-child{margin-top:0}
+  .pdf .g-panel p{margin-top:0.3rem;font-size:1rem}
+  .pdf .tl-rail{display:none}
+  .pdf .tl-panel h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-top:1.2rem}
+  .pdf .tl-panel h5:first-child{margin-top:0}
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue,.phone,.ph-glow,.ph-badge,.vt-play:before{animation:none}
+    .flow-fill,.sz-fill{transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>SolCal Properties</span></a>
+  <a href="#s2"><span>The idea</span></a>
+  <a href="#s3"><span>Why now</span></a>
+  <a href="#s4"><span>The content</span></a>
+  <a href="#s5"><span>What SolCal gets</span></a>
+  <a href="#s6"><span>Clipping setup</span></a>
+  <a href="#s7"><span>Roadmap</span></a>
+  <a href="#s8"><span>Reporting</span></a>
+  <a href="#s9"><span>What we need</span></a>
+  <a href="#s10"><span>Proof</span></a>
+  <a href="#s11"><span>Model the campaign</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top">
+    <a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener"><i>EAT</i> &times; Maison <b>d'&Eacute;lites</b></a>
+    <div class="label" style="color:var(--mute)">Campaign Plan &middot; Private &amp; Confidential</div>
+  </div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Creators and clipping &middot; In collaboration with EAT</span>
+      <h1 class="rv d1">SolCal Properties<span>A season of giving</span></h1>
+      <p class="hero-sub rv d2">Creators film real acts of giving and thank <b>SolCal Properties for making it happen</b>. Our clippers then carry the best of it across TikTok, Instagram and YouTube, from Thanksgiving to the end of the year.</p>
+      <div class="hero-chips rv d3">
+        <span class="hchip">Everybody <b>Eats</b></span>
+        <span class="hchip">TikTok &middot; Reels &middot; Shorts</span>
+        <span class="hchip">Paid per <b>verified view</b></span>
+      </div>
+    </div>
+    <div class="phone-wrap rv d2">
+      <div class="ph-glow"></div>
+      <div class="phone">
+        <img src="img/zacksartori.jpg" alt="A creator handing a meal through a car window">
+        <span class="stk-eat">Everybody Eats</span>
+        <div class="stk"><div class="s1">This meal was made possible by</div><div class="s2">SolCal Properties</div><div class="s3">Palm Springs &middot; License #01260508</div></div>
+      </div>
+      <div class="ph-badge"><span>On screen for <b>the whole clip</b></span></div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d4" style="color:var(--mute)">Prepared November 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 01 SOLCAL ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; SolCal Properties</span>
+    <h2 class="statement rv d1">A Palm Springs brokerage built on people.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">SolCal Properties is a full service brokerage in Greater Palm Springs and the Coachella Valley, in business since 1998. It helps people buy, sell and invest, from mid-century homes to golf communities and desert estates. Its clients describe the same thing again and again: <b>a team that treats them like family</b>.</p>
+    <p class="body-lg rv d2">A campaign about people helping people fits that name.</p>
+    <div class="facts rv d2">
+      <div class="fact"><div class="fv">1998</div><div class="fl">In business since</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="4.9" data-dec="1">4.9</span>/5</div><div class="fl">From 200+ reviews</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="1000">1,000</span>+</div><div class="fl">Clients across California</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="1200">1,200</span></div><div class="fl">Homes in twenty years</div></div>
+    </div>
+    <h3 class="sub rv">Where SolCal works</h3>
+    <div class="places rv d1"><span>Palm Springs</span><span>Palm Desert</span><span>Cathedral City</span><span>Rancho Mirage</span><span>Indian Wells</span><span>La Quinta</span><span>Indio</span><span>Desert Hot Springs</span></div>
+    <div class="brandline rv d2">
+      <div class="bq">Sunshine,<br><em>delivered.</em></div>
+      <p>SolCal's own line. This campaign delivers it in a new way: <b>a hot meal, a full table, a neighbor helped</b>, with SolCal's name on it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 THE IDEA ============ -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The idea</span>
+    <h2 class="statement rv d1">Creators do the giving. SolCal gets the thanks.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">The campaign runs with EAT, the network behind <b>Everybody Eats</b>, where creators make videos that feed people. Creators film real acts of giving: buying meals, feeding neighbors, helping a family stretch a food budget. In each video the creator thanks SolCal Properties for making it happen.</p>
+    <p class="body-lg rv d2">Our clippers then cut the best videos into short clips and post them across TikTok, Instagram and YouTube, so each moment is seen many more times than the creator's own post.</p>
+    <div class="flow rv d2" id="flow">
+      <div class="flow-fill" id="flowFill"></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.4-9.3-9.2C1.6 8.6 3.6 5 7 5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.4 3.6 4.3 6.8C19.5 16.6 12 21 12 21z"/></svg></div><div class="ft">SolCal funds it</div><div class="fd">One budget covers the creators and the clipping</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg></div><div class="ft">Creators film</div><div class="fd">Real people being fed and helped</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 10h8M8 13h5"/></svg></div><div class="ft">SolCal is thanked</div><div class="fd">Said out loud and shown on screen</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div><div class="ft">Clippers spread it</div><div class="fd">Across pages on three platforms</div></div>
+    </div>
+    <div class="nofilm rv d2">
+      <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      <p>SolCal does not have to film anything or appear in any video. The creators do the work, and SolCal gets the credit.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 WHY NOW ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; Why now</span>
+    <h2 class="statement rv d1">The season of giving starts this week.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">The campaign runs through the season of giving, from Thanksgiving to the end of the year. This is when people pay the most attention to stories about generosity, and when a local business that gives back stands out.</p>
+    <div class="season rv d2" id="season">
+      <div class="sz-up" style="left:calc(12px + (100% - 24px) * 0.829)"><div class="sd">25 Dec</div><div class="sl">Christmas</div></div>
+      <div class="sz-track"><div class="sz-fill" id="szFill"></div>
+        <span class="sz-dot" style="left:0"></span><span class="sz-dot" style="left:82.9%"></span><span class="sz-dot" style="left:100%"></span>
+      </div>
+      <div class="sz-low">
+        <div class="sz-m"><div class="sd">26 Nov</div><div class="sl">Thanksgiving</div></div>
+        <div class="sz-m"><div class="sd">31 Dec</div><div class="sl">End of the year</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 THE CONTENT ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; The content</span>
+    <h2 class="statement rv d1">Feel-good moments, with SolCal's name on every one.</h2>
+    <div class="angles rv d2">
+      <div class="ang"><h4>The moment of giving</h4><p>A creator hands out meals or helps someone, cut to the strongest few seconds.</p><span class="say">&ldquo;This one is on SolCal Properties.&rdquo;</span></div>
+      <div class="ang"><h4>The meal drop</h4><p>A creator buys meals from a local spot and gives them to people who need them, on camera.</p><span class="say">&ldquo;SolCal Properties made today happen.&rdquo;</span></div>
+      <div class="ang"><h4>Food talk</h4><p>Food creators do what they already do, and the meal they share funds someone else.</p><span class="say">&ldquo;Thanks to SolCal Properties, everybody eats.&rdquo;</span></div>
+    </div>
+
+    <h3 class="sub rv">The kind of moment the creators film</h3>
+    <div class="refs">
+      <div class="vtile rv" data-ig="DZu1oVlJXqp"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @hopeinhumanityofficial"><img src="img/hopeinhumanity.jpg" alt="Creator buying a meal for a stranger" loading="lazy"><span class="vt-tag">The moment of giving</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@hopeinhumanityofficial</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DZu1oVlJXqp/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+      <div class="vtile rv d1" data-ig="DXpXotbyll6"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @zacksartori"><img src="img/zacksartori.jpg" alt="Creator handing a meal through a car window" loading="lazy"><span class="vt-tag">The meal drop</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@zacksartori</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DXpXotbyll6/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+      <div class="vtile rv d2" data-ig="DWjmrKbMs-t"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @geloeatz"><img src="img/geloeatz.jpg" alt="Food creator at a restaurant counter" loading="lazy"><span class="vt-tag">Food talk</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@geloeatz</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DWjmrKbMs-t/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+      <div class="ref-note rv d3"><p>Formats from creators in the EAT network. <b>A real person helped, the creator as the hero</b>, and the business behind it named and thanked.</p></div>
+    </div>
+
+    <h3 class="sub rv">Every video and clip must</h3>
+    <div class="musts">
+      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Show real help happening on camera</div>
+      <div class="must rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Thank SolCal Properties out loud</div>
+      <div class="must rv d2"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Carry the SolCal name and license number on screen from start to finish</div>
+      <div class="must rv d3"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Link to SolCal's home search in the caption</div>
+      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Keep the creator as the hero of the story</div>
+      <div class="must rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Pass a brand fit check before it goes out</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 WHAT SOLCAL GETS ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; What SolCal Properties gets</span>
+    <h2 class="statement rv d1">Five things, all in one campaign.</h2>
+    <div class="gets rv d2">
+      <div class="g-list" id="gList" role="tablist">
+        <button class="g-btn on" type="button" data-i="0"><span class="gn">01</span><span class="gt">A branded impact page</span></button>
+        <button class="g-btn" type="button" data-i="1"><span class="gn">02</span><span class="gt">Creator videos</span></button>
+        <button class="g-btn" type="button" data-i="2"><span class="gn">03</span><span class="gt">Clips at scale</span></button>
+        <button class="g-btn" type="button" data-i="3"><span class="gn">04</span><span class="gt">A live report</span></button>
+        <button class="g-btn" type="button" data-i="4"><span class="gn">05</span><span class="gt">Content to keep</span></button>
+      </div>
+      <div class="g-panel" id="gPanel" aria-live="polite"><h4></h4><p></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 CLIPPING SETUP ============ -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Clipping setup</span>
+    <h2 class="statement rv d1">Paid for real views, after they are checked.</h2>
+    <div class="setup rv d2">
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+        <h5>Payout</h5>
+        <p>Clippers are paid per view, and only after their views are checked. Posts that go nowhere cost nothing, so the budget goes into reach.</p>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3.5v5.5c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6.5L12 3z"/></svg></div>
+        <h5>Rules</h5>
+        <ul>
+          <li>SolCal's name and license number on screen</li>
+          <li>A quality bar on every clip</li>
+          <li>No fake or bought views</li>
+          <li>No deleting posts early</li>
+        </ul>
+      </div>
+      <div class="mc">
+        <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h5>Checks</h5>
+        <p>Clippers send in their links and every post is checked for real views and real engagement. Anything that fails the check is not paid.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 ROADMAP ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Roadmap</span>
+    <h2 class="statement rv d1">Four steps, from setup to the final report.</h2>
+    <div class="tl-rail rv d2">
+      <div class="tl-fill" id="tlFill"></div>
+      <button class="tl-step on" type="button" data-i="0"><div class="node">1</div><div class="when">Week 1</div><div class="what">Setup</div></button>
+      <button class="tl-step" type="button" data-i="1"><div class="node">2</div><div class="when">Weeks 1 and 2</div><div class="what">Creators film</div></button>
+      <button class="tl-step" type="button" data-i="2"><div class="node">3</div><div class="when">From week 2</div><div class="what">Clipping</div></button>
+      <button class="tl-step" type="button" data-i="3"><div class="node">4</div><div class="when">End of campaign</div><div class="what">Wrap-up</div></button>
+    </div>
+    <div class="tl-panel rv d3"><ul id="tlList"></ul></div>
+    <p class="runs rv">The campaign runs until the full budget has been paid out to creators and clippers.</p>
+  </div>
+</section>
+
+<!-- ============ 08 REPORTING ============ -->
+<section class="section alt" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; Reporting</span>
+    <h2 class="statement rv d1">You always know where the campaign stands.</h2>
+    <div class="cad rv d2">
+      <div class="cd"><div class="ck2">Any time</div><h5>Live report</h5><p>One link that updates on its own with views and posts.</p></div>
+      <div class="cd"><div class="ck2">Every week</div><h5>Check-in call</h5><p>What went out, what is working and what comes next.</p></div>
+      <div class="cd"><div class="ck2">Every two weeks</div><h5>Written report</h5><p>Views, top clips, top creators and spend so far.</p></div>
+      <div class="cd"><div class="ck2">At the end</div><h5>Final report</h5><p>Total views, top clips and top creators, with a plan for the next campaign.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 WHAT WE NEED ============ -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; What we need from SolCal Properties</span>
+    <h2 class="statement rv d1">Three things, and we take it from there.</h2>
+    <div class="needs rv d2">
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 15l3-3 2 2 3-4"/></svg></div><h5>Brand files</h5><p>Logo files, plus the exact business name and license number to show on screen.</p></div>
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></div><h5>One approver</h5><p>One person to approve the creator brief and the on-screen sticker.</p></div>
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg></div><h5>A short no-go list</h5><p>Anything the brand does not want to be linked to.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 PROOF ============ -->
+<section class="section alt" id="s10">
+  <div class="wrap">
+    <span class="snum rv">10 &middot; Proof</span>
+    <h2 class="statement rv d1">The network behind the campaign.</h2>
+    <div class="proof-grid rv d2">
+      <div class="pf lead"><div class="pv"><span class="cu" data-target="1">1</span>B+</div><div class="pl">Views delivered by Maison d'&Eacute;lites</div></div>
+      <div class="pf"><div class="pv">~<span class="cu" data-target="1000">1,000</span></div><div class="pl">EAT card signups</div><div class="pd">From the first EAT clipping phase.</div></div>
+      <div class="pf"><div class="pv"><span class="cu" data-target="3">3</span>M</div><div class="pl">Views for Walmart</div><div class="pd">A creator campaign for Walmart's beauty box, at a $2.30 effective CPM.</div></div>
+    </div>
+    <div class="clients rv d3">
+      <span class="cl-l">Campaigns through our network</span>
+      <span class="chip">Walmart</span><span class="chip">Sony</span><span class="chip">WYDE</span><span class="chip">DEF JAM</span>
+    </div>
+    <a class="cslink rv" href="https://maisondelites.com/#case-studies" target="_blank" rel="noopener">All case studies &rarr;</a>
+  </div>
+</section>
+
+<!-- ============ 11 MODEL ============ -->
+<section class="section" id="s11">
+  <div class="wrap">
+    <span class="snum rv">11 &middot; Model the campaign</span>
+    <h2 class="statement rv d1">Set the budget.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, the creator brief, quality checks and reporting are included.</p>
+    <div class="model rv d2">
+      <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">$5,000</span></div>
+      <input type="range" id="budget" min="2000" max="20000" step="500" value="5000" aria-label="Campaign budget">
+      <div class="range-ends"><span>$2,000</span><span>$20,000</span></div>
+      <div class="out">
+        <div class="o lead"><div class="ov" id="oViews">2.5M</div><div class="ol">Estimated verified views</div></div>
+        <div class="o"><div class="ov">$2.00</div><div class="ol">Per thousand verified views</div></div>
+      </div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  once(document.querySelectorAll('.rv'),el=>el.classList.add('in'),0.08);
+
+  const prog=document.getElementById('progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=[...document.querySelectorAll('#dots a')];
+  const secs=dots.map(a=>document.querySelector(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  /* count-ups */
+  const fmt=(n,el)=>el.dataset.dec?n.toFixed(+el.dataset.dec):Math.round(n).toLocaleString('en-US');
+  once(document.querySelectorAll('.cu'),el=>{
+    const t=parseFloat(el.dataset.target);
+    if(reduce){el.textContent=fmt(t,el);return;}
+    const dur=1300,s=performance.now();
+    (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
+  },0.5);
+
+  /* flow lights up step by step */
+  once([document.getElementById('flow')],el=>{
+    const steps=[...el.querySelectorAll('.fs')], fill=document.getElementById('flowFill');
+    fill.style.width='75%';
+    if(reduce){steps.forEach(s=>s.classList.add('lit'));return;}
+    steps.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),i*650));
+  },0.45);
+
+  /* season bar */
+  once([document.getElementById('season')],()=>{document.getElementById('szFill').style.width='100%';},0.4);
+
+  /* what SolCal gets */
+  const GETS=[
+    ['A branded impact page','A public SolCal Properties page on EAT\'s x.eat platform that shows the campaign, the creators and the results in one place.'],
+    ['Creator videos','Original feel-good videos where creators name SolCal Properties as the business behind the giving.'],
+    ['Clips at scale','Our clippers turn each video into many short clips. Every clip carries the SolCal Properties name and license number on screen from start to finish.'],
+    ['A live report','One link that updates on its own with views and posts, so progress can be checked at any time.'],
+    ['Content to keep','The best clips are SolCal\'s to share with past clients, post on its own pages and use in its own marketing.']
+  ];
+  const gBtns=[...document.querySelectorAll('.g-btn')], gP=document.getElementById('gPanel');
+  function setG(i){
+    gBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+    gP.innerHTML='<h4>'+GETS[i][0]+'</h4><p>'+GETS[i][1]+'</p>';
+  }
+  gBtns.forEach((b,i)=>b.addEventListener('click',()=>setG(i)));
+  setG(0);
+
+  /* roadmap */
+  const TL=[
+    ['SolCal\'s page is set up on x.eat.','We write the creator brief: what the videos show and how SolCal is thanked.','We design the on-screen sticker with the SolCal name and license number.','SolCal approves the brief and the sticker.'],
+    ['Creators pick up the brief and send in their videos.','Each video is checked for brand fit before it goes out.','The first videos go live on the SolCal page.'],
+    ['Clippers cut and post the approved videos.','Every post is checked for real views and real engagement.','A check-in call each week, with a written report every two weeks.'],
+    ['Final report: total views, top clips and top creators.','Handover of the best clips for SolCal\'s own use.','A plan for the next campaign, if SolCal wants to continue.']
+  ];
+  const steps=[...document.querySelectorAll('.tl-step')],tlList=document.getElementById('tlList'),tlFill=document.getElementById('tlFill');
+  function setTL(i){
+    steps.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i);});
+    tlFill.style.width=((i+1)/steps.length*100)+'%';
+    tlList.style.animation='none';void tlList.offsetWidth;tlList.style.animation='';
+    tlList.innerHTML=TL[i].map(t=>'<li>'+t+'</li>').join('');
+  }
+  steps.forEach((s,i)=>s.addEventListener('click',()=>setTL(i)));
+  setTL(0);
+
+  /* clip tiles: load the Instagram embed */
+  function playTile(t){
+    if(t.classList.contains('playing')) return;
+    const f=document.createElement('iframe');
+    f.src='https://www.instagram.com/p/'+t.dataset.ig+'/embed/';
+    f.title='Instagram clip'; f.setAttribute('scrolling','no');
+    f.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
+    t.querySelector('.vt-media').appendChild(f);
+    t.classList.add('playing');
+  }
+  document.querySelectorAll('.vtile').forEach(t=>{
+    const m=t.querySelector('.vt-media');
+    m.addEventListener('click',()=>playTile(t));
+    m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});
+  });
+
+  /* model: budget at $2 per thousand verified views */
+  const CPM=2;
+  const bS=document.getElementById('budget');
+  const m=n=>n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
+  function calc(){
+    const b=+bS.value, views=b/CPM*1000;
+    document.getElementById('budgetVal').textContent='$'+b.toLocaleString('en-US');
+    document.getElementById('oViews').textContent=m(views);
+    bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
+  }
+  bS.addEventListener('input',calc); calc();
+
+  /* PDF: show every tab and every roadmap step */
+  window.__pdfPrepare=function(){
+    document.body.classList.add('pdf');
+    gP.innerHTML=GETS.map(g=>'<h4>'+g[0]+'</h4><p>'+g[1]+'</p>').join('');
+    const names=[...steps].map(s=>s.querySelector('.when').textContent+' &middot; '+s.querySelector('.what').textContent);
+    tlList.parentNode.innerHTML=TL.map((t,i)=>'<h5>'+names[i]+'</h5><ul>'+t.map(x=>'<li>'+x+'</li>').join('')+'</ul>').join('');
+  };
+})();
+</script>
+</body>
+</html>
