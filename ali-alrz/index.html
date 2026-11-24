@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ali Alrz &middot; Three-Month Plan &middot; Maison d'&Eacute;lites</title>
+<script>try{var t=localStorage.getItem('mde-theme');if(t==='glass')document.documentElement.setAttribute('data-theme','glass');}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --band:#1F1911; --card:#1F1911; --card-on-band:#15120D; --card-2:#261F15; --track:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --accent:#D4B26A; --num:#EBD69E; --on-gold:#15120D;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+    --bad:#E0705A; --bad-bg:rgba(224,112,90,.10); --bad-line:rgba(224,112,90,.45);
+    --good:#6FC08E; --good-bg:rgba(111,192,142,.10); --good-line:rgba(111,192,142,.45);
+    --blur:none; --card-shadow:none; --grain:0.04;
+    --hero-glow:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%);
+  }
+  html[data-theme="glass"]{
+    --bg:#EEE7DB; --band:rgba(255,255,255,.20); --card:rgba(255,255,255,.46); --card-on-band:rgba(255,255,255,.50); --card-2:rgba(255,255,255,.66); --track:rgba(120,96,50,.16);
+    --text:#1E1912; --mute:#665B48; --dim:#978B76;
+    --gold:#A67F33; --accent:#8A6722; --num:#7A5A1A; --on-gold:#FFFDF8;
+    --hair:rgba(120,96,50,.30); --hair-soft:rgba(255,255,255,.80);
+    --bad:#C0492F; --bad-bg:rgba(192,73,47,.10); --bad-line:rgba(192,73,47,.45);
+    --good:#2B8552; --good-bg:rgba(43,133,82,.10); --good-line:rgba(43,133,82,.45);
+    --blur:blur(22px) saturate(1.5); --card-shadow:0 14px 44px -22px rgba(90,66,20,.45), inset 0 1px 0 rgba(255,255,255,.85); --grain:0.025;
+    --hero-glow:none;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background .5s,color .5s}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:var(--grain);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  /* glass backdrop: soft colour fields behind frosted panels */
+  .backdrop{position:fixed;inset:0;z-index:-1;opacity:0;transition:opacity .6s;pointer-events:none;
+    background:
+      radial-gradient(42% 36% at 12% 8%,rgba(236,196,112,.85),transparent 70%),
+      radial-gradient(36% 40% at 88% 18%,rgba(255,168,134,.60),transparent 70%),
+      radial-gradient(46% 42% at 74% 86%,rgba(146,178,255,.55),transparent 70%),
+      radial-gradient(40% 40% at 8% 82%,rgba(196,166,255,.45),transparent 70%),
+      #EEE7DB}
+  html[data-theme="glass"] .backdrop{opacity:1}
+  html[data-theme="glass"]{background:#EEE7DB}
+  html[data-theme="glass"] body{background:transparent}
+  ::selection{background:var(--gold);color:var(--on-gold)}
+  img{display:block;max-width:100%}
+  button{font:inherit;color:inherit}
+  a{color:inherit}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:27ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72}
+  .body-lg b{color:var(--text);font-weight:500}
+  .section{padding:clamp(4.2rem,10vh,7rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3rem 0 1.2rem}
+  .band{background:var(--band)}
+  /* every panel is a .card so both themes style it in one place */
+  .card{background:var(--card);border:1px solid var(--hair-soft);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);box-shadow:var(--card-shadow);transition:background .5s,border-color .4s,transform .4s}
+  .band .card{background:var(--card-on-band)}
+  html[data-theme="glass"] .card{border-radius:16px}
+  .k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--num));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.66rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--accent);border-color:var(--accent);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text);background:var(--card-2);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* theme switch */
+  .theme{position:fixed;top:0.9rem;right:clamp(1rem,4vw,2.4rem);z-index:9997;display:flex;gap:3px;padding:3px;border-radius:999px;background:var(--card-2);border:1px solid var(--hair);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 8px 24px -12px rgba(0,0,0,.5)}
+  .theme button{border:0;background:none;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.5rem 0.9rem;border-radius:999px;color:var(--mute);transition:.3s}
+  .theme button.on{background:var(--gold);color:var(--on-gold)}
+
+  /* ============ HERO ============ */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;background:var(--hero-glow)}
+  .hero-top{position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
+  .mark b{color:var(--num);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.1fr 0.9fr;gap:2.4rem;align-items:center;position:relative;z-index:2;flex:1;padding:2rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3rem,8.4vw,7.2rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.36em;letter-spacing:0.02em;color:var(--num);margin-top:0.7rem;line-height:1.05}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.88;margin-top:1.8rem;max-width:44ch;line-height:1.5}
+  .hero-sub b{color:var(--num);font-weight:500}
+  .hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .ramp{padding:1.5rem 1.4rem;max-width:440px;width:100%;justify-self:center}
+  .ramp-top{display:flex;align-items:center;gap:0.9rem;padding-bottom:1.1rem;border-bottom:1px solid var(--hair)}
+  .ramp-top img{width:54px;height:54px;border-radius:50%;border:2px solid var(--gold)}
+  .ramp-top b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem}
+  .ramp-top span{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .ramp-bars{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;align-items:end;height:210px;margin-top:1.3rem}
+  .rb{display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+  .rb .rv2{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.5rem,3.2vw,2.1rem);color:var(--num);line-height:1}
+  .rb .rs{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin:0.2rem 0 0.5rem}
+  .rb i{display:block;height:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--num),var(--gold));transition:height 1.4s cubic-bezier(.2,.7,.2,1)}
+  .rb .rm{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-top:0.6rem}
+
+  /* ============ 01 GOAL ============ */
+  .parts{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .part{padding:1.6rem 1.4rem;position:relative;overflow:hidden;text-decoration:none;display:block}
+  .part:hover{transform:translateY(-5px);border-color:var(--hair)}
+  .part .pn{font-family:'Archivo',sans-serif;font-weight:800;font-size:3rem;line-height:0.85;color:var(--track);transition:color .4s}
+  .part:hover .pn{color:var(--gold)}
+  .part h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.15rem;margin-top:1rem;line-height:1.25}
+  .part .pw{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-top:0.7rem}
+  .after{margin-top:1rem;padding:1.2rem 1.4rem;border-left:3px solid var(--gold);font-size:1.05rem}
+  .after b{color:var(--num);font-weight:500}
+
+  /* ============ PROFILE AUDIT ============ */
+  .audit{display:grid;grid-template-columns:1.2fr 0.8fr;gap:1.4rem;margin-top:2.4rem;align-items:start}
+  .shots{display:flex;flex-direction:column;gap:0.9rem;position:sticky;top:4.4rem}
+  .shot{position:relative;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 26px 60px -30px rgba(0,0,0,.8),0 0 0 1px var(--hair)}
+  .shot img{width:100%}
+  .shot .cap{position:absolute;right:0.7rem;bottom:0.7rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.3rem 0.55rem;border-radius:999px;background:rgba(21,18,13,.82);color:#EFE7D5}
+  .pin{position:absolute;transform:translate(-50%,-50%);width:clamp(16px,1.7vw,22px);height:clamp(16px,1.7vw,22px);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(0.52rem,0.9vw,0.7rem);color:#fff;cursor:pointer;padding:0;transition:transform .25s,box-shadow .25s;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+  .hb{position:absolute;border:2px solid;border-radius:6px;pointer-events:none;transition:box-shadow .3s,background .3s}
+  .hb.bad{border-color:#D4553C;background:rgba(212,85,60,.10)}
+  .hb.good{border-color:#2F9460;background:rgba(47,148,96,.10)}
+  .hb.miss{border-style:dashed;background:repeating-linear-gradient(135deg,rgba(212,85,60,.16) 0 6px,rgba(212,85,60,.04) 6px 12px)}
+  .hb.on.bad{box-shadow:0 0 0 4px rgba(212,85,60,.28);background:rgba(212,85,60,.2)}
+  .hb.on.good{box-shadow:0 0 0 4px rgba(47,148,96,.28);background:rgba(47,148,96,.2)}
+  .pin.bad{background:#D4553C}
+  .pin.good{background:#2F9460}
+  .pin:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid currentColor;opacity:0}
+  .pin.bad:before{color:#D4553C}.pin.good:before{color:#2F9460}
+  .pin.on{transform:translate(-50%,-50%) scale(1.35);z-index:3}
+  .pin.on:before{animation:ping 1.4s ease-out infinite}
+  @keyframes ping{0%{opacity:.9;transform:scale(.7)}100%{opacity:0;transform:scale(1.6)}}
+  .issues{display:flex;flex-direction:column;gap:0.5rem}
+  .issue{display:grid;grid-template-columns:30px 1fr;gap:0.9rem;align-items:start;padding:0.95rem 1.05rem;cursor:pointer;text-align:left;width:100%}
+  .issue .in{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.74rem;color:#fff}
+  .issue.bad .in{background:#D4553C}.issue.good .in{background:#2F9460}
+  .issue .it{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)}
+  .issue .iv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;line-height:1.3;margin-top:0.15rem}
+  .issue.bad .iv{color:var(--bad)}.issue.good .iv{color:var(--good)}
+  .issue .iq{font-size:0.98rem;color:var(--text);opacity:.85;margin-top:0.15rem;line-height:1.45}
+  .issue .iw{font-size:0.95rem;color:var(--mute);margin-top:0.4rem;line-height:1.5;padding-top:0.4rem;border-top:1px solid var(--hair)}
+  .issue .iw b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-right:0.4rem}
+  .issue.bad.on{border-color:var(--bad-line);background:var(--bad-bg)}
+  .issue.good.on{border-color:var(--good-line);background:var(--good-bg)}
+  .visitor{margin-top:1.2rem;padding:1.3rem 1.5rem;border-left:3px solid var(--bad)}
+  .visitor.good{border-left-color:var(--good)}
+  .visitor p{font-size:1.06rem;line-height:1.6;margin-top:0.4rem}
+
+  /* ============ SIDE BY SIDE ============ */
+  .sbs-head{display:grid;grid-template-columns:0.7fr 1fr 1fr;gap:0.6rem;margin-top:2.4rem;align-items:center}
+  .who{display:flex;align-items:center;gap:0.7rem;padding:0.8rem 1rem}
+  .who img{width:38px;height:38px;border-radius:50%}
+  .who b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.9rem;display:block;line-height:1.2}
+  .who span{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase}
+  .who.g span{color:var(--good)}.who.b span{color:var(--bad)}
+  .sbs{display:flex;flex-direction:column;gap:0.6rem;margin-top:0.6rem}
+  .row{display:grid;grid-template-columns:0.7fr 1fr 1fr;gap:0.6rem}
+  .row > div{padding:1rem 1.05rem}
+  .row .rp b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;display:block}
+  .row .rp p{font-size:0.93rem;color:var(--mute);margin-top:0.3rem;line-height:1.45}
+  .cell{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;align-items:start;font-size:1.02rem;line-height:1.4}
+  .cell i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:#fff;margin-top:1px}
+  .cell.g{border-color:var(--good-line);background:var(--good-bg)}
+  .cell.g i{background:#2F9460}
+  .cell.b{border-color:var(--bad-line);background:var(--bad-bg)}
+  .cell.b i{background:#D4553C}
+
+  /* ============ NEW PROFILE ============ */
+  .np{display:grid;grid-template-columns:1fr 0.9fr;gap:1.4rem;margin-top:2.2rem;align-items:start}
+  .seg{display:inline-flex;padding:4px;gap:4px;border-radius:999px;margin-top:2rem}
+  .seg button{background:none;border:0;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.7rem 1.1rem;border-radius:999px;color:var(--mute);transition:.3s}
+  .seg button.on{background:var(--gold);color:var(--on-gold)}
+  .ig{padding:1.6rem 1.5rem}
+  .ig-top{display:grid;grid-template-columns:84px 1fr;gap:1.2rem;align-items:center}
+  .ig-top img{width:84px;height:84px;border-radius:50%;border:2px solid var(--gold)}
+  .ig-h{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.25rem}
+  .ig-st{display:flex;gap:1.1rem;margin-top:0.4rem;font-family:'Archivo',sans-serif;font-size:0.8rem;color:var(--mute)}
+  .ig-st b{color:var(--text)}
+  .ig-body{margin-top:1.1rem;font-family:'Archivo',sans-serif;font-size:0.95rem;line-height:1.6;animation:fadeup .45s ease}
+  .ig-body .nm{font-weight:700}
+  .ig-body .cat{color:var(--mute);font-size:0.86rem}
+  .ig-body .lnk{color:var(--accent);font-weight:700}
+  .ig-body .none{color:var(--bad);font-weight:700;font-size:0.8rem}
+  .slot{display:inline-block;border:1.5px dashed var(--gold);border-radius:6px;padding:0 0.45rem;margin:0.1rem 0.1rem;font-size:0.78rem;font-weight:700;color:var(--accent);background:var(--card-2);white-space:nowrap}
+  .ig-hl{display:flex;gap:1rem;margin-top:1.2rem}
+  .hl{text-align:center;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem}
+  .hl i{display:block;width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);margin:0 auto 0.35rem;background:var(--card-2)}
+  .ig-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1.2rem}
+  .ig-tab{padding:0.8rem 0.9rem;border:1px solid var(--hair);border-radius:10px;font-family:'Archivo',sans-serif;font-size:0.8rem;line-height:1.4}
+  .ig-tab b{display:block;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:0.2rem}
+  .np-side .note{padding:1.3rem 1.4rem;border-left:3px solid var(--gold);font-size:1.03rem;line-height:1.6}
+  .now{margin-top:1rem;padding:1.3rem 1.4rem}
+  .tick{list-style:none;margin-top:0.7rem}
+  .tick li{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;padding:0.5rem 0;border-top:1px solid var(--hair);font-size:1.02rem}
+  .tick li:first-child{border-top:0}
+  .tick .bx{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--gold);margin-top:4px}
+
+  /* ============ STEPPERS ============ */
+  .stepper{display:grid;grid-template-columns:0.8fr 1.2fr;gap:1rem;margin-top:2.2rem;align-items:start}
+  .st-list{display:flex;flex-direction:column;gap:0.5rem}
+  .st{display:grid;grid-template-columns:44px 1fr;gap:0.9rem;align-items:center;padding:0.85rem 1rem;cursor:pointer;text-align:left;width:100%}
+  .st:hover{border-color:var(--hair)}
+  .st .sn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.82rem;color:var(--mute);width:44px;height:36px;border-radius:999px;border:1.5px solid var(--hair);display:flex;align-items:center;justify-content:center;transition:.3s}
+  .st .stt{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;color:var(--mute);transition:.3s;line-height:1.3}
+  .st.on{border-color:var(--gold);background:var(--card-2)}
+  .st.on .sn{background:var(--gold);border-color:var(--gold);color:var(--on-gold)}
+  .st.on .stt{color:var(--text)}
+  .st-detail{padding:clamp(1.4rem,3vw,2.1rem);border-left:3px solid var(--gold);min-height:300px}
+  .st-detail .anim{animation:fadeup .45s ease}
+  .st-detail h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,2.6vw,1.8rem);letter-spacing:-0.015em;margin-top:0.5rem;line-height:1.15}
+  .st-detail p{font-size:1.04rem;line-height:1.62;margin-top:0.8rem;opacity:.92}
+  .st-detail p b{color:var(--num);font-weight:500}
+  .st-detail ul,.st-detail ol{margin:0.8rem 0 0 1.25rem;font-size:1.02rem;line-height:1.55}
+  .st-detail li{padding:0.22rem 0}
+  .st-detail li b{color:var(--num);font-weight:500}
+  .outcome{margin-top:1rem;padding:1.3rem 1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:start}
+  .outcome .chips{display:flex;flex-wrap:wrap;gap:0.45rem}
+  .outcome .chips span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;padding:0.45rem 0.75rem;border:1px solid var(--hair);border-radius:999px;background:var(--card-2)}
+  /* buyer card */
+  .bc{list-style:none;margin:0.9rem 0 0!important;display:grid;grid-template-columns:1fr 1fr;gap:0.4rem}
+  .bc li{padding:0!important}
+  .bc button{width:100%;display:grid;grid-template-columns:22px 1fr;gap:0.6rem;align-items:start;text-align:left;padding:0.6rem 0.7rem;border:1px solid var(--hair);border-radius:8px;background:none;cursor:pointer;font-size:0.96rem;line-height:1.35;transition:.25s}
+  .bc button i{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:transparent;margin-top:1px}
+  .bc button.on{border-color:var(--good-line);background:var(--good-bg)}
+  .bc button.on i{background:#2F9460;border-color:#2F9460;color:#fff}
+  .bc-count{margin-top:0.9rem;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+  .bc-count.ok{color:var(--good)}
+  /* 90 seconds */
+  .ninety{margin-top:1rem;display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:center;padding:1.5rem 1.6rem}
+  .n-ring{position:relative;width:128px;height:128px}
+  .n-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .n-ring circle{fill:none;stroke-width:8}
+  .n-ring .t{stroke:var(--track)}
+  .n-ring .f{stroke:var(--num);stroke-linecap:round;stroke-dasharray:263.9;stroke-dashoffset:0}
+  .n-ring.go .f{animation:drain 9s linear infinite}
+  @keyframes drain{from{stroke-dashoffset:0}to{stroke-dashoffset:263.9}}
+  .n-ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:2rem;color:var(--num);line-height:1}
+  .n-ring b small{font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .ninety p{font-size:1.06rem;line-height:1.6}
+  .ninety p b{color:var(--num);font-weight:500}
+  /* decision */
+  .decide{margin-top:1rem;padding:1.5rem 1.6rem}
+  .decide .dq{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.3;margin-top:0.4rem}
+  .decide .da{margin-top:1rem;padding:1.1rem 1.2rem;border-radius:10px;font-size:1.04rem;line-height:1.6;animation:fadeup .4s ease}
+  .decide .da.no{background:var(--bad-bg);border:1px solid var(--bad-line)}
+  .decide .da.yes{background:var(--good-bg);border:1px solid var(--good-line)}
+  .decide .da b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;display:block;margin-bottom:0.3rem}
+  .decide .da.no b{color:var(--bad)}.decide .da.yes b{color:var(--good)}
+
+  /* ============ RHYTHM ============ */
+  .rhythm{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-top:2.4rem}
+  .rh{padding:1.2rem 1.2rem;display:grid;grid-template-columns:34px 1fr;gap:0.9rem;align-items:center;font-size:1.03rem;line-height:1.4}
+  .rh i{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.78rem;color:var(--num)}
+  .calls{margin-top:1rem;padding:1.4rem 1.5rem}
+  .cgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:0.9rem}
+  .cgrid div{height:38px;border-radius:6px;background:var(--track);display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;color:var(--mute);transition:background .4s,color .4s}
+  .cgrid div.lit{background:var(--gold);color:var(--on-gold)}
+  .cnote{display:flex;justify-content:space-between;margin-top:0.6rem;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+
+  /* ============ TARGETS ============ */
+  .tg{margin-top:1rem;display:grid;grid-template-columns:0.8fr 1.2fr;gap:1rem}
+  .tg-l{padding:1.6rem 1.5rem}
+  .tg-l .tv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(3.4rem,9vw,5.6rem);line-height:0.9;letter-spacing:-0.045em;color:var(--num)}
+  .tg-l .tl{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.5rem}
+  .tg-l .ti{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.5rem;margin-top:1.2rem}
+  .tg-l p{font-size:1.02rem;line-height:1.6;margin-top:0.9rem;opacity:.9}
+  .tg-r{padding:1.5rem 1.5rem}
+  .chain{display:flex;flex-direction:column;gap:0.2rem;margin-top:0.8rem}
+  .ch{display:grid;grid-template-columns:120px 1fr 96px;gap:0.9rem;align-items:center}
+  .ch .cn{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute)}
+  .ch .ctr{height:26px;background:var(--track);border-radius:4px;overflow:hidden}
+  .ch .cf{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--num));border-radius:4px;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .ch .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;text-align:right;font-variant-numeric:tabular-nums}
+  .rate{margin:0.1rem 0 0.1rem 120px;padding-left:0.9rem;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent)}
+  .perday{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:1.2rem;border-radius:10px;overflow:hidden}
+  .pd{background:var(--card-2);padding:0.85rem 0.8rem}
+  .pd b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;line-height:1.2}
+  .pd span{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+
+  /* ============ WHO DOES WHAT ============ */
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.4rem}
+  .role{padding:1.6rem 1.5rem}
+  .role .rk{display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.32rem 0.7rem;border:1px solid var(--gold);color:var(--accent);border-radius:999px}
+  .role.us .rk{background:var(--gold);color:var(--on-gold)}
+  .role ul{list-style:none;margin-top:1rem}
+  .role li{display:grid;grid-template-columns:26px 1fr;gap:0.8rem;align-items:start;font-size:1.03rem;padding:0.65rem 0;border-top:1px solid var(--hair);line-height:1.45}
+  .role li:first-child{border-top:0}
+  .role .ck{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center}
+  .role .ck svg{width:12px;height:12px;stroke:var(--num);fill:none;stroke-width:2.8;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .5s ease}
+  .role li.tk .ck svg{stroke-dashoffset:0}
+  .depends{margin-top:1rem;padding:1.2rem 1.4rem;border-left:3px solid var(--gold);font-size:1.06rem}
+
+  /* ============ MODEL ============ */
+  .model{padding:clamp(1.6rem,4vw,3rem)}
+  .ctrl{margin-top:1.6rem}
+  .ctrl:first-child{margin-top:0}
+  .ctrl-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.9rem}
+  .ctrl-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .ctrl-head .cvv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--num);letter-spacing:-0.01em}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:linear-gradient(90deg,var(--gold) var(--p,0%),var(--track) var(--p,0%));outline:none;border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--num);border:5px solid var(--bg);box-shadow:0 0 0 1px var(--gold),0 4px 14px rgba(0,0,0,.4);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--num);border:5px solid var(--bg);box-shadow:0 0 0 1px var(--gold);cursor:pointer}
+  .range-ends{display:flex;justify-content:space-between;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-top:0.6rem}
+  .out{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:2.2rem;border-radius:12px;overflow:hidden}
+  .o{background:var(--card-2);padding:1.3rem 1rem}
+  .o .ov{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.2rem,2.4vw,1.6rem);color:var(--num);line-height:1;font-variant-numeric:tabular-nums}
+  .o.lead .ov{font-size:clamp(1.9rem,4.4vw,2.9rem)}
+  .o .ol{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.55rem;line-height:1.4}
+  .signoff{margin-top:2.6rem;padding-top:1.6rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--num);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--num);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:1.6rem}
+    .audit,.np,.stepper,.tg{grid-template-columns:1fr}
+    .shots{position:static}
+    .rhythm{grid-template-columns:1fr 1fr}
+    .out{grid-template-columns:1fr 1fr}
+    .o.lead{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .parts,.roles,.rhythm,.bc{grid-template-columns:1fr}
+    .sbs-head{display:none}
+    .row{grid-template-columns:1fr;gap:0.35rem;padding-bottom:0.5rem}
+    .cell:before{grid-column:1/-1;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase}
+    .ch{grid-template-columns:86px 1fr 70px;gap:0.5rem}
+    .rate{margin-left:86px;padding-left:0.5rem}
+    .perday{grid-template-columns:1fr 1fr}
+    .ninety,.outcome{grid-template-columns:1fr}
+    .cgrid{grid-template-columns:repeat(6,1fr)}
+    .ig-top{grid-template-columns:64px 1fr}
+    .ig-top img{width:64px;height:64px}
+    .theme button{padding:0.45rem 0.7rem;font-size:0.56rem}
+    .shot .cap{display:none}
+    .hb{border-width:1.5px;border-radius:4px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .rv{transition:none;opacity:1;transform:none}
+    .scrollcue,.pin.on:before,.n-ring.go .f{animation:none}
+    html{scroll-behavior:auto}
+  }
+  /* ============ ALI: additions on top of the shared plan styles ============ */
+  .hcard{padding:1.5rem 1.4rem;max-width:440px;width:100%;justify-self:center}
+  .hrow{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:baseline;padding:0.95rem 0;border-top:1px solid var(--hair)}
+  .hrow:first-of-type{border-top:0}
+  .hrow .hv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.7rem,3.4vw,2.3rem);color:var(--num);line-height:1;letter-spacing:-0.02em;min-width:4.2ch;font-variant-numeric:tabular-nums}
+  .hrow .hl2{font-size:1.02rem;line-height:1.4}
+  .hrow .hs{display:block;font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.25rem}
+  .hfoot{margin-top:0.4rem;padding-top:1rem;border-top:1px solid var(--hair);font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent)}
+
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);margin-top:2.4rem;border-radius:12px;overflow:hidden}
+  .fact{background:var(--card-2);padding:1.4rem 1.1rem}
+  .fact .fv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.9rem,4vw,2.8rem);color:var(--num);line-height:1;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+  .fact .fl{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.6rem;line-height:1.45}
+  .brands{display:flex;flex-wrap:wrap;gap:0.45rem;margin-top:1rem}
+  .brands span{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 0.85rem;border:1px solid var(--hair);border-radius:999px;background:var(--card-2)}
+  .season{margin-top:1rem;padding:1.5rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;align-items:center}
+  .sbar{display:grid;grid-template-columns:110px 1fr;gap:0.9rem;align-items:center;margin-top:0.8rem}
+  .sbar .sn2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute)}
+  .sbar .st2{height:30px;background:var(--track);border-radius:5px;overflow:hidden;position:relative}
+  .sbar .sf{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--num));border-radius:5px;transition:width 1.3s cubic-bezier(.2,.7,.2,1)}
+  .sbar .sf.lo{background:linear-gradient(90deg,var(--dim),var(--mute))}
+  .sbar .sv{position:absolute;left:0.7rem;top:50%;transform:translateY(-50%);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.74rem;color:var(--on-gold)}
+  .sbar .sv.dk{color:var(--text)}
+  .season p{font-size:1.05rem;line-height:1.6}
+  .season p b{color:var(--num);font-weight:500}
+
+  .lanes{display:flex;flex-direction:column;gap:0.6rem;margin-top:1.2rem}
+  .lane{display:grid;grid-template-columns:0.6fr 1.4fr;gap:0.6rem}
+  .lane > div{padding:1.05rem 1.15rem}
+  .lane .ln b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;display:block}
+  .lane .lw{display:grid;grid-template-columns:auto 1fr;gap:0.9rem;align-items:center;font-size:1.04rem;line-height:1.45;animation:fadeup .45s ease}
+  .lane .lw i{font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.35rem 0.6rem;border-radius:999px;white-space:nowrap}
+  .lane .lw.b{border-color:var(--bad-line);background:var(--bad-bg)}
+  .lane .lw.b i{background:#D4553C;color:#fff}
+  .lane .lw.g{border-color:var(--good-line);background:var(--good-bg)}
+  .lane .lw.g i{background:#2F9460;color:#fff}
+  .goal{margin-top:1rem;padding:1.4rem 1.5rem;border-left:3px solid var(--gold)}
+  .goal p{font-size:1.1rem;line-height:1.6;margin-top:0.4rem}
+
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2rem}
+  .path{padding:1.4rem 1.4rem}
+  .path .pk{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase}
+  .path.b .pk{color:var(--bad)}.path.g .pk{color:var(--good)}
+  .path ol{list-style:none;margin-top:0.9rem;counter-reset:p}
+  .path li{counter-increment:p;display:grid;grid-template-columns:30px 1fr;gap:0.8rem;align-items:start;padding:0.6rem 0;font-size:1.03rem;line-height:1.45;position:relative;animation:fadeup .45s ease both}
+  .path li:before{content:counter(p);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.72rem;color:#fff}
+  .path.b li:before{background:#D4553C}.path.g li:before{background:#2F9460}
+  .path li:not(:last-child):after{content:"";position:absolute;left:13px;top:38px;bottom:-6px;width:2px;background:var(--hair)}
+  .path li.end{font-weight:500}
+  .path.b li.end{color:var(--bad)}.path.g li.end{color:var(--good)}
+
+  .ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.2rem}
+  .rung{padding:1.5rem 1.4rem;cursor:pointer;text-align:left;width:100%;position:relative}
+  .rung:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .rung.on{border-color:var(--gold);background:var(--card-2)}
+  .rung .rn{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.6rem;line-height:0.85;color:var(--track);transition:color .4s}
+  .rung.on .rn{color:var(--gold)}
+  .rung h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.12rem;margin-top:0.9rem;line-height:1.25}
+  .rung p{font-size:0.98rem;color:var(--mute);margin-top:0.5rem;line-height:1.5}
+  .meter{margin-top:1rem}
+  .meter span{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .meter .mt{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:0.4rem}
+  .meter .mt i{height:8px;border-radius:3px;background:var(--track);transition:background .4s}
+  .meter .mt i.f{background:var(--gold)}
+  .rung-out{margin-top:1rem;padding:1.4rem 1.5rem;animation:fadeup .45s ease}
+  .rung-out p{font-size:1.05rem;line-height:1.6;margin-top:0.4rem}
+  .rung-out p b{color:var(--num);font-weight:500}
+  .have{margin-top:1rem;padding:1.3rem 1.4rem;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center}
+  .have .hb2{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.2rem;color:var(--num);line-height:1}
+  .have p{font-size:1.03rem;line-height:1.55}
+
+  .conds{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .cond{padding:1.3rem 1.4rem;border-left:3px solid var(--good)}
+  .cond p{font-size:1.04rem;line-height:1.55;margin-top:0.4rem}
+
+  .months{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:1rem;position:relative}
+  .mo{padding:1.3rem 1.1rem 1.3rem 0;position:relative;cursor:pointer;background:none;border:0;text-align:left}
+  .mo:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--track)}
+  .mo:after{content:"";position:absolute;left:0;top:-6px;width:15px;height:15px;border-radius:50%;background:var(--bg);border:2px solid var(--gold);transition:.3s}
+  .mo.on:after{background:var(--gold);transform:scale(1.25)}
+  .mo.on:before{background:var(--gold)}
+  .mo b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-top:0.6rem}
+  .mo span{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;margin-top:0.3rem;line-height:1.25;color:var(--mute);transition:color .3s}
+  .mo.on span{color:var(--text)}
+  .mo-out{padding:1.4rem 1.5rem;margin-top:0.4rem;animation:fadeup .45s ease}
+  .mo-out ul{list-style:none;margin-top:0.6rem}
+  .mo-out li{display:grid;grid-template-columns:22px 1fr;gap:0.7rem;padding:0.5rem 0;border-top:1px solid var(--hair);font-size:1.03rem;line-height:1.45}
+  .mo-out li:first-child{border-top:0}
+  .mo-out li i{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--gold);margin-top:4px}
+
+  .founder{margin-top:2.4rem;padding:1.6rem 1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.4rem;align-items:center}
+  .founder img{width:76px;height:76px;border-radius:50%;border:2px solid var(--gold)}
+  .founder b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.15rem;display:block}
+  .founder .fq{font-size:1.06rem;margin-top:0.25rem}
+  .founder .fs{font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.35rem}
+  .reels3{display:flex;gap:0.5rem}
+  .reels3 div{text-align:center;padding:0.7rem 0.8rem;border:1px solid var(--hair);border-radius:10px;background:var(--card-2);min-width:78px}
+  .reels3 div b{font-size:1.2rem;color:var(--num)}
+  .reels3 div span{font-family:'Archivo',sans-serif;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+  .bigstat{margin-top:1rem;padding:1.6rem 1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.6rem;align-items:center}
+  .bigstat .bv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,5rem);line-height:0.9;letter-spacing:-0.045em;color:var(--num)}
+  .bigstat p{font-size:1.05rem;line-height:1.6}
+  .pills{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;margin-top:1.6rem}
+  .pills button{background:none;border:0;cursor:pointer;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.64rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.6rem 1rem;border-radius:999px;color:var(--mute);transition:.3s}
+  .pills button.on{background:var(--gold);color:var(--on-gold)}
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  .case{padding:1.5rem 1.4rem;transition:opacity .35s,transform .35s}
+  .case.hide{display:none}
+  .case .ct{display:flex;justify-content:space-between;align-items:center;gap:0.6rem}
+  .case .ctag{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.54rem;letter-spacing:0.16em;text-transform:uppercase;padding:0.3rem 0.6rem;border:1px solid var(--gold);color:var(--accent);border-radius:999px}
+  .case h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.2rem;margin-top:0.9rem}
+  .case .csub{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);margin-top:0.25rem}
+  .case .cm{display:flex;gap:1.6rem;margin-top:1rem;flex-wrap:wrap}
+  .case .cm div b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2rem);color:var(--num);line-height:1;font-variant-numeric:tabular-nums}
+  .case .cm div span{font-family:'Archivo',sans-serif;font-size:0.54rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute)}
+  .case p{font-size:1rem;line-height:1.55;margin-top:0.9rem;opacity:.9}
+  .case.quote{border-left:3px solid var(--gold)}
+  #cases .case.quote{grid-column:1/-1}
+  span.cu{font:inherit!important;letter-spacing:inherit!important;text-transform:inherit!important;color:inherit!important;margin:0!important;padding:0!important;display:inline!important}
+  .netline{margin-top:1rem;padding:1.2rem 1.4rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:1.05rem}
+  .netline a{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.64rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--num);text-decoration:none;border:1px solid var(--gold);padding:0.6rem 1rem;border-radius:999px;white-space:nowrap}
+
+  .price{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.2rem}
+  .pr{padding:1.6rem 1.5rem}
+  .pr .was{font-family:'Archivo',sans-serif;font-weight:700;font-size:1.1rem;color:var(--mute);text-decoration:line-through;text-decoration-color:var(--bad)}
+  .pr .pnow{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.6rem,7vw,4.2rem);line-height:0.95;letter-spacing:-0.04em;color:var(--num);margin-top:0.4rem}
+  .pr .pnow small{font-size:0.32em;letter-spacing:0.02em;color:var(--text);margin-left:0.3rem}
+  .pr .plus{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.3rem;margin-top:0.6rem}
+  .pr .plus b{color:var(--num)}
+  .pr .pfor{font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.9rem}
+  .pr ul{list-style:none;margin-top:0.4rem}
+  .pr li{display:grid;grid-template-columns:24px 1fr;gap:0.7rem;align-items:start;padding:0.6rem 0;border-top:1px solid var(--hair);font-size:1.03rem;line-height:1.45}
+  .pr li:first-child{border-top:0}
+  .pr li i{width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--on-gold);display:flex;align-items:center;justify-content:center;font-style:normal;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;margin-top:2px}
+  .out4{grid-template-columns:1.3fr repeat(3,1fr)}
+  .nextc{margin-top:1rem;padding:1.3rem 1.5rem;border-left:3px solid var(--gold);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .nextc .nd{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.1rem,2.4vw,1.45rem)}
+  .nextc .nm2{font-size:1.02rem;color:var(--mute)}
+
+  @media(max-width:1020px){
+    .facts{grid-template-columns:1fr 1fr}
+    .season,.paths,.conds,.cases,.price{grid-template-columns:1fr}
+    .ladder{grid-template-columns:1fr}
+    .founder{grid-template-columns:auto 1fr}
+    .founder .reels3{grid-column:1/-1}
+    .out4{grid-template-columns:1fr 1fr}
+    .out4 .o:last-child{grid-column:1/-1}
+  }
+  @media(max-width:700px){
+    .lane{grid-template-columns:1fr;gap:0.35rem;padding-bottom:0.4rem}
+    .months{grid-template-columns:1fr 1fr;row-gap:0.6rem}
+    .bigstat,.have{grid-template-columns:1fr;gap:0.8rem}
+    .sbar{grid-template-columns:84px 1fr}
+    .reels3 div{min-width:0;flex:1}
+  }
+</style>
+</head>
+<body>
+<div class="backdrop" aria-hidden="true"></div>
+<div id="progress"></div>
+<div class="theme" role="group" aria-label="Theme"><button id="thDark" class="on" type="button">Dark</button><button id="thGlass" type="button">Glass</button></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>Where you are</span></a>
+  <a href="#s2"><span>The ceiling</span></a>
+  <a href="#s3"><span>The profile today</span></a>
+  <a href="#s4"><span>Two kinds of follower</span></a>
+  <a href="#s5"><span>The plan</span></a>
+  <a href="#s6"><span>Part 1 &middot; Shoots</span></a>
+  <a href="#s7"><span>Part 2 &middot; The second offer</span></a>
+  <a href="#s8"><span>Part 3 &middot; Sales</span></a>
+  <a href="#s9"><span>The calls and the months</span></a>
+  <a href="#s10"><span>Who does what</span></a>
+  <a href="#s11"><span>Our work</span></a>
+  <a href="#s12"><span>The investment</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="s0">
+  <div class="hero-top"><a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a></div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Three-month plan &middot; @alialrz1</span>
+      <h1 class="rv d1">Ali Alrz<span>The business behind the name</span></h1>
+      <p class="hero-sub rv d2">The audience, the name and the work are already there. This plan builds what runs <b>without you in every room</b>: shoots that take less of your time, an offer for the followers who want to learn from you, and a sales team that answers them.</p>
+    </div>
+    <div class="hcard card rv d2">
+      <div class="ramp-top"><img src="img/ali-avatar.jpg" alt="Ali Alrz"><div><b>@alialrz1</b><span>Where things stand</span></div></div>
+      <div class="hrow"><span class="hv"><span class="cu" data-target="399">399</span>K</span><span class="hl2">Followers on Instagram<span class="hs">Verified profile</span></span></div>
+      <div class="hrow"><span class="hv"><span class="cu" data-target="1">1</span>M</span><span class="hl2">Views on your latest video<span class="hs">With no ad spend</span></span></div>
+      <div class="hrow"><span class="hv">~<span class="cu" data-target="1000">1,000</span></span><span class="hl2">Replies to one story, and around 200 forms filled in<span class="hs">From one story asking for team members</span></span></div>
+      <div class="hfoot">Today, every one of them reaches you</div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d3" style="color:var(--mute)">Prepared November 2026</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- ============ 01 WHERE YOU ARE ============ -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; Where you are now</span>
+    <h2 class="statement rv d1">Five years in Dubai, from zero to a name people book.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">You came to Dubai five years ago and built it from nothing. Today you sell a personal brand experience: founders and creators come to Dubai, you handle everything, and <b>four or five days of shooting gives them six months of content</b>. You also shoot events, and camera and gear brands pay you to make content for them.</p>
+    <div class="facts rv d2">
+      <div class="fact"><div class="fv cu" data-target="5">5</div><div class="fl">Years in Dubai, starting from zero</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="399">399</span>K</div><div class="fl">Instagram followers, verified</div></div>
+      <div class="fact"><div class="fv">2014</div><div class="fl">On Instagram since</div></div>
+      <div class="fact"><div class="fv">$<span class="cu" data-target="0">0</span></div><div class="fl">Spent on ads so far</div></div>
+    </div>
+    <h3 class="sub rv">Brands you already work with</h3>
+    <div class="brands rv d1"><span>DJI</span><span>Sony</span><span>Tilta</span><span>Nanlite</span><span>UGREEN</span></div>
+    <div class="season card rv d2" id="season">
+      <div>
+        <span class="k">Shoot days in a month</span>
+        <div class="sbar"><span class="sn2">High season</span><div class="st2"><div class="sf" data-w="100"></div><span class="sv">About 25 days</span></div></div>
+        <div class="sbar"><span class="sn2">Low season</span><div class="st2"><div class="sf lo" data-w="40"></div><span class="sv dk">5 to 10 days</span></div></div>
+      </div>
+      <p>The shoots follow the season, the summer and anything that happens in the region. <b>Brand deals hold up all year</b>, because they come from your name and your audience. The plan adds a second income that works the same way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 THE CEILING ============ -->
+<section class="section band" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The ceiling</span>
+    <h2 class="statement rv d1">Everything still runs through you.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">Even when the team goes to a shoot, you have to be there. Sales need you to read each client and shape the package. The laptop comes to the desert and calls happen at night. There are only so many hours in a day, so <b>there is a limit to what the business can make</b> while every part of it depends on you.</p>
+    <div class="seg card rv d2" id="lnSeg"><button data-m="today" class="on" type="button">Today</button><button data-m="after" type="button">After three months</button></div>
+    <div class="lanes rv d2" id="lanes"></div>
+    <div class="goal card rv"><span class="k">Where you want to go</span><p>Known across the Middle East, then the Arab world, then booked from Europe. Free to travel and work from a laptop, with time for the gym, friends and the desert along the way.</p></div>
+  </div>
+</section>
+
+<!-- ============ 03 PROFILE TODAY ============ -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; The profile today &middot; @alialrz1</span>
+    <h2 class="statement rv d1">The profile earns trust in seconds. It sells one thing.</h2>
+    <div class="audit" data-audit="ali">
+      <div class="shots rv d1">
+        <div class="shot"><img src="img/ali-header.jpg" alt="@alialrz1 Instagram profile: verified, 399K followers, bio and highlights"><span class="cap">Profile</span></div>
+        <div class="shot"><img src="img/ali-grid.jpg" alt="@alialrz1 grid: three pinned posts, then brand campaign posts" loading="lazy"><span class="cap">Grid</span></div>
+      </div>
+      <div>
+        <div class="issues rv d2"></div>
+        <div class="visitor card rv" style="border-left-color:var(--gold)"><span class="k" style="color:var(--accent)">What a new visitor sees</span><p>A verified creator with real clients, a strong showreel and one keyword for people who want a shoot. A filmmaker who wants to learn from you finds a LUT store, and nothing more.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 TWO KINDS OF FOLLOWER ============ -->
+<section class="section band" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; Two kinds of follower</span>
+    <h2 class="statement rv d1">Some want to be filmed by you. Many want to learn from you.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">One story asking for team members brought <b>around 1,000 replies and around 200 forms</b>. That is how fast your followers answer when you ask them something. Here is the path each kind of follower takes today, and after the three months.</p>
+    <div class="seg card rv d2" id="pSeg"><button data-m="shoot" class="on" type="button">Wants a shoot</button><button data-m="learn" type="button">Wants to learn</button></div>
+    <div class="paths rv d2" id="paths"></div>
+  </div>
+</section>
+
+<!-- ============ 05 THE PLAN ============ -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; The plan</span>
+    <h2 class="statement rv d1">Three parts, all started together.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">Each part takes work off your plate or adds income that does not need you in the room.</p>
+    <div class="parts rv d2">
+      <a class="part card" href="#s6"><div class="pn">1</div><h4>Shoots that take less of your time</h4><div class="pw">Part 1</div></a>
+      <a class="part card" href="#s7"><div class="pn">2</div><h4>An offer for the followers who want to learn from you</h4><div class="pw">Part 2</div></a>
+      <a class="part card" href="#s8"><div class="pn">3</div><h4>A sales system with two DM setters</h4><div class="pw">Part 3</div></a>
+    </div>
+    <div class="after card rv d3">Organic only for now, with <b>no ad spend</b>. Ads and clipping come later, paid for with the money the new offers bring in.</div>
+  </div>
+</section>
+
+<!-- ============ 06 PART 1 ============ -->
+<section class="section band" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Part 1 &middot; Shoots that take less of your time</span>
+    <h2 class="statement rv d1">Fewer shoots, better paid, with you where you matter most.</h2>
+    <div class="stepper rv d2" data-stepper="s1"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <div class="outcome card rv"><span class="k">What comes out of Part 1</span><div class="chips"><span>Time per client known</span><span>A cap on clients and hours</span><span>Set packages with set prices</span><span>You on the high-end shoots</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 07 PART 2 ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Part 2 &middot; The second offer</span>
+    <h2 class="statement rv d1">An offer for the followers who want to learn from you.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">A lot of your followers are filmmakers and creators who want to do what you do. Three ways to sell what you know, each taking a different amount of your time.</p>
+    <div class="ladder rv d2" id="ladder"></div>
+    <div id="rungOut"></div>
+    <div class="have card rv"><div class="hb2">6<small style="display:block;font-size:0.22em;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:0.35rem">Products</small></div><p><b style="color:var(--num);font-weight:500">Already in place:</b> store.alialrz.com, with three LUT bundles and three free raw and graded packs. The course and the coaching sit next to it, so a buyer of a $30 bundle can step up to learning from you.</p></div>
+    <div class="outcome card rv"><span class="k">Why it changes the business</span><div class="chips"><span>Sold all year</span><span>Buyers anywhere in the world</span><span>The season does not decide the month</span><span>Your hours stay capped</span></div></div>
+  </div>
+</section>
+
+<!-- ============ 08 PART 3 ============ -->
+<section class="section band" id="s8">
+  <div class="wrap">
+    <span class="snum rv">08 &middot; Part 3 &middot; The sales system</span>
+    <h2 class="statement rv d1">A sales team that answers your followers so you can stay on the work.</h2>
+    <div class="stepper rv d2" data-stepper="s3"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <h3 class="sub rv">Your two conditions, built in from the start</h3>
+    <div class="conds">
+      <div class="cond card rv d1"><span class="k" style="color:var(--good)">Your Instagram stays yours</span><p>Nobody gets your Instagram login. The setters work through a DM tool such as ManyChat, which you said you are comfortable giving access to.</p></div>
+      <div class="cond card rv d2"><span class="k" style="color:var(--good)">Your client list stays yours</span><p>Your CRM and your high-end clients stay with you. Leads from this system go into their own CRM.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 CALLS AND MONTHS ============ -->
+<section class="section" id="s9">
+  <div class="wrap">
+    <span class="snum rv">09 &middot; The calls and the three months</span>
+    <h2 class="statement rv d1">Four working calls, each with one job.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">The calls can run in the same week, so the system is up fast and nothing waits on the next meeting.</p>
+    <div class="stepper rv d2" data-stepper="calls"><div class="st-list"></div><div class="st-detail card"><div class="anim"></div></div></div>
+    <h3 class="sub rv">The three months</h3>
+    <div class="months rv d1" id="months"></div>
+    <div id="moOut"></div>
+  </div>
+</section>
+
+<!-- ============ 10 WHO DOES WHAT ============ -->
+<section class="section band" id="s10">
+  <div class="wrap">
+    <span class="snum rv">10 &middot; Who does what</span>
+    <h2 class="statement rv d1">We build the system with you. You stay on the work only you can do.</h2>
+    <div class="roles">
+      <div class="role us card rv d1"><span class="rk">Maison d'&Eacute;lites provides</span><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Four working calls</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The plan for your shoots: time per client, the cap and the packages</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The second offer, shaped with you</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>The sales system and the scripts</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Two DM setters put in place and trained</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Direction on the profile, so buyers trust what they see</li>
+      </ul></div>
+      <div class="role card rv d2"><span class="rk">You</span><ul>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Share how much time each client really takes</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Decide the cap, the packages and the prices</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Keep time for the four calls</li>
+        <li><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Film the content</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 OUR WORK ============ -->
+<section class="section" id="s11">
+  <div class="wrap">
+    <span class="snum rv">11 &middot; Our work</span>
+    <h2 class="statement rv d1">We turn attention into income for creators, founders and brands.</h2>
+    <div class="founder card rv d1">
+      <img src="img/jacques-avatar.jpg" alt="Jacques, Founder of Maison d'&Eacute;lites">
+      <div><b>Jacques &middot; Founder</b><div class="fq">&ldquo;I help brands turn attention into revenue.&rdquo;</div><div class="fs">@jacques.amoako &middot; three pinned reels</div></div>
+      <div class="reels3"><div><b><span class="cu" data-target="928">928</span>K</b><br><span>Views</span></div><div><b><span class="cu" data-target="350">350</span>K</b><br><span>Views</span></div><div><b><span class="cu" data-target="244">244</span>K</b><br><span>Views</span></div></div>
+    </div>
+    <div class="bigstat card rv d2"><div class="bv"><span class="cu" data-target="1">1</span>B+</div><p>Views delivered by Maison d'&Eacute;lites for brands, artists and creators. The closest work to yours is below: personal brands that sell education, the same thing your second offer will sell.</p></div>
+    <div class="pills card rv d2" id="csPills"><button data-f="all" class="on" type="button">All</button><button data-f="edu" type="button">Education</button><button data-f="brand" type="button">Brands and artists</button></div>
+    <div class="cases" id="cases">
+      <div class="case card rv" data-f="edu"><div class="ct"><span class="ctag">Education</span></div><h4>Iman Gadzhi</h4><div class="csub">Page network growth and brand amplification</div>
+        <div class="cm"><div><b><span class="cu" data-target="42.2" data-dec="1">42.2</span>M</b><span>Views in 90 days</span></div><div><b><span class="cu" data-target="13.1" data-dec="1">13.1</span>M</b><span>Accounts reached</span></div><div><b><span class="cu" data-target="94.1" data-dec="1">94.1</span>%</b><span>Non-follower reach</span></div></div>
+        <p>Our page network amplified his personal brand and drove awareness for his educational products.</p></div>
+      <div class="case card rv d1" data-f="edu"><div class="ct"><span class="ctag">Education</span></div><h4>Digital Launchpad</h4><div class="csub">Multi-platform page network growth</div>
+        <div class="cm"><div><b><span class="cu" data-target="36">36</span>M</b><span>Views in 60 days</span></div><div><b><span class="cu" data-target="12.2" data-dec="1">12.2</span>M</b><span>Accounts reached</span></div><div><b><span class="cu" data-target="94.3" data-dec="1">94.3</span>%</b><span>Non-follower reach</span></div></div>
+        <p>A page network built to drive awareness and sign-ups for an online education platform.</p></div>
+      <div class="case card rv" data-f="edu"><div class="ct"><span class="ctag">Entrepreneurship</span></div><h4>Luke Belmar</h4><div class="csub">Affiliate marketing and content distribution</div>
+        <div class="cm"><div><b><span class="cu" data-target="200">200</span>M</b><span>Views a month</span></div><div><b class="cu" data-target="7781">7,781</b><span>Referrals</span></div></div>
+        <p>Our network drives referrals for the Capital Club entrepreneurial community.</p></div>
+      <div class="case card rv d1" data-f="brand"><div class="ct"><span class="ctag">Retail</span></div><h4>Walmart</h4><div class="csub">Creator campaign for Walmart's beauty box</div>
+        <div class="cm"><div><b><span class="cu" data-target="3">3</span>M</b><span>Total views</span></div><div><b>$<span class="cu" data-target="2.3" data-dec="2">2.30</span></b><span>Effective CPM</span></div></div>
+        <p>Influencers engaged to post about the beauty box and drive attention to it.</p></div>
+      <div class="case card quote rv" data-f="brand"><div class="ct"><span class="ctag">Music</span></div><h4>Kojo Blak</h4><div class="csub">Artist</div>
+        <div class="cm"><div><b><span class="cu" data-target="1.9" data-dec="1">1.9</span>M</b><span>Views</span></div><div><b>$<span class="cu" data-target="1.3" data-dec="2">1.30</span></b><span>CPM</span></div></div>
+        <p>Recommends Maison d'&Eacute;lites, and later won Best New Ghanaian Artist.</p></div>
+    </div>
+    <div class="netline card rv"><span>Walmart, Sony, WYDE and DEF JAM have run campaigns through our network.</span><a href="https://maisondelites.com/#case-studies" target="_blank" rel="noopener">All case studies &rarr;</a></div>
+  </div>
+</section>
+
+<!-- ============ 12 INVESTMENT ============ -->
+<section class="section band" id="s12">
+  <div class="wrap">
+    <span class="snum rv">12 &middot; The investment</span>
+    <h2 class="statement rv d1">Three months to build it, then a review on the results.</h2>
+    <div class="price">
+      <div class="pr card rv d1">
+        <span class="k">For the first three months</span>
+        <div class="was">Normally $2,000</div>
+        <div class="pnow">$1,000<small>a month</small></div>
+        <div class="plus">+ <b>10%</b> of the revenue we bring in</div>
+        <div class="pfor">After three months, reviewed together on the results</div>
+      </div>
+      <div class="pr card rv d2">
+        <span class="k">What it covers</span>
+        <ul>
+          <li><i>1</i>Shoots that take less of your time</li>
+          <li><i>2</i>The second offer for followers who want to learn from you</li>
+          <li><i>3</i>The sales system, the scripts and two trained DM setters</li>
+          <li><i>4</i>Four working calls</li>
+          <li><i>5</i>Organic only, with no ad spend</li>
+        </ul>
+      </div>
+    </div>
+    <h3 class="sub rv">How the 10% works in a month</h3>
+    <div class="model card rv d2">
+      <div class="ctrl"><div class="ctrl-head"><span class="cl">Revenue the new system brings in, in one month</span><span class="cvv" id="revVal">$10,000</span></div>
+        <input type="range" id="rev" min="0" max="50000" step="500" value="10000" aria-label="Revenue the new system brings in, in one month"><div class="range-ends"><span>$0</span><span>$50,000</span></div></div>
+      <div class="out out4">
+        <div class="o lead"><div class="ov" id="oKeep">$9,000</div><div class="ol">Stays with you from that revenue</div></div>
+        <div class="o"><div class="ov" id="oShare">$1,000</div><div class="ol">10% share</div></div>
+        <div class="o"><div class="ov">$1,000</div><div class="ol">Monthly fee</div></div>
+        <div class="o"><div class="ov" id="oTotal">$2,000</div><div class="ol">Total to Maison d'&Eacute;lites that month</div></div>
+      </div>
+    </div>
+    <div class="nextc card rv"><div><span class="k">Next step</span><div class="nd">Our call on 30 November or 1 December</div></div><div class="nm2">We go through this together and agree the start.</div></div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const once=(els,fn,th=0.3)=>{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});
+    els.forEach(el=>el&&io.observe(el));
+  };
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const N=n=>n.toLocaleString('en-US');
+
+  /* theme: dark or glass, remembered on this device */
+  function setTheme(t){
+    if(t==='glass') document.documentElement.setAttribute('data-theme','glass'); else document.documentElement.removeAttribute('data-theme');
+    $('#thDark').classList.toggle('on',t!=='glass'); $('#thGlass').classList.toggle('on',t==='glass');
+    try{localStorage.setItem('mde-theme',t);}catch(e){}
+  }
+  $('#thDark').addEventListener('click',()=>setTheme('dark'));
+  $('#thGlass').addEventListener('click',()=>setTheme('glass'));
+  setTheme(document.documentElement.getAttribute('data-theme')==='glass'?'glass':'dark');
+
+  const prog=$('#progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=$$('#dots a'), secs=dots.map(a=>$(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  /* count-ups: .cu[data-target][data-dec][data-pre][data-suf] */
+  function fmt(v,el){const d=+(el.dataset.dec||0);const s=d?v.toFixed(d):N(Math.round(v));return (el.dataset.pre||'')+s+(el.dataset.suf||'');}
+  once($$('.cu'),el=>{
+    const t=+el.dataset.target; if(reduce||!t){el.textContent=fmt(t,el);return;}
+    const st=performance.now(),dur=1400;
+    (function step(now){const k=Math.min(1,(now-st)/dur),e=1-Math.pow(1-k,3);el.textContent=fmt(t*e,el);if(k<1)requestAnimationFrame(step);else el.textContent=fmt(t,el);})(st);
+  },0.4);
+
+  once([$('#season')],el=>el.querySelectorAll('.sf').forEach(f=>f.style.width=f.dataset.w+'%'),0.4);
+
+  function seg(id,fn,init){
+    const b=$$('#'+id+' button');
+    b.forEach(x=>x.addEventListener('click',()=>{b.forEach(y=>y.classList.toggle('on',y===x));fn(x.dataset.m);}));
+    fn(init);
+  }
+
+  /* ---------- the ceiling: today vs after ---------- */
+  const LANES=[
+    ['Shoots',['Ali','You are on every shoot, even when the team goes'],['Team','You lead the high-end shoots. Your team runs the rest under your name']],
+    ['Sales',['Ali','Every message and every deal goes through you'],['Setters','Two DM setters answer, ask the right questions and book the calls']],
+    ['Income',['Season','Shoots and brand deals. The shoots follow the season'],['All year','A second offer for people who want to learn from you, sold all year to buyers anywhere']],
+    ['Your time',['Ali','Calls at night and the laptop in the desert'],['Capped','Time per client is capped and the calls arrive booked']]
+  ];
+  seg('lnSeg',m=>{
+    $('#lanes').innerHTML=LANES.map(l=>{const c=m==='today'?l[1]:l[2];return '<div class="lane"><div class="ln card"><b>'+l[0]+'</b></div><div class="lw card '+(m==='today'?'b':'g')+'"><i>'+c[0]+'</i><span>'+c[1]+'</span></div></div>';}).join('');
+  },'today');
+
+  /* ---------- profile audit: numbered pins on the screenshots ---------- */
+  // Each item: shot index, tag [x,y] and box [x1,y1,x2,y2] in screenshot pixels,
+  // k = good or bad, then part, verdict, quote, why.
+  const AUDIT={
+    ali:{dims:[[1200,571],[1100,734]],items:[
+      {s:0,k:'good',t:[535,59],b:[395,40,522,80],p:'Name and badge',v:'Verified',q:'“alialrz1” with the blue badge',w:'A stranger trusts a verified account faster.'},
+      {s:0,k:'good',t:[560,110],b:[395,96,545,124],p:'Followers',v:'399K followers',q:'',w:'The audience is already here. The work now is turning it into income.'},
+      {s:0,k:'bad',t:[485,161],b:[395,150,470,173],p:'Name line',v:'Name only',q:'“Ali Alrz”',w:'This line shows up in search. A few words on what you do help the right people find you.'},
+      {s:0,k:'good',t:[710,185],b:[395,174,697,197],p:'Bio line 1',v:'Says what you do and where',q:'“Personal Brand Content in Dubai”',w:'A visitor knows in one line what you sell.'},
+      {s:0,k:'good',t:[770,208],b:[395,198,756,220],p:'Bio line 2',v:'Says who it is for',q:'“For Founders, Creators & High-level Clients”',w:'It speaks to people who want a shoot. The followers who want to learn are not named.'},
+      {s:0,k:'good',t:[712,231],b:[395,221,698,243],p:'Bio line 3',v:'One keyword',q:'“DM “BRAND” to build your Presence”',w:'The best way to start a conversation is already set up. Today every one of those messages waits for you.'},
+      {s:0,k:'bad',t:[687,277],b:[395,266,672,289],p:'Link',v:'Opens a LUT store',q:'store.alialrz.com, plus one more link. The store has three LUT bundles at $30 to $49 and three free packs.',w:'The link a visitor sees sells $30 to $49 products. There is no way to apply to learn from you.'},
+      {s:0,k:'good',t:[600,392],b:[50,400,1192,556],p:'Highlights',v:'Clients first',q:'Clients, Gear, BTS and Work first, then Jordan, Quotes, Thailand and more.',w:'Proof sits first. There is no highlight yet for people who want to learn from you.'},
+      {s:1,k:'good',t:[40,40],b:[2,2,1098,486],p:'Pinned posts',v:'You, first',q:'Three pinned posts sit at the top of the grid, all about you.',w:'A visitor meets who you are and the quality of your work first.'},
+      {s:1,k:'bad',t:[40,530],b:[2,490,1098,732],p:'Latest posts',v:'Mostly brand campaigns',q:'The newest posts include campaigns for the DJI Osmo 360 II and UGREEN.',w:'Good for brand deals. Nothing yet tells a follower they can learn from you.'}
+    ]}
+  };
+  $$('[data-audit]').forEach(root=>{
+    const cfg=AUDIT[root.dataset.audit], shots=[...root.querySelectorAll('.shot')], list=root.querySelector('.issues');
+    cfg.items.forEach((it,i)=>{
+      const [W,H]=cfg.dims[it.s];
+      if(it.b){
+        const h=document.createElement('div'); h.className='hb '+it.k; h.dataset.i=i;
+        h.style.left=(it.b[0]/W*100)+'%'; h.style.top=(it.b[1]/H*100)+'%'; h.style.width=((it.b[2]-it.b[0])/W*100)+'%'; h.style.height=((it.b[3]-it.b[1])/H*100)+'%';
+        shots[it.s].appendChild(h);
+      }
+      const p=document.createElement('button'); p.type='button'; p.className='pin '+it.k; p.textContent=i+1; p.dataset.i=i;
+      p.style.left=(it.t[0]/W*100)+'%'; p.style.top=(it.t[1]/H*100)+'%'; p.setAttribute('aria-label',it.p+': '+it.v);
+      shots[it.s].appendChild(p);
+      const b=document.createElement('button'); b.type='button'; b.className='issue card '+it.k; b.dataset.i=i;
+      b.innerHTML='<span class="in">'+(i+1)+'</span><span><div class="it">'+it.p+'</div><div class="iv">'+it.v+'</div>'+(it.q?'<div class="iq">'+it.q+'</div>':'')+'<div class="iw"><b>Why</b>'+it.w+'</div></span>';
+      list.appendChild(b);
+    });
+    function pick(i){
+      root.querySelectorAll('.pin,.hb').forEach(p=>p.classList.toggle('on',+p.dataset.i===i));
+      root.querySelectorAll('.issue').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+    }
+    root.querySelectorAll('.pin,.issue').forEach(el=>{
+      el.addEventListener('click',()=>pick(+el.dataset.i));
+      el.addEventListener('mouseenter',()=>pick(+el.dataset.i));
+    });
+    pick(6);
+  });
+
+  /* ---------- two kinds of follower: today vs after ---------- */
+  const PATHS={
+    shoot:{today:['Sees one of your videos','Sends “BRAND”','Waits until you have time to answer','You read the client and build the quote yourself'],
+           after:['Sees one of your videos','Sends “BRAND”','A setter answers fast and asks the right questions','A call is booked for a set package at a set price']},
+    learn:{today:['Sees one of your videos','Opens the link in your bio','Finds LUT bundles at $30 to $49','Nothing else to buy'],
+           after:['Sees one of your videos','Sends a second keyword made for learning','A setter finds out what they need','One-to-one coaching, a group, or the course']}
+  };
+  seg('pSeg',m=>{
+    const P=PATHS[m], li=(a,d)=>a.map((x,i)=>'<li'+(i===a.length-1?' class="end"':'')+' style="animation-delay:'+(i*0.08)+'s">'+x+'</li>').join('');
+    $('#paths').innerHTML='<div class="path b card"><span class="pk">Today</span><ol>'+li(P.today)+'</ol></div><div class="path g card"><span class="pk">After the three months</span><ol>'+li(P.after)+'</ol></div>';
+  },'shoot');
+
+  /* ---------- the second offer: three rungs ---------- */
+  const RUNGS=[
+    ['One-to-one coaching and consulting',4,'The highest price per person, for the followers who want you directly.','People sit with you one to one, on a set number of calls a month. <b>A small number of clients</b> fills it, so your hours stay capped.'],
+    ['Group calls and classes',2,'One call, many people. A lower price that more followers can afford.','The same knowledge as the one-to-one, taught to a group at once. <b>One hour of your time serves many people.</b>'],
+    ['A course',0,'The lowest price, bought at any hour, with no live time from you.','You record what you know once and it sells after that, next to the LUT bundles in your store. <b>It works for the follower who wants to learn but has a small budget.</b>']
+  ];
+  $('#ladder').innerHTML=RUNGS.map((r,i)=>'<button class="rung card" type="button" data-i="'+i+'"><div class="rn">'+(i+1)+'</div><h4>'+r[0]+'</h4><p>'+r[2]+'</p><div class="meter"><span>Your time</span><div class="mt">'+[0,1,2,3,4].map(k=>'<i'+(k<r[1]?' class="f"':'')+'></i>').join('')+'</div></div></button>').join('');
+  function rung(i){
+    $$('#ladder .rung').forEach((b,j)=>b.classList.toggle('on',j===i));
+    $('#rungOut').innerHTML='<div class="rung-out card"><span class="k">'+RUNGS[i][0]+'</span><p>'+RUNGS[i][3]+'</p></div>';
+  }
+  $$('#ladder .rung').forEach(b=>b.addEventListener('click',()=>rung(+b.dataset.i)));
+  rung(0);
+
+  /* ---------- steppers ---------- */
+  const STEPS={
+    s1:[
+      ['1.1','Time per client','<p>First we look at how much time each client really takes from you: the talks before, the shoot days, the edits and the back and forth after.</p><p>Your own example from our conversation: <b>a $1,000 job that takes three or four hours can be worth more than a $5,000 job that takes two weeks.</b> Every package gets measured that way.</p>'],
+      ['1.2','A cap on clients and hours','<p>A maximum number of clients and a maximum number of hours you give to shoots each month.</p><p>When the cap is full, the calendar is full. <b>The best-paying clients get the places.</b></p>'],
+      ['1.3','Set packages','<p>Clear packages with a set price and a set amount of your time in each.</p><p>A setter or the team can sell a set package <b>without you reading every client</b> first.</p>'],
+      ['1.4','You on the high-end shoots','<p>You lead the high-end projects. Your production team, which you already trust, runs the normal shoots under your name.</p><p>Fewer shoots for you, and <b>more time for the second offer and for your own content.</b></p>']
+    ],
+    s3:[
+      ['3.1','Two keywords','<ul><li><b>“BRAND”</b> stays for people who want a shoot.</li><li><b>A second keyword</b> for people who want to learn from you.</li></ul><p>Each keyword gets an automatic first reply, so nobody waits for the first answer.</p>'],
+      ['3.2','Two DM setters','<p>Two DM setters are put in place and trained. They:</p><ul><li>Answer every keyword and every new conversation</li><li>Ask questions so the person explains what they need</li><li>Send each one to the right offer: a shoot, the coaching or the course</li><li>Book the calls</li></ul>'],
+      ['3.3','The scripts','<p>Written scripts for every step: the first message, the questions, the answers to common doubts and the follow-ups.</p><p><b>Every follow-up gives something useful before it asks for anything.</b></p>'],
+      ['3.4','Booked calls','<p>Booked calls land in one calendar, with a short note from the setter on who the person is and what they want.</p>'],
+      ['3.5','One tracker','<p>One sheet, filled in every day: conversations, calls booked, calls held and sales.</p><p>This shows <b>where people drop off</b>, so the weakest step gets fixed first.</p>']
+    ],
+    calls:[
+      ['1','Your shoots and the second offer','<p>How your shoots are set up today, how much time each client takes, and where the cap sits.</p><p>Then the second offer: who it is for, the one-to-one, the group and the course.</p>'],
+      ['2','The sales system','<p>The keywords, the scripts and the setup.</p><p>The <b>two DM setters</b> are put in place and trained, so they are ready to go.</p>'],
+      ['3','Your brand, for trust','<p>The profile, as the people ready to buy see it: the name line, the bio, the link and the highlights.</p><p>You already plan new photos and new highlights. This call decides what they need to show.</p>'],
+      ['4','Your brand, for the new offers','<p>The content that shows your followers they can now learn from you.</p><p>The goal is <b>more trust from the people who would like to buy</b>.</p>']
+    ]
+  };
+  $$('[data-stepper]').forEach(root=>{
+    const data=STEPS[root.dataset.stepper], list=root.querySelector('.st-list'), det=root.querySelector('.anim');
+    list.innerHTML=data.map((d,i)=>'<button class="st card" type="button" data-i="'+i+'"><span class="sn">'+d[0]+'</span><span class="stt">'+d[1]+'</span></button>').join('');
+    function set(i){
+      [...list.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+      det.style.animation='none';void det.offsetWidth;det.style.animation='';
+      det.innerHTML='<span class="k">'+(root.dataset.stepper==='calls'?'Call '+data[i][0]:'Step '+data[i][0])+'</span><h4>'+data[i][1]+'</h4>'+data[i][2];
+    }
+    [...list.children].forEach((b,i)=>b.addEventListener('click',()=>set(i)));
+    set(0);
+  });
+
+  /* ---------- the three months ---------- */
+  const MO=[
+    ['Month 1','Build',['The four working calls','Caps and packages set for your shoots','The second offer shaped','Keywords, scripts and the two setters live']],
+    ['Month 2','Run',['Setters answer every day and book calls','The tracker filled in daily','The weakest step found and fixed']],
+    ['Month 3','Run and sharpen',['The same daily work','The offers adjusted to what buyers ask for','The numbers ready for the review']],
+    ['After month 3','Review',['We sit down and review it on the results','Together we decide the next three months']]
+  ];
+  $('#months').innerHTML=MO.map((m,i)=>'<button class="mo" type="button" data-i="'+i+'"><b>'+m[0]+'</b><span>'+m[1]+'</span></button>').join('');
+  function mo(i){
+    $$('#months .mo').forEach((b,j)=>b.classList.toggle('on',j<=i));
+    $('#moOut').innerHTML='<div class="mo-out card"><span class="k">'+MO[i][0]+' &middot; '+MO[i][1]+'</span><ul>'+MO[i][2].map(x=>'<li><i></i>'+x+'</li>').join('')+'</ul></div>';
+  }
+  $$('#months .mo').forEach(b=>b.addEventListener('click',()=>mo(+b.dataset.i)));
+  mo(0);
+
+  once($$('.role li'),el=>setTimeout(()=>el.classList.add('tk'),250),0.6);
+
+  /* ---------- case study filter ---------- */
+  $$('#csPills button').forEach(x=>x.addEventListener('click',()=>{
+    $$('#csPills button').forEach(y=>y.classList.toggle('on',y===x));
+    const f=x.dataset.f; $$('#cases .case').forEach(c=>c.classList.toggle('hide',f!=='all'&&c.dataset.f!==f));
+  }));
+
+  /* ---------- the 10% in a month ---------- */
+  const rS=$('#rev');
+  function calc(){
+    const r=+rS.value, share=r*0.10;
+    $('#revVal').textContent='$'+N(r);
+    $('#oKeep').textContent='$'+N(Math.round(r-share));
+    $('#oShare').textContent='$'+N(Math.round(share));
+    $('#oTotal').textContent='$'+N(Math.round(share+1000));
+    rS.style.setProperty('--p',((r-rS.min)/(rS.max-rS.min)*100)+'%');
+  }
+  rS.addEventListener('input',calc); calc();
+
+  once($$('.rv'),el=>el.classList.add('in'),0.08);
+})();
+</script>
+</body>
+</html>
