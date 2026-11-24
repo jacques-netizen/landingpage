@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-24
 
+- Whop payouts: clippers connect a Whop payout account, verified withdrawals are paid as Whop transfers · Requested by: owner · Made by: Claude Code session …oZc8T8 · 3b4c2e1
 - Clippers tab: download what everyone is owed on a campaign as a spreadsheet · Requested by: owner · Made by: Claude Code session …oZc8T8 · 9b41cbb
 
 ## 2026-11-22
