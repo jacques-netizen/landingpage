@@ -42,6 +42,15 @@ export const envSchema = z.object({
   // x-app-id and x-api-key headers. Both are needed; either missing means no Soundcharts calls.
   SOUNDCHARTS_APP_ID: optional,
   SOUNDCHARTS_API_KEY: optional,
+  // Whop payouts (owner, 2026-11-24): clippers get a Whop payout account and withdrawals are paid as
+  // Whop transfers from the company's Whop balance. All four unset: Whop is not offered.
+  // WHOP_API_KEY is the company's Account API key; WHOP_COMPANY_ID its biz_ id; WHOP_API_URL is
+  // https://api.whop.com/api/v1 (live) or https://sandbox-api.whop.com/api/v1 (test, no real money);
+  // WHOP_WEBHOOK_SECRET the ws_ secret Whop shows once when the webhook is created.
+  WHOP_API_KEY: optional,
+  WHOP_COMPANY_ID: optional,
+  WHOP_API_URL: z.string().url().default('https://api.whop.com/api/v1'),
+  WHOP_WEBHOOK_SECRET: optional,
   SENTRY_DSN: optional,
   // Claude writes and edits the campaign reports (owner brief, 2026-10-26).
   ANTHROPIC_API_KEY: optional,

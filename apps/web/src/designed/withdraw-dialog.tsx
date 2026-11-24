@@ -79,7 +79,7 @@ export function WithdrawDialog({
           {(
             [
               ['Fee', quote?.ok ? fmt(quote.feeCents) : '...'],
-              ['You receive', quote?.ok ? `${fmt(quote.netCents)}${to.startsWith('Bank') ? '' : ' in stablecoins'}` : '...'],
+              ['You receive', quote?.ok ? `${fmt(quote.netCents)}${to.startsWith('Bank') || to.startsWith('Whop') ? '' : ' in stablecoins'}` : '...'],
               ['To', to],
             ] as const
           ).map(([k, v]) => (

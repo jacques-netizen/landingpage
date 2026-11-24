@@ -691,7 +691,8 @@ export const ledgerEntries = pgTable(
   (t) => [index('ledger_entries_account').on(t.accountId), index('ledger_entries_transaction').on(t.transactionId)],
 )
 
-export const WITHDRAWAL_METHODS = ['stripe_connect', 'paypal', 'crypto', 'bank_transfer'] as const
+// whop: paid as a Whop transfer to the clipper's Whop payout account (owner, 2026-11-24).
+export const WITHDRAWAL_METHODS = ['stripe_connect', 'paypal', 'crypto', 'bank_transfer', 'whop'] as const
 export const WITHDRAWAL_STATUSES = ['requested', 'approved', 'in_batch', 'sent', 'paid', 'failed', 'cancelled'] as const
 
 export const payoutBatches = pgTable('payout_batches', {

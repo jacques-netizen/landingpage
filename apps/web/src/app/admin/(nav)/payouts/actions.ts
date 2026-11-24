@@ -8,6 +8,8 @@ import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { explorerLink, parseBank, validTransaction } from '@/lib/crypto-wallets'
 import { requireStaff } from '@/server/guard'
+import { WhopError } from '@/server/whop'
+import { checkWhopTransfer, payWithWhop } from '@/server/whop-payouts'
 
 export type PayoutState = { ok?: string; error?: string }
 
@@ -23,6 +25,36 @@ export async function payoutAction(id: string, _prev: PayoutState, form: FormDat
   const store = createPgStore(d)
   const amount = formatDollars(w.netCents)
   try {
+    // Whop payout accounts (owner, 2026-11-24): verifying pays it through Whop straight away.
+    if (w.method === 'whop' && (what === 'approve' || what === 'whop-pay')) {
+      try {
+        const t = await payWithWhop(id, viewer.id)
+        revalidatePath('/admin/payouts')
+        return {
+          ok:
+            t.status === 'succeeded'
+              ? `Paid through Whop. ${amount} is in the clipper’s Whop balance.`
+              : t.status === 'failed'
+                ? 'Whop could not pay it. The amount is back in the clipper’s balance.'
+                : `Sent through Whop. It shows as paid once Whop confirms, usually within minutes.`,
+        }
+      } catch (e) {
+        if (e instanceof WhopError) {
+          revalidatePath('/admin/payouts')
+          return { error: `Whop did not take the payment: ${e.message}. Nothing was paid; try again.` }
+        }
+        throw e
+      }
+    }
+    if (w.method === 'whop' && what === 'whop-check') {
+      const r = await checkWhopTransfer(id)
+      revalidatePath('/admin/payouts')
+      return r === 'paid'
+        ? { ok: 'Whop confirmed it. Marked paid.' }
+        : r === 'failed'
+          ? { ok: 'Whop says it failed. The amount is back in the clipper’s balance.' }
+          : { ok: 'Whop is still processing it. Check again in a few minutes.' }
+    }
     if (what === 'approve') {
       await approveWithdrawal(store, { withdrawalId: id, actorId: viewer.id })
       await notify(d, w.creatorId, 'withdrawal_status', {

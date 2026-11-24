@@ -3,6 +3,7 @@ import { db, tables } from '@mde/db'
 import { and, desc, eq, sql } from 'drizzle-orm'
 import type { WalletBar, WalletData } from '@/designed/wallet-model'
 import { describeDestination, explorerLink, methodOf } from '@/lib/crypto-wallets'
+import { whopEnabled } from './whop'
 
 const APPROVED = ['approved', 'earning', 'final', 'paid_out']
 
@@ -61,10 +62,14 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
         ? {
             method: methodOf(p!.payoutProviderRef)!,
             last4: null,
-            label: describeDestination(p!.payoutProviderRef)!,
+            label:
+              methodOf(p!.payoutProviderRef) === 'whop' && p!.payoutStatus !== 'verified'
+                ? 'Whop payouts (finish your ID check on Whop)'
+                : describeDestination(p!.payoutProviderRef)!,
           }
         : // Details saved in an older format count as none: the creator adds them again.
           null,
+    whop: whopEnabled(),
     withdrawals: withdrawals.map((w) => ({
       id: w.id,
       amountCents: w.amountCents,

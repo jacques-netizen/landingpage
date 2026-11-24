@@ -2,11 +2,16 @@
 
 import { Button, Dialog, Field, Input } from '@mde/ui'
 import { useState, useTransition, type ReactNode } from 'react'
-import { savePayoutMethodAction, type PayoutField } from '@/app/wallet/actions'
+import {
+  openWhopPayoutsAction,
+  savePayoutMethodAction,
+  startWhopSetupAction,
+  type PayoutField,
+} from '@/app/wallet/actions'
 import { COUNTRIES } from '@/lib/countries'
 import { COINS, needsAddress, networksFor } from '@/lib/crypto-wallets'
 
-type Method = 'crypto' | 'bank'
+type Method = 'crypto' | 'bank' | 'whop'
 
 // "Add payout method" for the wallet (owner requests, 2026-10-08): a crypto wallet, set up in three
 // separate steps so the coin, network and address cannot be mixed up, or a bank account. Not in the
@@ -16,13 +21,19 @@ export function PayoutMethodDialog({
   open,
   onOpenChange,
   onSaved,
+  whop = false,
+  onWhop = false,
 }: {
   theme: 'dark' | 'glass'
   open: boolean
   onOpenChange: (open: boolean) => void
   onSaved: () => void
+  /** Whop payouts are offered (owner, 2026-11-24). */
+  whop?: boolean
+  /** The clipper is already paid through Whop. */
+  onWhop?: boolean
 }) {
-  const [method, setMethod] = useState<Method>('crypto')
+  const [method, setMethod] = useState<Method>(onWhop ? 'whop' : 'crypto')
   const [coin, setCoin] = useState('')
   const [network, setNetwork] = useState('')
   const [address, setAddress] = useState('')
@@ -41,10 +52,18 @@ export function PayoutMethodDialog({
   const [busy, start] = useTransition()
   const networks = coin ? networksFor(coin) : []
 
+  // Whop: the clipper's ID check and cash out happen on Whop's own page.
+  const goWhop = (open: boolean) =>
+    start(async () => {
+      const r = open ? await openWhopPayoutsAction() : await startWhopSetupAction()
+      if (r.ok) window.location.assign(r.url)
+      else setErrors({ form: r.error })
+    })
+
   const save = () =>
     start(async () => {
       const r = await savePayoutMethodAction(
-        method === 'crypto' ? { method, coin, network, address } : { method, ...bank },
+        method === 'crypto' ? { method, coin, network, address } : { method: 'bank', ...bank },
       )
       if (r.ok) {
         setErrors({})
@@ -119,9 +138,15 @@ export function PayoutMethodDialog({
           <Button tone="app" size="sm" variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
             Cancel
           </Button>
-          <Button tone="app" size="sm" onClick={save} loading={busy}>
-            Save payout method
-          </Button>
+          {method === 'whop' ? (
+            <Button tone="app" size="sm" onClick={() => goWhop(false)} loading={busy}>
+              {onWhop ? 'Finish ID check on Whop' : 'Set up with Whop'}
+            </Button>
+          ) : (
+            <Button tone="app" size="sm" onClick={save} loading={busy}>
+              Save payout method
+            </Button>
+          )}
         </>
       }
     >
@@ -129,9 +154,31 @@ export function PayoutMethodDialog({
         <div className="flex gap-2" role="group" aria-label="Payout method">
           {pill(method === 'crypto', 'Crypto', () => setMethod('crypto'), 'crypto')}
           {pill(method === 'bank', 'Bank transfer', () => setMethod('bank'), 'bank')}
+          {whop ? pill(method === 'whop', 'Whop', () => setMethod('whop'), 'whop') : null}
         </div>
 
-        {method === 'crypto' ? (
+        {method === 'whop' ? (
+          <div className="flex flex-col gap-3 text-[14px] text-[var(--t-text)]">
+            <p className="m-0">
+              Get paid into your own Whop balance, then cash out from Whop to your bank, PayPal or crypto, in your
+              country.
+            </p>
+            <p className="m-0 text-[var(--t-muted)]">
+              Whop checks your ID once, on its own page. You come back here when it is done.
+            </p>
+            {onWhop ? (
+              <button
+                type="button"
+                onClick={() => goWhop(true)}
+                className="cursor-pointer self-start border-0 bg-transparent p-0 font-app text-[14px] font-semibold text-[var(--t-accent-ink)] underline"
+              >
+                Open my Whop balance
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+
+        {method === 'whop' ? null : method === 'crypto' ? (
           <>
             {step(
               1,

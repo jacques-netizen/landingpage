@@ -80,7 +80,7 @@ export default async function PayoutsPage({ searchParams }: { searchParams: Prom
                 amount={formatDollars(w.amountCents)}
                 fee={formatDollars(w.feeCents)}
                 net={formatDollars(w.netCents)}
-                kind={bank ? 'bank' : 'crypto'}
+                kind={w.method === 'whop' ? 'whop' : bank ? 'bank' : 'crypto'}
                 coin={
                   dest?.option.label ??
                   (bank

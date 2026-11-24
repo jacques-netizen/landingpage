@@ -1,7 +1,7 @@
 // Postgres implementation of the money store, on Drizzle. Row locks use SELECT ... FOR UPDATE.
 import { getSettings, tables, writeAudit, type Db, type Tx } from '@mde/db'
 import { and, eq, inArray, sql } from 'drizzle-orm'
-import type { AccountRef, MoneyStore, MoneyTx } from './store'
+import type { AccountRef, MoneyStore, MoneyTx, WithdrawalMoney } from './store'
 
 const refKey = (r: AccountRef) => `${r.kind}|${r.ownerType}|${r.ownerId ?? ''}`
 
@@ -196,7 +196,7 @@ function pgTx(tx: Tx): MoneyTx {
       return {
         id: w.id,
         creatorId: w.creatorId,
-        method: w.method as 'stripe_connect' | 'paypal',
+        method: w.method as WithdrawalMoney['method'],
         amountCents: w.amountCents,
         feeCents: w.feeCents,
         netCents: w.netCents,

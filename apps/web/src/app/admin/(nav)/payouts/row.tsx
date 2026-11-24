@@ -24,7 +24,7 @@ export function PayoutRow(p: {
   amount: string
   fee: string
   net: string
-  kind: 'crypto' | 'bank'
+  kind: 'crypto' | 'bank' | 'whop'
   coin: string
   address: string
   bank: { bankName: string; name: string; sortCode?: string; address?: string | null } | null
@@ -133,7 +133,19 @@ export function PayoutRow(p: {
             <form action={action} className="flex gap-3">
               <input type="hidden" name="action" value="approve" />
               <Button type="submit" size="sm" loading={pending}>
-                Verify
+                {p.kind === 'whop' ? 'Verify and pay with Whop' : 'Verify'}
+              </Button>
+              <Button type="button" size="sm" variant="secondary" onClick={() => setRejecting((r) => !r)}>
+                Reject
+              </Button>
+            </form>
+          ) : null}
+          {/* Whop pays itself: send again after an error, or ask Whop where a sent payment is. */}
+          {p.kind === 'whop' && p.status !== 'requested' ? (
+            <form action={action} className="flex flex-wrap items-center gap-3">
+              <input type="hidden" name="action" value={p.status === 'sent' ? 'whop-check' : 'whop-pay'} />
+              <Button type="submit" size="sm" loading={pending}>
+                {p.status === 'sent' ? 'Check with Whop' : 'Pay with Whop'}
               </Button>
               <Button type="button" size="sm" variant="secondary" onClick={() => setRejecting((r) => !r)}>
                 Reject
@@ -141,29 +153,31 @@ export function PayoutRow(p: {
             </form>
           ) : null}
           {/* Already sent it? Mark it sent straight away, from either tab; the reference is optional. */}
-          <form action={action} className="flex flex-wrap items-center gap-3">
-            <input type="hidden" name="action" value="paid" />
-            <Input
-              name="hash"
-              aria-label={p.kind === 'bank' ? 'Bank reference' : 'Transaction hash'}
-              placeholder={p.kind === 'bank' ? 'Bank transfer reference (optional)' : 'Transaction hash (optional)'}
-              className="h-10 min-w-[320px] flex-1 font-mono text-[13px]"
-              autoComplete="off"
-            />
-            <Button
-              type="submit"
-              size="sm"
-              variant={p.status === 'requested' ? 'secondary' : 'primary'}
-              loading={pending}
-            >
-              Mark as sent
-            </Button>
-            {p.status !== 'requested' ? (
-              <Button type="button" size="sm" variant="secondary" onClick={() => setRejecting((r) => !r)}>
-                Reject
+          {p.kind === 'whop' ? null : (
+            <form action={action} className="flex flex-wrap items-center gap-3">
+              <input type="hidden" name="action" value="paid" />
+              <Input
+                name="hash"
+                aria-label={p.kind === 'bank' ? 'Bank reference' : 'Transaction hash'}
+                placeholder={p.kind === 'bank' ? 'Bank transfer reference (optional)' : 'Transaction hash (optional)'}
+                className="h-10 min-w-[320px] flex-1 font-mono text-[13px]"
+                autoComplete="off"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                variant={p.status === 'requested' ? 'secondary' : 'primary'}
+                loading={pending}
+              >
+                Mark as sent
               </Button>
-            ) : null}
-          </form>
+              {p.status !== 'requested' ? (
+                <Button type="button" size="sm" variant="secondary" onClick={() => setRejecting((r) => !r)}>
+                  Reject
+                </Button>
+              ) : null}
+            </form>
+          )}
           {rejecting ? (
             <form action={action} className="flex flex-wrap items-center gap-3">
               <input type="hidden" name="action" value="reject" />

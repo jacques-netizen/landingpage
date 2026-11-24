@@ -6,9 +6,10 @@ import { parseDollarsToCents } from '@mde/money/dollars'
 import { notifyPayoutMethodChange } from '@mde/notifications'
 import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
-import { bankDestination, describeDestination, methodOf, walletDestination } from '@/lib/crypto-wallets'
+import { bankDestination, describeDestination, methodOf, parseWhop, walletDestination } from '@/lib/crypto-wallets'
 import { rateLimit } from '@/server/rate-limit'
 import { getViewer } from '@/server/viewer'
+import { accountLink, accountReady, createAccount, getAccount, whopEnabled, WhopError } from '@/server/whop'
 
 export type PayoutField =
   | 'coin'
@@ -144,7 +145,7 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
 export type WithdrawResult = { ok: true; netCents: number } | { ok: false; error: string }
 
 const MESSAGES: Partial<Record<string, string>> = {
-  payout_not_verified: 'Add your payout method first.',
+  payout_not_verified: 'Add your payout method first. With Whop, finish your ID check on Whop first.',
   creator_suspended: 'Your account cannot withdraw right now. Contact support.',
   withdrawal_already_requested: 'You already have a withdrawal being processed. Wait for it to finish.',
   insufficient_available: 'That is more than your available balance.',
@@ -159,11 +160,28 @@ export async function requestWithdrawalAction(raw: { amount?: string }): Promise
   const parsed = parseDollarsToCents(raw.amount ?? '')
   if (!parsed.ok) return { ok: false, error: 'Enter an amount in dollars, like 50 or 50.25.' }
   const [p] = await db()
-    .select({ provider: tables.creatorProfiles.payoutProvider, ref: tables.creatorProfiles.payoutProviderRef })
+    .select({
+      provider: tables.creatorProfiles.payoutProvider,
+      ref: tables.creatorProfiles.payoutProviderRef,
+      status: tables.creatorProfiles.payoutStatus,
+    })
     .from(tables.creatorProfiles)
     .where(eq(tables.creatorProfiles.userId, viewer.id))
   const method = methodOf(p?.ref)
   if (!method || !p?.ref) return { ok: false, error: MESSAGES.payout_not_verified! }
+  // Whop: the ID check may have finished on Whop since the clipper last came back; ask before refusing.
+  const whopId = parseWhop(p.ref)
+  if (whopId && p.status !== 'verified') {
+    try {
+      if (accountReady(await getAccount(whopId)))
+        await db()
+          .update(tables.creatorProfiles)
+          .set({ payoutStatus: 'verified', updatedAt: new Date() })
+          .where(eq(tables.creatorProfiles.userId, viewer.id))
+    } catch (e) {
+      if (!(e instanceof WhopError)) throw e
+    }
+  }
   try {
     const w = await requestWithdrawal(createPgStore(db()), {
       creatorId: viewer.id,
@@ -175,6 +193,90 @@ export async function requestWithdrawalAction(raw: { amount?: string }): Promise
     return { ok: true, netCents: w.netCents }
   } catch (e) {
     if (e instanceof MoneyError) return { ok: false, error: MESSAGES[e.code] ?? e.message }
+    throw e
+  }
+}
+
+export type WhopLinkResult = { ok: true; url: string } | { ok: false; error: string }
+
+/**
+ * Get paid through Whop (owner, 2026-11-24): makes the clipper's Whop payout account the first time
+ * and sends them to Whop's own page to check their identity. Saved as their payout method straight
+ * away, waiting until Whop approves them; the return page checks and marks it ready.
+ */
+export async function startWhopSetupAction(): Promise<WhopLinkResult> {
+  const viewer = await getViewer()
+  if (!viewer) return { ok: false, error: 'Sign in again to continue.' }
+  if (!whopEnabled()) return { ok: false, error: 'Whop payouts are not available yet.' }
+  if (!(await rateLimit(`whop-setup:${viewer.id}`, 10, 3600)))
+    return { ok: false, error: 'Too many tries. Wait an hour and try again.' }
+  try {
+    const [p] = await db()
+      .select({ ref: tables.creatorProfiles.payoutProviderRef })
+      .from(tables.creatorProfiles)
+      .where(eq(tables.creatorProfiles.userId, viewer.id))
+    let accountId = parseWhop(p?.ref)
+    if (!accountId) {
+      const [u] = await db()
+        .select({ username: tables.users.username, email: tables.users.email })
+        .from(tables.users)
+        .where(eq(tables.users.id, viewer.id))
+      const a = await createAccount({
+        userId: viewer.id,
+        email: u?.email ?? viewer.email,
+        title: u?.username ? `@${u.username}` : (viewer.name ?? viewer.email),
+      })
+      accountId = a.id
+      const destination = `whop:${a.id}`
+      const values = { payoutProvider: 'whop', payoutProviderRef: destination, payoutStatus: 'pending' }
+      await db().transaction(async (tx) => {
+        await tx
+          .insert(tables.creatorProfiles)
+          .values({ userId: viewer.id, ...values })
+          .onConflictDoUpdate({ target: tables.creatorProfiles.userId, set: { ...values, updatedAt: new Date() } })
+        await writeAudit(tx, {
+          actorId: viewer.id,
+          action: 'payout_method.change',
+          entity: 'user',
+          entityId: viewer.id,
+          before: p?.ref ? { destination: p.ref } : null,
+          after: { destination },
+        })
+        const [x] = await tx
+          .select({ username: tables.users.username })
+          .from(tables.users)
+          .where(eq(tables.users.id, viewer.id))
+        await notifyPayoutMethodChange(tx, {
+          creatorId: viewer.id,
+          creatorName: x?.username ? `@${x.username}` : (viewer.name ?? viewer.email),
+          before: p?.ref ? describeDestination(p.ref) : null,
+          after: 'Whop payouts',
+        })
+      })
+    }
+    const link = await accountLink(accountId, 'account_onboarding')
+    return { ok: true, url: link.url }
+  } catch (e) {
+    if (e instanceof WhopError) return { ok: false, error: 'Whop could not be reached. Try again in a minute.' }
+    throw e
+  }
+}
+
+/** The clipper's Whop balance and cash out, on Whop's own page. */
+export async function openWhopPayoutsAction(): Promise<WhopLinkResult> {
+  const viewer = await getViewer()
+  if (!viewer) return { ok: false, error: 'Sign in again to continue.' }
+  if (!whopEnabled()) return { ok: false, error: 'Whop payouts are not available yet.' }
+  const [p] = await db()
+    .select({ ref: tables.creatorProfiles.payoutProviderRef })
+    .from(tables.creatorProfiles)
+    .where(eq(tables.creatorProfiles.userId, viewer.id))
+  const accountId = parseWhop(p?.ref)
+  if (!accountId) return { ok: false, error: 'Set up Whop payouts first.' }
+  try {
+    return { ok: true, url: (await accountLink(accountId, 'payouts_portal')).url }
+  } catch (e) {
+    if (e instanceof WhopError) return { ok: false, error: 'Whop could not be reached. Try again in a minute.' }
     throw e
   }
 }

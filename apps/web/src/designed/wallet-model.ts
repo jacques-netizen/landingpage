@@ -36,7 +36,9 @@ export type WalletData = {
   bestCentsAll: number
   /** Counted views on approved posts, ever: what the rating is based on. */
   lifetimeCountedViews: number
-  payout: { method: 'bank_transfer' | 'paypal' | 'crypto'; last4: string | null; label?: string } | null
+  payout: { method: 'bank_transfer' | 'paypal' | 'crypto' | 'whop'; last4: string | null; label?: string } | null
+  /** Whop payouts are switched on for the platform (owner, 2026-11-24). */
+  whop?: boolean
   /** Withdrawals, newest first. Absent in the mockup's sample. */
   withdrawals?: WalletWithdrawal[]
   /** Recent posts, newest first. */

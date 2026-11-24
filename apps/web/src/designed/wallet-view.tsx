@@ -180,6 +180,8 @@ export function WalletView({
         theme={dk ? 'dark' : 'glass'}
         open={addMethod}
         onOpenChange={setAddMethod}
+        whop={!!data?.whop}
+        onWhop={data?.payout?.method === 'whop'}
         onSaved={() => {
           setAddMethod(false)
           router.refresh()

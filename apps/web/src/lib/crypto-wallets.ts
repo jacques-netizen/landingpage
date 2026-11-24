@@ -247,8 +247,19 @@ export function bankAddress(b: BankDetails) {
 export const formatSortCode = (s: string) => s.replace(/^(\d{2})(\d{2})(\d{2})$/, '$1-$2-$3')
 
 /** Which withdrawal method a saved destination pays with. */
-export function methodOf(destination: string | null | undefined): 'crypto' | 'bank_transfer' | null {
-  return parseDestination(destination) ? 'crypto' : parseBank(destination) ? 'bank_transfer' : null
+/** A Whop payout account (owner, 2026-11-24), saved as "whop:biz_...": its account id, or null. */
+export function parseWhop(destination: string | null | undefined) {
+  return destination?.match(/^whop:(biz_[A-Za-z0-9_]+)$/)?.[1] ?? null
+}
+
+export function methodOf(destination: string | null | undefined): 'crypto' | 'bank_transfer' | 'whop' | null {
+  return parseDestination(destination)
+    ? 'crypto'
+    : parseBank(destination)
+      ? 'bank_transfer'
+      : parseWhop(destination)
+        ? 'whop'
+        : null
 }
 
 /** Short form for screens: "USDT on Tron (TRC-20), TQn9Y2…bLSE" or "Bank transfer, Chase, ending 6789". */
@@ -260,6 +271,7 @@ export function describeDestination(destination: string | null | undefined) {
   }
   const b = parseBank(destination)
   if (b) return `Bank transfer, ${b.bankName}, ending ${b.accountNumber.slice(-4)} (${countryName(b.country)})`
+  if (parseWhop(destination)) return 'Whop payouts'
   return null
 }
 
@@ -285,5 +297,7 @@ export function fullDestination(destination: string) {
   const b = parseBank(destination)
   if (b)
     return `Bank transfer in ${countryName(b.country)}: ${b.bankName}, ${b.sortCode ? `sort code ${formatSortCode(b.sortCode)}, ` : ''}account ${b.accountNumber}, name ${b.name}${b.address ? `, address ${bankAddress(b)}` : ''}`
+  const w = parseWhop(destination)
+  if (w) return `Whop payout account ${w}`
   return 'none yet'
 }

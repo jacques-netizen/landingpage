@@ -346,13 +346,13 @@ export async function requestWithdrawal(
   i: {
     creatorId: string
     amountCents: number
-    method: 'stripe_connect' | 'paypal' | 'crypto' | 'bank_transfer'
+    method: 'stripe_connect' | 'paypal' | 'crypto' | 'bank_transfer' | 'whop'
     /** For crypto and bank transfers, where the money goes, kept with the withdrawal. */
     destination?: string | null
   },
 ) {
   return store.transaction(async (tx) => {
-    if ((i.method === 'crypto' || i.method === 'bank_transfer') && !i.destination?.trim())
+    if ((i.method === 'crypto' || i.method === 'bank_transfer' || i.method === 'whop') && !i.destination?.trim())
       throw new MoneyError('payout_not_verified', 'Add where to send it first')
     const creator = await tx.lockCreator(i.creatorId)
     if (!creator) throw new MoneyError('not_found', 'No such creator')
@@ -415,6 +415,34 @@ export async function approveWithdrawal(store: MoneyStore, i: { withdrawalId: st
         before: { status: w.status },
         after: { status: 'approved' },
       })
+    return { alreadyDone: false }
+  })
+}
+
+/**
+ * A verified withdrawal was handed to the payout partner (a Whop transfer, owner 2026-11-24): it is
+ * recorded as sent with the partner's reference, so the partner's confirmation can find it. No money
+ * moves: it stays in transit until the partner confirms it paid or failed.
+ */
+export async function markWithdrawalSent(
+  store: MoneyStore,
+  i: { withdrawalId: string; partnerReference: string; actorId: string | null },
+) {
+  return store.transaction(async (tx) => {
+    const w = await tx.withdrawal(i.withdrawalId, true)
+    if (!w) throw new MoneyError('not_found', 'No such withdrawal')
+    if (w.status === 'sent') return { alreadyDone: true }
+    if (w.status !== 'approved')
+      throw new MoneyError('wrong_withdrawal_status', `A ${w.status} withdrawal cannot be marked sent`)
+    await tx.setWithdrawal(w.id, { status: 'sent', partnerReference: i.partnerReference })
+    await tx.audit({
+      actorId: i.actorId,
+      action: 'withdrawal.sent',
+      entity: 'withdrawal',
+      entityId: w.id,
+      before: { status: w.status },
+      after: { status: 'sent', partnerReference: i.partnerReference },
+    })
     return { alreadyDone: false }
   })
 }
