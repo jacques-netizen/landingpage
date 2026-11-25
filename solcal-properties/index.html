@@ -7,7 +7,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>SolCal Properties &middot; Season of Giving &middot; Maison d'&Eacute;lites</title>
+<title>SolCal Properties &middot; Every Sale Feeds People &middot; Maison d'&Eacute;lites</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -322,6 +322,145 @@
     .flow-fill,.sz-fill{transition:none}
     html{scroll-behavior:auto}
   }
+
+  /* ============ HERO LISTING CARD ============ */
+  .hcard{position:relative;justify-self:center;width:min(100%,400px);isolation:isolate}
+  .hc-glow{position:absolute;inset:-18%;z-index:-1;background:radial-gradient(circle,rgba(212,178,106,.3),transparent 62%);filter:blur(26px);animation:pulse 6s ease-in-out infinite}
+  .hc{background:var(--panel);border:1px solid var(--hair);box-shadow:0 50px 90px -30px rgba(0,0,0,.95);padding:1.6rem 1.5rem;transform:rotate(1.5deg);animation:fl3 10s ease-in-out infinite}
+  @keyframes fl3{0%,100%{transform:rotate(1.5deg) translateY(0)}50%{transform:rotate(.5deg) translateY(-10px)}}
+  .hc-top{display:flex;justify-content:space-between;align-items:center;gap:0.8rem}
+  .hc-k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light)}
+  .hc-pill{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 0.65rem;border-radius:999px;background:var(--teal);color:#fff}
+  .hc-price{font-family:'Archivo',sans-serif;font-weight:800;font-size:2.4rem;letter-spacing:-0.03em;color:var(--gold-soft);margin-top:1rem;line-height:1}
+  .hc-addr{font-size:1.05rem;margin-top:0.4rem}
+  .hc-spec{font-family:'Archivo',sans-serif;font-size:0.7rem;letter-spacing:0.06em;color:var(--mute);margin-top:0.3rem}
+  .hc-ring{display:flex;align-items:center;gap:1.1rem;margin-top:1.4rem;padding-top:1.3rem;border-top:1px solid var(--hair-soft)}
+  .ring{position:relative;width:86px;height:86px;flex-shrink:0}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:6}
+  .ring .r0{stroke:var(--panel-3)}
+  .ring .r1{stroke:var(--gold);stroke-linecap:round;stroke-dasharray:251;stroke-dashoffset:251;transition:stroke-dashoffset 2s cubic-bezier(.3,.6,.2,1)}
+  .ring .rn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Archivo',sans-serif;font-weight:800;font-size:1.5rem;line-height:1;color:var(--text)}
+  .ring .rn small{font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.25rem;font-weight:600}
+  .hc-ring p{font-size:1rem;line-height:1.45;color:var(--text)}
+  .hc-ring p b{color:var(--gold-soft);font-weight:500}
+  .hc-foot{margin-top:1.2rem;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)}
+
+  /* ============ LISTINGS ============ */
+  .listings{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.4rem}
+  .lst{position:relative;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--hair-soft);padding:1.6rem 1.5rem;overflow:hidden;transition:.4s;text-decoration:none;color:inherit}
+  .lst:before{content:"";position:absolute;left:0;top:0;height:3px;width:0;background:var(--gold);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+  .lst:hover{transform:translateY(-6px);border-color:var(--hair)}
+  .lst:hover:before{width:100%}
+  .lst .lp{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.7rem,3.2vw,2.3rem);letter-spacing:-0.03em;color:var(--gold-soft);line-height:1}
+  .lst .la{font-size:1.08rem;margin-top:0.7rem;line-height:1.35}
+  .lst .lt{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-top:0.3rem}
+  .lst ul{list-style:none;display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:1.1rem}
+  .lst li{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.68rem;padding:0.35rem 0.6rem;border:1px solid var(--hair);color:var(--text)}
+  .lst .lh{margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--hair-soft);font-size:0.98rem;color:var(--mute);line-height:1.5;flex:1}
+  .lst .lh b{color:var(--gold-soft);font-weight:500}
+  .lst .lgo{margin-top:1rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-light)}
+
+  /* ============ 30 DAYS ============ */
+  .days{margin-top:2.6rem;background:linear-gradient(160deg,var(--panel-3) 0%,var(--panel) 60%);border:1px solid var(--hair);padding:clamp(1.5rem,3.6vw,2.6rem)}
+  .d-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .d-head .cl{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mute)}
+  .d-head .cv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.3rem,3vw,1.9rem);color:var(--gold-soft)}
+  .d-bar{position:relative;height:6px;background:var(--panel-3);border-radius:3px;margin-top:1rem}
+  .d-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));border-radius:3px;width:3.3%;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .d-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:1.4rem}
+  .d-steps button{background:var(--bg);border:1px solid var(--hair-soft);color:var(--text);padding:0.9rem 0.9rem;text-align:left;cursor:pointer;font:inherit;transition:.3s}
+  .d-steps button .dk{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .d-steps button .dt{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;margin-top:0.3rem}
+  .d-steps button.on{border-color:var(--gold);background:var(--panel-2)}
+  .d-steps button.on .dk{color:var(--gold-light)}
+  .d-text{margin-top:1.4rem;font-size:1.08rem;line-height:1.6;color:var(--text);max-width:68ch;min-height:3.4em;animation:fadeup .45s ease}
+  .d-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.6rem}
+  .d-rule{border-top:1px solid var(--hair);padding-top:1rem}
+  .d-rule h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem}
+  .d-rule p{font-size:0.96rem;color:var(--mute);margin-top:0.4rem;line-height:1.55}
+
+  /* ============ LANES ============ */
+  .lanes{display:flex;gap:0.5rem;margin-top:2.4rem;flex-wrap:wrap}
+  .lanes button{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.04em;padding:0.75rem 1.1rem;background:var(--bg);border:1px solid var(--hair-soft);color:var(--mute);cursor:pointer;transition:.3s}
+  .lanes button.on{border-color:var(--gold);color:var(--text);background:var(--panel-2)}
+  .lane{display:none}
+  .lane.on{display:block;animation:fadeup .45s ease}
+  .lane-intro{font-size:1.08rem;color:var(--mute);margin-top:1.6rem;max-width:66ch;line-height:1.65}
+  .lane-intro b{color:var(--text);font-weight:500}
+  .usp{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0.8rem;align-items:center;margin-top:2rem}
+  .usp .u{background:var(--bg);border:1px solid var(--hair-soft);padding:1.2rem 1.1rem;height:100%}
+  .usp .u.gold{border-color:var(--gold)}
+  .usp .u h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem}
+  .usp .u p{font-size:0.94rem;color:var(--mute);margin-top:0.35rem;line-height:1.5}
+  .usp .plus{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.4rem;color:var(--gold-light)}
+  .desc{margin-top:1.6rem;background:var(--bg);border:1px solid var(--hair-soft);border-left:3px solid var(--teal);padding:1.2rem 1.3rem}
+  .desc .dk2{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--teal-soft)}
+  .desc p{font-family:'Archivo',sans-serif;font-size:0.92rem;color:var(--text);margin-top:0.55rem;line-height:1.6}
+
+  /* ============ IMPACT PAGE MOCK ============ */
+  .imp-wrap{display:grid;grid-template-columns:1.05fr 0.95fr;gap:2rem;align-items:center;margin-top:2.4rem}
+  .imp{background:#FAF8F5;color:#111827;border-radius:14px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.9)}
+  .imp-bar{display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1.1rem;background:#06393E;color:#fff;font-family:'Archivo',sans-serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700}
+  .imp-body{padding:1.3rem 1.2rem}
+  .imp-house{position:relative;height:150px;border-radius:10px;background:linear-gradient(180deg,#F3C98B 0%,#E9A66B 45%,#B86A4B 100%);overflow:hidden}
+  .imp-house svg{position:absolute;inset:0;width:100%;height:100%}
+  .imp-sign{position:absolute;right:12px;top:12px;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.45rem 0.8rem;border-radius:6px;background:#0B6E76;color:#fff;transition:.4s}
+  .imp.sold .imp-sign{background:#E52565}
+  .imp-row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-top:1rem}
+  .imp-p{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-0.02em}
+  .imp-a{font-family:'Archivo',sans-serif;font-size:0.74rem;color:#4b5563;text-align:right}
+  .imp-cells{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-top:1rem}
+  .imp-cell{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:0.7rem 0.8rem}
+  .imp-cell .ik{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:#6b7280}
+  .imp-cell .iv{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem;margin-top:0.25rem}
+  .imp-cell .iv.t{color:#0B6E76}
+  .imp-tog{display:flex;gap:0.5rem;margin-bottom:1rem}
+  .imp-tog button{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1rem;background:var(--bg);border:1px solid var(--hair-soft);color:var(--mute);cursor:pointer}
+  .imp-tog button.on{border-color:var(--gold);color:var(--text);background:var(--panel-2)}
+  .imp-list{list-style:none}
+  .imp-list li{display:flex;gap:0.9rem;padding:0.85rem 0;border-top:1px solid var(--hair-soft);font-size:1.04rem;line-height:1.5}
+  .imp-list li:first-child{border-top:0}
+  .imp-list li b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);min-width:7.5rem;padding-top:0.2rem}
+
+  /* ============ ASSETS ============ */
+  .assets{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:2.4rem}
+  .as2{background:var(--bg);border:1px solid var(--hair-soft);padding:1.4rem 1.2rem;transition:.35s}
+  .as2:hover{border-color:var(--hair);transform:translateY(-4px)}
+  .as2 .ai{width:42px;height:42px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+  .as2 .ai svg{width:20px;height:20px;stroke:var(--gold-light);fill:none;stroke-width:1.6}
+  .as2 h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;line-height:1.25}
+  .as2 p{font-size:0.94rem;color:var(--mute);margin-top:0.45rem;line-height:1.5}
+  .as2.key{border-color:var(--gold);background:var(--panel-2)}
+  .loop{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:2rem;border:1px solid var(--hair-soft)}
+  .loop div{padding:1.1rem 1rem;border-left:1px solid var(--hair-soft)}
+  .loop div:first-child{border-left:0}
+  .loop b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-light)}
+  .loop span{display:block;font-size:1rem;margin-top:0.35rem;line-height:1.45}
+
+  @media(max-width:1020px){
+    .hcard{width:min(88%,380px);margin:1rem auto 0}
+    .listings{grid-template-columns:1fr 1fr}
+    .imp-wrap{grid-template-columns:1fr}
+    .assets{grid-template-columns:repeat(3,1fr)}
+    .usp{grid-template-columns:1fr;gap:0.5rem}
+    .usp .plus{text-align:center}
+  }
+  @media(max-width:700px){
+    .listings,.d-rules,.assets{grid-template-columns:1fr}
+    .d-steps{grid-template-columns:1fr 1fr}
+    .loop{grid-template-columns:1fr 1fr}
+    .loop div:nth-child(3){border-left:0}
+    .loop div:nth-child(n+3){border-top:1px solid var(--hair-soft)}
+    .imp-list li{flex-direction:column;gap:0.2rem}
+  }
+  .pdf .lane{display:block!important;margin-bottom:2rem}
+  .pdf .lanes,.pdf .imp-tog,.pdf .d-steps{display:none}
+  .pdf .d-all{display:block!important}
+  .d-all{display:none;list-style:none;margin-top:1.2rem}
+  .d-all li{font-size:1rem;line-height:1.5;padding:0.5rem 0;border-top:1px solid var(--hair-soft)}
+  .d-all li b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-light);margin-right:0.6rem}
+  .pdf .d-text,.pdf .d-head .cv,.pdf .d-bar{display:none}
 </style>
 </head>
 <body>
@@ -331,15 +470,17 @@
   <a href="#s0"><span>Cover</span></a>
   <a href="#s1"><span>SolCal Properties</span></a>
   <a href="#s2"><span>The idea</span></a>
-  <a href="#s3"><span>Why now</span></a>
-  <a href="#s4"><span>The content</span></a>
-  <a href="#s5"><span>What SolCal gets</span></a>
-  <a href="#s6"><span>Clipping setup</span></a>
-  <a href="#s7"><span>Roadmap</span></a>
-  <a href="#s8"><span>Reporting</span></a>
-  <a href="#s9"><span>What we need</span></a>
-  <a href="#s10"><span>Proof</span></a>
-  <a href="#s11"><span>Model the campaign</span></a>
+  <a href="#s3"><span>The homes</span></a>
+  <a href="#s4"><span>The 30-day ask</span></a>
+  <a href="#s5"><span>The content</span></a>
+  <a href="#s6"><span>Impact pages</span></a>
+  <a href="#s7"><span>Clipping setup</span></a>
+  <a href="#s8"><span>Roadmap</span></a>
+  <a href="#s9"><span>Reporting</span></a>
+  <a href="#s10"><span>What SolCal keeps</span></a>
+  <a href="#s11"><span>What we need</span></a>
+  <a href="#s12"><span>Proof</span></a>
+  <a href="#s13"><span>Model the campaign</span></a>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -351,22 +492,27 @@
   <div class="hero-body">
     <div class="hero-mid">
       <span class="label rv">Creators and clipping &middot; In collaboration with EAT</span>
-      <h1 class="rv d1">SolCal Properties<span>A season of giving</span></h1>
-      <p class="hero-sub rv d2">Creators film real acts of giving and thank <b>SolCal Properties for making it happen</b>. Our clippers then carry the best of it across TikTok, Instagram and YouTube, from Thanksgiving to the end of the year.</p>
+      <h1 class="rv d1">SolCal Properties<span>Help this home sell. Every sale feeds people.</span></h1>
+      <p class="hero-sub rv d2">Each home in the campaign gets 30 days and a crowd behind it. Creators and clippers show it across TikTok, Instagram and YouTube, and when it enters escrow, <b>a set donation goes to ending hunger</b>.</p>
       <div class="hero-chips rv d3">
+        <span class="hchip"><b>30 days</b> per home</span>
         <span class="hchip">Everybody <b>Eats</b></span>
-        <span class="hchip">TikTok &middot; Reels &middot; Shorts</span>
         <span class="hchip">Paid per <b>verified view</b></span>
       </div>
     </div>
-    <div class="phone-wrap rv d2">
-      <div class="ph-glow"></div>
-      <div class="phone">
-        <img src="img/zacksartori.jpg" alt="A creator handing a meal through a car window">
-        <span class="stk-eat">Everybody Eats</span>
-        <div class="stk"><div class="s1">This meal was made possible by</div><div class="s2">SolCal Properties</div><div class="s3">Palm Springs &middot; License #01260508</div></div>
+    <div class="hcard rv d2">
+      <div class="hc-glow"></div>
+      <div class="hc">
+        <div class="hc-top"><span class="hc-k">Featured on solcalproperties.com</span><span class="hc-pill">For sale</span></div>
+        <div class="hc-price">$465,000</div>
+        <div class="hc-addr">2701 E Mesquite Ave, Unit Q67</div>
+        <div class="hc-spec">Palm Springs &middot; 2 beds &middot; 2 baths &middot; 1,175 sq ft</div>
+        <div class="hc-ring">
+          <div class="ring" id="ring"><svg viewBox="0 0 90 90"><circle class="r0" cx="45" cy="45" r="40"/><circle class="r1" cx="45" cy="45" r="40"/></svg><div class="rn">30<small>Days</small></div></div>
+          <p>Help this home enter escrow in 30 days and <b>a donation goes to ending hunger</b>.</p>
+        </div>
+        <div class="hc-foot">SolCal Properties &middot; License #01260508</div>
       </div>
-      <div class="ph-badge"><span>On screen for <b>the whole clip</b></span></div>
     </div>
   </div>
   <div class="hero-bot">
@@ -381,7 +527,6 @@
     <span class="snum rv">01 &middot; SolCal Properties</span>
     <h2 class="statement rv d1">A Palm Springs brokerage built on people.</h2>
     <p class="body-lg rv d2" style="margin-top:1.3rem">SolCal Properties is a full service brokerage in Greater Palm Springs and the Coachella Valley, in business since 1998. It helps people buy, sell and invest, from mid-century homes to golf communities and desert estates. Its clients describe the same thing again and again: <b>a team that treats them like family</b>.</p>
-    <p class="body-lg rv d2">A campaign about people helping people fits that name.</p>
     <div class="facts rv d2">
       <div class="fact"><div class="fv">1998</div><div class="fl">In business since</div></div>
       <div class="fact"><div class="fv"><span class="cu" data-target="4.9" data-dec="1">4.9</span>/5</div><div class="fl">From 200+ reviews</div></div>
@@ -392,7 +537,7 @@
     <div class="places rv d1"><span>Palm Springs</span><span>Palm Desert</span><span>Cathedral City</span><span>Rancho Mirage</span><span>Indian Wells</span><span>La Quinta</span><span>Indio</span><span>Desert Hot Springs</span></div>
     <div class="brandline rv d2">
       <div class="bq">Sunshine,<br><em>delivered.</em></div>
-      <p>SolCal's own line. This campaign delivers it in a new way: <b>a hot meal, a full table, a neighbor helped</b>, with SolCal's name on it.</p>
+      <p>SolCal's own line. This campaign adds one more thing to deliver: <b>meals for people who need them, every time a home sells</b>.</p>
     </div>
   </div>
 </section>
@@ -401,95 +546,173 @@
 <section class="section alt" id="s2">
   <div class="wrap">
     <span class="snum rv">02 &middot; The idea</span>
-    <h2 class="statement rv d1">Creators do the giving. SolCal gets the thanks.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem">The campaign runs with EAT, the network behind <b>Everybody Eats</b>, where creators make videos that feed people. Creators film real acts of giving: buying meals, feeding neighbors, helping a family stretch a food budget. In each video the creator thanks SolCal Properties for making it happen.</p>
-    <p class="body-lg rv d2">Our clippers then cut the best videos into short clips and post them across TikTok, Instagram and YouTube, so each moment is seen many more times than the creator's own post.</p>
+    <h2 class="statement rv d1">Every listing becomes a reason to help.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">SolCal wants more people looking at its listings, and it wants to give back through the end of the year. This campaign does both in the same video. Each home gets one simple ask: <b>help it enter escrow in 30 days, and a set donation goes to ending hunger</b>.</p>
+    <p class="body-lg rv d2">Anyone watching can help: share the home, comment, or send it to someone who is looking. The story stays about helping people, with the home at the centre of it.</p>
     <div class="flow rv d2" id="flow">
       <div class="flow-fill" id="flowFill"></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.4-9.3-9.2C1.6 8.6 3.6 5 7 5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.4 3.6 4.3 6.8C19.5 16.6 12 21 12 21z"/></svg></div><div class="ft">SolCal funds it</div><div class="fd">One budget covers the creators and the clipping</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg></div><div class="ft">Creators film</div><div class="fd">Real people being fed and helped</div></div>
-      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 10h8M8 13h5"/></svg></div><div class="ft">SolCal is thanked</div><div class="fd">Said out loud and shown on screen</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5M5.5 9.5V20h13V9.5M10 20v-5h4v5"/></svg></div><div class="ft">Pick a home</div><div class="fd">A SolCal listing, with 30 days on the clock</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg></div><div class="ft">Creators show it</div><div class="fd">Walkthroughs built from the listing photos and video</div></div>
       <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div><div class="ft">Clippers spread it</div><div class="fd">Across pages on three platforms</div></div>
+      <div class="fs"><div class="fi"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.4-9.3-9.2C1.6 8.6 3.6 5 7 5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.4 3.6 4.3 6.8C19.5 16.6 12 21 12 21z"/></svg></div><div class="ft">It sells, people eat</div><div class="fd">The donation goes to ending hunger</div></div>
     </div>
     <div class="nofilm rv d2">
       <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-      <p>SolCal does not have to film anything or appear in any video. The creators do the work, and SolCal gets the credit.</p>
+      <p>No one needs to be on site and no one from SolCal appears on camera. Everything is made from the listing photos, video and tours.</p>
     </div>
   </div>
 </section>
 
-<!-- ============ 03 WHY NOW ============ -->
+<!-- ============ 03 THE HOMES ============ -->
 <section class="section" id="s3">
   <div class="wrap">
-    <span class="snum rv">03 &middot; Why now</span>
-    <h2 class="statement rv d1">The season of giving starts this week.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem">The campaign runs through the season of giving, from Thanksgiving to the end of the year. This is when people pay the most attention to stories about generosity, and when a local business that gives back stands out.</p>
-    <div class="season rv d2" id="season">
-      <div class="sz-up" style="left:calc(12px + (100% - 24px) * 0.829)"><div class="sd">25 Dec</div><div class="sl">Christmas</div></div>
-      <div class="sz-track"><div class="sz-fill" id="szFill"></div>
-        <span class="sz-dot" style="left:0"></span><span class="sz-dot" style="left:82.9%"></span><span class="sz-dot" style="left:100%"></span>
+    <span class="snum rv">03 &middot; The homes</span>
+    <h2 class="statement rv d1">The listings are the magnet.</h2>
+    <p class="body-lg rv d2" style="margin-top:1.3rem">SolCal picks which homes go in. These three are featured on solcalproperties.com this week, and each one already has the photos to build from.</p>
+    <div class="listings rv d2">
+      <a class="lst" href="https://www.solcalproperties.com/property/18020253" target="_blank" rel="noopener">
+        <div class="lp">$465,000</div><div class="la">2701 E Mesquite Ave, Unit Q67</div><div class="lt">Palm Springs, CA 92264</div>
+        <ul><li>2 beds</li><li>2 baths</li><li>1,175 sq ft</li><li>Built 1984</li></ul>
+        <p class="lh"><b>48 listing photos</b> to build the walkthrough from.</p>
+        <span class="lgo">View the listing &#8599;</span>
+      </a>
+      <a class="lst" href="https://www.solcalproperties.com/property/18022873" target="_blank" rel="noopener">
+        <div class="lp">$2,949,000</div><div class="la">623 W Chino Canyon Rd</div><div class="lt">Palm Springs, CA 92262</div>
+        <ul><li>4 beds</li><li>5 baths</li><li>2,613 sq ft</li><li>Built 1958</li></ul>
+        <p class="lh"><b>94 listing photos</b> to build the walkthrough from.</p>
+        <span class="lgo">View the listing &#8599;</span>
+      </a>
+      <a class="lst" href="https://www.solcalproperties.com/property/18024302" target="_blank" rel="noopener">
+        <div class="lp">$6,200,000</div><div class="la">968 N Avenida Olivos</div><div class="lt">Palm Springs, CA 92262</div>
+        <ul><li>7 beds</li><li>7 baths</li><li>5,760 sq ft</li><li>1.09 acres</li></ul>
+        <p class="lh"><b>75 listing photos and a 3D tour</b> to build the walkthrough from.</p>
+        <span class="lgo">View the listing &#8599;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 THE 30-DAY ASK ============ -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; The 30-day ask</span>
+    <h2 class="statement rv d1">Help this home sell in 30 days. Every sale feeds people.</h2>
+    <div class="days rv d2" id="days">
+      <div class="d-head"><span class="cl">One home, start to finish</span><span class="cv" id="dLabel">Day 1</span></div>
+      <div class="d-bar"><div class="d-fill" id="dFill"></div></div>
+      <div class="d-steps" id="dSteps">
+        <button class="on" type="button" data-i="0"><span class="dk">Day 1</span><span class="dt">The home goes live</span></button>
+        <button type="button" data-i="1"><span class="dk">Days 1 to 30</span><span class="dt">The crowd gets behind it</span></button>
+        <button type="button" data-i="2"><span class="dk">Escrow</span><span class="dt">The donation goes out</span></button>
+        <button type="button" data-i="3"><span class="dk">After</span><span class="dt">The page shows it</span></button>
       </div>
-      <div class="sz-low">
-        <div class="sz-m"><div class="sd">26 Nov</div><div class="sl">Thanksgiving</div></div>
-        <div class="sz-m"><div class="sd">31 Dec</div><div class="sl">End of the year</div></div>
+      <p class="d-text" id="dText"></p>
+      <ul class="d-all" id="dAll"></ul>
+      <div class="d-rules">
+        <div class="d-rule"><h5>The donation</h5><p>SolCal and EAT set the amount for each home together, before the home goes live.</p></div>
+        <div class="d-rule"><h5>A clear call to action</h5><p>Every video asks for one thing: help this home sell in 30 days. That makes a good hook and a reason to share.</p></div>
+        <div class="d-rule"><h5>The same for every home</h5><p>Show the home, ask for help within a time frame, say what happens when it sells, and pay it out. It works for any sale.</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ 04 THE CONTENT ============ -->
-<section class="section alt" id="s4">
+<!-- ============ 05 THE CONTENT ============ -->
+<section class="section" id="s5">
   <div class="wrap">
-    <span class="snum rv">04 &middot; The content</span>
-    <h2 class="statement rv d1">Feel-good moments, with SolCal's name on every one.</h2>
-    <div class="angles rv d2">
-      <div class="ang"><h4>The moment of giving</h4><p>A creator hands out meals or helps someone, cut to the strongest few seconds.</p><span class="say">&ldquo;This one is on SolCal Properties.&rdquo;</span></div>
-      <div class="ang"><h4>The meal drop</h4><p>A creator buys meals from a local spot and gives them to people who need them, on camera.</p><span class="say">&ldquo;SolCal Properties made today happen.&rdquo;</span></div>
-      <div class="ang"><h4>Food talk</h4><p>Food creators do what they already do, and the meal they share funds someone else.</p><span class="say">&ldquo;Thanks to SolCal Properties, everybody eats.&rdquo;</span></div>
+    <span class="snum rv">05 &middot; The content</span>
+    <h2 class="statement rv d1">Two kinds of video, one story about helping people.</h2>
+    <div class="lanes rv d2" id="lanes" role="tablist">
+      <button class="on" type="button" data-l="0">Listing walkthroughs</button>
+      <button type="button" data-l="1">Giving moments</button>
     </div>
 
-    <h3 class="sub rv">The kind of moment the creators film</h3>
-    <div class="refs">
-      <div class="vtile rv" data-ig="DZu1oVlJXqp"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @hopeinhumanityofficial"><img src="img/hopeinhumanity.jpg" alt="Creator buying a meal for a stranger" loading="lazy"><span class="vt-tag">The moment of giving</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@hopeinhumanityofficial</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DZu1oVlJXqp/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
-      <div class="vtile rv d1" data-ig="DXpXotbyll6"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @zacksartori"><img src="img/zacksartori.jpg" alt="Creator handing a meal through a car window" loading="lazy"><span class="vt-tag">The meal drop</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@zacksartori</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DXpXotbyll6/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
-      <div class="vtile rv d2" data-ig="DWjmrKbMs-t"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @geloeatz"><img src="img/geloeatz.jpg" alt="Food creator at a restaurant counter" loading="lazy"><span class="vt-tag">Food talk</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@geloeatz</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DWjmrKbMs-t/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
-      <div class="ref-note rv d3"><p>Formats from creators in the EAT network. <b>A real person helped, the creator as the hero</b>, and the business behind it named and thanked.</p></div>
+    <div class="lane on" data-l="0">
+      <p class="lane-intro">Creators and clippers walk through the home using the listing photos, video and tour, and talk about what makes it special. <b>Every video carries the 30-day ask.</b></p>
+      <div class="usp">
+        <div class="u"><h5>What already works</h5><p>We study the real estate videos that already get the most views in this space and use what works: the hooks, the pacing, the reveal.</p></div>
+        <div class="plus">+</div>
+        <div class="u gold"><h5>The EAT twist</h5><p>Every sale feeds people. That is what sets these videos apart from every other listing video.</p></div>
+        <div class="plus">+</div>
+        <div class="u"><h5>A real home</h5><p>A SolCal listing with its price, its town and a link to see it.</p></div>
+      </div>
+      <h3 class="sub">Example hooks</h3>
+      <div class="angles" style="margin-top:0">
+        <div class="ang"><h4>The countdown</h4><p>The home, the price and the clock, in the first two seconds.</p><span class="say">&ldquo;This Palm Springs home has 30 days to sell. If it does, people eat.&rdquo;</span></div>
+        <div class="ang"><h4>The tour</h4><p>The best rooms from the listing photos, one after another.</p><span class="say">&ldquo;Walk through this desert home with me, then help it sell.&rdquo;</span></div>
+        <div class="ang"><h4>The ask</h4><p>A direct ask to the viewer to share it.</p><span class="say">&ldquo;Send this to someone looking in Palm Springs. Every sale feeds people.&rdquo;</span></div>
+      </div>
+    </div>
+
+    <div class="lane" data-l="1">
+      <p class="lane-intro">The feel-good side of the campaign. Creators film real acts of giving, like buying meals and feeding neighbors, and <b>thank SolCal Properties for making it happen</b>.</p>
+      <div class="refs">
+        <div class="vtile" data-ig="DZu1oVlJXqp"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @hopeinhumanityofficial"><img src="img/hopeinhumanity.jpg" alt="Creator buying a meal for a stranger" loading="lazy"><span class="vt-tag">The moment of giving</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@hopeinhumanityofficial</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DZu1oVlJXqp/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+        <div class="vtile" data-ig="DXpXotbyll6"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @zacksartori"><img src="img/zacksartori.jpg" alt="Creator handing a meal through a car window" loading="lazy"><span class="vt-tag">The meal drop</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@zacksartori</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DXpXotbyll6/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+        <div class="vtile" data-ig="DWjmrKbMs-t"><div class="vt-media" role="button" tabindex="0" aria-label="Play clip from @geloeatz"><img src="img/geloeatz.jpg" alt="Food creator at a restaurant counter" loading="lazy"><span class="vt-tag">Food talk</span><span class="vt-play" aria-hidden="true"><span></span></span><div class="vt-meta"><div class="vt-h">@geloeatz</div><div class="vt-s">Instagram</div></div></div><a class="vt-open" href="https://www.instagram.com/p/DWjmrKbMs-t/" target="_blank" rel="noopener">Open on Instagram &#8599;</a></div>
+        <div class="ref-note"><p>Formats from creators in the EAT network. <b>A real person helped, the creator as the hero</b>, and SolCal named and thanked as the sponsor.</p></div>
+      </div>
     </div>
 
     <h3 class="sub rv">Every video and clip must</h3>
     <div class="musts">
-      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Show real help happening on camera</div>
-      <div class="must rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Thank SolCal Properties out loud</div>
-      <div class="must rv d2"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Carry the SolCal name and license number on screen from start to finish</div>
-      <div class="must rv d3"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Link to SolCal's home search in the caption</div>
-      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Keep the creator as the hero of the story</div>
+      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Say it is sponsored by SolCal Properties</div>
+      <div class="must rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Carry the SolCal name and license number on screen from start to finish</div>
+      <div class="must rv d2"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Link to the home's listing in the caption</div>
+      <div class="must rv d3"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Ask people to join the EAT App, with the creator's own referral link in the description</div>
+      <div class="must rv"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Keep helping people at the heart of the story</div>
       <div class="must rv d1"><span class="ck"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Pass a brand fit check before it goes out</div>
     </div>
-  </div>
-</section>
-
-<!-- ============ 05 WHAT SOLCAL GETS ============ -->
-<section class="section" id="s5">
-  <div class="wrap">
-    <span class="snum rv">05 &middot; What SolCal Properties gets</span>
-    <h2 class="statement rv d1">Five things, all in one campaign.</h2>
-    <div class="gets rv d2">
-      <div class="g-list" id="gList" role="tablist">
-        <button class="g-btn on" type="button" data-i="0"><span class="gn">01</span><span class="gt">A branded impact page</span></button>
-        <button class="g-btn" type="button" data-i="1"><span class="gn">02</span><span class="gt">Creator videos</span></button>
-        <button class="g-btn" type="button" data-i="2"><span class="gn">03</span><span class="gt">Clips at scale</span></button>
-        <button class="g-btn" type="button" data-i="3"><span class="gn">04</span><span class="gt">A live report</span></button>
-        <button class="g-btn" type="button" data-i="4"><span class="gn">05</span><span class="gt">Content to keep</span></button>
-      </div>
-      <div class="g-panel" id="gPanel" aria-live="polite"><h4></h4><p></p></div>
+    <div class="desc rv d1">
+      <div class="dk2">In every description, in these words or close to them</div>
+      <p>EAT App pays creators to make content that ends hunger worldwide. Join the EAT App today to earn money helping people.</p>
     </div>
   </div>
 </section>
 
-<!-- ============ 06 CLIPPING SETUP ============ -->
+<!-- ============ 06 IMPACT PAGES ============ -->
 <section class="section alt" id="s6">
   <div class="wrap">
-    <span class="snum rv">06 &middot; Clipping setup</span>
+    <span class="snum rv">06 &middot; Impact pages</span>
+    <h2 class="statement rv d1">Every home gets its own page on the SolCal x EAT site.</h2>
+    <div class="imp-wrap">
+      <div class="rv d1">
+        <div class="imp-tog" id="impTog"><button class="on" type="button" data-s="0">During the 30 days</button><button type="button" data-s="1">After it sells</button></div>
+        <div class="imp" id="imp">
+          <div class="imp-bar"><span>SolCal &times; EAT</span><span>Impact</span></div>
+          <div class="imp-body">
+            <div class="imp-house">
+              <svg viewBox="0 0 400 150" preserveAspectRatio="none" aria-hidden="true"><circle cx="300" cy="62" r="26" fill="#FFE2A8"/><path d="M0 120 L70 70 L120 100 L190 48 L260 96 L320 66 L400 110 L400 150 L0 150Z" fill="#8A4A3A" opacity=".55"/><rect x="90" y="96" width="190" height="40" fill="#FAF8F5"/><rect x="80" y="90" width="210" height="8" fill="#06393E"/><rect x="110" y="106" width="44" height="22" fill="#0B6E76" opacity=".75"/><rect x="170" y="106" width="30" height="30" fill="#D9B97F"/><rect x="214" y="106" width="44" height="22" fill="#0B6E76" opacity=".75"/><rect x="0" y="136" width="400" height="14" fill="#5E3A2A"/></svg>
+              <span class="imp-sign" id="impSign">For sale</span>
+            </div>
+            <div class="imp-row"><div class="imp-p">$465,000</div><div class="imp-a">2701 E Mesquite Ave, Unit Q67<br>Palm Springs</div></div>
+            <div class="imp-cells">
+              <div class="imp-cell"><div class="ik">Status</div><div class="iv" id="impStatus">Day 1 of 30</div></div>
+              <div class="imp-cell"><div class="ik">Best video</div><div class="iv" id="impVid">Updated as clips come in</div></div>
+              <div class="imp-cell"><div class="ik">Donated to ending hunger</div><div class="iv t" id="impDon">Set by SolCal and EAT</div></div>
+              <div class="imp-cell"><div class="ik">Sponsored by</div><div class="iv">SolCal Properties</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="rv d2">
+        <p class="body-lg" style="margin-bottom:1.2rem">One link for each home that tells the whole story, so SolCal can share it with past clients and future sellers.</p>
+        <ul class="imp-list">
+          <li><b>The house</b>The home and where it is.</li>
+          <li><b>The price</b>The listing price.</li>
+          <li><b>The sold sign</b>Added the moment the home enters escrow.</li>
+          <li><b>The best video</b>The top video about the home.</li>
+          <li><b>The donation</b>The amount this home gave to ending hunger.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 CLIPPING SETUP ============ -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; Clipping setup</span>
     <h2 class="statement rv d1">Paid for real views, after they are checked.</h2>
     <div class="setup rv d2">
       <div class="mc">
@@ -501,8 +724,8 @@
         <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 3.5v5.5c0 4.6-3.4 8.2-8 9-4.6-.8-8-4.4-8-9V6.5L12 3z"/></svg></div>
         <h5>Rules</h5>
         <ul>
+          <li>The 30-day ask in every clip</li>
           <li>SolCal's name and license number on screen</li>
-          <li>A quality bar on every clip</li>
           <li>No fake or bought views</li>
           <li>No deleting posts early</li>
         </ul>
@@ -516,15 +739,25 @@
   </div>
 </section>
 
-<!-- ============ 07 ROADMAP ============ -->
-<section class="section" id="s7">
+<!-- ============ 08 ROADMAP ============ -->
+<section class="section alt" id="s8">
   <div class="wrap">
-    <span class="snum rv">07 &middot; Roadmap</span>
-    <h2 class="statement rv d1">Four steps, from setup to the final report.</h2>
-    <div class="tl-rail rv d2">
+    <span class="snum rv">08 &middot; Roadmap</span>
+    <h2 class="statement rv d1">Through the season of giving, to the end of the year.</h2>
+    <div class="season rv d2" id="season">
+      <div class="sz-up" style="left:calc(12px + (100% - 24px) * 0.829)"><div class="sd">25 Dec</div><div class="sl">Christmas</div></div>
+      <div class="sz-track"><div class="sz-fill" id="szFill"></div>
+        <span class="sz-dot" style="left:0"></span><span class="sz-dot" style="left:82.9%"></span><span class="sz-dot" style="left:100%"></span>
+      </div>
+      <div class="sz-low">
+        <div class="sz-m"><div class="sd">26 Nov</div><div class="sl">Thanksgiving</div></div>
+        <div class="sz-m"><div class="sd">31 Dec</div><div class="sl">End of the year</div></div>
+      </div>
+    </div>
+    <div class="tl-rail rv d2" style="margin-top:3.4rem">
       <div class="tl-fill" id="tlFill"></div>
       <button class="tl-step on" type="button" data-i="0"><div class="node">1</div><div class="when">Week 1</div><div class="what">Setup</div></button>
-      <button class="tl-step" type="button" data-i="1"><div class="node">2</div><div class="when">Weeks 1 and 2</div><div class="what">Creators film</div></button>
+      <button class="tl-step" type="button" data-i="1"><div class="node">2</div><div class="when">Weeks 1 and 2</div><div class="what">Creators make</div></button>
       <button class="tl-step" type="button" data-i="2"><div class="node">3</div><div class="when">From week 2</div><div class="what">Clipping</div></button>
       <button class="tl-step" type="button" data-i="3"><div class="node">4</div><div class="when">End of campaign</div><div class="what">Wrap-up</div></button>
     </div>
@@ -533,37 +766,61 @@
   </div>
 </section>
 
-<!-- ============ 08 REPORTING ============ -->
-<section class="section alt" id="s8">
+<!-- ============ 09 REPORTING ============ -->
+<section class="section" id="s9">
   <div class="wrap">
-    <span class="snum rv">08 &middot; Reporting</span>
+    <span class="snum rv">09 &middot; Reporting</span>
     <h2 class="statement rv d1">You always know where the campaign stands.</h2>
     <div class="cad rv d2">
       <div class="cd"><div class="ck2">Any time</div><h5>Live report</h5><p>One link that updates on its own with views and posts.</p></div>
       <div class="cd"><div class="ck2">Every week</div><h5>Check-in call</h5><p>What went out, what is working and what comes next.</p></div>
-      <div class="cd"><div class="ck2">Every two weeks</div><h5>Written report</h5><p>Views, top clips, top creators and spend so far.</p></div>
+      <div class="cd"><div class="ck2">Every two weeks</div><h5>Written report</h5><p>Views for each home, top clips, top creators and spend so far.</p></div>
       <div class="cd"><div class="ck2">At the end</div><h5>Final report</h5><p>Total views, top clips and top creators, with a plan for the next campaign.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ============ 09 WHAT WE NEED ============ -->
-<section class="section" id="s9">
+<!-- ============ 10 WHAT SOLCAL KEEPS ============ -->
+<section class="section alt" id="s10">
   <div class="wrap">
-    <span class="snum rv">09 &middot; What we need from SolCal Properties</span>
-    <h2 class="statement rv d1">Three things, and we take it from there.</h2>
+    <span class="snum rv">10 &middot; What SolCal keeps</span>
+    <h2 class="statement rv d1">The most valuable things SolCal has at the end.</h2>
+    <div class="assets rv d2">
+      <div class="as2"><div class="ai"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10.5l5-3v9l-5-3"/></svg></div><h5>The listing videos</h5><p>A walkthrough video for every home in the campaign.</p></div>
+      <div class="as2"><div class="ai"><svg viewBox="0 0 24 24"><path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg></div><h5>The best clips</h5><p>To post on SolCal's own pages, send to past clients and use in its marketing.</p></div>
+      <div class="as2"><div class="ai"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h8"/></svg></div><h5>The impact pages</h5><p>One page for each home, with the sold sign, the best video and the donation.</p></div>
+      <div class="as2"><div class="ai"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><h5>The numbers</h5><p>From the reports: which homes, hooks, creators and platforms drew the most views.</p></div>
+      <div class="as2 key"><div class="ai"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg></div><h5>The playbook</h5><p>A repeatable system SolCal can run on every future listing.</p></div>
+    </div>
+    <h3 class="sub rv">The playbook, for any home</h3>
+    <div class="loop rv d1">
+      <div><b>01 &middot; Show</b><span>Show the home and its price.</span></div>
+      <div><b>02 &middot; Ask</b><span>Ask people to help it sell in 30 days.</span></div>
+      <div><b>03 &middot; Promise</b><span>Say what happens when it sells.</span></div>
+      <div><b>04 &middot; Give</b><span>Pay out the donation and show it.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 WHAT WE NEED ============ -->
+<section class="section" id="s11">
+  <div class="wrap">
+    <span class="snum rv">11 &middot; What we need from SolCal Properties</span>
+    <h2 class="statement rv d1">Five things, and we take it from there.</h2>
     <div class="needs rv d2">
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5M5.5 9.5V20h13V9.5"/></svg></div><h5>The homes</h5><p>Which listings go in, with their photos, video and tours.</p></div>
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.4-9.3-9.2C1.6 8.6 3.6 5 7 5c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.4 3.6 4.3 6.8C19.5 16.6 12 21 12 21z"/></svg></div><h5>The donation per home</h5><p>The amount each sale gives to ending hunger, set together with EAT.</p></div>
       <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 15l3-3 2 2 3-4"/></svg></div><h5>Brand files</h5><p>Logo files, plus the exact business name and license number to show on screen.</p></div>
-      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></div><h5>One approver</h5><p>One person to approve the creator brief and the on-screen sticker.</p></div>
+      <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></div><h5>One approver</h5><p>One person to approve the brief, the on-screen sticker and the impact pages.</p></div>
       <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg></div><h5>A short no-go list</h5><p>Anything the brand does not want to be linked to.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ============ 10 PROOF ============ -->
-<section class="section alt" id="s10">
+<!-- ============ 12 PROOF ============ -->
+<section class="section alt" id="s12">
   <div class="wrap">
-    <span class="snum rv">10 &middot; Proof</span>
+    <span class="snum rv">12 &middot; Proof</span>
     <h2 class="statement rv d1">The network behind the campaign.</h2>
     <div class="proof-grid rv d2">
       <div class="pf lead"><div class="pv"><span class="cu" data-target="1">1</span>B+</div><div class="pl">Views delivered by Maison d'&Eacute;lites</div></div>
@@ -578,12 +835,12 @@
   </div>
 </section>
 
-<!-- ============ 11 MODEL ============ -->
-<section class="section" id="s11">
+<!-- ============ 13 MODEL ============ -->
+<section class="section" id="s13">
   <div class="wrap">
-    <span class="snum rv">11 &middot; Model the campaign</span>
+    <span class="snum rv">13 &middot; Model the campaign</span>
     <h2 class="statement rv d1">Set the budget.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, the creator brief, quality checks and reporting are included.</p>
+    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, the content research, the creator brief, quality checks and reporting are included.</p>
     <div class="model rv d2">
       <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">$5,000</span></div>
       <input type="range" id="budget" min="2000" max="20000" step="500" value="5000" aria-label="Campaign budget">
@@ -625,6 +882,9 @@
     (function f(now){const p=Math.min((now-s)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(t*e,el);if(p<1)requestAnimationFrame(f);})(s);
   },0.5);
 
+  /* hero ring fills */
+  once([document.getElementById('ring')],el=>{el.querySelector('.r1').style.strokeDashoffset='0';},0.3);
+
   /* flow lights up step by step */
   once([document.getElementById('flow')],el=>{
     const steps=[...el.querySelectorAll('.fs')], fill=document.getElementById('flowFill');
@@ -636,28 +896,45 @@
   /* season bar */
   once([document.getElementById('season')],()=>{document.getElementById('szFill').style.width='100%';},0.4);
 
-  /* what SolCal gets */
-  const GETS=[
-    ['A branded impact page','A public SolCal Properties page on EAT\'s x.eat platform that shows the campaign, the creators and the results in one place.'],
-    ['Creator videos','Original feel-good videos where creators name SolCal Properties as the business behind the giving.'],
-    ['Clips at scale','Our clippers turn each video into many short clips. Every clip carries the SolCal Properties name and license number on screen from start to finish.'],
-    ['A live report','One link that updates on its own with views and posts, so progress can be checked at any time.'],
-    ['Content to keep','The best clips are SolCal\'s to share with past clients, post on its own pages and use in its own marketing.']
+  /* the 30-day ask */
+  const DAYS=[
+    ['Day 1','3.3%','The home goes live with its 30-day ask and its own impact page. Creators get the listing photos, video and tour, and the first walkthroughs go out.'],
+    ['Days 1 to 30','60%','Creators and clippers post across TikTok, Instagram and YouTube. Every clip shows the home, the price and the ask, and links to the listing.'],
+    ['Escrow','100%','The home enters escrow. The donation SolCal and EAT set for this home goes to ending hunger.'],
+    ['After','100%','The impact page gets the sold sign, the best video and the amount donated. The same steps start on the next home.']
   ];
-  const gBtns=[...document.querySelectorAll('.g-btn')], gP=document.getElementById('gPanel');
-  function setG(i){
-    gBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
-    gP.innerHTML='<h4>'+GETS[i][0]+'</h4><p>'+GETS[i][1]+'</p>';
+  const dBtns=[...document.querySelectorAll('#dSteps button')], dText=document.getElementById('dText');
+  function setD(i){
+    dBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+    document.getElementById('dLabel').textContent=DAYS[i][0];
+    document.getElementById('dFill').style.width=DAYS[i][1];
+    dText.style.animation='none';void dText.offsetWidth;dText.style.animation='';
+    dText.textContent=DAYS[i][2];
   }
-  gBtns.forEach((b,i)=>b.addEventListener('click',()=>setG(i)));
-  setG(0);
+  dBtns.forEach((b,i)=>b.addEventListener('click',()=>setD(i)));
+  setD(0);
+  document.getElementById('dAll').innerHTML=DAYS.map(d=>'<li><b>'+d[0]+'</b>'+d[2]+'</li>').join('');
+
+  /* content lanes */
+  const lBtns=[...document.querySelectorAll('#lanes button')], lanes=[...document.querySelectorAll('.lane')];
+  lBtns.forEach((b,i)=>b.addEventListener('click',()=>{lBtns.forEach((x,j)=>x.classList.toggle('on',j===i));lanes.forEach((l,j)=>l.classList.toggle('on',j===i));}));
+
+  /* impact page: during and after */
+  const imp=document.getElementById('imp'), iBtns=[...document.querySelectorAll('#impTog button')];
+  const IMP=[['For sale','Day 1 of 30','Updated as clips come in','Set by SolCal and EAT'],['Sold','In escrow','The top video about the home','Paid out and shown here']];
+  function setI(i){
+    iBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+    imp.classList.toggle('sold',i===1);
+    ['impSign','impStatus','impVid','impDon'].forEach((id,k)=>document.getElementById(id).textContent=IMP[i][k]);
+  }
+  iBtns.forEach((b,i)=>b.addEventListener('click',()=>setI(i)));
 
   /* roadmap */
   const TL=[
-    ['SolCal\'s page is set up on x.eat.','We write the creator brief: what the videos show and how SolCal is thanked.','We design the on-screen sticker with the SolCal name and license number.','SolCal approves the brief and the sticker.'],
-    ['Creators pick up the brief and send in their videos.','Each video is checked for brand fit before it goes out.','The first videos go live on the SolCal page.'],
-    ['Clippers cut and post the approved videos.','Every post is checked for real views and real engagement.','A check-in call each week, with a written report every two weeks.'],
-    ['Final report: total views, top clips and top creators.','Handover of the best clips for SolCal\'s own use.','A plan for the next campaign, if SolCal wants to continue.']
+    ['SolCal picks the first homes and shares their photos, video and tours.','SolCal and EAT set the donation for each home.','We study the real estate content that already performs and write the creator brief.','We design the on-screen sticker and set up an impact page for each home.','SolCal approves the brief, the sticker and the pages.'],
+    ['Creators make walkthrough videos from the listing material, and film giving moments.','Each video is checked for brand fit before it goes out.','The first videos go live on the impact pages.'],
+    ['Each home\'s 30 days start.','Clippers cut and post the approved videos, and every post is checked for real views and real engagement.','New homes can join as SolCal lists them.','A check-in call each week, with a written report every two weeks.'],
+    ['Final report: total views, top clips and top creators.','Impact pages updated with sold signs and donations.','Handover of the videos, the best clips and the playbook.','A plan for the next campaign, if SolCal wants to continue.']
   ];
   const steps=[...document.querySelectorAll('.tl-step')],tlList=document.getElementById('tlList'),tlFill=document.getElementById('tlFill');
   function setTL(i){
@@ -697,10 +974,9 @@
   }
   bS.addEventListener('input',calc); calc();
 
-  /* PDF: show every tab and every roadmap step */
+  /* PDF: show every lane and every roadmap step */
   window.__pdfPrepare=function(){
     document.body.classList.add('pdf');
-    gP.innerHTML=GETS.map(g=>'<h4>'+g[0]+'</h4><p>'+g[1]+'</p>').join('');
     const names=[...steps].map(s=>s.querySelector('.when').textContent+' &middot; '+s.querySelector('.what').textContent);
     tlList.parentNode.innerHTML=TL.map((t,i)=>'<h5>'+names[i]+'</h5><ul>'+t.map(x=>'<li>'+x+'</li>').join('')+'</ul>').join('');
   };
