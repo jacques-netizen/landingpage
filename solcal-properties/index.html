@@ -479,7 +479,6 @@
   <a href="#s9"><span>Reporting</span></a>
   <a href="#s10"><span>What SolCal keeps</span></a>
   <a href="#s11"><span>What we need</span></a>
-  <a href="#s12"><span>Model the campaign</span></a>
 </nav>
 
 <!-- ============ HERO ============ -->
@@ -813,30 +812,14 @@
       <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></svg></div><h5>One approver</h5><p>One person to approve the brief, the on-screen sticker and the impact pages.</p></div>
       <div class="nd"><div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg></div><h5>A short no-go list</h5><p>Anything the brand does not want to be linked to.</p></div>
     </div>
-  </div>
-</section>
-
-<!-- ============ 12 MODEL ============ -->
-<section class="section alt" id="s12">
-  <div class="wrap">
-    <span class="snum rv">12 &middot; Model the campaign</span>
-    <h2 class="statement rv d1">Set the budget.</h2>
-    <p class="body-lg rv d2" style="margin-top:1.3rem;margin-bottom:2.2rem">Distribution is priced at <b>$2 per thousand verified views</b>. Strategy, the content research, the creator brief, quality checks and reporting are included.</p>
-    <div class="model rv d2">
-      <div class="ctrl-head"><span class="cl">Campaign budget</span><span class="cv" id="budgetVal">$5,000</span></div>
-      <input type="range" id="budget" min="2000" max="20000" step="500" value="5000" aria-label="Campaign budget">
-      <div class="range-ends"><span>$2,000</span><span>$20,000</span></div>
-      <div class="out">
-        <div class="o lead"><div class="ov" id="oViews">2.5M</div><div class="ol">Estimated verified views</div></div>
-        <div class="o"><div class="ov">$2.00</div><div class="ol">Per thousand verified views</div></div>
-      </div>
-    </div>
     <div class="signoff rv d3">
       <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
       <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
     </div>
   </div>
 </section>
+
+
 
 <script>
 (function(){
@@ -942,18 +925,6 @@
     m.addEventListener('click',()=>playTile(t));
     m.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();playTile(t);}});
   });
-
-  /* model: budget at $2 per thousand verified views */
-  const CPM=2;
-  const bS=document.getElementById('budget');
-  const m=n=>n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=1e3?Math.round(n/1e3)+'K':String(Math.round(n));
-  function calc(){
-    const b=+bS.value, views=b/CPM*1000;
-    document.getElementById('budgetVal').textContent='$'+b.toLocaleString('en-US');
-    document.getElementById('oViews').textContent=m(views);
-    bS.style.setProperty('--p',((b-bS.min)/(bS.max-bS.min)*100)+'%');
-  }
-  bS.addEventListener('input',calc); calc();
 
   /* PDF: show every lane and every roadmap step */
   window.__pdfPrepare=function(){
