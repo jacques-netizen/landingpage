@@ -9,6 +9,10 @@ Who made it: "Claude Code session …xxxxxx" is the Claude Code session that wro
 link is in the commit's Claude-Session trailer); a GitHub name is a person committing directly. Who
 asked: the commit's Requested-by trailer, "not recorded" for changes made before 2026-11-09.
 
+## 2026-11-26
+
+- Whop is the only payout method once Whop is switched on · Requested by: owner · Made by: Claude Code session …oZc8T8 · 6b1af83
+
 ## 2026-11-24
 
 - Whop payouts: clippers connect a Whop payout account, verified withdrawals are paid as Whop transfers · Requested by: owner · Made by: Claude Code session …oZc8T8 · 3b4c2e1
