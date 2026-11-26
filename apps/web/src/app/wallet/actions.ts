@@ -60,6 +60,8 @@ export async function savePayoutMethodAction(raw: PayoutMethodInput): Promise<Pa
   if (!viewer) return { ok: false, error: 'Sign in again to continue.' }
   if (!(await rateLimit(`payout-method:${viewer.id}`, 10, 3600)))
     return { ok: false, error: 'Too many changes. Wait an hour and try again.' }
+  // With Whop switched on, everyone is paid through Whop (owner, 2026-11-26).
+  if (whopEnabled()) return { ok: false, error: 'Payouts go through Whop now. Choose Whop to set it up.' }
   let destination: string
   let provider: 'crypto' | 'bank_transfer'
   if (raw.method === 'crypto') {
@@ -169,6 +171,8 @@ export async function requestWithdrawalAction(raw: { amount?: string }): Promise
     .where(eq(tables.creatorProfiles.userId, viewer.id))
   const method = methodOf(p?.ref)
   if (!method || !p?.ref) return { ok: false, error: MESSAGES.payout_not_verified! }
+  if (whopEnabled() && method !== 'whop')
+    return { ok: false, error: 'Payouts go through Whop now. Set up Whop as your payout method first.' }
   // Whop: the ID check may have finished on Whop since the clipper last came back; ask before refusing.
   const whopId = parseWhop(p.ref)
   if (whopId && p.status !== 'verified') {

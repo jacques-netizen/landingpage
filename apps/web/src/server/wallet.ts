@@ -57,8 +57,10 @@ export async function loadWallet(creatorId: string, now = new Date()): Promise<W
     earnedCentsAll: counted.reduce((s, x) => s + x.earnedCents, 0),
     bestCentsAll: Math.max(0, ...posts.map((x) => x.earnedCents)),
     lifetimeCountedViews: posts.filter((x) => APPROVED.includes(x.state)).reduce((s, x) => s + x.countedViews, 0),
+    // With Whop switched on (owner, 2026-11-26: everyone is paid through Whop), a crypto wallet or bank
+    // account saved before counts as none, so the wallet asks the clipper to set up Whop.
     payout:
-      methodOf(p?.payoutProviderRef) !== null
+      methodOf(p?.payoutProviderRef) !== null && (!whopEnabled() || methodOf(p?.payoutProviderRef) === 'whop')
         ? {
             method: methodOf(p!.payoutProviderRef)!,
             last4: null,

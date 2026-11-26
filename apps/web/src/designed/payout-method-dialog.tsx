@@ -33,7 +33,8 @@ export function PayoutMethodDialog({
   /** The clipper is already paid through Whop. */
   onWhop?: boolean
 }) {
-  const [method, setMethod] = useState<Method>(onWhop ? 'whop' : 'crypto')
+  // With Whop switched on, everyone is paid through Whop (owner, 2026-11-26): it is the only choice.
+  const [method, setMethod] = useState<Method>(whop || onWhop ? 'whop' : 'crypto')
   const [coin, setCoin] = useState('')
   const [network, setNetwork] = useState('')
   const [address, setAddress] = useState('')
@@ -152,9 +153,14 @@ export function PayoutMethodDialog({
     >
       <div className="flex max-h-[60vh] flex-col gap-5 overflow-y-auto pr-1" data-theme={theme}>
         <div className="flex gap-2" role="group" aria-label="Payout method">
-          {pill(method === 'crypto', 'Crypto', () => setMethod('crypto'), 'crypto')}
-          {pill(method === 'bank', 'Bank transfer', () => setMethod('bank'), 'bank')}
-          {whop ? pill(method === 'whop', 'Whop', () => setMethod('whop'), 'whop') : null}
+          {whop ? (
+            pill(true, 'Whop', () => setMethod('whop'), 'whop')
+          ) : (
+            <>
+              {pill(method === 'crypto', 'Crypto', () => setMethod('crypto'), 'crypto')}
+              {pill(method === 'bank', 'Bank transfer', () => setMethod('bank'), 'bank')}
+            </>
+          )}
         </div>
 
         {method === 'whop' ? (
