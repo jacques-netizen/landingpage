@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Kelvin &middot; Six-Month Roadmap &middot; Maison d'&Eacute;lites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15120D; --panel:#1F1911; --panel-2:#261F15; --panel-3:#2E2519;
+    --text:#EFE7D5; --mute:#A09379; --dim:#6E6452;
+    --gold:#B8944F; --gold-light:#D4B26A; --gold-soft:#EBD69E;
+    --ok:#7FC79B;
+    --hair:rgba(212,178,106,.22); --hair-soft:rgba(212,178,106,.11);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'EB Garamond',serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:var(--bg)}
+  button{font:inherit;color:inherit;cursor:pointer}
+  a{color:inherit}
+
+  .label{font-family:'Archivo',sans-serif;font-weight:600;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-light)}
+  .statement{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.1;letter-spacing:-0.012em;max-width:26ch}
+  .body-lg{font-size:clamp(1.03rem,1.45vw,1.17rem);color:var(--mute);max-width:64ch;line-height:1.72;margin-top:1.3rem}
+  .body-lg b{color:var(--text);font-weight:500}
+  .section{padding:clamp(4.2rem,10vh,7rem) clamp(1.3rem,6vw,6.5rem);position:relative}
+  .wrap{max-width:1180px;margin:0 auto}
+  .snum{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.3em;color:var(--gold-light);text-transform:uppercase;display:flex;align-items:center;gap:0.8rem;margin-bottom:1.3rem}
+  .snum:before{content:"";width:28px;height:1px;background:var(--gold)}
+  h3.sub{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);margin:3.2rem 0 1.2rem}
+  .alt{background:var(--panel)}
+
+  .rv{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+  @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-soft));z-index:9999;transition:width .1s linear}
+  #dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:9998;display:flex;flex-direction:column;gap:0.72rem}
+  #dots a{position:relative;width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);display:block;transition:.3s}
+  #dots a.on{background:var(--gold-light);border-color:var(--gold-light);transform:scale(1.3)}
+  #dots a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:'Archivo',sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);background:var(--panel);border:1px solid var(--hair);padding:0.3rem 0.6rem;opacity:0;pointer-events:none;transition:.25s}
+  #dots a:hover span{opacity:1}
+  @media(max-width:1080px){#dots{display:none}}
+
+  /* HERO */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.8rem,4vw,3rem) clamp(1.3rem,6vw,6.5rem);overflow:hidden;
+    background:radial-gradient(ellipse 70% 60% at 78% 45%,rgba(184,148,79,.16),transparent 70%),var(--bg)}
+  .hero-top,.hero-bot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;z-index:3}
+  .mark{font-family:'EB Garamond',serif;font-size:1.12rem;letter-spacing:0.04em;text-decoration:none}
+  .mark b{color:var(--gold-soft);font-weight:500}
+  .hero-body{display:grid;grid-template-columns:1.15fr 0.85fr;gap:3rem;align-items:center;position:relative;z-index:2;flex:1;padding:2.4rem 0}
+  .hero-mid .label{display:block;margin-bottom:1.5rem}
+  .hero h1{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.045em;font-size:clamp(3.4rem,9vw,7.6rem);line-height:0.88;text-transform:uppercase}
+  .hero h1 span{display:block;font-size:0.3em;letter-spacing:0.02em;color:var(--gold-soft);margin-top:0.8rem;line-height:1.1;text-transform:none;font-weight:700}
+  .hero-sub{font-size:clamp(1.08rem,1.9vw,1.32rem);color:var(--text);opacity:.86;margin-top:1.8rem;max-width:46ch;line-height:1.5}
+  .hero-sub b{color:var(--gold-soft);font-weight:500}
+  .ledger{border-top:1px solid var(--hair)}
+  .ledger .lr{display:grid;grid-template-columns:auto 1fr;gap:1.4rem;align-items:baseline;padding:1.2rem 0;border-bottom:1px solid var(--hair)}
+  .ledger .lv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.2rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft);min-width:3.4ch}
+  .ledger .ll{font-size:1.05rem;color:var(--text);line-height:1.35}
+  .ledger .ll small{display:block;font-family:'Archivo',sans-serif;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute);margin-top:0.35rem}
+  .scrollcue{font-family:'Archivo',sans-serif;font-size:0.62rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold-light);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  /* 01 */
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:2.6rem;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .fact{padding:1.6rem 1.2rem 1.5rem 0}
+  .fact+.fact{padding-left:1.2rem;border-left:1px solid var(--hair-soft)}
+  .fact .fv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.4rem);line-height:0.9;letter-spacing:-0.04em;color:var(--gold-soft)}
+  .fact .fl{font-size:1rem;color:var(--mute);margin-top:0.6rem;line-height:1.4}
+  .proofline{display:grid;grid-template-columns:1fr 1fr;gap:2.4rem;margin-top:2.6rem}
+  .proofline div{border-left:2px solid var(--gold);padding:0.2rem 0 0.2rem 1.2rem}
+  .proofline .pk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .proofline p{font-size:1.06rem;color:var(--text);margin-top:0.4rem;line-height:1.55}
+
+  /* 02 toggle */
+  .seg{display:inline-flex;margin-top:2.4rem;border:1px solid var(--hair)}
+  .seg button{background:none;border:0;padding:0.75rem 1.3rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);transition:.3s}
+  .seg button.on{background:var(--gold);color:var(--bg)}
+  .lanes{margin-top:1.4rem;border-top:1px solid var(--hair)}
+  .lane{display:grid;grid-template-columns:200px 1fr;gap:1.6rem;padding:1.2rem 0;border-bottom:1px solid var(--hair-soft);align-items:baseline}
+  .lane b{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.95rem}
+  .lane span{font-size:1.08rem;color:var(--text);line-height:1.5;animation:fadeup .45s ease}
+  .lane.today span{color:var(--mute)}
+  .value{margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--hair)}
+  .value .vc{padding:1.8rem 1.6rem}
+  .value .vc+.vc{border-left:1px solid var(--hair);background:linear-gradient(160deg,rgba(184,148,79,.12),transparent 70%)}
+  .value .vk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute)}
+  .value .vv{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4.4vw,3rem);letter-spacing:-0.03em;line-height:1;margin-top:0.8rem}
+  .value .vc+.vc .vv{color:var(--gold-soft)}
+  .value p{font-size:1rem;color:var(--mute);margin-top:0.6rem}
+  .value-note{margin-top:1rem;font-size:1.02rem;color:var(--mute);max-width:64ch}
+
+  /* 03 goals */
+  .goals{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2.6rem;border-top:1px solid var(--hair)}
+  .gl{padding:1.6rem 1.4rem 1.6rem 0;border-bottom:1px solid var(--hair)}
+  .gl+.gl{padding-left:1.4rem;border-left:1px solid var(--hair-soft)}
+  .gl .gn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.2em;color:var(--gold-light);text-transform:uppercase}
+  .gl h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.2rem;margin-top:0.7rem;line-height:1.25;letter-spacing:-0.01em}
+  .gl p{font-size:1rem;color:var(--mute);margin-top:0.5rem;line-height:1.5}
+
+  /* 04 roadmap */
+  .track{position:relative;margin-top:2.8rem}
+  .track-line{position:absolute;left:0;right:0;top:19px;height:1px;background:var(--hair)}
+  .track-fill{position:absolute;left:0;top:19px;height:1px;background:var(--gold-light);width:0;transition:width .7s cubic-bezier(.2,.7,.2,1)}
+  .steps{position:relative;display:grid;grid-template-columns:repeat(5,1fr)}
+  .stp{background:none;border:0;text-align:left;padding:0 0.8rem 0 0;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start}
+  .stp .dot{display:block;width:39px;height:39px;border-radius:50%;border:1px solid var(--gold);background:var(--bg);position:relative;transition:.35s}
+  .stp .dot:after{content:"";position:absolute;inset:13px;border-radius:50%;background:var(--panel-3);transition:.35s}
+  .stp.done .dot:after,.stp.on .dot:after{background:var(--gold-light)}
+  .stp.on .dot{box-shadow:0 0 0 6px rgba(212,178,106,.14)}
+  .stp .sw{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);margin-top:1rem}
+  .stp .st{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:0.98rem;margin-top:0.3rem;line-height:1.25;color:var(--mute);transition:.3s}
+  .stp.on .st{color:var(--text)}
+  .phase{margin-top:2.2rem;border-top:1px solid var(--hair);padding-top:2rem;display:grid;grid-template-columns:0.85fr 1.15fr;gap:2.6rem;min-height:340px}
+  .phase .anim{animation:fadeup .45s ease}
+  .phase .pk{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .phase h4{font-family:'EB Garamond',serif;font-weight:400;font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.12;margin-top:0.6rem}
+  .phase .why{font-size:1.06rem;color:var(--mute);margin-top:1rem;line-height:1.6}
+  .phase ol{list-style:none;counter-reset:a}
+  .phase li{counter-increment:a;display:grid;grid-template-columns:2.2rem 1fr;gap:0.6rem;padding:0.9rem 0;border-bottom:1px solid var(--hair-soft);font-size:1.06rem;line-height:1.5}
+  .phase li:before{content:counter(a,decimal-leading-zero);font-family:'Archivo',sans-serif;font-weight:800;font-size:0.7rem;color:var(--gold);padding-top:0.3rem}
+  .phase li b{color:var(--gold-soft);font-weight:500}
+  .phase .out{margin-top:1.2rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ok)}
+  .navrow{display:flex;gap:0.6rem;margin-top:1.4rem}
+  .navrow button{background:none;border:1px solid var(--hair);padding:0.6rem 1rem;font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);transition:.3s}
+  .navrow button:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+  .navrow button:disabled{opacity:.3;pointer-events:none}
+
+  /* 05 calls */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2.6rem;border-top:1px solid var(--hair)}
+  .pl{padding:1.8rem 1.4rem 1.8rem 0}
+  .pl+.pl{padding-left:1.4rem;border-left:1px solid var(--hair-soft)}
+  .pl .pt{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:-0.01em}
+  .pl .ps{font-size:1rem;color:var(--mute);margin-top:0.3rem}
+  .pl ul{list-style:none;margin-top:1.1rem}
+  .pl li{font-size:1.03rem;padding:0.6rem 0;border-top:1px solid var(--hair-soft);line-height:1.45}
+  .channels{margin-top:2.8rem;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--hair)}
+  .ch{padding:1.4rem 1.2rem;background:none;border:0;text-align:left;transition:background .3s}
+  .ch+.ch{border-left:1px solid var(--hair)}
+  .ch:hover,.ch.on{background:var(--panel-2)}
+  .ch .cn{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem;color:var(--text)}
+  .ch .cs{display:block;font-size:0.95rem;color:var(--mute);margin-top:0.3rem;line-height:1.4}
+  .ch.on .cn{color:var(--gold-soft)}
+  .chout{border:1px solid var(--hair);border-top:0;padding:1.3rem 1.4rem;font-size:1.06rem;line-height:1.6;min-height:96px}
+  .chout .anim{animation:fadeup .4s ease}
+
+  /* 06 work */
+  .founder{display:grid;grid-template-columns:auto 1fr auto;gap:1.6rem;align-items:center;margin-top:2.6rem;padding:1.6rem 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .founder img{width:68px;height:68px;border-radius:50%;object-fit:cover;border:1px solid var(--gold)}
+  .founder b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1rem}
+  .founder .fq{font-size:1.15rem;margin-top:0.2rem}
+  .reels3{display:flex;gap:1.6rem;text-align:right}
+  .reels3 b{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.5rem;color:var(--gold-soft)}
+  .reels3 span{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:2.4rem;margin-top:2.6rem}
+  .case .ctag{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .case h4{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.5rem;margin-top:0.5rem;letter-spacing:-0.02em}
+  .case .csub{font-size:1rem;color:var(--mute)}
+  .case .cm{display:flex;gap:2rem;margin-top:1.2rem;padding-top:1.1rem;border-top:1px solid var(--hair)}
+  .case .cm b{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1;letter-spacing:-0.03em;color:var(--gold-soft)}
+  .case .cm span{font-family:'Archivo',sans-serif;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)}
+  .case p{font-size:1.02rem;color:var(--mute);margin-top:1rem;line-height:1.55}
+  .netline{margin-top:2.6rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;align-items:center;padding-top:1.4rem;border-top:1px solid var(--hair);font-size:1.05rem}
+  .netline a{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.66rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-soft);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:0.2rem}
+
+  /* 07 start */
+  .start{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:2.6rem;border:1px solid var(--hair)}
+  .start .sc{padding:clamp(1.6rem,3.4vw,2.4rem)}
+  .start .sc+.sc{border-left:1px solid var(--hair)}
+  .start .k{font-family:'Archivo',sans-serif;font-weight:700;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold-light)}
+  .start .price{font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(3rem,7vw,4.8rem);line-height:0.9;letter-spacing:-0.045em;color:var(--gold-soft);margin-top:1rem}
+  .start .price small{font-size:0.24em;letter-spacing:0.12em;text-transform:uppercase;color:var(--mute);margin-left:0.5rem;font-weight:700}
+  .start .pf{font-size:1.06rem;color:var(--text);margin-top:1rem;line-height:1.55}
+  .start ul{list-style:none;margin-top:1rem}
+  .start li{font-size:1.04rem;padding:0.7rem 0;border-top:1px solid var(--hair-soft);line-height:1.45}
+  .start li:first-child{border-top:0}
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);margin-top:2.4rem;border-top:1px solid var(--hair)}
+  .fl{padding:1.4rem 1.2rem 1.4rem 0}
+  .fl+.fl{padding-left:1.2rem;border-left:1px solid var(--hair-soft)}
+  .fl .fn{font-family:'Archivo',sans-serif;font-weight:800;font-size:0.62rem;letter-spacing:0.2em;color:var(--gold-light);text-transform:uppercase}
+  .fl h5{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;margin-top:0.5rem}
+  .fl p{font-size:1rem;color:var(--mute);margin-top:0.3rem;line-height:1.45}
+  .signoff{margin-top:3.4rem;padding-top:1.6rem;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .signoff .s-mark{font-family:'EB Garamond',serif;font-size:1.3rem}
+  .signoff .s-mark b{color:var(--gold-soft);font-weight:500}
+  .signoff .s-r{font-family:'Archivo',sans-serif;font-size:0.66rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mute);text-align:right;line-height:1.9}
+  .signoff .s-r a{color:var(--gold-soft);text-decoration:none}
+
+  @media(max-width:1020px){
+    .hero-body{grid-template-columns:1fr;gap:2rem}
+    .phase{grid-template-columns:1fr;gap:1.4rem}
+    .channels{grid-template-columns:1fr 1fr}
+    .ch:nth-child(3){border-left:0}
+    .ch:nth-child(n+3){border-top:1px solid var(--hair)}
+  }
+  @media(max-width:700px){
+    .facts{grid-template-columns:1fr 1fr}
+    .fact:nth-child(3){padding-left:0;border-left:0}
+    .fact:nth-child(n+3){border-top:1px solid var(--hair-soft)}
+    .proofline,.value,.start,.cases{grid-template-columns:1fr}
+    .value .vc+.vc,.start .sc+.sc{border-left:0;border-top:1px solid var(--hair)}
+    .lane{grid-template-columns:1fr;gap:0.3rem}
+    .goals,.pillars,.flow{grid-template-columns:1fr}
+    .gl+.gl,.pl+.pl,.fl+.fl{padding-left:0;border-left:0;border-top:1px solid var(--hair-soft)}
+    .steps{grid-template-columns:repeat(5,minmax(0,1fr))}
+    .stp .st{display:none}
+    .stp .sw{font-size:0.5rem;letter-spacing:0.08em}
+    .stp .dot{width:30px;height:30px}
+    .stp .dot:after{inset:10px}
+    .track-line,.track-fill{top:15px}
+    .founder{grid-template-columns:auto 1fr}
+    .reels3{grid-column:1/-1;justify-content:flex-start;text-align:left}
+    .channels{grid-template-columns:1fr}
+    .ch+.ch{border-left:0;border-top:1px solid var(--hair)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .rv{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots" aria-label="Sections">
+  <a href="#s0"><span>Cover</span></a>
+  <a href="#s1"><span>Where you are now</span></a>
+  <a href="#s2"><span>The real problem</span></a>
+  <a href="#s3"><span>The goal</span></a>
+  <a href="#s4"><span>The roadmap</span></a>
+  <a href="#s5"><span>The group calls</span></a>
+  <a href="#s6"><span>Our work</span></a>
+  <a href="#s7"><span>How we start</span></a>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="s0">
+  <div class="hero-top">
+    <a class="mark" href="https://maisondelites.com" target="_blank" rel="noopener">Maison <b>d'&Eacute;lites</b></a>
+    <div class="label" style="color:var(--mute)">Six-month roadmap &middot; 26 November 2026</div>
+  </div>
+  <div class="hero-body">
+    <div class="hero-mid">
+      <span class="label rv">Six-month roadmap &middot; Port Harcourt</span>
+      <h1 class="rv d1">Kelvin<span>From a finished EP to the artist labels come to</span></h1>
+      <p class="hero-sub rv d2">The music is done. What is missing is the branding and the distribution around it. This roadmap puts both in place over six months, <b>starting with the EP</b>.</p>
+    </div>
+    <div class="ledger rv d2">
+      <div class="lr"><span class="lv cu" data-target="150">150</span><span class="ll">Songs recorded this year<small>The catalogue is already there</small></span></div>
+      <div class="lr"><span class="lv"><span class="cu" data-target="15">15</span>K</span><span class="ll">Streams on one release<small>With no content and no post on your socials</small></span></div>
+      <div class="lr"><span class="lv cu" data-target="0">0</span><span class="ll">Spent on promotion so far<small>No playlists, no content, nothing behind it</small></span></div>
+    </div>
+  </div>
+  <div class="hero-bot">
+    <div class="label rv d3" style="color:var(--mute)">Prepared by Maison d'&Eacute;lites</div>
+    <div class="scrollcue">Scroll &darr;</div>
+  </div>
+</header>
+
+<!-- 01 -->
+<section class="section" id="s1">
+  <div class="wrap">
+    <span class="snum rv">01 &middot; Where you are now</span>
+    <h2 class="statement rv d1">The music is ready. Almost nobody has had the chance to hear it.</h2>
+    <p class="body-lg rv d2">You have recorded <b>150 songs this year</b>. The EP is finished and the deluxe is almost mixed. In 2024 you released two songs without making a single piece of content, without posting them on your own socials and without any playlists. <b>They still found 9,000 and 15,000 streams</b>, with listeners as far away as Indonesia and France.</p>
+    <div class="facts rv d2">
+      <div class="fact"><div class="fv cu" data-target="150">150</div><div class="fl">Songs recorded this year</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="9">9</span>K</div><div class="fl">Streams on the first release, with no content</div></div>
+      <div class="fact"><div class="fv"><span class="cu" data-target="15">15</span>K</div><div class="fl">Streams on the second, with no content</div></div>
+      <div class="fact"><div class="fv">2</div><div class="fl">Projects ready: the EP and the deluxe</div></div>
+    </div>
+    <div class="proofline rv d2">
+      <div><span class="pk">Already in place</span><p>Songs with artists signed to labels in Lagos, the UK and Japan. Collaborations are not the problem.</p></div>
+      <div><span class="pk">Already in place</span><p>A podcast that made you a face people know on the street, and a manager in your corner.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="section alt" id="s2">
+  <div class="wrap">
+    <span class="snum rv">02 &middot; The real problem</span>
+    <h2 class="statement rv d1">This is a branding and distribution problem. Port Harcourt is not the problem.</h2>
+    <p class="body-lg rv d2">Burna Boy came out of Port Harcourt. What holds you back is that people do not know who you are yet, so there is nothing for a label to invest in. <b>Music is a business.</b> A label signs an artist when it can see the fans, the ticket sales and a brand it can sell. Right now your page mostly shows other artists featuring you.</p>
+    <div class="seg rv d2" id="lnSeg"><button data-m="today" class="on" type="button">Today</button><button data-m="after" type="button">After six months</button></div>
+    <div class="lanes rv d2" id="lanes"></div>
+    <div class="value rv d1">
+      <div class="vc"><span class="vk">An unpackaged artist</span><div class="vv">Under $10,000</div><p>The kind of advance a label might offer today.</p></div>
+      <div class="vc"><span class="vk">A packaged, branded artist</span><div class="vv">$30,000 to $150,000</div><p>What a label can offer when the artist arrives refined and organised.</p></div>
+    </div>
+    <p class="value-note rv">Your own read of the market on our call. The music stays the same. <b style="color:var(--text);font-weight:500">The perceived value changes.</b></p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="section" id="s3">
+  <div class="wrap">
+    <span class="snum rv">03 &middot; The goal</span>
+    <h2 class="statement rv d1">Six months to become the artist labels want to work with.</h2>
+    <p class="body-lg rv d2">You set the bar on the call: <b>13 to 15 million streams</b>. Two to three years is how long it usually takes an artist to break. The six months below are about getting the foundations right so every release from here moves you toward that number.</p>
+    <div class="goals rv d2">
+      <div class="gl"><div class="gn">Branding</div><h5>A clear brand people recognise</h5><p>Your story, your look and a page that is clearly yours.</p></div>
+      <div class="gl"><div class="gn">Reach</div><h5>The music in front of the right ears</h5><p>Proven content formats, posted on the right platforms, every week.</p></div>
+      <div class="gl"><div class="gn">Labels</div><h5>Conversations with labels and A&amp;Rs</h5><p>A package and a pitch that raise your perceived value.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="section alt" id="s4">
+  <div class="wrap">
+    <span class="snum rv">04 &middot; The roadmap</span>
+    <h2 class="statement rv d1">Your plan, put in the right order.</h2>
+    <p class="body-lg rv d2">The pieces you mentioned on the call are the right ones: content in the city, creators using your sound, the December shows, Abuja and Lagos. Done in order, each step makes the next one land harder.</p>
+    <div class="track rv d2">
+      <div class="track-line"></div><div class="track-fill" id="tFill"></div>
+      <div class="steps" id="steps"></div>
+    </div>
+    <div class="phase" id="phase"></div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="section" id="s5">
+  <div class="wrap">
+    <span class="snum rv">05 &middot; The group calls</span>
+    <h2 class="statement rv d1">The business side of music, taught step by step.</h2>
+    <p class="body-lg rv d2">As an independent artist, every part of the business is your responsibility. A label would handle it for you. The group calls give you and your team that side of the business, so you can run it yourselves.</p>
+    <div class="pillars rv d2">
+      <div class="pl"><div class="pt">Branding</div><div class="ps">How to brand yourself</div><ul>
+        <li>How to make your content and your videos</li>
+        <li>Videos shot on just your phone that still look like a brand</li>
+        <li>Editing</li>
+        <li>Proven formats, and how to find proven formats yourself</li>
+      </ul></div>
+      <div class="pl"><div class="pt">Music marketing</div><div class="ps">How to get the music out</div><ul>
+        <li>Which platforms to use</li>
+        <li>How to post and what to post</li>
+        <li>How music marketing works on social media, TV and radio, and on the streets</li>
+      </ul></div>
+      <div class="pl"><div class="pt">Labels and management</div><div class="ps">How to be signed on better terms</div><ul>
+        <li>What labels look for in an artist</li>
+        <li>How to present yourself and your offer in conversations with labels</li>
+        <li>What your manager and your team can put to work straight away</li>
+      </ul></div>
+    </div>
+    <h3 class="sub rv">Four channels for the music</h3>
+    <div class="channels rv d1" id="channels">
+      <button class="ch on" data-c="0" type="button"><span class="cn">Social media</span><span class="cs">Instagram, TikTok, X</span></button>
+      <button class="ch" data-c="1" type="button"><span class="cn">TV and radio</span><span class="cs">Traditional media</span></button>
+      <button class="ch" data-c="2" type="button"><span class="cn">The streets</span><span class="cs">Malls and shopping</span></button>
+      <button class="ch" data-c="3" type="button"><span class="cn">Clubs and DJs</span><span class="cs">Where songs get played</span></button>
+    </div>
+    <div class="chout"><div class="anim" id="chOut"></div></div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="section alt" id="s6">
+  <div class="wrap">
+    <span class="snum rv">06 &middot; Our work</span>
+    <h2 class="statement rv d1">We have run campaigns promoting releases for Davido, Wale and other major artists.</h2>
+    <div class="founder rv d1">
+      <img src="img/jacques-avatar.jpg" alt="Founder of Maison d'&Eacute;lites">
+      <div><b>Jacques &middot; Founder</b><div class="fq">&ldquo;I help brands turn attention into revenue.&rdquo;</div></div>
+      <div class="reels3"><div><b><span class="cu" data-target="928">928</span>K</b><br><span>Views</span></div><div><b><span class="cu" data-target="350">350</span>K</b><br><span>Views</span></div><div><b><span class="cu" data-target="244">244</span>K</b><br><span>Views</span></div></div>
+    </div>
+    <div class="cases">
+      <div class="case rv d1"><span class="ctag">Music &middot; Afrobeats</span><h4>Kojo Blak x Fantana</h4><div class="csub">Music release campaign</div>
+        <div class="cm"><div><b><span class="cu" data-target="1.9" data-dec="1">1.9</span>M</b><span>Views</span></div><div><b>$<span class="cu" data-target="1.3" data-dec="2">1.30</span></b><span>CPM</span></div><div><b class="cu" data-target="56">56</b><span>Creators</span></div></div>
+        <p>A Ghanaian release pushed across Instagram, TikTok and YouTube. Kojo Blak later won Best New Ghanaian Artist.</p></div>
+      <div class="case rv d2"><span class="ctag">Music</span><h4>Mannywellz ft Wale</h4><div class="csub">How It Feels campaign</div>
+        <div class="cm"><div><b><span class="cu" data-target="4.2" data-dec="1">4.2</span>M</b><span>Views</span></div><div><b>$<span class="cu" data-target="0.4" data-dec="2">0.40</span></b><span>Effective CPM</span></div></div>
+        <p>A content campaign around one song, reported exactly as the client sees it.</p></div>
+    </div>
+    <div class="netline rv"><span>Walmart, Sony, WYDE and DEF JAM have run campaigns through our network.</span><a href="https://maisondelites.com/#case-studies" target="_blank" rel="noopener">All case studies &rarr;</a></div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="section" id="s7">
+  <div class="wrap">
+    <span class="snum rv">07 &middot; How we start</span>
+    <h2 class="statement rv d1">Two group calls a month, with other artists.</h2>
+    <div class="start rv d2">
+      <div class="sc"><span class="k">Group coaching</span><div class="price">$500<small>a month</small></div><p class="pf">Two group calls a month with other artists, taken by the founder of Maison d'&Eacute;lites.</p></div>
+      <div class="sc"><span class="k">What it covers</span><ul>
+        <li>Branding: content, phone-shot videos and editing</li>
+        <li>Music marketing: platforms, posting, TV and radio, the streets, clubs and DJs</li>
+        <li>Labels: what they look for and how to present yourself</li>
+        <li>Information your manager and team can run with</li>
+      </ul></div>
+    </div>
+    <div class="flow rv d2">
+      <div class="fl"><div class="fn">Step 1</div><h5>The deposit</h5><p>Paid through the payment link, from any bank account. It secures your place.</p></div>
+      <div class="fl"><div class="fn">Step 2</div><h5>The first call</h5><p>The deposit unlocks the first group call, so the work starts straight away.</p></div>
+      <div class="fl"><div class="fn">Step 3</div><h5>The balance</h5><p>The rest of the month follows once it is available, and we keep going.</p></div>
+    </div>
+    <div class="signoff rv d3">
+      <div class="s-mark">Maison <b>d'&Eacute;lites</b></div>
+      <div class="s-r">Jacques &middot; Founder<br><a href="https://maisondelites.com" target="_blank" rel="noopener">maisondelites.com</a></div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const once=(els,fn,th=0.3)=>{const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){fn(e.target);io.unobserve(e.target);}}),{threshold:th});els.forEach(el=>el&&io.observe(el));};
+
+  once($$('.rv'),el=>el.classList.add('in'),0.12);
+
+  const prog=$('#progress');
+  addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+  const dots=$$('#dots a'), secs=dots.map(a=>$(a.getAttribute('href')));
+  const sio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('on',j===i));}}),{rootMargin:'-45% 0px -45% 0px'});
+  secs.forEach(s=>s&&sio.observe(s));
+
+  function fmt(v,el){const d=+(el.dataset.dec||0);return d?v.toFixed(d):Math.round(v).toLocaleString('en-US');}
+  once($$('.cu'),el=>{
+    const t=+el.dataset.target; if(reduce||!t){el.textContent=fmt(t,el);return;}
+    const st=performance.now(),dur=1400;
+    (function step(now){const k=Math.min(1,(now-st)/dur),e=1-Math.pow(1-k,3);el.textContent=fmt(t*e,el);if(k<1)requestAnimationFrame(step);else el.textContent=fmt(t,el);})(st);
+  },0.4);
+
+  /* today vs after */
+  const LANES=[
+    ['Your page','Mostly other artists featuring you','Your own page, your story and your releases first'],
+    ['Content','Songs dropped with no content behind them','Proven formats posted every week, shot on your phone'],
+    ['Reach','Fans who find you by chance','The music pushed to the right ears on purpose'],
+    ['Your team','Your manager split with an artist who is already popping','A team that knows exactly what to run for you'],
+    ['Labels','Emails to A&amp;Rs that go unanswered','A package and a pitch that bring the conversation to you']
+  ];
+  const lb=$$('#lnSeg button');
+  function lanes(m){$('#lanes').innerHTML=LANES.map(l=>'<div class="lane '+m+'"><b>'+l[0]+'</b><span>'+(m==='today'?l[1]:l[2])+'</span></div>').join('');}
+  lb.forEach(b=>b.addEventListener('click',()=>{lb.forEach(x=>x.classList.toggle('on',x===b));lanes(b.dataset.m);}));
+  lanes('today');
+
+  /* roadmap */
+  const P=[
+    {w:'Month 1',t:'Brand foundation',h:'Decide who you are as an artist before anyone hears the EP.',why:'A label, a fan and a promoter should all get the same picture of you in a few seconds. That starts here.',
+     l:['Define your brand: the story behind the music, an artist who has <b>taken care of himself since 19</b>, and music people call healing','Clean up your page so it shows <b>your</b> music and your story, with the features in their place','Learn the proven content formats and how to shoot them on your phone','Shoot the first batch of content around Port Harcourt and at the studio, with your friend\'s camera'],o:'Out of month 1: a clear brand and a bank of content'},
+    {w:'Month 2',t:'The EP release',h:'Drop the EP with content behind it for the first time.',why:'Your last releases found 9,000 and 15,000 streams with nothing behind them. This is the first release that gets a real push.',
+     l:['Content goes out <b>before</b> the release, so people are waiting for it','Post across Instagram, TikTok and X, using what the calls cover on what to post and how','The creators who agreed to it make videos with your sound in the background','December shows through your friend, with the EP out and the content running'],o:'Out of month 2: the EP out, and data on what works'},
+    {w:'Month 3',t:'Double down',h:'Put more behind the songs and videos that are already moving.',why:'The first month of the EP tells you which songs and which videos pull streams and follows. You stop guessing.',
+     l:['Make more of the content formats that performed','Push the strongest songs on the streets, in clubs and through DJs','The Abuja trip for content, once the money for it is saved','Your manager and team run the parts of the plan they now know how to run'],o:'Out of month 3: a few songs with real momentum'},
+    {w:'Month 4',t:'The deluxe and Lagos',h:'Arrive in Lagos with the EP already out and the content already running.',why:'Face to face is how it works with A&amp;Rs in Lagos. You go in with proof behind you, so the time there counts.',
+     l:['Release the deluxe EP as the second wave','Lagos, with your content already live on Instagram, TikTok and X','Meet A&amp;Rs and managers in person, with a pitch built on the calls','Keep posting the formats that work while you are there'],o:'Out of month 4: label conversations started'},
+    {w:'Months 5 to 6',t:'Label ready',h:'Go into every label conversation as a packaged, branded artist.',why:'This is where the perceived value pays off: better offers, better features and a team that runs on its own.',
+     l:['Present yourself and your offer the way labels want to see it','Keep releasing from the 150 songs, with content behind every drop','Track every release against the 13 to 15 million streams goal','Decide on label offers with your lawyer, from a stronger position'],o:'Out of month 6: the artist labels come to'}
+  ];
+  let cur=0;
+  $('#steps').innerHTML=P.map((p,i)=>'<button class="stp" data-i="'+i+'" type="button"><span class="dot"></span><span class="sw">'+p.w+'</span><span class="st">'+p.t+'</span></button>').join('');
+  const sb=$$('#steps .stp');
+  function show(i){
+    cur=i; const p=P[i];
+    sb.forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.toggle('done',j<i);});
+    $('#tFill').style.width='calc('+(i*100/P.length)+'% + 19px)';
+    $('#phase').innerHTML='<div class="anim"><span class="pk">'+p.w+' &middot; '+p.t+'</span><h4>'+p.h+'</h4><p class="why">'+p.why+'</p><div class="navrow"><button type="button" id="pPrev">&larr; Back</button><button type="button" id="pNext">Next &rarr;</button></div></div><div class="anim"><ol>'+p.l.map(x=>'<li><span>'+x+'</span></li>').join('')+'</ol><div class="out">'+p.o+'</div></div>';
+    $('#pPrev').disabled=i===0; $('#pNext').disabled=i===P.length-1;
+    $('#pPrev').onclick=()=>show(Math.max(0,cur-1)); $('#pNext').onclick=()=>show(Math.min(P.length-1,cur+1));
+  }
+  sb.forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+  show(0);
+
+  /* channels */
+  const C=['Where most of the work happens. What to post, how often and on which platform, so every post gives someone a reason to play the song.',
+    'How songs get onto TV and radio, and when in a release it is worth going after them.',
+    'Malls and shopping spots, where people hear a song before they ever look it up.',
+    'Clubs and DJs, where a song gets played to a room that is ready for it.'];
+  const cb=$$('#channels .ch');
+  function ch(i){cb.forEach((b,j)=>b.classList.toggle('on',j===i));$('#chOut').innerHTML=C[i];$('#chOut').style.animation='none';void $('#chOut').offsetWidth;$('#chOut').style.animation='';}
+  cb.forEach(b=>b.addEventListener('click',()=>ch(+b.dataset.c)));
+  ch(0);
+})();
+</script>
+</body>
+</html>
