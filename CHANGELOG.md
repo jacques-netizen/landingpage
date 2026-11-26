@@ -11,6 +11,7 @@ asked: the commit's Requested-by trailer, "not recorded" for changes made before
 
 ## 2026-11-26
 
+- Whop setup errors show Whop's own reason, and are logged for staff · Requested by: owner · Made by: Claude Code session …oZc8T8 · 5b123ba
 - Whop and YouTube returns send people to app.maisondelites.com, not the server's internal address · Requested by: owner · Made by: Claude Code session …oZc8T8 · c1fbdba
 - Whop is the only payout method once Whop is switched on · Requested by: owner · Made by: Claude Code session …oZc8T8 · 6b1af83
 
