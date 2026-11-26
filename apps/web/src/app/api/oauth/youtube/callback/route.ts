@@ -1,3 +1,4 @@
+import { env } from '@mde/config'
 import { db } from '@mde/db'
 import { AccountError, exchangeGoogleCode, linkOAuthAccount } from '@mde/platforms'
 import crypto from 'node:crypto'
@@ -15,7 +16,7 @@ export async function GET(req: Request) {
   const limited = await limitVisitor('youtube-login', 20, 3600)
   if (limited) return limited
   const url = new URL(req.url)
-  const back = new URL('/accounts', req.url)
+  const back = new URL('/accounts', env().APP_URL)
   const fail = (code: string) => {
     back.searchParams.set('error', code)
     const res = NextResponse.redirect(back)
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
   }
 
   const viewer = await getViewer()
-  if (!viewer) return NextResponse.redirect(new URL('/sign-in?next=/accounts', req.url))
+  if (!viewer) return NextResponse.redirect(new URL('/sign-in?next=/accounts', env().APP_URL))
   const login = youtubeLogin()
   if (!login) return fail('youtube_unavailable')
 

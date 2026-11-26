@@ -1,3 +1,4 @@
+import { env } from '@mde/config'
 import { googleAuthUrl } from '@mde/platforms'
 import crypto from 'node:crypto'
 import { NextResponse } from 'next/server'
@@ -6,12 +7,12 @@ import { OAUTH_STATE_COOKIE, youtubeLogin } from '@/server/youtube'
 import { limitVisitor } from '@/server/rate-limit'
 
 // Sends the signed-in creator to Google to approve read-only access to their YouTube channel.
-export async function GET(req: Request) {
+export async function GET() {
   const limited = await limitVisitor('youtube-login', 20, 3600)
   if (limited) return limited
   const viewer = await getViewer()
-  const back = new URL('/accounts', req.url)
-  if (!viewer) return NextResponse.redirect(new URL('/sign-in?next=/accounts', req.url))
+  const back = new URL('/accounts', env().APP_URL)
+  if (!viewer) return NextResponse.redirect(new URL('/sign-in?next=/accounts', env().APP_URL))
   const login = youtubeLogin()
   if (!login) {
     back.searchParams.set('error', 'youtube_unavailable')
@@ -23,7 +24,7 @@ export async function GET(req: Request) {
   res.cookies.set(OAUTH_STATE_COOKIE, state, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production' && new URL(req.url).protocol === 'https:',
+    secure: process.env.NODE_ENV === 'production' && new URL(env().APP_URL).protocol === 'https:',
     path: '/api/oauth',
     maxAge: 600,
   })
