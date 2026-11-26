@@ -201,6 +201,23 @@ export async function requestWithdrawalAction(raw: { amount?: string }): Promise
   }
 }
 
+/**
+ * Whop refused (owner, 2026-11-26: the first live test failed with no way to see why). Its own answer is
+ * shown to the clipper and written to the audit log (Change log, Staff actions) and the server log, so
+ * staff can see the reason. Never contains the API key.
+ */
+async function whopFailed(userId: string, e: WhopError) {
+  console.error(JSON.stringify({ level: 'error', msg: 'whop request failed', status: e.status, error: e.message }))
+  await writeAudit(db(), {
+    actorId: userId,
+    action: 'whop.error',
+    entity: 'user',
+    entityId: userId,
+    after: { status: e.status, message: e.message.slice(0, 300) },
+  })
+  return `Whop said: ${e.message.slice(0, 160)} (code ${e.status}). Staff have been told; try again later.`
+}
+
 export type WhopLinkResult = { ok: true; url: string } | { ok: false; error: string }
 
 /**
@@ -261,7 +278,7 @@ export async function startWhopSetupAction(): Promise<WhopLinkResult> {
     const link = await accountLink(accountId, 'account_onboarding')
     return { ok: true, url: link.url }
   } catch (e) {
-    if (e instanceof WhopError) return { ok: false, error: 'Whop could not be reached. Try again in a minute.' }
+    if (e instanceof WhopError) return { ok: false, error: await whopFailed(viewer.id, e) }
     throw e
   }
 }
@@ -280,7 +297,7 @@ export async function openWhopPayoutsAction(): Promise<WhopLinkResult> {
   try {
     return { ok: true, url: (await accountLink(accountId, 'payouts_portal')).url }
   } catch (e) {
-    if (e instanceof WhopError) return { ok: false, error: 'Whop could not be reached. Try again in a minute.' }
+    if (e instanceof WhopError) return { ok: false, error: await whopFailed(viewer.id, e) }
     throw e
   }
 }

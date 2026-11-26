@@ -47,7 +47,7 @@ async function call<T>(method: 'GET' | 'POST', path: string, body?: unknown): Pr
     } catch {
       // Not JSON: keep the status message.
     }
-    throw new WhopError(message, res.status)
+    throw new WhopError(`${path.split('/')[1]}: ${message}`, res.status)
   }
   return (text ? JSON.parse(text) : {}) as T
 }
